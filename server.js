@@ -21,6 +21,7 @@ function renderElm(str) {
     exec(cmd, function(error, stdout, stderr) {
       if (stderr) {
         err = stderr.replace(/\n/g,"\\n")
+                    .replace(/"/g, '\\"')
         callback(null, `console.error("${err}")`);
       } else {
         callback(null, fs.readFileSync('test.js', 'utf-8'))

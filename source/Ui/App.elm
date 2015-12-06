@@ -51,7 +51,7 @@ update action model =
 view : Signal.Address Action -> Model -> List Html.Html -> Html.Html
 view address model children =
   node "ui-app" [onClick address Clicked]
-    ([ Ui.stylesheetLink "/test.css" address Loaded
+    ([ Ui.stylesheetLink "/index.css" address Loaded
      , node "meta" [ name "viewport"
                    , content "initial-scale=1.0, user-scalable=no"] []
      ] ++ if model.loaded then children else [])

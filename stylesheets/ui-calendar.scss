@@ -1,0 +1,74 @@
+ui-calendar {
+  border-radius: $border-radius;
+  display: inline-block;
+  color: readable($input);
+  background: $input;
+  border: $border;
+  padding: 15px;
+
+  ui-container {
+    border-bottom: $border;
+    margin-bottom: 5px;
+    height: 45px;
+
+    padding: 5px;
+    padding-bottom: 10px;
+
+    div {
+      justify-content: center;
+      align-items: center;
+      display: flex;
+    }
+
+    ui-icon {
+      width: 30px;
+
+      &:first-child {
+        justify-content: flex-start;
+      }
+
+      &:last-child {
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  ui-calendar-table {
+    justify-content: space-around;
+    flex-wrap: wrap;
+    display: flex;
+    width: 300px;
+    margin: 0 -5px;
+  }
+
+  ui-calendar-cell {
+    justify-content: center;
+    align-items: center;
+    transition: 200ms;
+    display: flex;
+    height: 34px;
+    width: 34px;
+    margin: 4px;
+
+    &.inactive {
+      opacity: 0.2;
+    }
+
+    &:not(.inactive):hover {
+      background: $color;
+      cursor: pointer;
+      color: readable($color);
+    }
+
+    &:not(:empty) {
+      background: dampen($input, 4%);
+      border-radius: $border-radius;
+    }
+
+    &.selected {
+      background: $color;
+      font-weight: 700;
+      color: readable($color);
+    }
+  }
+}

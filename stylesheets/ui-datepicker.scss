@@ -1,0 +1,21 @@
+ui-date-picker {
+  position: relative;
+  display: inline-block;
+
+  input {
+  	cursor: pointer;
+  }
+
+  ui-dropdown {
+    right: auto;
+    max-height: none;
+  }
+
+  ui-calendar {
+    border: 0;
+  }
+
+  &.disabled {
+    @extend %disabled;
+  }
+}

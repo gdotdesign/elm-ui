@@ -1,0 +1,66 @@
+ui-container {
+  display: flex;
+
+  &.align-start {
+    align-items: flex-start;
+  }
+
+  &.align-center {
+    align-itemst: center;
+  }
+
+  &.align-end {
+    align-items: flex-end;
+  }
+
+  &.direction-row {
+    flex-direction: row;
+
+    &:not(.compact) > * + * {
+      margin-left: 10px;
+    }
+  }
+
+  &.direction-column {
+    flex-direction: column;
+
+    &:not(.compact) > * + * {
+      margin-top: 10px;
+    }
+  }
+}
+
+ui-panel {
+  display: block;
+  padding: 20px;
+}
+
+
+input:not([type]),
+input[type=text],
+input[type=email],
+input[type=password] {
+  background: $input;
+  color: readable($input);
+  border: $border;
+  font-size: inherit;
+  padding: 6px 9px;
+  line-height: 16px;
+  height: 36px;
+  font-family: inherit;
+  border-radius: $border-radius;
+
+  &::-webkit-input-placeholder {
+    line-height: 22px;
+  }
+
+  &[readonly]:focus, &:focus {
+    box-shadow: 0 0 0 1px $focus inset;
+    outline: none;
+  }
+
+  &[readonly] {
+    &::-moz-selection { background: transparent }
+    &::selection { background: transparent }
+  }
+}

@@ -1,0 +1,75 @@
+ui-button {
+  /* Layout */
+  justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+
+  /* Styling */
+  border-radius: $border-radius;
+  position: relative;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 20px;
+  height: 36px;
+
+  /* Ellipsis for Text */
+  span {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  /* Children are not clickable */
+  > * { pointer-events: none; }
+
+  /* Types */
+  @each $type, $typeColor in (
+      success $success,
+      secondary $secondary,
+      warning $warning,
+      danger $danger,
+      primary $color) {
+    &.ui-button-#{$type} {
+      color: readable($typeColor);
+      background: $typeColor;
+
+      &:focus:before {
+        border: 1px solid dampen($typeColor, 20%);
+      }
+
+      &:hover {
+        background: dampen-inverse($typeColor, 5%);
+        color: readable(dampen-inverse($typeColor, 5%));
+      }
+
+      &:active {
+        background: dampen($typeColor, 5%);
+        color: readable(dampen($typeColor, 5%));
+      }
+    }
+  }
+
+  /* Disabled state */
+  &.disabled {
+    @extend %disabled;
+    background: $disabled;
+    color: readable($disabled);
+  }
+
+  /* Focused state */
+  &:focus {
+    outline: none;
+
+    &:before {
+      border-radius: $border-radius;
+      pointer-events: none;
+      position: absolute;
+      bottom: -2px;
+      content: "";
+      right: -2px;
+      left: -2px;
+      top: -2px;
+    }
+  }
+}

@@ -55,7 +55,7 @@ init : String -> Model
 init value =
   { required = True
   , open = False
-  , ctrlSave = False
+  , ctrlSave = True
   , disabled = False
   , value = value
   , textarea = Ui.Textarea.init value

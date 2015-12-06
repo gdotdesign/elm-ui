@@ -1,0 +1,69 @@
+ui-textarea {
+  position: relative;
+  overflow: visible;
+  min-height: 1em;
+  display: block;
+  line-height: 24px;
+  margin-bottom: -24px;
+
+  ui-textarea-background {
+    border: $border;
+    border-radius: $border-radius;
+    background: $input;
+    position: absolute;
+    bottom: 24px;
+    right: 0;
+    left: 0;
+    top: 0;
+  }
+
+  &.focused ui-textarea-background {
+    box-shadow: 0 0 0 1px $focus inset;
+  }
+
+  textarea {
+    background: transparent;
+    font-family: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    position: absolute;
+    font-size: inherit;
+    overflow: hidden;
+    color: inherit;
+    outline: none;
+    resize: none;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    left: 0;
+    top: 0;
+
+    padding: 6px 9px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  ui-textarea-mirror {
+    word-wrap: break-word;
+    white-space: normal;
+    visibility: hidden;
+    user-select: none;
+    padding: 6px 9px;
+    display: block;
+
+    span-line:empty:before {
+      content: "a";
+    }
+
+    span-last {
+      display: block;
+
+      &:before {
+        content: "a";
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+ui-dropdown {
+  border: $border;
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  border-radius: $border-radius;
+  right: 0;
+  top: calc(100% + 2px);
+  transform: translateY(-10px);
+  background: $input;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  padding: 3px;
+  opacity: 0;
+  transition: 320ms;
+  pointer-events: none;
+  max-height: 250px;
+  overflow: auto;
+}
+
+.dropdown-open ui-dropdown {
+  transform: translateY(0);
+  pointer-events: auto;
+  opacity: 1;
+}

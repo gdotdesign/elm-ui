@@ -51,7 +51,6 @@ router.get('/index.css', function *(next) {
 })
 
 app
-  .use(serve('./assets'))
   .use(router.routes())
 
 app.listen(8001);

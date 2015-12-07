@@ -12,19 +12,32 @@ import Ui.NumberPad
 import Ui.App
 import Ui
 
+type alias ID = Int
+
 type Action
   = App Ui.App.Action
   | NumberPad Ui.NumberPad.Action
   | Load
 
+{- Represents a transaction. -}
 type alias Transaction =
-  { amount : Int
+  { id : ID
+  , amount : Int
   , comment : String
-  , category : String
+  , category : Category
   }
 
+{- Represents a category. -}
+type alias Category =
+  { id : ID
+  , icon : String
+  , name : String
+  }
+
+{- Represents an account. -}
 type alias Account =
-  { initialBalance: Int
+  { id : ID
+  , initialBalance: Int
   , name : String
   , icon : String
   , transactions : List Transaction
@@ -44,16 +57,26 @@ balance accounts =
   List.map accountBalance accounts
     |> List.foldr (+) 0
 
+initialCategories : List Category
+initialCategories =
+  [ { id = 0, name = "Bills", icon = "cash" }
+  , { id = 0, name = "Transportation", icon = "android-bus" }
+  , { id = 0, name = "Food", icon = "android-cart" }
+  ]
+
 init =
   ({ app = Ui.App.init
    , numberPad = Ui.NumberPad.init 0
    , data = ""
-   , accounts = [ { initialBalance = 0
+   , categories = initialCategories
+   , accounts = [ { id = 0
+                  , initialBalance = 0
                   , name = "Bank Card"
                   , icon = ""
                   , transactions = []
                   }
-                , { initialBalance = 0
+                , { id = 1
+                  , initialBalance = 0
                   , name = "Cash"
                   , icon = ""
                   , transactions = []

@@ -88,7 +88,15 @@ update action model =
       { model | calendar = Calendar.nextDay model.calendar }
 
     Calendar act ->
-      { model | calendar = Calendar.update act model.calendar }
+      let
+        updatedModel =
+          { model | calendar = Calendar.update act model.calendar }
+      in
+        case act of
+          Calendar.Select date ->
+            Dropdown.close updatedModel
+              |> Native.Browser.blur
+          _ -> model
 
     _ -> model
 

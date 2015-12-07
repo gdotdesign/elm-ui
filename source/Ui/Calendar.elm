@@ -1,5 +1,4 @@
-module Ui.Calendar
-  (init, update, view, nextDay, previousDay, Action, Model) where
+module Ui.Calendar where
 
 {-| This is a calendar component where the user
 can select a date by clicking on it.
@@ -12,6 +11,9 @@ can select a date by clicking on it.
 
 # Functions
 @docs nextDay, previousDay
+
+# Private
+@docs fixDate, renderCell,  paddingLeft
 -}
 import Html.Attributes exposing (classList, style)
 import Html.Events exposing (onMouseDown)
@@ -132,7 +134,7 @@ previousDay model =
   { model | value = Ext.Date.previousDay model.value }
     |> fixDate
 
-{- Fixes the date in order to make sure the selected date is visible -}
+{-| Fixes the date in order to make sure the selected date is visible -}
 fixDate : Model -> Model
 fixDate model =
   if Ext.Date.isSameMonth model.date model.value then
@@ -140,7 +142,7 @@ fixDate model =
   else
     { model | date = model.value }
 
-{- Returns the padding based on the day of the week -}
+{-| Returns the padding based on the day of the week -}
 paddingLeft : Date.Date -> Int
 paddingLeft date =
   case Date.dayOfWeek date of
@@ -152,7 +154,7 @@ paddingLeft date =
     Date.Sat -> 5
     Date.Sun -> 6
 
-{- Renders a single cell -}
+{-| Renders a single cell -}
 renderCell : Signal.Address Action -> Date.Date -> Model -> Html.Html
 renderCell address date model =
   let

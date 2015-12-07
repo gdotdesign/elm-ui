@@ -92,27 +92,32 @@ updateChoosers model =
             , accountChooser = Ui.Chooser.updateData accounts model.accountChooser }
 
 init =
-  ({ app = Ui.App.init
-   , numberPad = Ui.NumberPad.init 0
-   , categoryChooser = Ui.Chooser.init [] "Category..." ""
-   , accountChooser = Ui.Chooser.init [] "Account..." ""
-   , datePicker = Ui.DatePicker.init Ext.Date.now
-   , data = ""
-   , categories = initialCategories
-   , accounts = [ { id = "0"
-                  , initialBalance = 0
-                  , name = "Bank Card"
-                  , icon = ""
-                  , transactions = []
-                  }
-                , { id = "1"
-                  , initialBalance = 0
-                  , name = "Cash"
-                  , icon = ""
-                  , transactions = []
-                  }
-                ]
-   } |> updateChoosers, Effects.task (Task.succeed Load))
+  let
+    dp = Ui.DatePicker.init Ext.Date.now
+    ac = Ui.Chooser.init [] "Account..." ""
+    cc = Ui.Chooser.init [] "Category..." ""
+  in
+    ({ app = Ui.App.init
+     , numberPad = Ui.NumberPad.init 0
+     , categoryChooser = { cc | closeOnSelect = True }
+     , accountChooser = { ac | closeOnSelect = True }
+     , datePicker = { dp | closeOnSelect = True }
+     , data = ""
+     , categories = initialCategories
+     , accounts = [ { id = "0"
+                    , initialBalance = 0
+                    , name = "Bank Card"
+                    , icon = ""
+                    , transactions = []
+                    }
+                  , { id = "1"
+                    , initialBalance = 0
+                    , name = "Cash"
+                    , icon = ""
+                    , transactions = []
+                    }
+                  ]
+     } |> updateChoosers, Effects.task (Task.succeed Load))
 
 view address model =
   Ui.App.view (forwardTo address App) model.app

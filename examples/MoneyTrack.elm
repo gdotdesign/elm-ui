@@ -5,6 +5,7 @@ import Effects
 import Signal exposing (forwardTo)
 import Task
 import List
+import Storage.Local
 import Html exposing (div, text)
 
 import Ui.NumberPad
@@ -14,6 +15,7 @@ import Ui
 type Action
   = App Ui.App.Action
   | NumberPad Ui.NumberPad.Action
+  | Load
 
 type alias Transaction =
   { amount : Int
@@ -45,6 +47,7 @@ balance accounts =
 init =
   ({ app = Ui.App.init
    , numberPad = Ui.NumberPad.init 0
+   , data = ""
    , accounts = [ { initialBalance = 0
                   , name = "Bank Card"
                   , icon = ""
@@ -56,7 +59,7 @@ init =
                   , transactions = []
                   }
                 ]
-   }, Effects.none)
+   }, Effects.task (Task.succeed Load))
 
 view address model =
   Ui.App.view (forwardTo address App) model.app
@@ -80,6 +83,10 @@ update action model =
       ({ model | app = Ui.App.update act model.app }, Effects.none)
     NumberPad act ->
       ({ model | numberPad = Ui.NumberPad.update act model.numberPad }, Effects.none)
+    Load ->
+      case (Storage.Local.getItem "moneytrack-data") of
+        Ok data -> ({ model | data = data }, Effects.none)
+        Err msg -> (model, Effects.none)
 
 app =
   StartApp.start { init = init

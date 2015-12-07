@@ -30,7 +30,9 @@ type alias Model =
   { placeholder : String
   , value : String
   , focused : Bool
-  , enterAllowed : Bool }
+  , enterAllowed : Bool
+  , focusNext : Bool
+  }
 
 {-| Actions a textrea can make. -}
 type Action
@@ -48,7 +50,9 @@ init value =
   { placeholder = ""
   , value = value
   , focused = False
-  , enterAllowed = True }
+  , enterAllowed = True
+  , focusNext = True
+  }
 
 {-| Updates a textrea. -}
 update : Action -> Model -> Model
@@ -58,7 +62,7 @@ update action model =
       setValue value model
 
     Focus ->
-      { model | focused = True }
+      { model | focused = True, focusNext = False }
 
     Blur ->
       { model | focused = False }
@@ -86,7 +90,7 @@ view address model =
         base ++ [onEnterStop address Nothing]
 
     textarea' =
-      if model.focused then
+      if model.focusNext then
         Native.Browser.focusEnd (textarea attributes [])
       else
         textarea attributes []
@@ -105,7 +109,7 @@ setValue value model =
 {-| Focuses the textarea. -}
 focus : Model -> Model
 focus model =
-  { model | focused = True }
+  { model | focusNext = True }
 
 {-| Processes the value for the mirror object. -}
 process : String -> List Html.Html

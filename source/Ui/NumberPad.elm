@@ -1,6 +1,7 @@
 module Ui.NumberPad where
 
 import Number.Format exposing (prettyInt)
+import Html.Extra exposing (onTouch)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import String
@@ -13,6 +14,8 @@ import Ui
 type alias Model =
   { value: Int
   , maximumDigits : Int
+  , prefix : String
+  , affix : String
   }
 
 type Action
@@ -23,6 +26,8 @@ init : Model
 init =
   { value = 0
   , maximumDigits = 10
+  , prefix = "- "
+  , affix = " Ft"
   }
 
 update : Action -> Model -> Model
@@ -33,6 +38,7 @@ update action model =
     Delete ->
       deleteDigit model
 
+deleteDigit : Model -> Model
 deleteDigit model =
   let
     value =
@@ -46,20 +52,29 @@ deleteDigit model =
 addDigit : Int -> Model -> Model
 addDigit number model =
   let
-    result = (toString model.value) ++ (toString number)
-    value = Result.withDefault 0 (String.toInt result)
+    result =
+      (toString model.value) ++ (toString number)
+
+    value =
+      if (String.length result) > model.maximumDigits then
+        model.value
+      else
+        String.toInt result
+          |> Result.withDefault 0
   in
-    { model | value = if (String.length result) > model.maximumDigits then model.value else value }
+    { model | value = value }
 
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
   let
     buttons =
       List.map (\number -> renderButton address number) [1,2,3,4,5,6,7,8,9]
+    textValue =
+      text (model.prefix ++ (prettyInt ',' model.value) ++ model.affix)
   in
     node "ui-number-pad" []
       [ node "ui-number-pad-value" []
-        [ node "span" [] [text (prettyInt ',' model.value)]
+        [ node "span" [] [textValue]
         , Ui.icon "backspace" True [onClick address Delete]
         ]
       , node "ui-number-pad-buttons" [] (buttons ++ [renderButton address 0])

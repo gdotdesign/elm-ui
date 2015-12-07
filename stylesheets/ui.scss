@@ -99,7 +99,7 @@ ui-number-pad {
     justify-content: space-between;
 
     ui-number-pad-button {
-      width: calc(33.3333% - 10px);
+      width: calc((100% - 20px) / 3);
       height: 60px;
       margin-bottom: 10px;
       display: flex;
@@ -118,7 +118,7 @@ ui-number-pad {
       &:active {
         color: readable($color);
         background: $color;
-        transition: 150ms;
+        transition: 50ms;
       }
     }
   }

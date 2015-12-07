@@ -44,7 +44,7 @@ balance accounts =
 
 init =
   ({ app = Ui.App.init
-   , numberPad = Ui.NumberPad.init
+   , numberPad = Ui.NumberPad.init 0
    , accounts = [ { initialBalance = 0
                   , name = "Bank Card"
                   , icon = ""
@@ -67,7 +67,12 @@ dashboard address model =
   div [] [text (toString (balance model.accounts))]
 
 form address model =
-  div [] [Ui.NumberPad.view (forwardTo address NumberPad) model.numberPad]
+  let
+    numberPadView = { bottomLeft = div [] [Ui.icon "close" False []]
+                    , bottomRight = div [] [Ui.icon "checkmark" False []]
+                    }
+  in
+    div [] [Ui.NumberPad.view (forwardTo address NumberPad) numberPadView model.numberPad]
 
 update action model =
   case action of

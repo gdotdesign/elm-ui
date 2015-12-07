@@ -1,0 +1,62 @@
+ui-number-pad {
+  display: block;
+  width: 300px;
+  padding: 10px;
+
+  ui-number-pad-value {
+    display: flex;
+    background: $input;
+    color: readable($input);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: $border-radius;
+
+    span {
+      font-size: 24px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    ui-icon {
+      font-size: 26px;
+    }
+  }
+
+  ui-number-pad-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    ui-number-pad-button {
+      width: calc((100% - 20px) / 3);
+      height: 60px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background: $secondary;
+      color: readable($secondary);
+      border-radius: $border-radius;
+
+      font-size: 18px;
+      font-weight: 600;
+
+      transition: 300ms;
+
+      div {
+        width: 100%;
+        height: inherit;
+        display: flex;
+
+        > * { flex: 1 }
+      }
+
+      &:active {
+        color: readable($color);
+        background: $color;
+        transition: 50ms;
+      }
+    }
+  }
+}

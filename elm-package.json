@@ -21,6 +21,7 @@
     "Ui.Image",
     "Ui.InplaceInput",
     "Ui.Input",
+    "Ui.NumberPad",
     "Ui.Slider",
     "Ui.Textarea",
     "Ui.Helpers.Dropdown",

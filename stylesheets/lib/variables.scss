@@ -1,5 +1,5 @@
 $border-color: rgba(#000, 0.1);
-$color: #E63900;
+$color: red;
 $danger: #D1573C;
 $success: #0BC449;
 $warning: #F79C00;
@@ -8,7 +8,7 @@ $input: hsl(20, 30%, 99.5%);
 $disabled: desaturate(dampen($input, 20%), 60%);
 $secondary: dampen($input, 15%);
 
-$background: #F8F4F2;
+$background: #F3EBE8;
 $border-radius: 3px;
-$border: 1px solid $border-color;
+$border: 1px solid transparent;
 $focus: dampen($color, 30%);

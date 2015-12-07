@@ -69,3 +69,28 @@ ui-subtitle {
   font-size: 18px;
   font-weight: 600;
 }
+
+ui-input-group {
+  display: flex;
+
+  ui-input-group-label {
+    background: dampen($input, 2%);
+    font-weight: 600;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    border-radius: $border-radius 0 0 $border-radius;
+    flex: 0 0 auto;
+
+    + * {
+      flex: 1;
+    }
+  }
+
+  input:not([type]),
+  input[type=text],
+  input[type=email],
+  input[type=password] {
+    border-radius: 0 $border-radius $border-radius 0;
+  }
+}

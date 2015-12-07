@@ -3,7 +3,8 @@ ui-date-picker {
   display: inline-block;
 
   input {
-  	cursor: pointer;
+    cursor: pointer;
+    width: 100%;
   }
 
   ui-dropdown {

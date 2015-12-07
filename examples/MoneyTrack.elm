@@ -129,17 +129,19 @@ form address model =
                     }
   in
     div []
-      [ Ui.Container.view { align = "stretch"
+      [ Ui.panel []
+        [ Ui.Container.view { align = "stretch"
                           , direction = "column"
                           , compact = False
                           } []
-        [ Ui.DatePicker.view (forwardTo address DatePicker) model.datePicker
-        , Ui.Chooser.view (forwardTo address AccountChooser) model.accountChooser
-        , Ui.Chooser.view (forwardTo address CategoryChooser) model.categoryChooser
-        , Ui.NumberPad.view
-            (forwardTo address NumberPad)
-            numberPadView
-            model.numberPad
+          [ Ui.inputGroup "Date" (Ui.DatePicker.view (forwardTo address DatePicker) model.datePicker)
+          , Ui.inputGroup "Account" (Ui.Chooser.view (forwardTo address AccountChooser) model.accountChooser)
+          , Ui.inputGroup "Category" (Ui.Chooser.view (forwardTo address CategoryChooser) model.categoryChooser)
+          , Ui.NumberPad.view
+              (forwardTo address NumberPad)
+              numberPadView
+              model.numberPad
+          ]
         ]
       ]
 

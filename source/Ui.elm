@@ -1,10 +1,11 @@
 module Ui
-  (icon, title, subTitle, panel, spacer, stylesheetLink, tabIndex) where
+  (icon, title, subTitle, panel, spacer, inputGroup,
+   stylesheetLink, tabIndex) where
 
 {-| UI Library for ELM!
 
 # Static Components
-@docs icon, title, subTitle, panel, spacer, stylesheetLink
+@docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup
 
 # Helper Functions
 @docs tabIndex
@@ -38,6 +39,14 @@ subTitle attributes children =
 panel : List Html.Attribute -> List Html.Html -> Html.Html
 panel attributes children =
   node "ui-panel" attributes children
+
+{-| Renders an input group component. -}
+inputGroup : String -> Html.Html -> Html.Html
+inputGroup label input =
+  node "ui-input-group" []
+    [ node "ui-input-group-label" [] [text label]
+    , input
+    ]
 
 {-| Renders a link tag for a CSS Stylesheet. -}
 stylesheetLink : String -> Signal.Address a -> a -> Html.Html

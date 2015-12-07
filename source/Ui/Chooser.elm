@@ -1,6 +1,6 @@
 module Ui.Chooser
   (Model, Item, Action, init, update, close, toggleItem,
-   getFirstSelected, view) where
+   getFirstSelected, view, updateData) where
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
@@ -12,7 +12,7 @@ form a list of choises, with lots of options.
 @docs view
 
 # Functions
-@docs toggleItem, close, getFirstSelected
+@docs toggleItem, close, getFirstSelected, updateData
 -}
 import Html.Attributes exposing (value, placeholder, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick, onMouseDown)
@@ -201,6 +201,11 @@ toggleItem value model =
 getFirstSelected : Model -> Maybe String
 getFirstSelected model =
   List.head (Set.toList model.selected)
+
+{-| Updates the data of a chooser. -}
+updateData : List Item -> Model -> Model
+updateData data model =
+  { model | data = data }
 
 {- ========================= PRIVATE ========================= -}
 

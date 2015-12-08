@@ -15,8 +15,8 @@ import Html exposing (node)
 view : List Html.Attribute -> List Html.Html -> Html.Html
 view attributes children =
   node "ui-dropdown"
-       ([onStopNothing "mousedown"] ++ attributes)
-       children
+    ([onStopNothing "mousedown"] ++ attributes)
+    children
 
 {-| Opens a component. -}
 open : { a | open : Bool } -> { a | open : Bool }

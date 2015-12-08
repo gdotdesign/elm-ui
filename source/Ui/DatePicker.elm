@@ -9,7 +9,7 @@ module Ui.DatePicker where
 @docs view
 -}
 import Html.Attributes exposing (value, readonly, classList, disabled)
-import Html.Events exposing (onFocus, onBlur)
+import Html.Events exposing (onFocus, onBlur, onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, input)
 
@@ -96,7 +96,7 @@ update action model =
           Calendar.Select date ->
             Dropdown.close updatedModel
               |> Native.Browser.blur
-          _ -> model
+          _ -> updatedModel
 
     _ -> model
 
@@ -121,5 +121,7 @@ view address model =
                                               ])
       ] []
     , Dropdown.view []
-      [ Calendar.view (forwardTo address Calendar) model.calendar ]
+      [ node "ui-dropdown-overlay" [onClick address Close] []
+      , Calendar.view (forwardTo address Calendar) model.calendar
+      ]
     ]

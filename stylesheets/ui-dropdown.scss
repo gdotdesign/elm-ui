@@ -6,7 +6,7 @@ ui-dropdown {
   border-radius: $border-radius;
   right: 0;
   top: calc(100% + 2px);
-  transform: translateY(-10px);
+  transform: translateY(10px);
   background: $input;
   box-shadow: 0 5px 20px rgba(0,0,0,0.1);
   padding: 3px;

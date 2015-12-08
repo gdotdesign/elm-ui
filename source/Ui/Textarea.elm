@@ -51,7 +51,7 @@ init value =
   , value = value
   , focused = False
   , enterAllowed = True
-  , focusNext = True
+  , focusNext = False
   }
 
 {-| Updates a textrea. -}

@@ -70,6 +70,21 @@ ui-subtitle {
   font-weight: 600;
 }
 
+ui-pager {
+  display: block;
+  overflow: hidden;
+
+  ui-page {
+    transform: translate3d(0,0,0);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+  }
+}
+
 ui-input-group {
   display: flex;
 

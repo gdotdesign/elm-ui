@@ -18,6 +18,7 @@ import Ui.Chooser
 import Ui.DatePicker
 import Ui.Container
 import Ui.App
+import Ui.Pager
 import Ui
 
 import Debug exposing (log)
@@ -28,6 +29,8 @@ type Action
   | AccountChooser Ui.Chooser.Action
   | CategoryChooser Ui.Chooser.Action
   | DatePicker Ui.DatePicker.Action
+  | Pager Ui.Pager.Action
+  | SelectPage Int
   | Load
   | Save
 
@@ -102,6 +105,7 @@ init =
      , categoryChooser = { cc | closeOnSelect = True }
      , accountChooser = { ac | closeOnSelect = True }
      , datePicker = { dp | closeOnSelect = True }
+     , pager = Ui.Pager.init 0
      , data = ""
      , categories = initialCategories
      , accounts = [ { id = "0"
@@ -121,15 +125,22 @@ init =
 
 view address model =
   Ui.App.view (forwardTo address App) model.app
-    [ dashboard address model
-    , form address model ]
+    [ Ui.Pager.view (forwardTo address Pager)
+      [ dashboard address model
+      , form address model
+      ]
+      model.pager
+    ]
 
 dashboard address model =
-  div [] [text (toString (balance model.accounts))]
+  div []
+    [ text (toString (balance model.accounts))
+    , div [onClick address (SelectPage 1)] [text "Form"]
+    ]
 
 form address model =
   let
-    numberPadView = { bottomLeft = div [] [Ui.icon "arrow-left-a" False []]
+    numberPadView = { bottomLeft = div [onClick address (SelectPage 0)] [Ui.icon "arrow-left-a" False []]
                     , bottomRight = div [onClick address Save] [Ui.icon "checkmark" False []]
                     }
   in
@@ -162,6 +173,16 @@ update action model =
       ({ model | datePicker = Ui.DatePicker.update act model.datePicker }, Effects.none)
     NumberPad act ->
       ({ model | numberPad = Ui.NumberPad.update act model.numberPad }, Effects.none)
+    Pager act ->
+      let
+        (pager, effect) = Ui.Pager.update act model.pager
+      in
+        ({ model | pager = pager }, Effects.map Pager effect)
+    SelectPage page ->
+      let
+        (pager, effect) = Ui.Pager.select page model.pager
+      in
+        ({ model | pager = pager }, Effects.map Pager effect)
     Save ->
       let
         account' =

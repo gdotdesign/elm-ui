@@ -57,4 +57,12 @@ ui-number-pad {
       }
     }
   }
+
+  &:focus {
+    outline: none;
+
+    ui-number-pad-value {
+      box-shadow: $focus-shadow;
+    }
+  }
 }

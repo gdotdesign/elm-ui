@@ -129,7 +129,7 @@ dashboard address model =
 
 form address model =
   let
-    numberPadView = { bottomLeft = div [] [Ui.icon "close" False []]
+    numberPadView = { bottomLeft = div [] [Ui.icon "arrow-left-a" False []]
                     , bottomRight = div [onClick address Save] [Ui.icon "checkmark" False []]
                     }
   in

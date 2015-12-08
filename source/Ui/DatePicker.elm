@@ -40,15 +40,13 @@ type alias Model =
 
 {-| Actions that a date picker can make:
   - **Focus** - Opens the dropdown
-  - **Blur** - Closes the dropdown
-  - **Close** - Blurs the input
+  - **Close** - Closes the dropdown
   - **Decrement** - Selects the previous day
   - **Increment** - Selects the next day
   - **Calendar** - Calendar actions
 -}
 type Action
   = Focus
-  | Blur
   | Nothing
   | Increment
   | Decrement
@@ -75,17 +73,16 @@ update action model =
     Focus ->
       Dropdown.open model
 
-    Blur ->
-      Dropdown.close model
-
     Close ->
-      Native.Browser.blur model
+      Dropdown.close model
 
     Decrement ->
       { model | calendar = Calendar.previousDay model.calendar }
+        |> Dropdown.open
 
     Increment ->
       { model | calendar = Calendar.nextDay model.calendar }
+        |> Dropdown.open
 
     Calendar act ->
       let
@@ -94,8 +91,10 @@ update action model =
       in
         case act of
           Calendar.Select date ->
-            Dropdown.close updatedModel
-              |> Native.Browser.blur
+            if model.closeOnSelect then
+              Dropdown.close updatedModel
+            else
+              updatedModel
           _ -> updatedModel
 
     _ -> model
@@ -110,10 +109,12 @@ view address model =
     [ input
       [ onFocus address Focus
       , disabled model.disabled
-      , onBlur address Blur
+      , onClick address Focus
+      , onBlur address Close
       , readonly True
       , value (format model.format model.calendar.value)
       , onKeys address Nothing (Dict.fromList [ (27, Close)
+                                              , (13, Close)
                                               , (40, Increment)
                                               , (38, Decrement)
                                               , (39, Increment)

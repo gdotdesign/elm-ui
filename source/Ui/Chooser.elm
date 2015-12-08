@@ -181,7 +181,6 @@ close : Model -> Model
 close model =
   Dropdown.close model
     |> setValue ""
-    |> Native.Browser.blur
 
 {-| Select or deslect a single item with the given value and closes
 the dropdown if needed. -}

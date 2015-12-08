@@ -10,10 +10,11 @@ module Ui.NumberPad
 @docs ViewModel, view
 -}
 import Number.Format exposing (prettyInt)
-import Html.Extra exposing (onTouch)
+import Html.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import String
+import Dict
 
 import Ui
 
@@ -30,6 +31,7 @@ type alias Model =
   , format : Bool
   , prefix : String
   , affix : String
+  , disabled : Bool
   }
 
 {-| Represents elements for the view:
@@ -45,6 +47,7 @@ type alias ViewModel =
 type Action
   = Pressed Int
   | Delete
+  | Nothing
 
 {-| Initializes a number pad with the given value.
 
@@ -57,6 +60,7 @@ init value =
   , format = False
   , prefix = ""
   , affix = ""
+  , disabled = False
   }
 
 {-| Updates a number pad. -}
@@ -67,6 +71,8 @@ update action model =
       addDigit number model
     Delete ->
       deleteDigit model
+    _ ->
+      model
 
 {-| Renders a number pad. -}
 view : Signal.Address Action -> ViewModel -> Model -> Html.Html
@@ -79,7 +85,32 @@ view address viewModel model =
     textValue =
       text (model.prefix ++ value ++ model.affix)
   in
-    node "ui-number-pad" []
+    node "ui-number-pad"
+      ((Ui.tabIndex model) ++
+       [ onKeys address Nothing (Dict.fromList [ (8, Delete)
+                                               , (46, Delete)
+                                               , (48, Pressed 0)
+                                               , (49, Pressed 1)
+                                               , (50, Pressed 2)
+                                               , (51, Pressed 3)
+                                               , (52, Pressed 4)
+                                               , (53, Pressed 5)
+                                               , (54, Pressed 6)
+                                               , (55, Pressed 7)
+                                               , (56, Pressed 8)
+                                               , (57, Pressed 9)
+                                               , (96, Pressed 0)
+                                               , (97, Pressed 1)
+                                               , (98, Pressed 2)
+                                               , (99, Pressed 3)
+                                               , (100, Pressed 4)
+                                               , (101, Pressed 5)
+                                               , (102, Pressed 6)
+                                               , (103, Pressed 7)
+                                               , (104, Pressed 8)
+                                               , (105, Pressed 9)
+                                               ])
+       ])
       [ node "ui-number-pad-value" []
         [ node "span" [] [textValue]
         , Ui.icon "backspace" True [onClick address Delete]

@@ -55,7 +55,7 @@ input[type=password] {
   }
 
   &[readonly]:focus, &:focus {
-    box-shadow: 0 0 0 1px $focus inset;
+    box-shadow: $focus-shadow;
     outline: none;
   }
 

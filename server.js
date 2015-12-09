@@ -63,7 +63,7 @@ router.get('/index.css', function *(next) {
 
  router.get('/_examples/:id', function *(next){
   this.type = 'text/javascript';
-  this.body = yield renderElm(`examples/${this.params.id}.elm`)
+  this.body = yield renderElm(`examples/${this.params.id}/Main.elm`)
 })
 
 router.get('/examples/:id', function *(next){

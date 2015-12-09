@@ -1,5 +1,5 @@
 module Ui.NumberPad
-  (Model, Action, init, update, ViewModel, view) where
+  (Model, Action, init, update, ViewModel, view, setValue) where
 
 {-| Number pad component.
 
@@ -8,6 +8,9 @@ module Ui.NumberPad
 
 # View
 @docs ViewModel, view
+
+# Functions
+@docs setValue
 -}
 import Number.Format exposing (prettyInt)
 import Html.Extra exposing (onKeys)
@@ -122,6 +125,11 @@ view address viewModel model =
                     ])
       ]
 
+{-| Sets the value of a number pad. -}
+setValue : Int -> Model -> Model
+setValue value model =
+  { model | value = clampValue value model }
+
 {- Renders a digit button. -}
 renderButton : Signal.Address Action -> Int -> Html.Html
 renderButton address number =
@@ -142,18 +150,24 @@ deleteDigit model =
   in
     { model | value = value }
 
+{- Clamps the value to the max digit. -}
+clampValue : Int -> Model -> Int
+clampValue value model =
+  if (String.length (toString value)) > model.maximumDigits then
+    model.value
+  else
+    value
+
 {- Adds a digit to the end of the value. -}
 addDigit : Int -> Model -> Model
 addDigit number model =
   let
     result =
       (toString model.value) ++ (toString number)
+        |> String.toInt
+        |> Result.withDefault 0
 
     value =
-      if (String.length result) > model.maximumDigits then
-        model.value
-      else
-        String.toInt result
-          |> Result.withDefault 0
+      clampValue result model
   in
     { model | value = value }

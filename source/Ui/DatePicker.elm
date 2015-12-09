@@ -7,6 +7,9 @@ module Ui.DatePicker where
 
 # View
 @docs view
+
+# Functions
+@docs setValue
 -}
 import Html.Attributes exposing (value, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick)
@@ -126,3 +129,8 @@ view address model =
       , Calendar.view (forwardTo address Calendar) model.calendar
       ]
     ]
+
+{-| Sets the value of a date picker -}
+setValue : Date.Date -> Model -> Model
+setValue date model =
+  { model | calendar = Calendar.setValue date model.calendar }

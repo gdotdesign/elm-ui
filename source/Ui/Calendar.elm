@@ -10,7 +10,7 @@ can select a date by clicking on it.
 @docs view
 
 # Functions
-@docs nextDay, previousDay
+@docs setValue, nextDay, previousDay
 
 # Private
 @docs fixDate, renderCell,  paddingLeft
@@ -121,6 +121,12 @@ view address model =
     node "ui-calendar" []
       [ container
       , node "ui-calendar-table" [] cells ]
+
+{-| Sets the value of a calendar -}
+setValue : Date.Date -> Model -> Model
+setValue date model =
+  { model | value = date }
+    |> fixDate
 
 {-| Steps the selected value to the next day -}
 nextDay : Model -> Model

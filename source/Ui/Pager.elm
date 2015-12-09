@@ -12,6 +12,8 @@ type alias Model =
   { active : Int
   , next : Int
   , animation : Animation
+  , width : String
+  , height : String
   }
 
 type Action
@@ -22,6 +24,8 @@ init active =
   { active = active
   , next = active
   , animation = Animation.init 100 0 320
+  , width = "100vw"
+  , height = "100vh"
   }
 
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -62,7 +66,13 @@ view address pages model =
         else
           node "ui-page" [style [("left", "100%")]] [page]
   in
-    node "ui-pager" [] (List.map updatedPage pages)
+    node
+      "ui-pager"
+      [ style [ ("width", model.width)
+              , ("height", model.height)
+              ]
+      ]
+      (List.map updatedPage pages)
 
 select : Int -> Model -> (Model, Effects.Effects Action)
 select page model =

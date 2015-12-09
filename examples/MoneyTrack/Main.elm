@@ -87,8 +87,7 @@ view address model =
 
 dashboard address model =
   div []
-    [ text (toString (balance model.store.accounts))
-    , div [onClick address (SelectPage 1)] [text "Form"]
+    [ div [onClick address (SelectPage 1)] [text "Form"]
     ]
 
 form address model =

@@ -110,17 +110,27 @@ update action model =
 
 view : Signal.Address Action -> ViewModel -> Model -> Html.Html
 view address viewModel model =
-  Ui.panel []
-    [ Ui.Container.view { align = "stretch"
-                      , direction = "column"
-                      , compact = False
-                      } []
-      [ Ui.inputGroup "Date" (Ui.DatePicker.view (forwardTo address DatePicker) model.datePicker)
-      , Ui.inputGroup "Account" (Ui.Chooser.view (forwardTo address AccountChooser) model.accountChooser)
-      , Ui.inputGroup "Category" (Ui.Chooser.view (forwardTo address CategoryChooser) model.categoryChooser)
-      , Ui.NumberPad.view
-          (forwardTo address NumberPad)
-          viewModel
-          model.numberPad
+  let
+    datePicker =
+      Ui.DatePicker.viewLazy (forwardTo address DatePicker) model.datePicker
+
+    accountChooser =
+      Ui.Chooser.viewLazy (forwardTo address AccountChooser) model.accountChooser
+
+    categoryChooser =
+      Ui.Chooser.viewLazy (forwardTo address CategoryChooser) model.categoryChooser
+  in
+    Ui.panel []
+      [ Ui.Container.view { align = "stretch"
+                        , direction = "column"
+                        , compact = False
+                        } []
+        [ Ui.inputGroup "Date" datePicker
+        , Ui.inputGroup "Account" accountChooser
+        , Ui.inputGroup "Category" categoryChooser
+        , Ui.NumberPad.viewLazy
+            (forwardTo address NumberPad)
+            viewModel
+            model.numberPad
+        ]
       ]
-    ]

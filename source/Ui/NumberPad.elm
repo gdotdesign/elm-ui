@@ -1,5 +1,5 @@
 module Ui.NumberPad
-  (Model, Action, init, update, ViewModel, view, setValue) where
+  (Model, Action, init, update, ViewModel, view, viewLazy, setValue) where
 
 {-| Number pad component.
 
@@ -7,7 +7,7 @@ module Ui.NumberPad
 @docs Model, Action, init, update
 
 # View
-@docs ViewModel, view
+@docs ViewModel, view, viewLazy
 
 # Functions
 @docs setValue
@@ -16,6 +16,7 @@ import Number.Format exposing (prettyInt)
 import Html.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
+import Html.Lazy
 import String
 import Dict
 
@@ -76,6 +77,11 @@ update action model =
       deleteDigit model
     _ ->
       model
+
+{-| Renders a number pad lazily. -}
+viewLazy : Signal.Address Action -> ViewModel -> Model -> Html.Html
+viewLazy address viewModel model =
+  Html.Lazy.lazy3 view address viewModel model
 
 {-| Renders a number pad. -}
 view : Signal.Address Action -> ViewModel -> Model -> Html.Html

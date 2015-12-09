@@ -6,7 +6,7 @@ module Ui.DatePicker where
 @docs Model, Action, init, update
 
 # View
-@docs view
+@docs view, viewLazy
 
 # Functions
 @docs setValue
@@ -15,6 +15,7 @@ import Html.Attributes exposing (value, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, input)
+import Html.Lazy
 
 import Signal exposing (forwardTo)
 import Native.Browser
@@ -101,6 +102,11 @@ update action model =
           _ -> updatedModel
 
     _ -> model
+
+{-| Renders a date picker lazily. -}
+viewLazy : Signal.Address Action -> Model -> Html.Html
+viewLazy address model =
+  Html.Lazy.lazy2 view address model
 
 {-| Renders a date picker. -}
 view : Signal.Address Action -> Model -> Html.Html

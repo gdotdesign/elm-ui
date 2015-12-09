@@ -106,19 +106,16 @@ update action model =
     App act ->
       ({ model | app = Ui.App.update act model.app }, Effects.none)
     Pager act ->
-      let
-        (pager, effect) = Ui.Pager.update act model.pager
-      in
-        ({ model | pager = pager }, Effects.map Pager effect)
+      ({ model | pager = Ui.Pager.update act model.pager }, Effects.none)
     SelectPage page ->
       let
-        (pager, effect) = Ui.Pager.select page model.pager
+        pager = Ui.Pager.select page model.pager
       in
         case page of
           1 ->
-            ({ model | pager = pager } |> populateForm 0 Ext.Date.now, Effects.map Pager effect)
+            ({ model | pager = pager } |> populateForm 0 Ext.Date.now, Effects.none)
           _ ->
-            ({ model | pager = pager }, Effects.map Pager effect)
+            ({ model | pager = pager }, Effects.none)
     Save ->
       let
         formData = Form.data model.store model.form

@@ -1,53 +1,44 @@
 module Ui.Pager where
 
-import Html.Attributes exposing (style)
+import Html.Extra exposing (onTransitionEnd)
+import Html.Attributes exposing (style, classList)
 import Html exposing (node, text)
 import Time exposing (Time, second)
 import Effects
+import Json.Decode as Json
 import List.Extra
 
-import Ui.Helpers.Animation as Animation exposing (Animation)
-
 type alias Model =
-  { active : Int
-  , next : Int
-  , animation : Animation
+  { left : List Int
+  , center : List Int
+  , active : Int
   , width : String
   , height : String
   }
 
 type Action
   = Animate Time
+  | End Int
+  | Active Int
 
 init : Int -> Model
 init active =
-  { active = active
-  , next = active
-  , animation = Animation.init 100 0 320
+  { left = []
+  , center = []
+  , active = active
   , width = "100vw"
   , height = "100vh"
   }
 
-update : Action -> Model -> (Model, Effects.Effects Action)
+update : Action -> Model -> Model
 update action model =
   case action of
-    Animate clockTime ->
-      let
-        isEnded = Animation.isEnded updatedAnimation
-        updatedAnimation
-          = Animation.update clockTime model.animation
-        effect =
-          if isEnded then
-            Effects.none
-          else
-            Effects.tick Animate
-        active =
-          if isEnded then
-            model.next
-          else
-            model.active
-      in
-        ({ model | animation = updatedAnimation, active = active }, effect)
+    End page ->
+      { model | left = [] }
+    Active page ->
+      { model | center = [], active = page }
+    _ ->
+      model
 
 view : Signal.Address Action -> List Html.Html -> Model -> Html.Html
 view address pages model =
@@ -55,16 +46,24 @@ view address pages model =
     updatedPage page =
       let
         index = Maybe.withDefault -1 (List.Extra.elemIndex page pages)
-      in
-        if index == model.active then
-          if model.animation.running then
-            node "ui-page" [style [("left", (toString -(100 - model.animation.value)) ++ "%")]] [page]
+
+        attributes =
+          if List.member index model.left then
+            [ classList [("animating", True)]
+            , style [("left", "-100%")]
+            , onTransitionEnd address (End index)
+            ]
+          else if List.member index model.center then
+            [ style [("left", "0%")]
+            , classList [("animating", True)]
+            , onTransitionEnd address (Active index)
+            ]
+          else if index == model.active then
+            [ style [("left", "0%")] ]
           else
-            node "ui-page" [style [("left", "0%")]] [page]
-        else if index == model.next then
-          node "ui-page" [style [("left", (toString model.animation.value) ++ "%")]] [page]
-        else
-          node "ui-page" [style [("left", "100%")]] [page]
+            [ style [("left", "100%")] ]
+      in
+        node "ui-page" attributes [page]
   in
     node
       "ui-pager"
@@ -74,6 +73,9 @@ view address pages model =
       ]
       (List.map updatedPage pages)
 
-select : Int -> Model -> (Model, Effects.Effects Action)
+select : Int -> Model -> Model
 select page model =
-  ({ model | next = page, animation = Animation.reset model.animation }, Effects.tick Animate)
+  if model.left == [] && model.center == [] then
+    { model | left = [model.active], center = [page] }
+  else
+    model

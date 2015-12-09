@@ -5,6 +5,24 @@ Object.defineProperty(HTMLElement.prototype, "dimensions", {
   get: function() { return this.getBoundingClientRect() }
 })
 
+Object.defineProperty(HTMLElement.prototype, "ontransitionend", {
+  writeable: false,
+  enumerable: false,
+  configurable: false,
+  set: function(handler) {
+    var h = function(event) {
+      if(event.target != this) return;
+      handler.call(event)
+    }.bind(this)
+    if (this._ontransitionend_hadler) {
+      this.removeEventListener('transitionend', this._ontransitionend_hadler)
+      this._ontransitionend_hadler = null
+    }
+    this.addEventListener('transitionend', h)
+    this._ontransitionend_hadler = h
+  }
+})
+
 Elm.Native.Browser = {};
 Elm.Native.Browser.make = function(elm) {
   elm.Native = elm.Native || {};

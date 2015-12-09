@@ -88,6 +88,11 @@ stopPropagationOptions =
   { stopPropagation = True
   , preventDefault = False }
 
+onTransitionEnd address action =
+  on "transitionend"
+     Json.value
+     (\_ -> Signal.message address action)
+
 onPreventDefault event address action =
   onWithOptions event
                 preventDefaultOptions

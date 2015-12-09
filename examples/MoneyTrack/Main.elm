@@ -6,6 +6,7 @@ import Signal exposing (forwardTo)
 import Task
 import List
 import Storage.Local
+import Html.Extra exposing (onStop)
 import Html.Events exposing (onClick)
 import Html exposing (div, text)
 import Ext.Date
@@ -93,8 +94,8 @@ dashboard address model =
 form address model =
   let
     viewModel =
-      { bottomLeft = div [onClick address (SelectPage 0)] [Ui.icon "close" False []]
-      , bottomRight = div [onClick address Save] [Ui.icon "checkmark" False []]
+      { bottomLeft = div [onStop "mousedown" address (SelectPage 0)] [Ui.icon "close" False []]
+      , bottomRight = div [onStop "mousedown" address Save] [Ui.icon "checkmark" False []]
       }
   in
     Form.view (forwardTo address Form) viewModel model.form

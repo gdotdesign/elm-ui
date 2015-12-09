@@ -27,6 +27,7 @@ type alias Account =
   , transactions : List Transaction
   }
 
+{- Represents a user sessions data. -}
 type alias Store =
   { accounts : List Account
   , categories : List Category

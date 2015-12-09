@@ -1,5 +1,6 @@
 module MoneyTrack.Form where
 
+{- Form for editing / creating transactions. -}
 import Signal exposing (forwardTo)
 import List.Extra
 import Ext.Date
@@ -21,20 +22,20 @@ type Action
   | DatePicker Ui.DatePicker.Action
 
 type alias Model =
-  { numberPad : Ui.NumberPad.Model
-  , categoryChooser : Ui.Chooser.Model
+  { categoryChooser : Ui.Chooser.Model
   , accountChooser : Ui.Chooser.Model
   , datePicker : Ui.DatePicker.Model
+  , numberPad : Ui.NumberPad.Model
   }
 
 type alias ViewModel =
-  { bottomLeft : Html.Html
-  , bottomRight : Html.Html
+  { bottomRight : Html.Html
+  , bottomLeft : Html.Html
   }
 
 type alias Data =
-  { account : Account
-  , category : Category
+  { category : Category
+  , account : Account
   , date : Date.Date
   , comment : String
   , amount : Int
@@ -47,17 +48,13 @@ init =
     accountChooser  = Ui.Chooser.init [] "Account..." ""
     categoryChooser = Ui.Chooser.init [] "Category..." ""
   in
-    { numberPad       = Ui.NumberPad.init 0
-    , categoryChooser = { categoryChooser | closeOnSelect = True }
+    { categoryChooser = { categoryChooser | closeOnSelect = True }
     , accountChooser  = { accountChooser | closeOnSelect = True }
     , datePicker      = { datePicker | closeOnSelect = True }
+    , numberPad       = Ui.NumberPad.init 0
     }
 
-populate : Store
-         -> Int
-         -> Date.Date
-         -> Model
-         -> Model
+populate : Store -> Int -> Date.Date -> Model -> Model
 populate store amount date model =
   let
     mapItem item = { value = item.id, label = item.name }
@@ -69,7 +66,6 @@ populate store amount date model =
             , datePicker = Ui.DatePicker.setValue date model.datePicker
             , numberPad = Ui.NumberPad.setValue amount model.numberPad
             }
-
 
 buildData : Account -> Category -> Int -> Model -> Data
 buildData account category amount model =

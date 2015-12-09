@@ -93,11 +93,12 @@ dashboard address model =
 
 form address model =
   let
-    numberPadView = { bottomLeft = div [onClick address (SelectPage 0)] [Ui.icon "close" False []]
-                    , bottomRight = div [onClick address Save] [Ui.icon "checkmark" False []]
-                    }
+    viewModel =
+      { bottomLeft = div [onClick address (SelectPage 0)] [Ui.icon "close" False []]
+      , bottomRight = div [onClick address Save] [Ui.icon "checkmark" False []]
+      }
   in
-    Form.view (forwardTo address Form) numberPadView model.form
+    Form.view (forwardTo address Form) viewModel model.form
 
 update action model =
   case action of
@@ -113,8 +114,6 @@ update action model =
     SelectPage page ->
       let
         (pager, effect) = Ui.Pager.select page model.pager
-        updatedForm =
-          Form.populate
       in
         case page of
           1 ->

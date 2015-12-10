@@ -5,6 +5,7 @@ import Effects
 import Signal exposing (forwardTo)
 import Task
 import List
+import List.Extra
 import Storage.Local
 import Html.Extra exposing (onStop)
 import Html.Events exposing (onClick)
@@ -14,6 +15,7 @@ import List.Extra
 import Native.Uid
 import Date
 
+import Ui.Charts.Bar
 import Ui.App
 import Ui.Pager
 import Ui
@@ -31,18 +33,9 @@ type Action
   | Load
   | Save
 
-accountBalance : Account -> Int
-accountBalance account =
-  let
-    transactionBalance =
-      List.map .amount account.transactions
-        |> List.foldr (+) 0
-  in
-    account.initialBalance + transactionBalance
-
-balance : List Account -> Int
-balance accounts =
-  List.map accountBalance accounts
+balance : List Transaction -> Int
+balance transactions =
+  List.map .amount transactions
     |> List.foldr (+) 0
 
 initialCategories : List Category
@@ -52,8 +45,33 @@ initialCategories =
   , { id = "2", name = "Food", icon = "android-cart" }
   ]
 
+categoryChart model =
+  let
+    mapGroup group =
+      let
+        first = List.Extra.find (\_ -> True) group
+        value = List.foldr (+) 0 (List.map .amount group)
+      in
+        case first of
+          Just item ->
+            { label = item.categoryId, value = value }
+          _ -> { label = "unknownd", value = value}
+
+  in
+    List.sortBy .categoryId model.transactions
+      |> List.Extra.groupBy (\a b -> a.categoryId == b.categoryId)
+      |> List.map mapGroup
+
 populateForm date amount model =
   { model | form = Form.populate model.store date amount model.form }
+
+type alias Model =
+  { app : Ui.App.Model
+  , pager : Ui.Pager.Model
+  , form : Form.Model
+  , data : String
+  , store : Store
+  }
 
 init =
   ({ app = Ui.App.init
@@ -61,17 +79,16 @@ init =
    , form = Form.init
    , data = ""
    , store = { categories = initialCategories
+             , transactions = []
              , accounts = [ { id = "0"
                             , initialBalance = 0
                             , name = "Bank Card"
                             , icon = ""
-                            , transactions = []
                             }
                           , { id = "1"
                             , initialBalance = 0
                             , name = "Cash"
                             , icon = ""
-                            , transactions = []
                             }
                           ]
              }
@@ -88,7 +105,8 @@ view address model =
 
 dashboard address model =
   div []
-    [ div [onClick address (SelectPage 1)] [text "Form"]
+    [ Ui.Charts.Bar.view address { items = categoryChart model.store }
+    , div [onClick address (SelectPage 1)] [text "Form"]
     ]
 
 form address model =
@@ -121,29 +139,23 @@ update action model =
       let
         formData = Form.data model.store model.form
 
-        updatedAccount item data =
-          let
-            transaction = { id = Native.Uid.uid Nothing
-                          , amount = data.amount
-                          , date = data.date
-                          , category = data.category
-                          , comment = data.comment
-                          }
-          in
-            if data.account == item then
-              { item | transactions = item.transactions ++ [transaction] }
-            else
-              item
-
-        (updatedAccounts, effect) =
-          case formData of
-            Just data ->
-              ( List.map (\account -> updatedAccount account data ) model.store.accounts
-              , Effects.task (Task.succeed (SelectPage 0)))
-            _ -> (model.store.accounts, Effects.none)
+        transaction data =
+          { id = Native.Uid.uid Nothing
+          , amount = data.amount
+          , date = data.date
+          , categoryId = data.categoryId
+          , accountId = data.accountId
+          , comment = data.comment
+          }
 
         updatedStore store =
-          { store | accounts = updatedAccounts }
+          { store | transactions = transactions }
+
+        (transactions, effect) =
+          case formData of
+            Just data ->
+              (model.store.transactions ++ [transaction data], Effects.task (Task.succeed (SelectPage 0)))
+            _ -> (model.store.transactions, Effects.none)
       in
         ({ model | store = updatedStore model.store }, effect)
     Load ->

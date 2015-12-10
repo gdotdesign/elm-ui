@@ -7,7 +7,8 @@ type alias Transaction =
   { id : String
   , amount : Int
   , comment : String
-  , category : Category
+  , categoryId : String
+  , accountId : String
   , date : Date.Date
   }
 
@@ -24,11 +25,11 @@ type alias Account =
   , initialBalance: Int
   , name : String
   , icon : String
-  , transactions : List Transaction
   }
 
 {- Represents a user sessions data. -}
 type alias Store =
   { accounts : List Account
   , categories : List Category
+  , transactions : List Transaction
   }

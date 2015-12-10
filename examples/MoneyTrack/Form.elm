@@ -34,8 +34,8 @@ type alias ViewModel =
   }
 
 type alias Data =
-  { category : Category
-  , account : Account
+  { categoryId : String
+  , accountId : String
   , date : Date.Date
   , comment : String
   , amount : Int
@@ -69,11 +69,11 @@ populate store amount date model =
 
 buildData : Account -> Category -> Int -> Model -> Data
 buildData account category amount model =
-  { category = category
-  , account  = account
-  , date     = model.datePicker.calendar.value
-  , amount   = amount
-  , comment  = ""
+  { categoryId = category.id
+  , accountId  = account.id
+  , date       = model.datePicker.calendar.value
+  , amount     = amount
+  , comment    = ""
   }
 
 data : Store -> Model -> Maybe Data

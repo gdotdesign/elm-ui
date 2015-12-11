@@ -60,9 +60,18 @@ populate store amount date model =
     mapItem item = { value = item.id, label = item.name }
     categories = List.map mapItem store.categories
     accounts = List.map mapItem store.accounts
+
+    updatedChooser data chooser =
+      Ui.Chooser.updateData data chooser
+        |> selectFirst
+
+    selectFirst chooser =
+      case Ui.Chooser.getFirstSelected chooser of
+        Just value -> chooser
+        _ -> Ui.Chooser.selectFirst chooser
   in
-    { model | categoryChooser = Ui.Chooser.updateData categories model.categoryChooser
-            , accountChooser  = Ui.Chooser.updateData accounts model.accountChooser
+    { model | categoryChooser = updatedChooser categories model.categoryChooser
+            , accountChooser  = updatedChooser accounts model.accountChooser
             , datePicker = Ui.DatePicker.setValue date model.datePicker
             , numberPad = Ui.NumberPad.setValue amount model.numberPad
             }

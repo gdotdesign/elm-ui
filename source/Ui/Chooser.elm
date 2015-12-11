@@ -1,6 +1,6 @@
 module Ui.Chooser
   (Model, Item, Action, init, update, close, toggleItem,
-   getFirstSelected, view, viewLazy, updateData) where
+   getFirstSelected, view, viewLazy, updateData, selectFirst) where
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
@@ -12,7 +12,7 @@ form a list of choises, with lots of options.
 @docs view, viewLazy
 
 # Functions
-@docs toggleItem, close, getFirstSelected, updateData
+@docs toggleItem, close, getFirstSelected, updateData, selectFirst
 -}
 import Html.Attributes exposing (value, placeholder, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick, onMouseDown)
@@ -24,8 +24,11 @@ import Set exposing (Set)
 import Native.Browser
 import String
 import Regex
+import List.Extra
 import List
 import Dict
+
+import Debug exposing (log)
 
 import Ui.Helpers.Intendable as Intendable
 import Ui.Helpers.Dropdown as Dropdown
@@ -90,20 +93,23 @@ type Action
 -}
 init : List Item -> String -> String -> Model
 init data placeholder value =
-  { data = data
-  , searchable = False
-  , closeOnSelect = False
-  , placeholder = placeholder
-  , value = ""
-  , selected = Set.singleton value
-  , open = False
-  , deselectable = False
-  , multiple = False
-  , intended = ""
-  , disabled = False
-  , render = (\item -> div [] [text item.label])
-  }
-    |> intendFirst
+  let
+    selected = if value == "" then Set.empty else Set.singleton value
+  in
+    { data = data
+    , searchable = False
+    , closeOnSelect = False
+    , placeholder = placeholder
+    , value = ""
+    , selected = selected
+    , open = False
+    , deselectable = False
+    , multiple = False
+    , intended = ""
+    , disabled = False
+    , render = (\item -> div [] [text item.label])
+    }
+      |> intendFirst
 
 {-| Updates a chooser. -}
 update : Action -> Model -> Model
@@ -213,6 +219,16 @@ getFirstSelected model =
 updateData : List Item -> Model -> Model
 updateData data model =
   { model | data = data }
+
+{-| Selects the first item if available. -}
+selectFirst : Model -> Model
+selectFirst model =
+  let
+    first = List.Extra.find (\_ -> True) model.data
+  in
+    case first of
+      Just item -> { model | selected = Set.singleton item.value }
+      _ -> model
 
 {- ========================= PRIVATE ========================= -}
 

@@ -12,6 +12,8 @@ import Html.Events exposing (onClick)
 import Html exposing (div, text)
 import Ext.Date
 import List.Extra
+import Json.Encode
+import Json.Decode as Json
 import Native.Uid
 import Date
 
@@ -119,6 +121,16 @@ form address model =
     Form.view (forwardTo address Form) viewModel model.form
 
 update action model =
+  let
+    (updatedModel, effect) = update' action model
+  in
+    (updatedModel |> saveStore, effect)
+
+saveStore model =
+  case Storage.Local.setItem "moneytrack-data" (Json.Encode.encode 0 (storeEncoder model.store)) of
+    _ -> model
+
+update' action model =
   case action of
     Form act ->
       ({ model | form = Form.update act model.form }, Effects.none)
@@ -160,7 +172,14 @@ update action model =
         ({ model | store = updatedStore model.store }, effect)
     Load ->
       case (Storage.Local.getItem "moneytrack-data") of
-        Ok data -> ({ model | data = data }, Effects.none)
+        Ok data ->
+          let
+            store =
+              case Json.decodeString storeDecoder data of
+                Ok s -> s
+                Err msg -> log msg model.store
+          in
+            ({ model | store = store }, Effects.none)
         Err msg -> (model, Effects.none)
 
 app =

@@ -19,7 +19,7 @@ Elm.Native.LocalStorage.make = function(elm) {
 
   function set(key, value){
     try {
-      window.localStorage.setItem(key, vlaue);
+      window.localStorage.setItem(key, value);
       return Result.Ok(value);
     } catch (e) {
       return Result.Err("Could not write to local storage!")

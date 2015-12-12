@@ -32,21 +32,21 @@
 }
 
 * {
--webkit-touch-callout: none;
--webkit-user-select: none;
--khtml-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 input, textarea {
--webkit-touch-callout: text;
--webkit-user-select: text;
--khtml-user-select: text;
--moz-user-select: text;
--ms-user-select: text;
-user-select: text;
+  -webkit-touch-callout: text;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 html {
@@ -94,7 +94,7 @@ ui-input-group {
   display: flex;
 
   ui-input-group-label {
-    background: dampen($input, 2%);
+    background: $secondary;
     font-weight: 600;
     padding: 0 15px;
     display: flex;
@@ -119,7 +119,7 @@ ui-barchart {
   align-items: flex-end;
   display: flex;
   height: 200px;
-  padding: 20px;
+  padding: 20px 0;
   padding-bottom: 30px;
   position: relative;
 
@@ -183,5 +183,16 @@ ui-barchart {
       overflow: hidden;
       display: block;
     }
+  }
+}
+
+/* Examples */
+.money-track-form {
+  height: 100%;
+  display: flex;
+
+  > ui-container { flex: 1 };
+  ui-number-pad {
+    flex: 1;
   }
 }

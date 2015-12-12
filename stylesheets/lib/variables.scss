@@ -1,16 +1,16 @@
 $border-color: rgba(#000, 0.1);
-$color: red;
+$color: #0278AE;
 $danger: #D1573C;
 $success: #0BC449;
 $warning: #F79C00;
 $danger: orangered;
-$input: hsl(20, 30%, 99.5%);
+$input: mix($color, #FFF, 1%);
 $disabled: desaturate(dampen($input, 20%), 60%);
-$secondary: dampen($input, 15%);
+$secondary: mix($color, #EFEFEF, 3%);
 
-$background: #F3EBE8;
+$background: mix($color, #FCFCFC, 3%);
 $border-radius: 3px;
-$border: 0 solid transparent;
+$border: 1px solid $secondary;
 $focus: dampen($color, 30%);
 
 $focus-shadow: 0 0 0 1px $focus inset, 0 0 4px rgba($focus, 0.5), 0 0 4px rgba($focus, 0.5) inset;

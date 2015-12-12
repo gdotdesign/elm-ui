@@ -7,16 +7,20 @@ import Task
 import List
 import List.Extra
 import Storage.Local
+import Html.Attributes exposing (style)
 import Html.Extra exposing (onStop)
 import Html.Events exposing (onClick)
 import Html exposing (div, text)
 import Ext.Date
+import Date.Format exposing (format)
 import List.Extra
 import Json.Encode
 import Json.Decode as Json
+import Number.Format exposing (prettyInt)
 import Native.Uid
 import Date
 
+import Ui.Container
 import Ui.Charts.Bar
 import Ui.App
 import Ui.Pager
@@ -33,11 +37,14 @@ type Action
   | Form Form.Action
   | SelectPage Int
   | Load
+  | NextDate
+  | PreviousDate
   | Save
 
-balance : List Transaction -> Int
-balance transactions =
-  List.map .amount transactions
+spendingInMonth : Date.Date -> List Transaction -> Int
+spendingInMonth date transactions =
+  List.filter (\transaction -> Ext.Date.isSameMonth transaction.date date) transactions
+    |> List.map .amount
     |> List.foldr (+) 0
 
 initialCategories : List Category
@@ -47,7 +54,7 @@ initialCategories =
   , { id = "2", name = "Food", icon = "android-cart" }
   ]
 
-categoryChart model =
+categoryChart date model =
   let
     mapGroup group =
       let
@@ -60,7 +67,8 @@ categoryChart model =
           _ -> { label = "unknownd", value = value}
 
   in
-    List.sortBy .categoryId model.transactions
+    List.filter (\transaction -> Ext.Date.isSameMonth transaction.date date) model.transactions
+      |> List.sortBy .categoryId
       |> List.Extra.groupBy (\a b -> a.categoryId == b.categoryId)
       |> List.map mapGroup
 
@@ -79,6 +87,7 @@ init =
   ({ app = Ui.App.init
    , pager = Ui.Pager.init 0
    , form = Form.init
+   , date = Ext.Date.now
    , data = ""
    , store = { categories = initialCategories
              , transactions = []
@@ -106,10 +115,31 @@ view address model =
     ]
 
 dashboard address model =
-  div []
-    [ Ui.Charts.Bar.view address { items = categoryChart model.store }
-    , div [onClick address (SelectPage 1)] [text "Form"]
-    ]
+  let
+    spending = prettyInt ',' (spendingInMonth model.date model.store.transactions)
+  in
+    Ui.panel []
+      [ Ui.Container.view { align = "stretch"
+                          , direction = "column"
+                          , compact = False
+                          } []
+        [ Ui.Container.view { align = "stretch"
+                            , direction = "row"
+                            , compact = False
+                            } []
+            [ Ui.icon "chevron-left" False [onClick address PreviousDate]
+            , div [style [("text-align", "center"),("flex", "1")]] [text (format "%B, %Y" model.date)]
+            , Ui.icon "chevron-right" False [onClick address NextDate]
+            ]
+        , div [ style [ ("text-align", "center")
+                      , ("font-size", "30px")
+                      ]
+              ]
+          [text spending]
+        , Ui.Charts.Bar.view address { items = categoryChart model.date model.store }
+        , div [onClick address (SelectPage 1)] [text "Form"]
+        ]
+      ]
 
 form address model =
   let
@@ -136,6 +166,10 @@ update' action model =
       ({ model | form = Form.update act model.form }, Effects.none)
     App act ->
       ({ model | app = Ui.App.update act model.app }, Effects.none)
+    NextDate ->
+      ({ model | date = Ext.Date.nextMonth model.date }, Effects.none)
+    PreviousDate ->
+      ({ model | date = Ext.Date.previousMonth model.date }, Effects.none)
     Pager act ->
       ({ model | pager = Ui.Pager.update act model.pager }, Effects.none)
     SelectPage page ->

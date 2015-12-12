@@ -50,7 +50,7 @@ ui-calendar {
     margin: 4px;
 
     &.inactive {
-      opacity: 0.2;
+      opacity: 0.25;
     }
 
     &:not(.inactive):hover {
@@ -60,7 +60,7 @@ ui-calendar {
     }
 
     &:not(:empty) {
-      background: dampen($input, 4%);
+      background: $secondary;
       border-radius: $border-radius;
     }
 

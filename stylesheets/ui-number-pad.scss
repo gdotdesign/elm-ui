@@ -1,5 +1,6 @@
 ui-number-pad {
-  display: block;
+  display: flex;
+  flex-direction: column;
 
   ui-number-pad-value {
     display: flex;
@@ -8,6 +9,7 @@ ui-number-pad {
     padding: 10px 15px;
     margin-bottom: 10px;
     border-radius: $border-radius;
+    border: $border;
 
     span {
       font-size: 24px;
@@ -24,10 +26,10 @@ ui-number-pad {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    flex: 1;
 
     ui-number-pad-button {
       width: calc((100% - 20px) / 3);
-      height: 60px;
       margin-bottom: 10px;
       display: flex;
       justify-content: center;
@@ -41,13 +43,18 @@ ui-number-pad {
       font-weight: 600;
 
       transition: 300ms;
+      position: relative;
 
-      div {
-        width: 100%;
-        height: inherit;
+      > * {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+
         display: flex;
-
-        > * { flex: 1 }
+        justify-content: center;
+        align-items: center;
       }
 
       &:active {

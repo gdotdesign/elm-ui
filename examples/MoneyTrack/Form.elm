@@ -4,6 +4,7 @@ module MoneyTrack.Form where
 import Signal exposing (forwardTo)
 import List.Extra
 import Ext.Date
+import Html.Attributes exposing (classList)
 import Html
 import Date
 
@@ -129,7 +130,7 @@ view address viewModel model =
     categoryChooser =
       Ui.Chooser.viewLazy (forwardTo address CategoryChooser) model.categoryChooser
   in
-    Ui.panel []
+    Ui.panel [classList [("money-track-form", True)]]
       [ Ui.Container.view { align = "stretch"
                         , direction = "column"
                         , compact = False

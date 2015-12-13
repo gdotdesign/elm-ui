@@ -45,6 +45,10 @@ ui-number-pad {
       transition: 300ms;
       position: relative;
 
+      &:nth-child(n+10) {
+        margin-bottom: 0;
+      }
+
       > * {
         position: absolute;
         bottom: 0;

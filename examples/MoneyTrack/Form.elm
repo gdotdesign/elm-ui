@@ -5,7 +5,7 @@ import Signal exposing (forwardTo)
 import List.Extra
 import Ext.Date
 import Html.Attributes exposing (classList)
-import Html
+import Html exposing (text)
 import Date
 
 import Ui.NumberPad
@@ -32,6 +32,7 @@ type alias Model =
 type alias ViewModel =
   { bottomRight : Html.Html
   , bottomLeft : Html.Html
+  , backHandler : Html.Attribute
   }
 
 type alias Data =
@@ -130,17 +131,28 @@ view address viewModel model =
     categoryChooser =
       Ui.Chooser.viewLazy (forwardTo address CategoryChooser) model.categoryChooser
   in
-    Ui.panel [classList [("money-track-form", True)]]
-      [ Ui.Container.view { align = "stretch"
-                        , direction = "column"
-                        , compact = False
-                        } []
-        [ Ui.inputGroup "Date" datePicker
-        , Ui.inputGroup "Account" accountChooser
-        , Ui.inputGroup "Category" categoryChooser
-        , Ui.NumberPad.viewLazy
-            (forwardTo address NumberPad)
-            viewModel
-            model.numberPad
+    Ui.Container.view { align = "stretch"
+                      , direction = "column"
+                      , compact = True
+                      } []
+      [ Ui.header []
+        [ Ui.icon "android-arrow-back" False [viewModel.backHandler]
+        , Ui.headerTitle [] [text "Edit Transaction"]
+        ]
+      , Ui.panel [classList [("money-track-form", True)]]
+        [ Ui.Container.view { align = "stretch"
+                          , direction = "column"
+                          , compact = False
+                          } []
+          [ Ui.inputGroup "Date" datePicker
+          , Ui.inputGroup "Account" accountChooser
+          , Ui.inputGroup "Category" categoryChooser
+          , Ui.NumberPad.viewLazy
+              (forwardTo address NumberPad)
+              { bottomLeft = viewModel.bottomLeft
+              , bottomRight = viewModel.bottomRight
+              }
+              model.numberPad
+          ]
         ]
       ]

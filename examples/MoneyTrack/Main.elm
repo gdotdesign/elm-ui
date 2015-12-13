@@ -7,10 +7,10 @@ import Task
 import List
 import List.Extra
 import Storage.Local
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, classList)
 import Html.Extra exposing (onStop)
 import Html.Events exposing (onClick)
-import Html exposing (div, text)
+import Html exposing (div, text, node)
 import Ext.Date
 import Date.Format exposing (format)
 import List.Extra
@@ -19,6 +19,7 @@ import Json.Decode as Json
 import Number.Format exposing (prettyInt)
 import Native.Uid
 import Date
+import Window
 
 import Ui.Container
 import Ui.Charts.Bar
@@ -40,6 +41,7 @@ type Action
   | NextDate
   | PreviousDate
   | Save
+  | Width Int
 
 spendingInMonth : Date.Date -> List Transaction -> Int
 spendingInMonth date transactions =
@@ -89,6 +91,7 @@ init =
    , form = Form.init
    , date = Ext.Date.now
    , data = ""
+   , width = 0
    , store = { categories = initialCategories
              , transactions = []
              , accounts = [ { id = "0"
@@ -106,38 +109,66 @@ init =
    }, Effects.task (Task.succeed Load))
 
 view address model =
-  Ui.App.view (forwardTo address App) model.app
-    [ Ui.Pager.view (forwardTo address Pager)
-      [ dashboard address model
-      , form address model
+  let
+    app =
+      div [classList [("money-track", True)]]
+        [ Ui.Pager.view (forwardTo address Pager)
+            [ dashboard address model
+            , form address model
+            , settings address model
+            ]
+            model.pager
+        ]
+    app2 = if model.width < 700 then app else node "ui-mobile" [] [app]
+  in
+    Ui.App.view (forwardTo address App) model.app [app2]
+
+settings address model =
+  Ui.Container.view { align = "stretch"
+                    , direction = "column"
+                    , compact = True
+                    } []
+    [ Ui.header []
+      [ Ui.icon "android-arrow-back" False [onClick address (SelectPage 0)]
+      , Ui.headerTitle [] [text "Settings"]
       ]
-      model.pager
+    , div [] [text "a"]
     ]
 
 dashboard address model =
   let
     spending = prettyInt ',' (spendingInMonth model.date model.store.transactions)
   in
-    Ui.panel []
-      [ Ui.Container.view { align = "stretch"
-                          , direction = "column"
-                          , compact = False
-                          } []
+    Ui.Container.view { align = "stretch"
+                      , direction = "column"
+                      , compact = True
+                      } []
+      [ Ui.header []
+        [ Ui.headerTitle [] [text "MoneyTrack"]
+        , Ui.spacer
+        , Ui.icon "android-options" False [onClick address (SelectPage 2)]
+        ]
+      , Ui.panel []
         [ Ui.Container.view { align = "stretch"
-                            , direction = "row"
+                            , direction = "column"
                             , compact = False
                             } []
-            [ Ui.icon "chevron-left" False [onClick address PreviousDate]
-            , div [style [("text-align", "center"),("flex", "1")]] [text (format "%B, %Y" model.date)]
-            , Ui.icon "chevron-right" False [onClick address NextDate]
-            ]
-        , div [ style [ ("text-align", "center")
-                      , ("font-size", "30px")
-                      ]
+          [ Ui.Container.view { align = "stretch"
+                              , direction = "row"
+                              , compact = False
+                              } []
+              [ Ui.icon "chevron-left" False [onClick address PreviousDate]
+              , div [style [("text-align", "center"),("flex", "1")]] [text (format "%B, %Y" model.date)]
+              , Ui.icon "chevron-right" False [onClick address NextDate]
               ]
-          [text spending]
-        , Ui.Charts.Bar.view address { items = categoryChart model.date model.store }
-        , div [onClick address (SelectPage 1)] [text "Form"]
+          , div [ style [ ("text-align", "center")
+                        , ("font-size", "30px")
+                        ]
+                ]
+            [text spending]
+          , Ui.Charts.Bar.view address { items = categoryChart model.date model.store }
+          , div [onClick address (SelectPage 1)] [text "Form"]
+          ]
         ]
       ]
 
@@ -146,6 +177,7 @@ form address model =
     viewModel =
       { bottomLeft = div [onStop "mousedown" address (SelectPage 0)] [Ui.icon "close" False []]
       , bottomRight = div [onStop "mousedown" address Save] [Ui.icon "checkmark" False []]
+      , backHandler = onStop "mousedown" address (SelectPage 0)
       }
   in
     Form.view (forwardTo address Form) viewModel model.form
@@ -172,6 +204,8 @@ update' action model =
       ({ model | date = Ext.Date.previousMonth model.date }, Effects.none)
     Pager act ->
       ({ model | pager = Ui.Pager.update act model.pager }, Effects.none)
+    Width width ->
+      ({ model | width = width }, Effects.none)
     SelectPage page ->
       let
         pager = Ui.Pager.select page model.pager
@@ -220,7 +254,7 @@ app =
   StartApp.start { init = init
                  , view = view
                  , update = update
-                 , inputs = [] }
+                 , inputs = [Signal.map Width Window.width] }
 
 main =
   app.html

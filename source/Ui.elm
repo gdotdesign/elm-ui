@@ -1,11 +1,12 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
-   stylesheetLink, tabIndex) where
+   stylesheetLink, tabIndex, header, headerTitle) where
 
 {-| UI Library for ELM!
 
 # Static Components
-@docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup
+@docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup, header
+@docs headerTitle
 
 # Helper Functions
 @docs tabIndex
@@ -65,3 +66,13 @@ tabIndex model =
 spacer : Html.Html
 spacer =
   node "ui-spacer" [] []
+
+{-| Renders a header element. -}
+header : List Html.Attribute -> List Html.Html -> Html.Html
+header attributes children =
+  node "ui-header" attributes children
+
+{-| Renders a header title element. -}
+headerTitle : List Html.Attribute -> List Html.Html -> Html.Html
+headerTitle attributes children =
+  node "ui-header-title" attributes children

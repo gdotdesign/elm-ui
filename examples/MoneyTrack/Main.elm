@@ -22,7 +22,6 @@ import Date
 import Window
 
 import Ui.Container
-import Ui.Charts.Bar
 import Ui.App
 import Ui.Pager
 import Ui
@@ -30,24 +29,18 @@ import Ui
 import Debug exposing (log)
 
 import MoneyTrack.Types as Types exposing (..)
+import MoneyTrack.Dashboard as Dashboard
 import MoneyTrack.Form as Form
 
 type Action
   = App Ui.App.Action
   | Pager Ui.Pager.Action
+  | Dashboard Dashboard.Action
   | Form Form.Action
   | SelectPage Int
   | Load
-  | NextDate
-  | PreviousDate
   | Save
   | Width Int
-
-spendingInMonth : Date.Date -> List Transaction -> Int
-spendingInMonth date transactions =
-  List.filter (\transaction -> Ext.Date.isSameMonth transaction.date date) transactions
-    |> List.map .amount
-    |> List.foldr (+) 0
 
 initialCategories : List Category
 initialCategories =
@@ -55,24 +48,6 @@ initialCategories =
   , { id = "1", name = "Transportation", icon = "android-bus" }
   , { id = "2", name = "Food", icon = "android-cart" }
   ]
-
-categoryChart date model =
-  let
-    mapGroup group =
-      let
-        first = List.Extra.find (\_ -> True) group
-        value = List.foldr (+) 0 (List.map .amount group)
-      in
-        case first of
-          Just item ->
-            { label = item.categoryId, value = value }
-          _ -> { label = "unknownd", value = value}
-
-  in
-    List.filter (\transaction -> Ext.Date.isSameMonth transaction.date date) model.transactions
-      |> List.sortBy .categoryId
-      |> List.Extra.groupBy (\a b -> a.categoryId == b.categoryId)
-      |> List.map mapGroup
 
 populateForm date amount model =
   { model | form = Form.populate model.store date amount model.form }
@@ -88,9 +63,8 @@ type alias Model =
 init =
   ({ app = Ui.App.init
    , pager = Ui.Pager.init 0
+   , dashboard = Dashboard.init
    , form = Form.init
-   , date = Ext.Date.now
-   , data = ""
    , width = 0
    , store = { categories = initialCategories
              , transactions = []
@@ -137,40 +111,13 @@ settings address model =
 
 dashboard address model =
   let
-    spending = prettyInt ',' (spendingInMonth model.date model.store.transactions)
+    viewModel =
+      { optionsHandler = onStop "mousedown" address (SelectPage 2)
+      , formHandler = onStop "mousedown" address (SelectPage 1)
+      , transactions = model.store.transactions
+      }
   in
-    Ui.Container.view { align = "stretch"
-                      , direction = "column"
-                      , compact = True
-                      } []
-      [ Ui.header []
-        [ Ui.headerTitle [] [text "MoneyTrack"]
-        , Ui.spacer
-        , Ui.icon "android-options" False [onClick address (SelectPage 2)]
-        ]
-      , Ui.panel []
-        [ Ui.Container.view { align = "stretch"
-                            , direction = "column"
-                            , compact = False
-                            } []
-          [ Ui.Container.view { align = "stretch"
-                              , direction = "row"
-                              , compact = False
-                              } []
-              [ Ui.icon "chevron-left" False [onClick address PreviousDate]
-              , div [style [("text-align", "center"),("flex", "1")]] [text (format "%B, %Y" model.date)]
-              , Ui.icon "chevron-right" False [onClick address NextDate]
-              ]
-          , div [ style [ ("text-align", "center")
-                        , ("font-size", "30px")
-                        ]
-                ]
-            [text spending]
-          , Ui.Charts.Bar.view address { items = categoryChart model.date model.store }
-          , div [onClick address (SelectPage 1)] [text "Form"]
-          ]
-        ]
-      ]
+    Dashboard.view (forwardTo address Dashboard) viewModel model.dashboard
 
 form address model =
   let
@@ -196,12 +143,10 @@ update' action model =
   case action of
     Form act ->
       ({ model | form = Form.update act model.form }, Effects.none)
+    Dashboard act ->
+      ({ model | dashboard = Dashboard.update act model.dashboard }, Effects.none)
     App act ->
       ({ model | app = Ui.App.update act model.app }, Effects.none)
-    NextDate ->
-      ({ model | date = Ext.Date.nextMonth model.date }, Effects.none)
-    PreviousDate ->
-      ({ model | date = Ext.Date.previousMonth model.date }, Effects.none)
     Pager act ->
       ({ model | pager = Ui.Pager.update act model.pager }, Effects.none)
     Width width ->

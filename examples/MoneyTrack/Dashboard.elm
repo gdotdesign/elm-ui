@@ -32,10 +32,9 @@ type Action
 init =
   { date = Ext.Date.now }
 
-spendingInMonth : Date.Date -> List Transaction -> Int
-spendingInMonth date transactions =
-  List.filter (\transaction -> Ext.Date.isSameMonth transaction.date date) transactions
-    |> List.map .amount
+spendingInMonth : List Transaction -> Int
+spendingInMonth transactions =
+  List.map .amount transactions
     |> List.foldr (+) 0
 
 categoryChart : List Transaction -> List Ui.Charts.Bar.Item
@@ -49,11 +48,10 @@ categoryChart transactions =
         case first of
           Just item ->
             { label = item.categoryId, value = value }
-          _ -> { label = "unknown", value = value}
+          _ -> { label = "Unknown", value = value}
 
   in
-    transactions
-      |> List.sortBy .categoryId
+    List.sortBy .categoryId transactions
       |> List.Extra.groupBy (\a b -> a.categoryId == b.categoryId)
       |> List.map mapGroup
 
@@ -68,8 +66,15 @@ update action model =
 view: Signal.Address Action -> ViewModel -> Model -> Html.Html
 view address viewModel model =
   let
-    transactions = List.filter (\transaction -> Ext.Date.isSameMonth transaction.date model.date) viewModel.transactions
-    spending = prettyInt ',' (spendingInMonth model.date viewModel.transactions)
+    {- Transactions in the selected month. -}
+    transactions =
+      List.filter
+        (\transaction -> Ext.Date.isSameMonth transaction.date model.date)
+        viewModel.transactions
+
+    {- Spending in the selected month. -}
+    spending =
+      prettyInt ',' (spendingInMonth viewModel.transactions)
   in
     Ui.Container.view { align = "stretch"
                       , direction = "column"
@@ -89,14 +94,20 @@ view address viewModel model =
                               , direction = "row"
                               , compact = False
                               } []
-              [ Ui.icon "chevron-left" False [onClick address PreviousDate]
-              , div [style [("text-align", "center"),("flex", "1")]] [text (format "%B, %Y" model.date)]
-              , Ui.icon "chevron-right" False [onClick address NextDate]
-              ]
-          , div [ style [ ("text-align", "center")
-                        , ("font-size", "30px")
+              [ Ui.icon "chevron-left" True [onClick address PreviousDate]
+              , div
+                [ style [ ("text-align", "center")
+                        , ("flex", "1")
                         ]
                 ]
+                [text (format "%B, %Y" model.date)]
+              , Ui.icon "chevron-right" True [onClick address NextDate]
+              ]
+          , div
+            [ style [ ("text-align", "center")
+                    , ("font-size", "30px")
+                    ]
+            ]
             [text spending]
           , Ui.Charts.Bar.view address { items = categoryChart transactions }
           , div [viewModel.formHandler] [text "Form"]

@@ -4,21 +4,17 @@ import StartApp
 import Effects
 import Signal exposing (forwardTo)
 import Task
-import List
-import List.Extra
 import Storage.Local
-import Html.Attributes exposing (style, classList)
+import Ext.Date
+
+import Html.Attributes exposing (classList)
 import Html.Extra exposing (onStop)
 import Html.Events exposing (onClick)
 import Html exposing (div, text, node)
-import Ext.Date
-import Date.Format exposing (format)
-import List.Extra
+
 import Json.Encode
 import Json.Decode as Json
-import Number.Format exposing (prettyInt)
 import Native.Uid
-import Date
 import Window
 
 import Ui.Container

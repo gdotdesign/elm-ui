@@ -7,6 +7,9 @@ module Ui.Input where
 
 # View
 @docs view
+
+# Functions
+@docs setValue
 -}
 import Html.Attributes exposing (value, spellcheck, placeholder, type')
 import Html.Extra exposing (onInput)
@@ -59,3 +62,7 @@ view address model =
                ]
                []
 
+{-| Sets the value of the model. -}
+setValue : String -> Model -> Model
+setValue value model =
+  { model | value = value }

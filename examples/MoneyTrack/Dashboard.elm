@@ -23,6 +23,7 @@ type alias ViewModel =
   { optionsHandler : Html.Attribute
   , formHandler : Html.Attribute
   , transactions : List Transaction
+  , settings : Settings
   }
 
 type Action
@@ -74,7 +75,9 @@ view address viewModel model =
 
     {- Spending in the selected month. -}
     spending =
-      prettyInt ',' (spendingInMonth viewModel.transactions)
+      (viewModel.settings.prefix ++ " ") ++
+        (prettyInt ',' (spendingInMonth transactions)) ++
+        (" " ++ viewModel.settings.affix)
   in
     Ui.Container.view { align = "stretch"
                       , direction = "column"
@@ -94,15 +97,15 @@ view address viewModel model =
                               , direction = "row"
                               , compact = False
                               } []
-              [ Ui.icon "chevron-left" True [onClick address PreviousDate]
-              , div
-                [ style [ ("text-align", "center")
-                        , ("flex", "1")
-                        ]
-                ]
-                [text (format "%B, %Y" model.date)]
-              , Ui.icon "chevron-right" True [onClick address NextDate]
+            [ Ui.icon "chevron-left" True [onClick address PreviousDate]
+            , div
+              [ style [ ("text-align", "center")
+                      , ("flex", "1")
+                      ]
               ]
+              [text (format "%B, %Y" model.date)]
+            , Ui.icon "chevron-right" True [onClick address NextDate]
+            ]
           , div
             [ style [ ("text-align", "center")
                     , ("font-size", "30px")

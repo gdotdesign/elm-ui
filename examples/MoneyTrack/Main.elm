@@ -26,12 +26,14 @@ import Debug exposing (log)
 
 import MoneyTrack.Types as Types exposing (..)
 import MoneyTrack.Dashboard as Dashboard
+import MoneyTrack.Settings as Settings
 import MoneyTrack.Form as Form
 
 type Action
   = App Ui.App.Action
   | Pager Ui.Pager.Action
   | Dashboard Dashboard.Action
+  | Settings Settings.Action
   | Form Form.Action
   | SelectPage Int
   | Load
@@ -48,22 +50,30 @@ initialCategories =
 populateForm date amount model =
   { model | form = Form.populate model.store date amount model.form }
 
+populateSettings model =
+  { model | settings = Settings.populate model.store.settings model.settings }
+
 type alias Model =
   { app : Ui.App.Model
   , pager : Ui.Pager.Model
+  , dashboard : Dashboard.Model
+  , settings : Settings.Model
   , form : Form.Model
-  , data : String
+  , width : Int
   , store : Store
   }
 
+init : (Model, Effects.Effects Action)
 init =
   ({ app = Ui.App.init
    , pager = Ui.Pager.init 0
    , dashboard = Dashboard.init
+   , settings = Settings.init
    , form = Form.init
    , width = 0
    , store = { categories = initialCategories
              , transactions = []
+             , settings = { prefix = "", affix = "" }
              , accounts = [ { id = "0"
                             , initialBalance = 0
                             , name = "Bank Card"
@@ -94,16 +104,11 @@ view address model =
     Ui.App.view (forwardTo address App) model.app [app2]
 
 settings address model =
-  Ui.Container.view { align = "stretch"
-                    , direction = "column"
-                    , compact = True
-                    } []
-    [ Ui.header []
-      [ Ui.icon "android-arrow-back" False [onClick address (SelectPage 0)]
-      , Ui.headerTitle [] [text "Settings"]
-      ]
-    , div [] [text "a"]
-    ]
+  let
+    viewModel =
+      { backHandler = onClick address (SelectPage 0) }
+  in
+    Settings.view (forwardTo address Settings) viewModel model.settings
 
 dashboard address model =
   let
@@ -111,6 +116,7 @@ dashboard address model =
       { optionsHandler = onStop "mousedown" address (SelectPage 2)
       , formHandler = onStop "mousedown" address (SelectPage 1)
       , transactions = model.store.transactions
+      , settings = model.store.settings
       }
   in
     Dashboard.view (forwardTo address Dashboard) viewModel model.dashboard
@@ -131,6 +137,11 @@ update action model =
   in
     (updatedModel |> saveStore, effect)
 
+updateSettings model =
+  { model | store = updateStoreSettings { affix = model.settings.affix.value
+                                        , prefix = model.settings.prefix.value
+                                        } model.store }
+
 saveStore model =
   case Storage.Local.setItem "moneytrack-data" (Json.Encode.encode 0 (storeEncoder model.store)) of
     _ -> model
@@ -141,6 +152,9 @@ update' action model =
       ({ model | form = Form.update act model.form }, Effects.none)
     Dashboard act ->
       ({ model | dashboard = Dashboard.update act model.dashboard }, Effects.none)
+    Settings act ->
+      ({ model | settings = Settings.update act model.settings }
+         |> updateSettings, Effects.none)
     App act ->
       ({ model | app = Ui.App.update act model.app }, Effects.none)
     Pager act ->
@@ -188,7 +202,7 @@ update' action model =
                 Ok s -> s
                 Err msg -> log msg model.store
           in
-            ({ model | store = store }, Effects.none)
+            ({ model | store = store } |> populateSettings, Effects.none)
         Err msg -> (model, Effects.none)
 
 app =

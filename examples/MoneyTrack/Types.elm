@@ -83,17 +83,39 @@ type alias Store =
   { accounts : List Account
   , categories : List Category
   , transactions : List Transaction
+  , settings : Settings
   }
 
+type alias Settings =
+  { prefix : String
+  , affix : String
+  }
+
+settingsDecoder =
+  Json.object2 Settings
+    ("prefix" := Json.string )
+    ("affix" := Json.string )
+
+settingsEncoder settings =
+  J.object
+    [ ("prefix", J.string settings.prefix)
+    , ("affix", J.string settings.affix)
+    ]
+
 storeDecoder =
-  Json.object3 Store
+  Json.object4 Store
     ("accounts" := Json.list accountDecoder)
     ("categories" := Json.list categoryDecoder)
     ("transactions" := Json.list transactionDecoder)
+    ("settings" := settingsDecoder)
 
 storeEncoder store =
   J.object
     [ ("accounts", J.list (List.map accountEncoder store.accounts) )
     , ("categories", J.list (List.map categoryEncoder store.categories) )
     , ("transactions", J.list (List.map transactionEncoder store.transactions) )
+    , ("settings", settingsEncoder store.settings)
     ]
+
+updateStoreSettings settings store =
+  { store | settings = settings }

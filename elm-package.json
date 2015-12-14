@@ -22,8 +22,10 @@
     "Ui.InplaceInput",
     "Ui.Input",
     "Ui.NumberPad",
+    "Ui.Pager",
     "Ui.Slider",
     "Ui.Textarea",
+    "Ui.Charts.Bar",
     "Ui.Helpers.Dropdown",
     "Ui.Helpers.Intendable"
   ],

@@ -1,13 +1,28 @@
 module Ui.Pager where
 
-import Html.Extra exposing (onTransitionEnd)
+{-| Pager Component.
+
+# Model
+@docs Model, Action, init, update
+
+# View
+@docs view
+
+# Functions
+@docs select
+-}
 import Html.Attributes exposing (style, classList)
-import Html exposing (node, text)
-import Time exposing (Time, second)
-import Effects
-import Json.Decode as Json
+import Html.Extra exposing (onTransitionEnd)
+import Html exposing (node)
 import List.Extra
 
+{-| Representation of a pager.
+  - **left** (internal) - Pages at the left side
+  - **center** (internal) - Pages at the center
+  - **active** (internal) - The active page
+  - **width** - The width of the pager
+  - **height** - The height of the pager
+-}
 type alias Model =
   { left : List Int
   , center : List Int
@@ -16,11 +31,12 @@ type alias Model =
   , height : String
   }
 
+{-| Actions that a pager can take. -}
 type Action
-  = Animate Time
-  | End Int
+  = End Int
   | Active Int
 
+{-| Initailizes a pager with the given page as active. -}
 init : Int -> Model
 init active =
   { left = []
@@ -30,6 +46,7 @@ init active =
   , height = "100vh"
   }
 
+{-| Updates a pager. -}
 update : Action -> Model -> Model
 update action model =
   case action of
@@ -37,9 +54,8 @@ update action model =
       { model | left = [] }
     Active page ->
       { model | center = [], active = page }
-    _ ->
-      model
 
+{-| Renders a pager. -}
 view : Signal.Address Action -> List Html.Html -> Model -> Html.Html
 view address pages model =
   let
@@ -73,6 +89,11 @@ view address pages model =
       ]
       (List.map updatedPage pages)
 
+{-| Selects the page with the given index.
+
+    {- Selects the first page. -}
+    select 0 pager
+-}
 select : Int -> Model -> Model
 select page model =
   if model.left == [] && model.center == [] then

@@ -10,6 +10,8 @@ type alias Item =
 
 type alias Model =
   { items : List Item
+  , affix : String
+  , prefix : String
   }
 
 maxValue model =
@@ -22,6 +24,10 @@ view address model =
 
 renderBar item model =
   let
+    label =
+      (model.prefix ++ " ") ++
+        (toString item.value) ++
+        (" " ++ model.affix)
     percent =
       item.value / (maxValue model) * 100
         |> clamp 0 100
@@ -29,5 +35,5 @@ renderBar item model =
   in
     node "ui-barchart-bar" [title item.label]
       [ node "ui-barchart-bar-inner" [style [("height", percent ++ "%")]]
-        [text (toString item.value)]
+        [text label]
       ]

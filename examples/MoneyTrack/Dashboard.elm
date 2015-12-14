@@ -112,7 +112,10 @@ view address viewModel model =
                     ]
             ]
             [text spending]
-          , Ui.Charts.Bar.view address { items = categoryChart transactions }
+          , Ui.Charts.Bar.view address { items = categoryChart transactions
+                                       , affix = viewModel.settings.affix
+                                       , prefix = viewModel.settings.prefix
+                                       }
           , div [viewModel.formHandler] [text "Form"]
           ]
         ]

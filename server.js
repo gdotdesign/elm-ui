@@ -31,10 +31,10 @@ function renderElm(str) {
   }
 }
 
-function renderHtml(str) {
+function renderHtml(title, str) {
   return `<html>
       <head>
-        <title>Elm-UI Kitchesink</title>
+        <title>${title}</title>
       </head>
       <body>
         <script src='${str}' type='application/javascript'>
@@ -44,31 +44,47 @@ function renderHtml(str) {
     </html>`
 }
 
-/* Serve HTML */
+function renderIframe(title, id) {
+  return `<html>
+            <head>
+              <title>${title}</title>
+              <link rel="stylesheet" href="/index.css"/>
+            </head>
+            <body class="mobile">
+              <div>
+                <iframe src='/html/${id}'></iframe>
+              </div>
+            </body>
+          </html>`
+}
+
 router.get('/', function *(next) {
   this.body = renderHtml('index.js')
 })
 
-/* Serve JS */
 router.get('/index.js', function *(next) {
   this.type = 'text/javascript';
   this.body = yield renderElm('source/kitchensink.elm')
 })
 
-/* Serve CSS */
 router.get('/index.css', function *(next) {
   this.type = 'text/css';
   this.body = yield renderCSS
 })
 
- router.get('/_examples/:id', function *(next){
+router.get('/html/:id', function *(next) {
+  this.type = 'text/html'
+  this.body = renderHtml(this.params.id, `/js/${this.params.id}`)
+})
+
+router.get('/js/:id', function *(next){
   this.type = 'text/javascript';
   this.body = yield renderElm(`examples/${this.params.id}/Main.elm`)
 })
 
 router.get('/examples/:id', function *(next){
   this.type = 'text/html'
-  this.body = renderHtml(`/_examples/${this.params.id}`)
+  this.body = renderIframe(this.params.id, this.params.id)
 })
 
 app

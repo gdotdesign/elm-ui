@@ -38,7 +38,6 @@ type Action
   | SelectPage Int
   | Load
   | Save
-  | Width Int
 
 initialCategories : List Category
 initialCategories =
@@ -59,7 +58,6 @@ type alias Model =
   , dashboard : Dashboard.Model
   , settings : Settings.Model
   , form : Form.Model
-  , width : Int
   , store : Store
   }
 
@@ -70,7 +68,6 @@ init =
    , dashboard = Dashboard.init
    , settings = Settings.init
    , form = Form.init
-   , width = 0
    , store = { categories = initialCategories
              , transactions = []
              , settings = { prefix = "", affix = "" }
@@ -89,19 +86,16 @@ init =
    }, Effects.task (Task.succeed Load))
 
 view address model =
-  let
-    app =
-      div [classList [("money-track", True)]]
-        [ Ui.Pager.view (forwardTo address Pager)
-            [ dashboard address model
-            , form address model
-            , settings address model
-            ]
-            model.pager
-        ]
-    app2 = if model.width < 700 then app else node "ui-mobile" [] [app]
-  in
-    Ui.App.view (forwardTo address App) model.app [app2]
+  Ui.App.view (forwardTo address App) model.app
+    [ div [classList [("money-track", True)]]
+      [ Ui.Pager.view (forwardTo address Pager)
+          [ dashboard address model
+          , form address model
+          , settings address model
+          ]
+          model.pager
+      ]
+    ]
 
 settings address model =
   let
@@ -159,8 +153,6 @@ update' action model =
       ({ model | app = Ui.App.update act model.app }, Effects.none)
     Pager act ->
       ({ model | pager = Ui.Pager.update act model.pager }, Effects.none)
-    Width width ->
-      ({ model | width = width }, Effects.none)
     SelectPage page ->
       let
         pager = Ui.Pager.select page model.pager
@@ -209,7 +201,7 @@ app =
   StartApp.start { init = init
                  , view = view
                  , update = update
-                 , inputs = [Signal.map Width Window.width] }
+                 , inputs = [] }
 
 main =
   app.html

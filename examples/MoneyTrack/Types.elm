@@ -42,6 +42,12 @@ type alias Category =
   , name : String
   }
 
+unkownCategory =
+  { id = ""
+  , icon = ""
+  , name = "Unkown"
+  }
+
 categoryDecoder =
   Json.object3 Category
     ("id" := Json.string)

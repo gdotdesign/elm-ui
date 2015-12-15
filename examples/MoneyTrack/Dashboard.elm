@@ -8,7 +8,7 @@ import Date
 
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
-import Html exposing (div, text)
+import Html exposing (div, text, table, tr, td)
 
 import Ui.Charts.Bar
 import Ui.Container
@@ -23,6 +23,7 @@ type alias ViewModel =
   { optionsHandler : Html.Attribute
   , formHandler : Html.Attribute
   , transactions : List Transaction
+  , categories : List Category
   , settings : Settings
   }
 
@@ -64,6 +65,34 @@ update action model =
     PreviousDate ->
       { model | date = Ext.Date.previousMonth model.date }
 
+renderCategory : Category -> List Transaction -> Html.Html
+renderCategory category transactions =
+  let
+    categoryTransactions =
+      List.filter (\item -> item.categoryId == category.id) transactions
+    sum =
+      List.map .amount categoryTransactions
+        |> List.foldr (+) 0
+  in
+    div [style [("font-size", "20px")
+               ,("margin-bottom", "20px")]]
+      [ Ui.Container.view { align = "stretch"
+                        , direction = "row"
+                        , compact = False
+                        } []
+        [ div [] [text category.name]
+        , div [style [("margin-left", "auto")]] [text (prettyInt ',' sum)]
+        ]
+      , table [style [("margin-left", "10px")]] (List.map renderTransaction categoryTransactions)
+      ]
+
+renderTransaction : Transaction -> Html.Html
+renderTransaction transaction =
+  tr []
+    [ td [] [text (format "%Y-%m-%d" transaction.date)]
+    , td [] [text (prettyInt ',' transaction.amount)]
+    ]
+
 view: Signal.Address Action -> ViewModel -> Model -> Html.Html
 view address viewModel model =
   let
@@ -88,7 +117,7 @@ view address viewModel model =
         , Ui.spacer
         , Ui.icon "android-options" False [viewModel.optionsHandler]
         ]
-      , Ui.panel []
+      , Ui.panel [style [("flex", "1"),("overflow", "auto")]]
         [ Ui.Container.view { align = "stretch"
                             , direction = "column"
                             , compact = False
@@ -117,6 +146,7 @@ view address viewModel model =
                                        , prefix = viewModel.settings.prefix
                                        }
           , div [viewModel.formHandler] [text "Form"]
+          , div [] (List.map (\c -> renderCategory c transactions) viewModel.categories)
           ]
         ]
       ]

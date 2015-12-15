@@ -111,6 +111,7 @@ dashboard address model =
       , formHandler = onStop "mousedown" address (SelectPage 1)
       , transactions = model.store.transactions
       , settings = model.store.settings
+      , categories = model.store.categories
       }
   in
     Dashboard.view (forwardTo address Dashboard) viewModel model.dashboard

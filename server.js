@@ -49,6 +49,7 @@ function renderIframe(title, id) {
             <head>
               <title>${title}</title>
               <link rel="stylesheet" href="/index.css"/>
+              <meta name="viewport" content="width=device-width, initial-scale=1">
             </head>
             <body class="mobile">
               <div>

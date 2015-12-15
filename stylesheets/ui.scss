@@ -200,6 +200,7 @@ ui-header-title {
 
 ui-header {
   display: flex;
+  flex: 0 0 auto;
   color: readable($color);
   background: $color;
   height: 60px;
@@ -215,7 +216,7 @@ ui-header {
 }
 
 @media (max-width: 600px) {
-  div {
+  .mobile > div {
     height: 100%;
 
     iframe {

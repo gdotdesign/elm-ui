@@ -198,11 +198,35 @@ ui-header-title {
   font-weight: 600;
 }
 
+ui-fab {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(dampen($color, 5%), $color);
+  color: readable($color);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 30px;
+  text-shadow: 0 1px 0 dampen-inverse($color, 15%);
+  right: 30px;
+  font-size: 32px;
+  box-shadow: 0 1px 1px mix($color, #FFF, 5%) inset, 0 5px 10px -5px rgba(#000,0.8);
+
+  &:active {
+    background: linear-gradient(dampen(dampen-inverse($color, 15%), 5%), dampen-inverse($color, 15%));
+  }
+}
+
 ui-header {
   display: flex;
   flex: 0 0 auto;
   color: readable($color);
-  background: $color;
+  background: linear-gradient($color, dampen-inverse($color, 5%));
+  text-shadow: 0 1px dampen-inverse($color, 20%);
+  border-bottom: 1px solid dampen-inverse($color, 20%);
+  border-top: 1px solid dapmen($color, 10%);
   height: 60px;
 
   ui-header-title:first-child {

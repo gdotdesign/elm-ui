@@ -1,12 +1,12 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
-   stylesheetLink, tabIndex, header, headerTitle) where
+   stylesheetLink, tabIndex, header, headerTitle, fab) where
 
 {-| UI Library for ELM!
 
 # Static Components
 @docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup, header
-@docs headerTitle
+@docs headerTitle, fab
 
 # Helper Functions
 @docs tabIndex
@@ -76,3 +76,9 @@ header attributes children =
 headerTitle : List Html.Attribute -> List Html.Html -> Html.Html
 headerTitle attributes children =
   node "ui-header-title" attributes children
+
+{-| Renders a floating action button. -}
+fab : String -> List Html.Attribute -> Html.Html
+fab glyph attributes =
+  node "ui-fab" attributes
+    [ icon glyph False []]

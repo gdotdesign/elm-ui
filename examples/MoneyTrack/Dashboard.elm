@@ -145,7 +145,7 @@ view address viewModel model =
                                        , affix = viewModel.settings.affix
                                        , prefix = viewModel.settings.prefix
                                        }
-          , div [viewModel.formHandler] [text "Form"]
+          , Ui.fab "plus" [viewModel.formHandler]
           , div [] (List.map (\c -> renderCategory c transactions) viewModel.categories)
           ]
         ]

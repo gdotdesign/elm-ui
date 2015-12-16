@@ -14,6 +14,7 @@ Object.defineProperty(HTMLElement.prototype, "ontransitionend", {
       if(event.target != this) return;
       handler.call(event)
     }.bind(this)
+
     if (this._ontransitionend_hadler) {
       this.removeEventListener('transitionend', this._ontransitionend_hadler)
       this._ontransitionend_hadler = null

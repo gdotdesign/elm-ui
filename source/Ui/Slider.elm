@@ -31,13 +31,14 @@ handle mouse events like so:
 # Functions
 @docs handleMove, handleClick
 -}
-import Html.Extra exposing (onWithDimensions, onKeysWithDimension)
+import Html.Extra exposing (onWithDimensions, onKeys)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
 
 import Native.Browser
 import Dict
 
+import Ui.Helpers.Drag as Drag
 import Ui
 
 {-| Representation of a slider:
@@ -51,13 +52,10 @@ import Ui
   - **mouseStartPosition** (internal) - The start position of the mouse
 -}
 type alias Model =
-  { dragging : Bool
+  { drag : Drag.Model
   , left : Float
-  , top : Float
   , value : Float
   , startDistance : Float
-  , dimensions : Html.Extra.Dimensions
-  , mouseStartPosition : Html.Extra.Position
   , disabled : Bool
   }
 
@@ -65,8 +63,8 @@ type alias Model =
 type Action
   = Lift (Html.Extra.DnD)
   | Nothing
-  | Increment (Html.Extra.Dimensions)
-  | Decrement (Html.Extra.Dimensions)
+  | Increment
+  | Decrement
 
 {-| Initializes a slider with the given value.
 
@@ -74,13 +72,10 @@ type Action
 -}
 init : Float -> Model
 init value =
-  { dragging = False
-  , dimensions = { top = 0, left = 0, width = 0, height = 0 }
+  { drag = Drag.init
   , left = 0
   , value = value
   , startDistance = 0
-  , mouseStartPosition = { pageX = 0, pageY = 0 }
-  , top = 100
   , disabled = True
   }
 
@@ -88,19 +83,15 @@ init value =
 update : Action -> Model -> Model
 update action model =
   case action of
-    Decrement data ->
-      updateDimensions data model
-        |> increment
+    Decrement ->
+      increment model
 
-    Increment data ->
-      updateDimensions data model
-        |> decrement
+    Increment ->
+      decrement model
 
     Lift {dimensions, position} ->
-      { model | dragging = True
-              , dimensions = dimensions
-              , left = position.pageX - dimensions.left
-              , mouseStartPosition = position }
+      { model | drag = Drag.lift dimensions position model.drag
+              , left = position.pageX - dimensions.left }
         |> clampLeft
 
     _ ->
@@ -114,18 +105,18 @@ view address model =
       (toString (clamp 0 100 model.value)) ++ "%"
     element =
       node "ui-slider" ((Ui.tabIndex model) ++
-                       [ onWithDimensions "mousedown" address Lift
+                       [ onWithDimensions "mousedown" True address Lift
                        , classList [("disabled", model.disabled)]
-                       , onKeysWithDimension address Nothing (Dict.fromList [ (40, Increment)
-                                                                            , (38, Decrement)
-                                                                            , (37, Increment)
-                                                                            , (39, Decrement) ])
+                       , onKeys address Nothing (Dict.fromList [ (40, Increment)
+                                                               , (38, Decrement)
+                                                               , (37, Increment)
+                                                               , (39, Decrement) ])
                        ])
                        [ node "ui-slider-bar" []
                          [ node "ui-slider-progress" [style [("width", position)]] [] ]
                        , node "ui-slider-handle" [style [("left", position)]] [] ]
   in
-    if model.dragging then
+    if model.drag.dragging then
       Native.Browser.focus element
     else
       element
@@ -134,29 +125,18 @@ view address model =
 handleMove : Int -> Int -> Model -> Model
 handleMove x y model =
   let
-    dist =
-      distance diff
-
-    diff =
-      { top = (toFloat y) - model.mouseStartPosition.pageY
-      , left = (toFloat x) - model.mouseStartPosition.pageX
-      }
+    dist = distance diff
+    diff = Drag.diff x y model.drag
 
     left =
       if dist >= model.startDistance then
-        model.mouseStartPosition.pageX + diff.left - model.dimensions.left
+        model.drag.mouseStartPosition.pageX + diff.left - model.drag.dimensions.left
       else
         model.left
 
-    top =
-      if dist >= model.startDistance then
-        model.mouseStartPosition.pageY + diff.top - model.dimensions.top
-      else
-        model.top
   in
-    if model.dragging then
-      { model | left = left
-               , top = top }
+    if model.drag.dragging then
+      { model | left = left }
         |> clampLeft
     else
       model
@@ -164,15 +144,12 @@ handleMove x y model =
 {-| Updates a slider, stopping the drag if the mouse isnt pressed. -}
 handleClick : Bool -> Model -> Model
 handleClick value model =
-  if not value && model.dragging then
-    { model | dragging = False }
-  else
-    model
+  { model | drag = Drag.handleClick value model.drag }
 
 {-| Clamps left position of the handle to width of the slider. -}
 clampLeft : Model -> Model
 clampLeft model =
-  { model | left = clamp 0 model.dimensions.width model.left }
+  { model | left = clamp 0 model.drag.dimensions.width model.left }
     |> updatePrecent
 
 {-| Clamps the value of the model. -}
@@ -183,17 +160,12 @@ clampValue model =
 {-| Updates the value to match the current position. -}
 updatePrecent : Model -> Model
 updatePrecent model =
-  { model | value = model.left / model.dimensions.width * 100 }
+  { model | value = model.left / model.drag.dimensions.width * 100 }
 
 {-| Returns the length of a point from 0,0. -}
-distance : { a | top : Float, left : Float } -> Float
+distance : Drag.Point -> Float
 distance diff =
   sqrt diff.top^2 + diff.left^2
-
-{-| Updates the dimensions of the model. -}
-updateDimensions : Html.Extra.Dimensions -> Model -> Model
-updateDimensions dimensions model =
-  { model | dimensions = dimensions }
 
 {-| Increments the model by 1 percent. -}
 increment : Model -> Model

@@ -39,9 +39,9 @@ dimDecoder =
 keyCodeAndDimesnionsDecoder mappings =
   Json.object2 KeyDnD (decoder mappings) dimDecoder
 
-onWithDimensions event address action =
+onWithDimensions event preventDefault address action =
   onWithOptions event
-                { stopPropagation = True, preventDefault = True }
+                { stopPropagation = True, preventDefault = preventDefault }
                 dimensionDecoder
                 (\dimensions -> Signal.message address (action dimensions))
 

@@ -301,6 +301,22 @@ ui-header {
   }
 }
 
+ui-number-range {
+  display: inline-block;
+  width: 300px;
+  background: $input;
+
+  input {
+    width: 100%;
+  }
+
+  ui-number-range-input {
+    padding: 10px;
+    display: block;
+    text-align: center;
+  }
+}
+
 /* Examples */
 
 .money-track {

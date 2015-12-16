@@ -60,7 +60,7 @@ function renderIframe(title, id) {
 }
 
 router.get('/', function *(next) {
-  this.body = renderHtml('index.js')
+  this.body = renderHtml('Kitchensink','index.js')
 })
 
 router.get('/index.js', function *(next) {

@@ -14,6 +14,7 @@ import Ui.IconButton
 import Ui.Slider
 import Ui.Textarea
 import Ui.InplaceInput
+import Ui.NumberRange
 import Ui
 
 import Html.Attributes exposing (style, classList)
@@ -38,6 +39,7 @@ type Action
   | Checkbox Ui.Checkbox.Action
   | Checkbox2 Ui.Checkbox.Action
   | InplaceInput Ui.InplaceInput.Action
+  | NR Ui.NumberRange.Action
   | Nothing
 
 data =
@@ -62,6 +64,7 @@ init =
      , checkbox = Ui.Checkbox.init False
      , checkbox2 = { disabled = True, value = True }
      , inplaceInput = Ui.InplaceInput.init "Test Value"
+     , numberRange = Ui.NumberRange.init 0
      , datePicker = { datePickerOptions | format = "%Y %B %e." } }, Effects.none)
 
 render item =
@@ -87,6 +90,8 @@ view address model =
         ]
       , node "h2" [] [text "Inplace Input"]
       , Ui.InplaceInput.view (forwardTo address InplaceInput) model.inplaceInput
+      , node "h2" [] [text "Number Range"]
+      , Ui.NumberRange.view (forwardTo address NR) model.numberRange
       , node "h2" [] [text "Slider"]
       , Ui.Slider.view (forwardTo address Slider) model.draggable
       , Ui.Slider.view (forwardTo address Slider2) model.slider
@@ -102,7 +107,7 @@ view address model =
     ]
 
 update action model =
-  case (log "a" action) of
+  case action of
     Checkbox act ->
       ({ model | checkbox = Ui.Checkbox.update act model.checkbox }, Effects.none)
     Checkbox2 act ->
@@ -113,10 +118,12 @@ update action model =
 
     IsDown value ->
       ({ model | slider = Ui.Slider.handleClick value model.slider
-               , draggable = Ui.Slider.handleClick value model.draggable }, Effects.none)
+               , draggable = Ui.Slider.handleClick value model.draggable
+               , numberRange = Ui.NumberRange.handleClick value model.numberRange }, Effects.none)
     MP (x,y) ->
       ({ model | slider = Ui.Slider.handleMove x y model.slider
-               , draggable = Ui.Slider.handleMove x y model.draggable }, Effects.none)
+               , draggable = Ui.Slider.handleMove x y model.draggable
+               , numberRange = Ui.NumberRange.handleMove x y model.numberRange}, Effects.none)
 
 
     Chooser act ->
@@ -127,6 +134,8 @@ update action model =
       ({ model | draggable = Ui.Slider.update act model.draggable}, Effects.none)
     Slider2 act ->
       ({ model | slider = Ui.Slider.update act model.slider}, Effects.none)
+    NR act ->
+      ({ model | numberRange = Ui.NumberRange.update act model.numberRange}, Effects.none)
     DP act ->
       ({ model | datePicker = Ui.DatePicker.update act model.datePicker}, Effects.none)
     TA act ->

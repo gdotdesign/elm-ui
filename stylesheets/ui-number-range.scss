@@ -20,17 +20,25 @@ ui-number-range {
     border-color: transparent currentColor transparent transparent;
     border-width: 5px 6px 5px 0;
     left: 12px;
+    z-index: 1;
   }
 
   &:before {
     border-color: transparent transparent transparent currentColor;
     border-width: 5px 0 5px 6px;
     right: 12px;
+    z-index: 1;
+  }
+
+  &.disabled {
+    @extend %disabled;
+    cursor: not-allowed;
   }
 
   input {
     width: 100%;
     text-align: center;
+    z-index: 0;
 
     &:read-only {
       cursor: move;

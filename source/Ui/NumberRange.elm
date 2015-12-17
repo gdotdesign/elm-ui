@@ -16,7 +16,7 @@ double clicking on the component.
 @docs focus, handleClick, handleMove, setValue, increment, decrement
 -}
 import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterStop)
-import Html.Attributes exposing (value, readonly)
+import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onFocus, onBlur)
 import Html exposing (node, input)
 
@@ -137,6 +137,7 @@ view address model =
       input ([ onFocus address Focus
              , onBlur address Blur
              , readonly (not model.editing)
+             , disabled model.disabled
              ] ++ attributes) []
 
     focusedInput =
@@ -144,7 +145,7 @@ view address model =
         True -> Native.Browser.focus inputElement
         False -> inputElement
   in
-    node "ui-number-range" [] [ focusedInput ]
+    node "ui-number-range" [classList [("disabled", model.disabled)]] [ focusedInput ]
 
 {-| Focused the component. -}
 focus : Model -> Model

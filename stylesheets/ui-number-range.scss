@@ -1,0 +1,39 @@
+ui-number-range {
+  display: inline-block;
+  width: 238px;
+  background: $input;
+  position: relative;
+
+  &:before,
+  &:after {
+    border-style: solid;
+    position: absolute;
+    margin-top: -5px;
+    content: '';
+    opacity: 0.5;
+    top: 50%;
+    height: 0;
+    width: 0;
+  }
+
+  &:after {
+    border-color: transparent currentColor transparent transparent;
+    border-width: 5px 6px 5px 0;
+    left: 12px;
+  }
+
+  &:before {
+    border-color: transparent transparent transparent currentColor;
+    border-width: 5px 0 5px 6px;
+    right: 12px;
+  }
+
+  input {
+    width: 100%;
+    text-align: center;
+
+    &:read-only {
+      cursor: move;
+    }
+  }
+}

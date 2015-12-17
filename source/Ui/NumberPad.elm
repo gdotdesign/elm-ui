@@ -22,7 +22,7 @@ import Dict
 
 import Ui
 
-{-| Represents a number pad.
+{-| Representation of a number pad.
   - **value** - The current value
   - **maximumDigits** - The maximum length of the value
   - **format** - Wheter or not to format the value

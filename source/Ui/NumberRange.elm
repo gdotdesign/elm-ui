@@ -1,123 +1,191 @@
-module Ui.NumberRange where
+module Ui.NumberRange
+  ( Model, Action, init, update, view, focus, handleClick, handleMove, setValue
+  , increment, decrement ) where
 
+{-| This is a component allows the user to change a number value by
+dragging or by using the keyboard, also traditional editing is enabled by
+double clicking on the component.
+
+# Model
+@docs Model, Action, init, update
+
+# View
+@docs view
+
+# Functions
+@docs focus, handleClick, handleMove, setValue, increment, decrement
+-}
+import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterStop)
+import Html.Attributes exposing (value, readonly)
 import Html.Events exposing (onFocus, onBlur)
-import Html.Extra exposing (onWithDimensions, onKeys, onInput, onStop)
-import Html.Attributes exposing (value, contenteditable)
-import Html exposing (node, text, input)
-import Number.Format exposing (pretty)
-import Native.Browser
+import Html exposing (node, input)
 import Json.Decode as Json
+import Native.Browser
 import Result
 import String
+import Dict
 
 import Ui.Helpers.Drag as Drag
+import Ui
 
 import Debug exposing (log)
 
+{-| Representation of a number range:
+  - **value** - The current value
+  - **step** - The step to increment / decrement by (per pixel, or per keyboard action)
+  - **affix** - The affix string to display (for example px, %, em, s)
+  - **min** - The minimum allowed value
+  - **max** - The maximum allowed value
+  - **round** - The decimals to round the value
+  - **disabled** - Whether or not the component is disabled
+-}
 type alias Model =
   { drag : Drag.Model
   , startValue : Float
+  , inputValue : String
   , value : Float
   , step : Float
   , affix : String
   , min : Float
   , max : Float
   , round : Int
-  , label : String
   , focusNext : Bool
   , focused : Bool
   , editing : Bool
+  , disabled : Bool
   }
 
-init : Float -> Model
-init value =
-  { drag = Drag.init
-  , startValue = value
-  , value = value
-  , step = 1
-  , affix = "px"
-  , min = -(1/0)
-  , max = (1/0)
-  , round = 0
-  , label = "width"
-  , focusNext = False
-  , focused = False
-  , editing = False
-  }
-
+{-| Actions that a number range can make. -}
 type Action
   = Lift (Html.Extra.DnD)
   | DoubleClick (Html.Extra.DnD)
   | Focus
   | Blur
   | Input String
+  | Nothing
+  | Increment
+  | Decrement
+  | Save
 
+{-| Initializes a number range by the given value. -}
+init : Float -> Model
+init value =
+  { drag = Drag.init
+  , startValue = value
+  , inputValue = ""
+  , value = value
+  , step = 1
+  , affix = "px"
+  , min = -(1/0)
+  , max = (1/0)
+  , round = 0
+  , focusNext = False
+  , focused = False
+  , editing = False
+  , disabled = False
+  }
+
+{-| Updates a number range. -}
+update: Action -> Model -> Model
 update action model =
-  case action of
+  case (log "a" action) of
+    Nothing ->
+      model
+    Increment ->
+      increment model
+    Decrement ->
+      decrement model
+    Save ->
+      endEdit model
     Input value ->
-      { model | value = Result.withDefault 0 (String.toFloat value) }
+      { model | inputValue = value }
     Focus ->
       { model | focusNext = False, focused = True }
     Blur ->
-      { model | focused = False, editing = False }
+      { model | focused = False }
+        |> endEdit
     DoubleClick {dimensions, position} ->
-      { model | editing = True}
+      { model | editing = True
+              , inputValue = (toString model.value) }
         |> focus
     Lift {dimensions, position} ->
       { model | drag = Drag.lift dimensions position model.drag
               , startValue = model.value }
+        |> focus
 
-isInRegion dimensions position =
-  abs (dimensions.left + (dimensions.width / 2) - position.pageX) <= dimensions.width / 10
+{-| Renders a number range. -}
+view: Signal.Address Action -> Model -> Html.Html
+view address model =
+  let
+    attributes =
+      if model.editing then
+        [ value model.inputValue
+        , onInput address Input
+        , onEnterStop address Save
+        ]
+      else
+        [ onWithDimensions "mousedown" True address Lift
+        , onWithDimensions "dblclick" True address DoubleClick
+        , value ((toString model.value) ++ model.affix)
+        , onKeys address Nothing (Dict.fromList [ (40, Increment)
+                                                , (38, Decrement)
+                                                , (37, Increment)
+                                                , (39, Decrement) ])
+        ]
 
+    inputElement =
+      input ([ onFocus address Focus
+             , onBlur address Blur
+             , readonly (not model.editing)
+             ] ++ attributes) []
+
+    focusedInput =
+      case model.focusNext of
+        True -> Native.Browser.focus inputElement
+        False -> inputElement
+  in
+    node "ui-number-range" [] [ focusedInput ]
+
+{-| Focused the component. -}
+focus : Model -> Model
 focus model =
-  if model.focused then
-    model
-  else
-    { model | focusNext = True }
+  case model.focused of
+    True -> model
+    False -> { model | focusNext = True }
 
+{-| Updates a number range value by coordinates. -}
+handleMove : Int -> Int -> Model -> Model
 handleMove x y model =
   let
     diff = (Drag.diff x y model.drag).left
   in
     if model.drag.dragging then
-      { model | value = model.startValue - (-diff * model.step) }
-        |> clampValue
+      setValue (model.startValue - (-diff * model.step)) model
     else
       model
 
-clampValue model =
-  { model | value = clamp model.min model.max model.value }
-
+{-| Updates a number range, stopping the drag if the mouse isnt pressed. -}
 handleClick : Bool -> Model -> Model
 handleClick value model =
   { model | drag = Drag.handleClick value model.drag }
 
+{-| Sets the value of a number range. -}
+setValue : Float -> Model -> Model
+setValue value model =
+  { model | value = clamp model.min model.max value }
 
+{-| Increments a number ranges value by it's defined step. -}
+increment : Model -> Model
+increment model =
+  setValue (model.value + model.step) model
 
-view address model =
-  let
-    asd =
-      if model.editing then
-        input [ onFocus address Focus
-              , onBlur address Blur
-              , value (toString model.value)
-              , onInput address Input
-              ] []
-      else
-        node "ui-number-range-input"
-          [onWithDimensions "mousedown" True address Lift
-          ,onWithDimensions "dblclick" True address DoubleClick]
-          [text ((toString model.value) ++ model.affix)]
+{-| Decrements a number ranges value by it's defined step. -}
+decrement : Model -> Model
+decrement model =
+  setValue (model.value - model.step) model
 
-    input' =
-      if model.focusNext then
-        Native.Browser.focus asd
-      else
-        asd
-  in
-    node
-      "ui-number-range"
-      [ ]
-      [ asd
-      ]
+-- Exits a number range from its editing mode.
+endEdit : Model -> Model
+endEdit model =
+  { model | value = Result.withDefault 0 (String.toFloat model.inputValue)
+          , editing = False }

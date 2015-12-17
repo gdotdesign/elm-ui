@@ -19,6 +19,7 @@
 @import "ui-icon-button";
 @import "ui-checkbox";
 @import "ui-number-pad";
+@import "ui-number-range";
 
 %disabled {
   pointer-events: none;
@@ -239,6 +240,8 @@ ui-header {
   }
 }
 
+// MOBILE DEVICE...
+
 @media (max-width: 600px) {
   .mobile > div {
     height: 100%;
@@ -298,22 +301,6 @@ ui-header {
         position: relative;
       }
     }
-  }
-}
-
-ui-number-range {
-  display: inline-block;
-  width: 300px;
-  background: $input;
-
-  input {
-    width: 100%;
-  }
-
-  ui-number-range-input {
-    padding: 10px;
-    display: block;
-    text-align: center;
   }
 }
 

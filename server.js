@@ -10,7 +10,11 @@ function renderCSS(callback){
   sass.render({
     file: './stylesheets/ui.scss',
   }, function(err, result) {
-    callback(null, result.css)
+    if(err){
+      callback(null, err.formatted)
+    } else {
+      callback(null, result.css)
+    }
   });
 }
 

@@ -22,6 +22,7 @@
     "Ui.InplaceInput",
     "Ui.Input",
     "Ui.NumberPad",
+    "Ui.NumberRange",
     "Ui.Pager",
     "Ui.Slider",
     "Ui.Textarea",

@@ -15,6 +15,7 @@ import Ui.Slider
 import Ui.Textarea
 import Ui.InplaceInput
 import Ui.NumberRange
+import Ui.ColorPanel
 import Ui
 
 import Html.Attributes exposing (style, classList)
@@ -40,6 +41,7 @@ type Action
   | Checkbox2 Ui.Checkbox.Action
   | InplaceInput Ui.InplaceInput.Action
   | NR Ui.NumberRange.Action
+  | CP Ui.ColorPanel.Action
   | Nothing
 
 data =
@@ -65,6 +67,7 @@ init =
      , checkbox2 = { disabled = True, value = True }
      , inplaceInput = Ui.InplaceInput.init "Test Value"
      , numberRange = Ui.NumberRange.init 0
+     , colorPanel = Ui.ColorPanel.init
      , datePicker = { datePickerOptions | format = "%Y %B %e." } }, Effects.none)
 
 render item =
@@ -90,6 +93,8 @@ view address model =
         ]
       , node "h2" [] [text "Inplace Input"]
       , Ui.InplaceInput.view (forwardTo address InplaceInput) model.inplaceInput
+      , node "h2" [] [text "Color Panel"]
+      , Ui.ColorPanel.view (forwardTo address CP) model.colorPanel
       , node "h2" [] [text "Number Range"]
       , Ui.NumberRange.view (forwardTo address NR) model.numberRange
       , node "h2" [] [text "Slider"]
@@ -119,11 +124,13 @@ update action model =
     IsDown value ->
       ({ model | slider = Ui.Slider.handleClick value model.slider
                , draggable = Ui.Slider.handleClick value model.draggable
-               , numberRange = Ui.NumberRange.handleClick value model.numberRange }, Effects.none)
+               , numberRange = Ui.NumberRange.handleClick value model.numberRange
+               , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel }, Effects.none)
     MP (x,y) ->
       ({ model | slider = Ui.Slider.handleMove x y model.slider
                , draggable = Ui.Slider.handleMove x y model.draggable
-               , numberRange = Ui.NumberRange.handleMove x y model.numberRange}, Effects.none)
+               , numberRange = Ui.NumberRange.handleMove x y model.numberRange
+               , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel }, Effects.none)
 
 
     Chooser act ->
@@ -140,6 +147,8 @@ update action model =
       ({ model | datePicker = Ui.DatePicker.update act model.datePicker}, Effects.none)
     TA act ->
       ({ model | textarea = Ui.Textarea.update act model.textarea}, Effects.none)
+    CP act ->
+      ({ model | colorPanel = Ui.ColorPanel.update act model.colorPanel}, Effects.none)
     InplaceInput act ->
       ({ model | inplaceInput = Ui.InplaceInput.update act model.inplaceInput}, Effects.none)
     Nothing ->

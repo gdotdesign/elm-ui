@@ -2,7 +2,7 @@ module Ext.Number where
 
 {-| Utility functions for numbers.
 
-@docs formatFloat
+@docs formatFloat, remFloat
 -}
 
 import Native.Browser
@@ -11,3 +11,8 @@ import Native.Browser
 formatFloat : Int -> Float -> String
 formatFloat precision number =
   Native.Browser.toFixed number precision
+
+{-| Runs native modulo. -}
+remFloat : Float -> Float -> Float
+remFloat a b =
+  Native.Browser.rem a b

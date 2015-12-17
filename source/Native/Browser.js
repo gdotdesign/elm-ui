@@ -2,7 +2,16 @@ Object.defineProperty(HTMLElement.prototype, "dimensions", {
   writeable: false,
   enumerable: false,
   configurable: false,
-  get: function() { return this.getBoundingClientRect() }
+  get: function() {
+    var rect = this.getBoundingClientRect()
+    return { top: rect.top + window.pageYOffset,
+             left: rect.left + window.pageXOffset,
+             right: rect.right + window.pageXOffset,
+             bottom: rect.bottom + window.pageYOffset,
+             height: rect.height,
+             width: rect.width
+           }
+   }
 })
 
 Object.defineProperty(HTMLElement.prototype, "ontransitionend", {
@@ -78,6 +87,7 @@ Elm.Native.Browser.make = function(elm) {
     blur: blur,
     focus: focus,
     focusEnd: focusEnd,
-    toFixed: F2(function(value,decimals) { return value.toFixed(decimals) })
+    toFixed: F2(function(value,decimals) { return value.toFixed(decimals) }),
+    rem: F2(function(a,b){ return a % b })
   };
 };

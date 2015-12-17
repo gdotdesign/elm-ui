@@ -19,6 +19,8 @@ import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterStop)
 import Html.Attributes exposing (value, readonly)
 import Html.Events exposing (onFocus, onBlur)
 import Html exposing (node, input)
+
+import Ext.Number exposing (formatFloat)
 import Json.Decode as Json
 import Native.Browser
 import Result
@@ -27,8 +29,6 @@ import Dict
 
 import Ui.Helpers.Drag as Drag
 import Ui
-
-import Debug exposing (log)
 
 {-| Representation of a number range:
   - **value** - The current value
@@ -88,7 +88,7 @@ init value =
 {-| Updates a number range. -}
 update: Action -> Model -> Model
 update action model =
-  case (log "a" action) of
+  case action of
     Nothing ->
       model
     Increment ->
@@ -106,7 +106,7 @@ update action model =
         |> endEdit
     DoubleClick {dimensions, position} ->
       { model | editing = True
-              , inputValue = (toString model.value) }
+              , inputValue = formatFloat model.round model.value }
         |> focus
     Lift {dimensions, position} ->
       { model | drag = Drag.lift dimensions position model.drag
@@ -126,7 +126,7 @@ view address model =
       else
         [ onWithDimensions "mousedown" True address Lift
         , onWithDimensions "dblclick" True address DoubleClick
-        , value ((toString model.value) ++ model.affix)
+        , value ((formatFloat model.round model.value) ++ model.affix)
         , onKeys address Nothing (Dict.fromList [ (40, Increment)
                                                 , (38, Decrement)
                                                 , (37, Increment)
@@ -187,5 +187,7 @@ decrement model =
 -- Exits a number range from its editing mode.
 endEdit : Model -> Model
 endEdit model =
-  { model | value = Result.withDefault 0 (String.toFloat model.inputValue)
-          , editing = False }
+  case model.editing of
+    False -> model
+    True -> { model | value = Result.withDefault 0 (String.toFloat model.inputValue)
+            , editing = False }

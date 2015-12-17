@@ -9,6 +9,8 @@
   ],
   "native-modules": true,
   "exposed-modules": [
+    "Ext.Date",
+    "Ext.Number",
     "Ui",
     "Ui.App",
     "Ui.Button",

@@ -77,6 +77,7 @@ Elm.Native.Browser.make = function(elm) {
   return Elm.Native.Browser.values = {
     blur: blur,
     focus: focus,
-    focusEnd: focusEnd
+    focusEnd: focusEnd,
+    toFixed: F2(function(value,decimals) { return value.toFixed(decimals) })
   };
 };

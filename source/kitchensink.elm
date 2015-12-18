@@ -2,6 +2,7 @@ import StartApp
 import Effects
 import Signal exposing (forwardTo)
 import Task
+import Color
 
 import Ui.App
 import Ui.Button
@@ -67,7 +68,7 @@ init =
      , checkbox2 = { disabled = True, value = True }
      , inplaceInput = Ui.InplaceInput.init "Test Value"
      , numberRange = Ui.NumberRange.init 0
-     , colorPanel = Ui.ColorPanel.init
+     , colorPanel = Ui.ColorPanel.init Color.blue
      , datePicker = { datePickerOptions | format = "%Y %B %e." } }, Effects.none)
 
 render item =

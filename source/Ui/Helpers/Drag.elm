@@ -19,6 +19,21 @@ diff x y model =
   , left = (toFloat x) - model.mouseStartPosition.pageX
   }
 
+relativePosition : Int -> Int -> Model -> Point
+relativePosition x y model =
+  { top = (toFloat y) - model.dimensions.top
+  , left = (toFloat x) - model.dimensions.left
+  }
+
+relativePercentPosition : Int -> Int -> Model -> Point
+relativePercentPosition x y model =
+  let
+    point = relativePosition x y model
+  in
+    { top = point.top / model.dimensions.height
+    , left = point.left / model.dimensions.width
+    }
+
 init : Model
 init =
   { dragging = False
@@ -38,7 +53,3 @@ handleClick pressed model =
     { model | dragging = False }
   else
     model
-
-updateDimensions : Html.Extra.Dimensions -> Model -> Model
-updateDimensions dimensions model =
-  { model | dimensions = dimensions }

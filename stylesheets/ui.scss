@@ -20,6 +20,7 @@
 @import "ui-checkbox";
 @import "ui-number-pad";
 @import "ui-number-range";
+@import "ui-color-panel";
 
 %disabled {
   pointer-events: none;
@@ -237,36 +238,6 @@ ui-header {
   ui-icon {
     width: 60px;
     font-size: 32px;
-  }
-}
-
-ui-color-panel {
-  width: 400px;
-  height: 400px;
-  display: flex;
-  flex-direction: column;
-
-  div {
-    display: flex;
-    flex: 1;
-    margin-bottom: 10px;
-
-    ui-color-panel-hue {
-      flex: 0 0 40px;
-      background-image: linear-gradient(to bottom, #ff0000 0%, #ffff00 17%, #00ff00 33%,
-                                        #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)
-    }
-
-    ui-color-panel-rect {
-      background-image: linear-gradient(0deg, #000 0%, transparent 100%),
-                        linear-gradient(90deg, #fff 0%, rgba(255,255,255,0) 100%);
-      margin-right: 10px;
-      flex: 1;
-    }
-  }
-
-  ui-color-panel-alpha {
-    flex: 0 0 40px;
   }
 }
 

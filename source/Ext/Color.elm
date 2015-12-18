@@ -1,15 +1,24 @@
 module Ext.Color where
 
+{-| Utility functions for colors.
+
+# Representations
+@docs Hsv
+
+# Converting
+@docs hsvToRgb
+
+# Rendering
+@docs toCSSRgba
+
+# Extracting
+@docs toHsv
+-}
+
 import Color exposing (Color)
 import Ext.Number
 
-alpha : Color -> Float
-alpha color =
-  (Color.toRgb color).alpha
-
-value color =
-  (toHsv color).value
-
+{-| Hsv color type. -}
 type alias Hsv =
   { hue : Float
   , saturation : Float
@@ -17,6 +26,18 @@ type alias Hsv =
   , alpha : Float
   }
 
+{-| Renders the given HSV color to CSS rgba string. -}
+toCSSRgba : Hsv -> String
+toCSSRgba hsv =
+  let
+    color = Color.toRgb (hsvToRgb hsv)
+  in
+    "rgba(" ++ (toString color.red)   ++ "," ++
+               (toString color.green) ++ "," ++
+               (toString color.blue)  ++ "," ++
+               (toString color.alpha) ++ ")"
+
+{-| Converts the given HSV color into Elm's color type. -}
 hsvToRgb : Hsv -> Color
 hsvToRgb color =
   let
@@ -47,6 +68,7 @@ hsvToRgb color =
       (round ((blue + m) * 255))
       color.alpha
 
+{-| Extract the components of a color in the HSV format. -}
 toHsv : Color -> Hsv
 toHsv color =
   let

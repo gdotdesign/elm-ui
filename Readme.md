@@ -3,7 +3,7 @@
 ------------------------
 
 # Elm UI
-An opinionated UI library for the web in Elm.
+An opinionated UI library for the web in Elm, following the **Elm Architecture**. All components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).
 
 ## Getting Started
 For now, you will need to **clone** or **download** this repository into a directory for server reasons:

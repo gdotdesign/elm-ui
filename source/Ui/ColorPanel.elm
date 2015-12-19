@@ -13,8 +13,8 @@ module Ui.ColorPanel
 # Functions
 @docs handleMove, handleClick
 -}
+import Html.Attributes exposing (style, classList)
 import Html.Extra exposing (onWithDimensions)
-import Html.Attributes exposing (style)
 import Html exposing (node, div, text)
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
@@ -32,6 +32,7 @@ type alias Model =
   , alphaDrag : Drag.Model
   , hueDrag : Drag.Model
   , value : Hsv
+  , disabled : Bool
   }
 
 {-| Actions that a color panel can make. -}
@@ -50,6 +51,7 @@ init color =
   , alphaDrag = Drag.init
   , hueDrag = Drag.init
   , value = Ext.Color.toHsv color
+  , disabled = False
   }
 
 {-| Updates a color panel. -}
@@ -90,10 +92,10 @@ view address model =
     asPercent value =
       (toString (value * 100)) ++ "%"
   in
-    node "ui-color-panel" []
+    node "ui-color-panel" [classList [("disabled", model.disabled)]]
       [ div []
         [ node "ui-color-panel-rect"
-            [ onWithDimensions "mousedown" False address LiftRect
+            [ onWithDimensions "mousedown" True address LiftRect
             , style [ ("background-color", background )
                     , ("cursor", if model.drag.dragging then "move" else "" )
                     ]
@@ -102,13 +104,13 @@ view address model =
               (asPercent (1 - color.value))
               (asPercent color.saturation) ]
         , node "ui-color-panel-hue"
-            [ onWithDimensions "mousedown" False address LiftHue
+            [ onWithDimensions "mousedown" True address LiftHue
             , style [("cursor", if model.hueDrag.dragging then "move" else "" )]
             ]
             [ renderHandle (asPercent color.hue) "" ]
         ]
       , node "ui-color-panel-alpha"
-        [ onWithDimensions "mousedown" False address LiftAlpha
+        [ onWithDimensions "mousedown" True address LiftAlpha
         , style [("cursor", if model.alphaDrag.dragging then "move" else "" )]
         ]
         [ div [style [("background-image", gradient)]] []

@@ -14,3 +14,4 @@ $border: 1px solid $secondary;
 $focus: dampen($color, 30%);
 
 $focus-shadow: 0 0 0 1px $focus inset, 0 0 4px rgba($focus, 0.5), 0 0 4px rgba($focus, 0.5) inset;
+$focus-shadow-idle: 0 0 0 1px transparent inset, 0 0 4px transparent, 0 0 4px transparent inset;

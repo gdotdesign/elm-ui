@@ -1,4 +1,4 @@
-ui-date-picker {
+%picker {
   position: relative;
   display: inline-block;
 
@@ -38,11 +38,23 @@ ui-date-picker {
     }
   }
 
-  ui-calendar {
-    border: 0;
-  }
-
   &.disabled {
     @extend %disabled;
+  }
+}
+
+ui-color-picker {
+  @extend %picker;
+
+  ui-color-panel {
+    border: 0;
+  }
+}
+
+ui-date-picker {
+  @extend %picker;
+
+  ui-calendar {
+    border: 0;
   }
 }

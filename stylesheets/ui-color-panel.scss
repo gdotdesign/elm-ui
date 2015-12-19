@@ -4,9 +4,13 @@ ui-color-panel {
   display: flex;
   background: $input;
   border: $border;
-  padding: 10px;
+  padding: 15px;
   border-radius: $border-radius;
   flex-direction: column;
+
+  &.disabled {
+    @extend %disabled;
+  }
 
   ui-color-panel-handle {
     background: rgba(102, 102, 102, 0.5);

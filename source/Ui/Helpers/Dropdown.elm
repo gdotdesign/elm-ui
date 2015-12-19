@@ -6,7 +6,7 @@ module Ui.Helpers.Dropdown where
 @docs view
 
 # Functions
-@docs open, close
+@docs open, close, toggle
 -}
 import Html.Extra exposing (onStopNothing)
 import Html exposing (node)
@@ -28,3 +28,7 @@ close : { a | open : Bool } -> { a | open : Bool }
 close model =
   { model | open = False }
 
+{-| Toggles a component. -}
+toggle : { a | open : Bool } -> { a | open : Bool }
+toggle model =
+  { model | open = not model.open }

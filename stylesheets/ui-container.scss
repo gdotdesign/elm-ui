@@ -40,6 +40,8 @@ input:not([type]),
 input[type=text],
 input[type=email],
 input[type=password] {
+  transition: box-shadow 400ms linear;
+  box-shadow: $focus-shadow-idle;
   background: $input;
   color: readable($input);
   border: $border;
@@ -55,6 +57,7 @@ input[type=password] {
   }
 
   &[readonly]:focus, &:focus {
+    transition: box-shadow 200ms linear;
     box-shadow: $focus-shadow;
     outline: none;
   }

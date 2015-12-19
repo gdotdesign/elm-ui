@@ -18,7 +18,6 @@ import Html exposing (node, input)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
-import Native.Browser
 import Dict
 
 import Date.Format exposing (format)
@@ -45,6 +44,7 @@ type alias Model =
 {-| Actions that a date picker can make:
   - **Focus** - Opens the dropdown
   - **Close** - Closes the dropdown
+  - **Toggle** - Toggles the dropdown
   - **Decrement** - Selects the previous day
   - **Increment** - Selects the next day
   - **Calendar** - Calendar actions
@@ -55,6 +55,7 @@ type Action
   | Increment
   | Decrement
   | Close
+  | Toggle
   | Calendar Calendar.Action
 
 {-| Initializes a date picker with the given values.
@@ -79,6 +80,9 @@ update action model =
 
     Close ->
       Dropdown.close model
+
+    Toggle ->
+      Dropdown.toggle model
 
     Decrement ->
       { model | calendar = Calendar.previousDay model.calendar }
@@ -123,7 +127,7 @@ view address model =
       , readonly True
       , value (format model.format model.calendar.value)
       , onKeys address Nothing (Dict.fromList [ (27, Close)
-                                              , (13, Close)
+                                              , (13, Toggle)
                                               , (40, Increment)
                                               , (38, Decrement)
                                               , (39, Increment)

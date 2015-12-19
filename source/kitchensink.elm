@@ -17,6 +17,7 @@ import Ui.Textarea
 import Ui.InplaceInput
 import Ui.NumberRange
 import Ui.ColorPanel
+import Ui.ColorPicker
 import Ui
 
 import Html.Attributes exposing (style, classList)
@@ -43,6 +44,7 @@ type Action
   | InplaceInput Ui.InplaceInput.Action
   | NR Ui.NumberRange.Action
   | CP Ui.ColorPanel.Action
+  | CPP Ui.ColorPicker.Action
   | Nothing
 
 data =
@@ -69,6 +71,7 @@ init =
      , inplaceInput = Ui.InplaceInput.init "Test Value"
      , numberRange = Ui.NumberRange.init 0
      , colorPanel = Ui.ColorPanel.init Color.blue
+     , colorPicker = Ui.ColorPicker.init Color.yellow
      , datePicker = { datePickerOptions | format = "%Y %B %e." } }, Effects.none)
 
 render item =
@@ -96,6 +99,8 @@ view address model =
       , Ui.InplaceInput.view (forwardTo address InplaceInput) model.inplaceInput
       , node "h2" [] [text "Color Panel"]
       , Ui.ColorPanel.view (forwardTo address CP) model.colorPanel
+      , node "h2" [] [text "Color Picker"]
+      , Ui.ColorPicker.view (forwardTo address CPP) model.colorPicker
       , node "h2" [] [text "Number Range"]
       , Ui.NumberRange.view (forwardTo address NR) model.numberRange
       , node "h2" [] [text "Slider"]
@@ -126,12 +131,14 @@ update action model =
       ({ model | slider = Ui.Slider.handleClick value model.slider
                , draggable = Ui.Slider.handleClick value model.draggable
                , numberRange = Ui.NumberRange.handleClick value model.numberRange
-               , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel }, Effects.none)
+               , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
+               , colorPicker = Ui.ColorPicker.handleClick value model.colorPicker }, Effects.none)
     MP (x,y) ->
       ({ model | slider = Ui.Slider.handleMove x y model.slider
                , draggable = Ui.Slider.handleMove x y model.draggable
                , numberRange = Ui.NumberRange.handleMove x y model.numberRange
-               , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel }, Effects.none)
+               , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel
+               , colorPicker = Ui.ColorPicker.handleMove x y model.colorPicker }, Effects.none)
 
 
     Chooser act ->
@@ -150,6 +157,8 @@ update action model =
       ({ model | textarea = Ui.Textarea.update act model.textarea}, Effects.none)
     CP act ->
       ({ model | colorPanel = Ui.ColorPanel.update act model.colorPanel}, Effects.none)
+    CPP act ->
+      ({ model | colorPicker = Ui.ColorPicker.update act model.colorPicker}, Effects.none)
     InplaceInput act ->
       ({ model | inplaceInput = Ui.InplaceInput.update act model.inplaceInput}, Effects.none)
     Nothing ->

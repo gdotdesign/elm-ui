@@ -127,10 +127,10 @@ view address model =
         [ onWithDimensions "mousedown" True address Lift
         , onWithDimensions "dblclick" True address DoubleClick
         , value ((formatFloat model.round model.value) ++ model.affix)
-        , onKeys address Nothing (Dict.fromList [ (40, Increment)
-                                                , (38, Decrement)
-                                                , (37, Increment)
-                                                , (39, Decrement) ])
+        , onKeys address Nothing (Dict.fromList [ (40, Decrement)
+                                                , (38, Increment)
+                                                , (37, Decrement)
+                                                , (39, Increment) ])
         ]
 
     inputElement =

@@ -7,10 +7,12 @@ ui-textarea {
   margin-bottom: -24px;
 
   ui-textarea-background {
-    border: $border;
+    transition: box-shadow 400ms linear;
+    box-shadow: $focus-shadow-idle;
     border-radius: $border-radius;
     background: $input;
     position: absolute;
+    border: $border;
     bottom: 24px;
     right: 0;
     left: 0;
@@ -18,6 +20,7 @@ ui-textarea {
   }
 
   &.focused ui-textarea-background {
+    transition: box-shadow 200ms linear;
     box-shadow: $focus-shadow;
   }
 

@@ -40,6 +40,7 @@ type Action
   | TA Ui.Textarea.Action
   | Checkbox Ui.Checkbox.Action
   | Checkbox2 Ui.Checkbox.Action
+  | Checkbox3 Ui.Checkbox.Action
   | InplaceInput Ui.InplaceInput.Action
   | NR Ui.NumberRange.Action
   | CP Ui.ColorPanel.Action
@@ -65,7 +66,8 @@ init =
      , textarea = Ui.Textarea.init "Test"
      , slider = Ui.Slider.init 50
      , checkbox = Ui.Checkbox.init False
-     , checkbox2 = { disabled = True, value = True }
+     , checkbox2 = Ui.Checkbox.init False
+     , checkbox3 = Ui.Checkbox.init False
      , inplaceInput = Ui.InplaceInput.init "Test Value"
      , numberRange = Ui.NumberRange.init 0
      , colorPanel = Ui.ColorPanel.init Color.blue
@@ -78,7 +80,7 @@ render item =
 view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker
-    , numberRange, slider } = model
+    , numberRange, slider, checkbox, checkbox2, checkbox3 } = model
   in
     Ui.App.view (forwardTo address App) model.app
       [ Ui.panel []
@@ -91,16 +93,16 @@ view address model =
         , node "h2" [] [text "Checkbox"]
         , Ui.Container.view { align = "start", direction = "column", compact = False} []
           [ Ui.Container.view { align = "start", direction = "row", compact = False} []
-            [ Ui.Checkbox.view (forwardTo address Checkbox) model.checkbox
-            , Ui.Checkbox.view (forwardTo address Checkbox2) model.checkbox2
+            [ Ui.Checkbox.view (forwardTo address Checkbox) checkbox
+            , Ui.Checkbox.view (forwardTo address Checkbox) { checkbox | disabled = True }
             ]
           , Ui.Container.view { align = "start", direction = "row", compact = False} []
-            [ Ui.Checkbox.toggleView (forwardTo address Checkbox) model.checkbox
-            , Ui.Checkbox.toggleView (forwardTo address Checkbox2) model.checkbox2
+            [ Ui.Checkbox.toggleView (forwardTo address Checkbox2) checkbox2
+            , Ui.Checkbox.toggleView (forwardTo address Checkbox2) { checkbox2 | disabled = True }
             ]
           , Ui.Container.view { align = "start", direction = "row", compact = False} []
-            [ Ui.Checkbox.radioView (forwardTo address Checkbox) model.checkbox
-            , Ui.Checkbox.radioView (forwardTo address Checkbox2) model.checkbox2
+            [ Ui.Checkbox.radioView (forwardTo address Checkbox3) checkbox3
+            , Ui.Checkbox.radioView (forwardTo address Checkbox3) { checkbox3 | disabled = True }
             ]
           ]
         , node "h2" [] [text "Color Panel"]
@@ -148,6 +150,8 @@ update action model =
       ({ model | checkbox = Ui.Checkbox.update act model.checkbox }, Effects.none)
     Checkbox2 act ->
       ({ model | checkbox2 = Ui.Checkbox.update act model.checkbox2 }, Effects.none)
+    Checkbox3 act ->
+      ({ model | checkbox3 = Ui.Checkbox.update act model.checkbox3 }, Effects.none)
     App act ->
       ({ model | app = Ui.App.update act model.app }, Effects.none)
 

@@ -12,7 +12,6 @@ ui-color-picker {
     background-position: 0 0, 9px 9px;
     background-size: 18px 18px;
 
-    box-shadow: 0 0 1px 1px rgba(#000, 0.2) inset;
     border-radius: $border-radius;
     position: absolute;
     display: flex;
@@ -22,8 +21,15 @@ ui-color-picker {
     top: 4px;
 
     div {
+      box-shadow: 0 0 1px 1px rgba(#000, 0.2) inset;
+      border-radius: $border-radius;
       flex: 1;
     }
+  }
+
+  // Disabled state
+  &.disabled {
+    filter: saturate(0);
   }
 
   // Color text

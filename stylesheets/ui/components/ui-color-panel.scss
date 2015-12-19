@@ -12,7 +12,9 @@ ui-color-panel {
   // Disabled State
   &.disabled {
     @extend %disabled;
+
     background: $disabled;
+    filter: saturate(0);
 
     ui-color-panel-hue,
     ui-color-panel-rect,

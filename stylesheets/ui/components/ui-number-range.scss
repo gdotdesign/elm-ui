@@ -1,9 +1,11 @@
 ui-number-range {
+  // Styling
   display: inline-block;
-  width: 238px;
   background: $input;
   position: relative;
+  width: 238px;
 
+  // Common styles for the arrows
   &:before,
   &:after {
     border-style: solid;
@@ -16,6 +18,7 @@ ui-number-range {
     width: 0;
   }
 
+  // Left arrow
   &:after {
     border-color: transparent currentColor transparent transparent;
     border-width: 5px 6px 5px 0;
@@ -23,6 +26,7 @@ ui-number-range {
     z-index: 1;
   }
 
+  // Right arrow
   &:before {
     border-color: transparent transparent transparent currentColor;
     border-width: 5px 0 5px 6px;
@@ -30,14 +34,22 @@ ui-number-range {
     z-index: 1;
   }
 
+  // Disabled state
   &.disabled {
     @extend %disabled;
-    cursor: not-allowed;
+    user-select: none;
+
+    input {
+      border-color: $disabled;
+      background: $disabled;
+      pointer-events: none;
+    }
   }
 
+  // Input
   input {
-    width: 100%;
     text-align: center;
+    width: 100%;
     z-index: 0;
 
     &:read-only {

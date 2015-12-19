@@ -77,7 +77,7 @@ init value =
   , left = 0
   , value = value
   , startDistance = 0
-  , disabled = True
+  , disabled = False
   }
 
 {-| Updates a slider. -}
@@ -109,18 +109,20 @@ render address model =
   let
     position =
       (toString (clamp 0 100 model.value)) ++ "%"
+    actions =
+      if model.disabled then [classList [("disabled", model.disabled)]]
+      else [ onWithDimensions "mousedown" True address Lift
+           , onKeys address Nothing (Dict.fromList [ (40, Increment)
+                                                   , (38, Decrement)
+                                                   , (37, Increment)
+                                                   , (39, Decrement) ])
+           ]
     element =
-      node "ui-slider" ((Ui.tabIndex model) ++
-                       [ onWithDimensions "mousedown" True address Lift
-                       , classList [("disabled", model.disabled)]
-                       , onKeys address Nothing (Dict.fromList [ (40, Increment)
-                                                               , (38, Decrement)
-                                                               , (37, Increment)
-                                                               , (39, Decrement) ])
-                       ])
-                       [ node "ui-slider-bar" []
-                         [ node "ui-slider-progress" [style [("width", position)]] [] ]
-                       , node "ui-slider-handle" [style [("left", position)]] [] ]
+      node "ui-slider"
+        ((Ui.tabIndex model) ++ actions)
+        [ node "ui-slider-bar" []
+          [ node "ui-slider-progress" [style [("width", position)]] [] ]
+        , node "ui-slider-handle" [style [("left", position)]] [] ]
   in
     if model.drag.dragging then
       Native.Browser.focus element

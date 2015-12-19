@@ -1,27 +1,31 @@
 ui-dropdown {
-  border: $border;
-  position: absolute;
-  z-index: 100;
-  left: 0;
-  border-radius: $border-radius;
-  right: 0;
+  @include colors($input);
+  @include border;
+
+  // Position & Size
   top: calc(100% + 2px);
-  transform: translateY(10px);
-  background: $input;
-  box-shadow: 0 5px 20px rgba(#000, 0.1);
-  padding: 3px;
-  opacity: 0;
-  transition: opacity 320ms, transform 320ms, visibility 1ms 320ms;
-  pointer-events: none;
+  position: absolute;
   max-height: 250px;
+  z-index: 100;
+  right: 0;
+  left: 0;
+
+  // Stlying
+  box-shadow: 0 5px 20px rgba(#000, 0.1);
   overflow: auto;
+  padding: 3px;
+
+  // Effect
+  transition: opacity 320ms, transform 320ms, visibility 1ms 320ms;
+  transform: translateY(10px);
   visibility: hidden;
+  opacity: 0;
 }
 
+// Open state
 .dropdown-open ui-dropdown {
   transition: opacity 320ms, transform 320ms, visibility 1ms;
   transform: translateY(0);
   visibility: visible;
-  pointer-events: auto;
   opacity: 1;
 }

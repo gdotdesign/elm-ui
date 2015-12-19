@@ -34,7 +34,6 @@ type Action
   | Chooser Ui.Chooser.Action
   | Calendar Ui.Calendar.Action
   | Slider Ui.Slider.Action
-  | Slider2 Ui.Slider.Action
   | MP (Int, Int)
   | IsDown Bool
   | DP Ui.DatePicker.Action
@@ -58,15 +57,13 @@ data =
 
 init =
   let
-    s2 = Ui.Slider.init 50
     datePickerOptions = Ui.DatePicker.init Ext.Date.now
   in
     ({ app = Ui.App.init
      , chooser = Ui.Chooser.init data "Select a country..." ""
      , calendar = Ui.Calendar.init Ext.Date.now
-     , draggable = Ui.Slider.init 0
      , textarea = Ui.Textarea.init "Test"
-     , slider = { s2 | disabled = False }
+     , slider = Ui.Slider.init 50
      , checkbox = Ui.Checkbox.init False
      , checkbox2 = { disabled = True, value = True }
      , inplaceInput = Ui.InplaceInput.init "Test Value"
@@ -80,7 +77,8 @@ render item =
 
 view address model =
   let
-    {chooser, colorPanel, datePicker, colorPicker} = model
+    { chooser, colorPanel, datePicker, colorPicker
+    , numberRange, slider } = model
   in
     Ui.App.view (forwardTo address App) model.app
       [ Ui.panel []
@@ -116,10 +114,15 @@ view address model =
           , Ui.ColorPicker.view (forwardTo address CPP) { colorPicker | disabled = True }
           ]
         , node "h2" [] [text "Number Range"]
-        , Ui.NumberRange.view (forwardTo address NR) model.numberRange
+        , Ui.Container.view { align = "start", direction = "row", compact = False} []
+          [ Ui.NumberRange.view (forwardTo address NR) numberRange
+          , Ui.NumberRange.view (forwardTo address NR) { numberRange | disabled = True }
+          ]
         , node "h2" [] [text "Slider"]
-        , Ui.Slider.view (forwardTo address Slider) model.draggable
-        , Ui.Slider.view (forwardTo address Slider2) model.slider
+        , Ui.Container.view { align = "start", direction = "row", compact = False} []
+          [ Ui.Slider.view (forwardTo address Slider) slider
+          , Ui.Slider.view (forwardTo address Slider) { slider | disabled = True }
+          ]
         , node "h2" [] [text "Chooser"]
         , Ui.Container.view { align = "start", direction = "row", compact = False} []
           [ Ui.Chooser.view (forwardTo address Chooser) chooser
@@ -151,13 +154,11 @@ update action model =
 
     IsDown value ->
       ({ model | slider = Ui.Slider.handleClick value model.slider
-               , draggable = Ui.Slider.handleClick value model.draggable
                , numberRange = Ui.NumberRange.handleClick value model.numberRange
                , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
                , colorPicker = Ui.ColorPicker.handleClick value model.colorPicker }, Effects.none)
     MP (x,y) ->
       ({ model | slider = Ui.Slider.handleMove x y model.slider
-               , draggable = Ui.Slider.handleMove x y model.draggable
                , numberRange = Ui.NumberRange.handleMove x y model.numberRange
                , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel
                , colorPicker = Ui.ColorPicker.handleMove x y model.colorPicker }, Effects.none)
@@ -168,8 +169,6 @@ update action model =
     Calendar act ->
       ({ model | calendar = Ui.Calendar.update act model.calendar}, Effects.none)
     Slider act ->
-      ({ model | draggable = Ui.Slider.update act model.draggable}, Effects.none)
-    Slider2 act ->
       ({ model | slider = Ui.Slider.update act model.slider}, Effects.none)
     NR act ->
       ({ model | numberRange = Ui.NumberRange.update act model.numberRange}, Effects.none)

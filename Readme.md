@@ -12,7 +12,7 @@ Interactive components so far:
 - [x] Ui.App - The base for a web or mobile application
 - [x] Ui.Button - Basic button
 - [x] Ui.Calendar - A calendar component (orignially for the date picker)
-- [x] Ui.Checkbox - Basic checkobx with two variations (checkbox, toggle)
+- [x] Ui.Checkbox - Basic checkobx with three variations (checkbox, toggle, radio)
 - [x] Ui.Chooser - A searchable, customizable select box with lots of features
 - [x] Ui.ColorPanel - An interface for manipulating a colors **hue**, **saturation** and **value**
 - [x] Ui.ColorPicker - An input for selecting a color with a color panel

@@ -8,7 +8,7 @@ var fs = require('fs')
 /* Renders the CSS */
 function renderCSS(callback){
   sass.render({
-    file: './stylesheets/ui.scss',
+    file: './stylesheets/main.scss',
   }, function(err, result) {
     if(err){
       callback(null, err.formatted)

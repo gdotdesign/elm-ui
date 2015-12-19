@@ -1,4 +1,5 @@
-module Ui.ColorPicker where
+module Ui.ColorPicker
+  (Model, Action, init, update, view, handleMove, handleClick) where
 
 {-| Color picker input component.
 
@@ -7,6 +8,9 @@ module Ui.ColorPicker where
 
 # View
 @docs view
+
+# Functions
+@docs handleMove, handleClick
 -}
 import Html.Attributes exposing (value, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick)
@@ -22,12 +26,18 @@ import Dict
 import Ui.Helpers.Dropdown as Dropdown
 import Ui.ColorPanel as ColorPanel
 
+{-| Representation of a color picker:
+  - **colorPanel** (internal) - The model of a color panel
+  - **disabled** - Whether or not the color picker is disabled
+  - **open** - Whether or not the color picker is open
+-}
 type alias Model =
   { colorPanel : ColorPanel.Model
   , disabled : Bool
   , open : Bool
   }
 
+{-| Actions that a color picker can make. -}
 type Action
   = Focus
   | Nothing
@@ -35,6 +45,10 @@ type Action
   | Toggle
   | ColorPanel ColorPanel.Action
 
+{-| Initializes a color picker with the given color.
+
+    ColorPicker.init Color.yellow
+-}
 init : Color.Color -> Model
 init color =
   { colorPanel = ColorPanel.init color
@@ -42,7 +56,7 @@ init color =
   , open = False
   }
 
-{-| Updates a date picker. -}
+{-| Updates a color picker. -}
 update : Action -> Model -> Model
 update action model =
   case action of
@@ -60,18 +74,22 @@ update action model =
 
     _ -> model
 
-handleMove : Int -> Int -> Model -> Model
-handleMove x y model =
-  { model | colorPanel = ColorPanel.handleMove x y model.colorPanel }
-
-handleClick : Bool-> Model -> Model
-handleClick pressed model =
-  { model | colorPanel = ColorPanel.handleClick pressed model.colorPanel }
-
+{-| Renders a color picker. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
   Html.Lazy.lazy2 render address model
 
+{-| Updates a color picker by coordinates. -}
+handleMove : Int -> Int -> Model -> Model
+handleMove x y model =
+  { model | colorPanel = ColorPanel.handleMove x y model.colorPanel }
+
+{-| Updates a color picker, stopping the drags if the mouse isnt pressed. -}
+handleClick : Bool-> Model -> Model
+handleClick pressed model =
+  { model | colorPanel = ColorPanel.handleClick pressed model.colorPanel }
+
+-- Render internal.
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   node "ui-color-picker" [ classList [ ("dropdown-open", model.open)

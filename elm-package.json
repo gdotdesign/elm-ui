@@ -19,6 +19,7 @@
     "Ui.Checkbox",
     "Ui.Chooser",
     "Ui.ColorPanel",
+    "Ui.ColorPicker",
     "Ui.Container",
     "Ui.DatePicker",
     "Ui.IconButton",

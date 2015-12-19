@@ -16,7 +16,7 @@ module Ext.Color where
 -}
 
 import Color exposing (Color)
-import Ext.Number
+import Ext.Number exposing (roundTo)
 
 {-| Hsv color type. -}
 type alias Hsv =
@@ -35,7 +35,7 @@ toCSSRgba hsv =
     "rgba(" ++ (toString color.red)   ++ "," ++
                (toString color.green) ++ "," ++
                (toString color.blue)  ++ "," ++
-               (toString color.alpha) ++ ")"
+               (toString (roundTo 2 color.alpha)) ++ ")"
 
 {-| Converts the given HSV color into Elm's color type. -}
 hsvToRgb : Hsv -> Color

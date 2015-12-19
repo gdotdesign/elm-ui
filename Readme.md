@@ -3,7 +3,40 @@
 ------------------------
 
 # Elm UI
-An opinionated UI library for the web in Elm, following the **Elm Architecture**. All components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).
+An opinionated UI library for the web in Elm, following the **Elm Architecture**. 
+
+## Implemented Componets
+All components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).
+
+Interactive components so far:
+- [x] Ui.App - The base for a web or mobile application
+- [x] Ui.Button - Basic button
+- [x] Ui.Calendar - A calendar component (orignially for the date picker)
+- [x] Ui.Checkbox - Basic checkobx with two variations (checkbox, toggle)
+- [x] Ui.Chooser - A searchable, customizable select box with lots of features
+- [x] Ui.ColorPanel - An interface for manipulating a colors **hue**, **saturation** and **value**
+- [x] Ui.ColorPicker - An input for selecting a color with a color panel
+- [x] Ui.Container - A flexbox container for layouts
+- [x] Ui.DatePicker - A date picker component using a calendar
+- [x] Ui.IconButton - A button with icons at the left or right sides
+- [x] Ui.Image - An image that fades when loaded
+- [x] Ui.InplaceInput - An input that can be edited in place (display and form view with a save button)
+- [x] Ui.Input - Basic input component
+- [x] Ui.NumberPad - An interface for provind number values (like a calculator or lock screen)
+- [x] Ui.NumberRange - An interface for maniuplating a number value by dragging
+- [x] Ui.Pager - A pager component
+- [x] Ui.Slider - A slider component
+- [x] Ui.Textarea - An automatically growing textarea
+
+Static components so far:
+- [x] Ui.icon - Icons from Ionicons
+- [x] Ui.title - Title
+- [x] Ui.subTitle - Subtitle
+- [x] Ui.panel - Panel for grouping content
+- [x] Ui.inputGroup - Container for and input and a label
+- [x] Ui.header - A mobile header
+- [x] Ui.headerTitle - A title for a mobile header
+- [x] Ui.fab - Floating action button
 
 ## Getting Started
 For now, you will need to **clone** or **download** this repository into a directory for server reasons:

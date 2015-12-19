@@ -32,11 +32,14 @@ import Ui
   - **date** - The month in which this date is will be displayed
   - **value** - The current selected date
   - **selectable** - Whether the user can select a date by clicking
+  - **disabled** - Whether the calendar is disabled
 -}
 type alias Model =
   { date : Date.Date
   , value : Date.Date
-  , selectable : Bool }
+  , selectable : Bool
+  , disabled : Bool
+  }
 
 {-| Actions that a calendar can make:
   - **NextMonth** - Steps the calendar to show next month
@@ -57,6 +60,7 @@ init date =
   { date = date
   , value = date
   , selectable = True
+  , disabled = False
   }
 
 {-| Updates a calendar. -}
@@ -116,15 +120,23 @@ render address model =
       , direction = "row"
       , compact = False }
 
+    nextAction =
+      if model.disabled then []
+      else [onMouseDown address NextMonth]
+
+    previousAction =
+      if model.disabled then []
+      else [onMouseDown address PreviousMonth]
+
     {- Header container -}
     container =
       Ui.Container.view continerOptions []
-        [ Ui.icon "chevron-left" True [onMouseDown address PreviousMonth]
+        [ Ui.icon "chevron-left" True previousAction
         , node "div" [] [text (format "%Y - %B" month)]
-        , Ui.icon "chevron-right" True [onMouseDown address NextMonth]
+        , Ui.icon "chevron-right" True nextAction
         ]
   in
-    node "ui-calendar" []
+    node "ui-calendar" [classList [("disabled", model.disabled)]]
       [ container
       , node "ui-calendar-table" [] cells ]
 
@@ -177,7 +189,7 @@ renderCell address date model =
       Ext.Date.isSameDate date model.value
 
     click =
-      if model.selectable && sameMonth then
+      if model.selectable && sameMonth && not model.disabled then
         [onMouseDown address (Select date)]
       else
         []

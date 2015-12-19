@@ -75,4 +75,24 @@ ui-calendar {
       cursor: pointer;
     }
   }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+    background: $disabled;
+
+    > * {
+      pointer-events: none;
+    }
+
+    ui-calendar-cell {
+      &:not(:empty) {
+        @include colors(dampen($disabled, 10%));
+      }
+
+      &.selected {
+        @include colors(dampen($disabled, 50%));
+      }
+    }
+  }
 }

@@ -34,8 +34,8 @@ type Action
   | Chooser Ui.Chooser.Action
   | Calendar Ui.Calendar.Action
   | Slider Ui.Slider.Action
-  | MP (Int, Int)
-  | IsDown Bool
+  | MousePosition (Int, Int)
+  | MouseIsDown Bool
   | DP Ui.DatePicker.Action
   | TA Ui.Textarea.Action
   | Checkbox Ui.Checkbox.Action
@@ -72,7 +72,8 @@ init =
      , numberRange = Ui.NumberRange.init 0
      , colorPanel = Ui.ColorPanel.init Color.blue
      , colorPicker = Ui.ColorPicker.init Color.yellow
-     , datePicker = { datePickerOptions | format = "%Y %B %e." } }, Effects.none)
+     , datePicker = { datePickerOptions | format = "%Y %B %e." }
+     }, Effects.none)
 
 render item =
   div [] [text item.label]
@@ -80,67 +81,134 @@ render item =
 view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker
-    , numberRange, slider, checkbox, checkbox2, checkbox3 } = model
+    , numberRange, slider, checkbox, checkbox2, checkbox3
+    , calendar } = model
   in
     Ui.App.view (forwardTo address App) model.app
       [ Ui.panel []
-        [ node "h2" [] [text "Buttons"]
-        , Ui.Container.view { align = "start", direction = "row", compact = False} []
-          [ Ui.Button.view address Nothing { text = "Test", kind = "primary", disabled = False }
-          , Ui.IconButton.view address Nothing { side = "left", text = "Download", kind = "success", glyph = "android-download", disabled = False }
-          , Ui.Button.view address Nothing { text = "Disabled", kind = "danger", disabled = True }
+        [ node "h2" [] [text "Button"]
+        , Ui.Container.row []
+          [ Ui.Button.view address Nothing { text = "Primary"
+                                           , kind = "primary"
+                                           , disabled = False }
+          , Ui.Button.view address Nothing { text = "Success"
+                                           , kind = "success"
+                                           , disabled = False }
+          , Ui.Button.view address Nothing { text = "Warning"
+                                           , kind = "warning"
+                                           , disabled = False }
+          , Ui.Button.view address Nothing { text = "Danger"
+                                           , kind = "danger"
+                                           , disabled = False }
+          , Ui.Button.view address Nothing { text = "Disabled"
+                                           , kind = "danger"
+                                           , disabled = True }
           ]
-        , node "h2" [] [text "Checkbox"]
-        , Ui.Container.view { align = "start", direction = "column", compact = False} []
-          [ Ui.Container.view { align = "start", direction = "row", compact = False} []
-            [ Ui.Checkbox.view (forwardTo address Checkbox) checkbox
-            , Ui.Checkbox.view (forwardTo address Checkbox) { checkbox | disabled = True }
-            ]
-          , Ui.Container.view { align = "start", direction = "row", compact = False} []
-            [ Ui.Checkbox.toggleView (forwardTo address Checkbox2) checkbox2
-            , Ui.Checkbox.toggleView (forwardTo address Checkbox2) { checkbox2 | disabled = True }
-            ]
-          , Ui.Container.view { align = "start", direction = "row", compact = False} []
-            [ Ui.Checkbox.radioView (forwardTo address Checkbox3) checkbox3
-            , Ui.Checkbox.radioView (forwardTo address Checkbox3) { checkbox3 | disabled = True }
-            ]
+
+        , node "h2" [] [text "Icon Button"]
+        , Ui.Container.row []
+          [ Ui.IconButton.view address Nothing { side = "right"
+                                               , text = "Primary"
+                                               , kind = "Primary"
+                                               , glyph = "android-download"
+                                               , disabled = False }
+          , Ui.IconButton.view address Nothing { side = "right"
+                                               , text = "Success"
+                                               , kind = "success"
+                                               , glyph = "checkmark"
+                                               , disabled = False }
+          , Ui.IconButton.view address Nothing { side = "right"
+                                               , text = "Warning"
+                                               , kind = "warning"
+                                               , glyph = "alert"
+                                               , disabled = False }
+          , Ui.IconButton.view address Nothing { side = "right"
+                                               , text = "Danger"
+                                               , kind = "danger"
+                                               , glyph = "close"
+                                               , disabled = False }
+          , Ui.IconButton.view address Nothing { side = "left"
+                                               , text = "Disabled"
+                                               , kind = "success"
+                                               , glyph = "paper-airplane"
+                                               , disabled = True }
           ]
-        , node "h2" [] [text "Color Panel"]
-        , Ui.Container.view { align = "start", direction = "row", compact = False} []
-          [ Ui.ColorPanel.view (forwardTo address CP) colorPanel
-          , Ui.ColorPanel.view (forwardTo address CP) { colorPanel | disabled = True }
-          ]
-        , node "h2" [] [text "Color Picker"]
-        , Ui.Container.view { align = "start", direction = "row", compact = False} []
-          [ Ui.ColorPicker.view (forwardTo address CPP) colorPicker
-          , Ui.ColorPicker.view (forwardTo address CPP) { colorPicker | disabled = True }
-          ]
-        , node "h2" [] [text "Number Range"]
-        , Ui.Container.view { align = "start", direction = "row", compact = False} []
-          [ Ui.NumberRange.view (forwardTo address NR) numberRange
-          , Ui.NumberRange.view (forwardTo address NR) { numberRange | disabled = True }
-          ]
-        , node "h2" [] [text "Slider"]
-        , Ui.Container.view { align = "start", direction = "row", compact = False} []
-          [ Ui.Slider.view (forwardTo address Slider) slider
-          , Ui.Slider.view (forwardTo address Slider) { slider | disabled = True }
-          ]
-        , node "h2" [] [text "Chooser"]
-        , Ui.Container.view { align = "start", direction = "row", compact = False} []
-          [ Ui.Chooser.view (forwardTo address Chooser) chooser
-          , Ui.Chooser.view (forwardTo address Chooser) { chooser | disabled = True }
-          ]
-        , node "h2" [] [text "Date Picker"]
-        , Ui.Container.view { align = "start", direction = "row", compact = False} []
-          [ Ui.DatePicker.view (forwardTo address DP) datePicker
-          , Ui.DatePicker.view (forwardTo address DP) { datePicker | disabled = True }
-          ]
-        , node "h2" [] [text "Autogrow Textarea"]
-        , Ui.Textarea.view (forwardTo address TA) model.textarea
+
         , node "h2" [] [text "Calendar"]
-        , Ui.Calendar.view (forwardTo address Calendar) model.calendar
+        , Ui.Container.row []
+          [ Ui.Calendar.view (forwardTo address Calendar) calendar
+          , Ui.Calendar.view (forwardTo address Calendar)
+              { calendar | disabled = True }
+          ]
+
+        , node "h2" [] [text "Checkbox"]
+        , Ui.Container.column []
+          [ Ui.Container.row []
+            [ Ui.Checkbox.view (forwardTo address Checkbox) checkbox
+            , Ui.Checkbox.view (forwardTo address Checkbox)
+                { checkbox | disabled = True }
+            ]
+          , Ui.Container.row []
+            [ Ui.Checkbox.toggleView (forwardTo address Checkbox2) checkbox2
+            , Ui.Checkbox.toggleView (forwardTo address Checkbox2)
+                { checkbox2 | disabled = True }
+            ]
+          , Ui.Container.row []
+            [ Ui.Checkbox.radioView (forwardTo address Checkbox3) checkbox3
+            , Ui.Checkbox.radioView (forwardTo address Checkbox3)
+                { checkbox3 | disabled = True }
+            ]
+          ]
+
+        , node "h2" [] [text "Chooser"]
+        , Ui.Container.row []
+          [ Ui.Chooser.view (forwardTo address Chooser) chooser
+          , Ui.Chooser.view (forwardTo address Chooser)
+              { chooser | disabled = True }
+          ]
+
+        , node "h2" [] [text "Color Panel"]
+        , Ui.Container.row []
+          [ Ui.ColorPanel.view (forwardTo address CP) colorPanel
+          , Ui.ColorPanel.view (forwardTo address CP)
+              { colorPanel | disabled = True }
+          ]
+
+        , node "h2" [] [text "Color Picker"]
+        , Ui.Container.row []
+          [ Ui.ColorPicker.view (forwardTo address CPP) colorPicker
+          , Ui.ColorPicker.view (forwardTo address CPP)
+              { colorPicker | disabled = True }
+          ]
+
+        , node "h2" [] [text "Date Picker"]
+        , Ui.Container.row []
+          [ Ui.DatePicker.view (forwardTo address DP) datePicker
+          , Ui.DatePicker.view (forwardTo address DP)
+              { datePicker | disabled = True }
+          ]
+
+        , node "h2" [] [text "Number Range"]
+        , Ui.Container.row []
+          [ Ui.NumberRange.view (forwardTo address NR) numberRange
+          , Ui.NumberRange.view (forwardTo address NR)
+              { numberRange | disabled = True }
+          ]
+
+        , node "h2" [] [text "Slider"]
+        , Ui.Container.row []
+          [ Ui.Slider.view (forwardTo address Slider) slider
+          , Ui.Slider.view (forwardTo address Slider)
+            { slider | disabled = True }
+          ]
+
+        , node "h2" [] [text "Autogrow Textarea"]
+        , Ui.Textarea.view (forwardTo address TA)
+            model.textarea
+
         , node "h2" [] [text "Inplace Input"]
-        , Ui.InplaceInput.view (forwardTo address InplaceInput) model.inplaceInput
+        , Ui.InplaceInput.view (forwardTo address InplaceInput)
+            model.inplaceInput
         ]
       ]
 
@@ -156,12 +224,12 @@ update action model =
       ({ model | app = Ui.App.update act model.app }, Effects.none)
 
 
-    IsDown value ->
+    MouseIsDown value ->
       ({ model | slider = Ui.Slider.handleClick value model.slider
                , numberRange = Ui.NumberRange.handleClick value model.numberRange
                , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
                , colorPicker = Ui.ColorPicker.handleClick value model.colorPicker }, Effects.none)
-    MP (x,y) ->
+    MousePosition (x,y) ->
       ({ model | slider = Ui.Slider.handleMove x y model.slider
                , numberRange = Ui.NumberRange.handleMove x y model.numberRange
                , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel
@@ -196,8 +264,8 @@ app =
     StartApp.start { init = (state, effect)
                    , view = view
                    , update = update
-                   , inputs = [Signal.map MP Mouse.position,
-                              Signal.map IsDown Mouse.isDown] }
+                   , inputs = [Signal.map MousePosition Mouse.position,
+                              Signal.map MouseIsDown Mouse.isDown] }
 
 main =
   app.html

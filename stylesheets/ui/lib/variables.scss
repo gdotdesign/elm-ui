@@ -1,8 +1,8 @@
 // Types
 $primary: #0278AE;
 $success: #0BC449;
-$warning: #F79C00;
-$danger: #D1573C;
+$warning: #EB9500;
+$danger: #DB2D06;
 
 // Calulated colros
 $background: mix($primary, #FCFCFC, 3%);
@@ -11,8 +11,7 @@ $input: mix($primary, #FFF, 1%);
 
 // Border
 $border-radius: 2px;
-$border: 1px solid $secondary;
-$border-color: rgba(#000, 0.1);
+$border: 1px solid rgba(#000, 0.1);
 
 // Disabled
 $disabled: desaturate(dampen($input, 15%), 60%);

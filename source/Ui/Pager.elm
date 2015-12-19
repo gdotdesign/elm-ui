@@ -1,4 +1,5 @@
-module Ui.Pager where
+module Ui.Pager
+  (Model, Action, init, update, view, select) where
 
 {-| Pager Component.
 
@@ -14,6 +15,7 @@ module Ui.Pager where
 import Html.Attributes exposing (style, classList)
 import Html.Extra exposing (onTransitionEnd)
 import Html exposing (node)
+import Html.Lazy
 import List.Extra
 
 {-| Representation of a pager.
@@ -58,6 +60,11 @@ update action model =
 {-| Renders a pager. -}
 view : Signal.Address Action -> List Html.Html -> Model -> Html.Html
 view address pages model =
+  Html.Lazy.lazy3 render address pages model
+
+-- Render internal
+render : Signal.Address Action -> List Html.Html -> Model -> Html.Html
+render address pages model =
   let
     updatedPage page =
       let

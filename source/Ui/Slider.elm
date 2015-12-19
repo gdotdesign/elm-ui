@@ -34,6 +34,7 @@ handle mouse events like so:
 import Html.Extra exposing (onWithDimensions, onKeys)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
+import Html.Lazy
 
 import Native.Browser
 import Dict
@@ -100,6 +101,11 @@ update action model =
 {-| Renders a slider. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     position =
       (toString (clamp 0 100 model.value)) ++ "%"

@@ -16,6 +16,7 @@ import Html.Attributes exposing (classList, tabindex)
 import Html.Extra exposing (onKeys, onTouch)
 import Html.Events exposing (onClick)
 import Html exposing (node)
+import Html.Lazy
 import Dict
 
 import Ui
@@ -57,6 +58,11 @@ setValue value model =
 {-| Renders a checkbox. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal.
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   node "ui-checkbox"
     (attributes address model)
     [Ui.icon "checkmark" False []]
@@ -64,6 +70,11 @@ view address model =
 {-| Renders a checkbox as a toggle. -}
 toggleView : Signal.Address Action -> Model -> Html.Html
 toggleView address model =
+  Html.Lazy.lazy2 toggleRender address model
+
+-- Render toggle internal.
+toggleRender : Signal.Address Action -> Model -> Html.Html
+toggleRender address model =
   node "ui-checkbox-toggle"
     (attributes address model)
     [ node "ui-checkbox-toggle-bg" [] []

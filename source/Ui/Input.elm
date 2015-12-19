@@ -1,4 +1,5 @@
-module Ui.Input where
+module Ui.Input
+  (Model, Action, init, update, view, setValue) where
 
 {-| Component for text based input.
 
@@ -14,6 +15,7 @@ module Ui.Input where
 import Html.Attributes exposing (value, spellcheck, placeholder, type')
 import Html.Extra exposing (onInput)
 import Html exposing (node)
+import Html.Lazy
 import String
 
 {-| Representation of an input:
@@ -54,6 +56,11 @@ update action model =
 {-| Renders an input. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   node "input" [ placeholder model.placeholder
                , onInput address Input
                , value model.value

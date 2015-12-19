@@ -13,6 +13,8 @@ import Html exposing (node, textarea, div, text, button)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onEnter)
+import Html.Lazy
+
 import Signal exposing (forwardTo)
 import String
 
@@ -87,6 +89,11 @@ update action model =
 {-| Renders an inplace input. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     content =
       case model.open of

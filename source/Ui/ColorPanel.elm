@@ -18,6 +18,7 @@ import Html.Extra exposing (onWithDimensions)
 import Html exposing (node, div, text)
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
+import Html.Lazy
 
 import Ui.Helpers.Drag as Drag
 
@@ -73,6 +74,11 @@ update action model =
 {-| Renders a color panel. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     background =
       "hsla(" ++ (toString (round (model.value.hue * 360))) ++ ", 100%, 50%, 1)"

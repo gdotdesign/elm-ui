@@ -16,6 +16,7 @@ import Html.Attributes exposing (value, spellcheck, placeholder, classList)
 import Html.Extra exposing (onEnterStop, onInput, onStop)
 import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onFocus, onBlur)
+import Html.Lazy
 import Native.Browser
 import String
 import List
@@ -73,6 +74,11 @@ update action model =
 {-| Renders a textarea. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     base =
       [ placeholder model.placeholder

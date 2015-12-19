@@ -1,5 +1,5 @@
 module Ui.NumberPad
-  (Model, Action, init, update, ViewModel, view, viewLazy, setValue) where
+  (Model, Action, init, update, ViewModel, view, setValue) where
 
 {-| Number pad component.
 
@@ -7,7 +7,7 @@ module Ui.NumberPad
 @docs Model, Action, init, update
 
 # View
-@docs ViewModel, view, viewLazy
+@docs ViewModel, view
 
 # Functions
 @docs setValue
@@ -78,14 +78,14 @@ update action model =
     _ ->
       model
 
-{-| Renders a number pad lazily. -}
-viewLazy : Signal.Address Action -> ViewModel -> Model -> Html.Html
-viewLazy address viewModel model =
-  Html.Lazy.lazy3 view address viewModel model
-
 {-| Renders a number pad. -}
 view : Signal.Address Action -> ViewModel -> Model -> Html.Html
 view address viewModel model =
+  Html.Lazy.lazy3 render address viewModel model
+
+-- Renders a number pad.
+render : Signal.Address Action -> ViewModel -> Model -> Html.Html
+render address viewModel model =
   let
     value =
       if model.format then prettyInt ',' model.value else toString model.value

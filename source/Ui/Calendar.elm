@@ -7,7 +7,7 @@ can select a date by clicking on it.
 @docs Model, Action, init, update
 
 # View
-@docs view, viewLazy
+@docs view, render
 
 # Functions
 @docs setValue, nextDay, previousDay
@@ -72,14 +72,14 @@ update action model =
     Select date ->
       { model | value = date }
 
-{-| Renders a calendar lazily. -}
-viewLazy : Signal.Address Action -> Model -> Html.Html
-viewLazy address model =
-  Html.Lazy.lazy2 view address model
-
-{-| Renders a calendar. -}
+{-| Renders a calendar (lazy). -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+{-| Renders a calendar. -}
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     {- The date of the month -}
     month =

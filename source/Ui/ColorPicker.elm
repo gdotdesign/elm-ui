@@ -1,5 +1,13 @@
 module Ui.ColorPicker where
 
+{-| Color picker input component.
+
+# Model
+@docs Model, Action, init, update
+
+# View
+@docs view
+-}
 import Html.Attributes exposing (value, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick)
 import Html.Extra exposing (onKeys)
@@ -25,8 +33,6 @@ type Action
   | Nothing
   | Close
   | Toggle
-  | Increment
-  | Decrement
   | ColorPanel ColorPanel.Action
 
 init : Color.Color -> Model
@@ -49,14 +55,6 @@ update action model =
     Toggle ->
       Dropdown.toggle model
 
-    Decrement ->
-      model
-        |> Dropdown.open
-
-    Increment ->
-      model
-        |> Dropdown.open
-
     ColorPanel act ->
       { model | colorPanel = ColorPanel.update act model.colorPanel }
 
@@ -72,6 +70,10 @@ handleClick pressed model =
 
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   node "ui-color-picker" [ classList [ ("dropdown-open", model.open)
                                      , ("disabled", model.disabled)
                                      ]
@@ -85,10 +87,6 @@ view address model =
       , value (Ext.Color.toCSSRgba model.colorPanel.value)
       , onKeys address Nothing (Dict.fromList [ (27, Close)
                                               , (13, Toggle)
-                                              , (40, Increment)
-                                              , (38, Decrement)
-                                              , (39, Increment)
-                                              , (37, Decrement)
                                               ])
       ] []
     , Dropdown.view []

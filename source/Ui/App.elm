@@ -1,4 +1,5 @@
-module Ui.App where
+module Ui.App
+  (Model, Action, init, update, view) where
 
 {-| Base frame for a web/mobile application:
   - Loads the stylesheet
@@ -14,6 +15,7 @@ module Ui.App where
 import Html.Attributes exposing (name, content)
 import Html.Events exposing (onClick)
 import Html exposing (node)
+import Html.Lazy
 
 import Ui
 
@@ -48,8 +50,13 @@ update action model =
     view address []
       [text "Hello there!"]
 -}
-view : Signal.Address Action -> Model -> List Html.Html -> Html.Html
+view: Signal.Address Action -> Model -> List Html.Html -> Html.Html
 view address model children =
+  Html.Lazy.lazy3 render address model children
+
+-- Render (Internal)
+render : Signal.Address Action -> Model -> List Html.Html -> Html.Html
+render address model children =
   node "ui-app" [onClick address Clicked]
     ([ Ui.stylesheetLink "/index.css" address Loaded
      , node "meta" [ name "viewport"

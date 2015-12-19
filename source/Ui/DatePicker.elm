@@ -1,4 +1,5 @@
-module Ui.DatePicker where
+module Ui.DatePicker
+  (Model, Action, init, update, view, setValue) where
 
 {-| Date picker input component.
 
@@ -6,7 +7,7 @@ module Ui.DatePicker where
 @docs Model, Action, init, update
 
 # View
-@docs view, viewLazy
+@docs view
 
 # Functions
 @docs setValue
@@ -107,14 +108,14 @@ update action model =
 
     _ -> model
 
-{-| Renders a date picker lazily. -}
-viewLazy : Signal.Address Action -> Model -> Html.Html
-viewLazy address model =
-  Html.Lazy.lazy2 view address model
-
 {-| Renders a date picker. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Renders a date picker.
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   node "ui-date-picker" [ classList [ ("dropdown-open", model.open)
                                     , ("disabled", model.disabled)
                                     ]

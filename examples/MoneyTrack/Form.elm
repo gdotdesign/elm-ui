@@ -123,13 +123,13 @@ view : Signal.Address Action -> ViewModel -> Model -> Html.Html
 view address viewModel model =
   let
     datePicker =
-      Ui.DatePicker.viewLazy (forwardTo address DatePicker) model.datePicker
+      Ui.DatePicker.view (forwardTo address DatePicker) model.datePicker
 
     accountChooser =
-      Ui.Chooser.viewLazy (forwardTo address AccountChooser) model.accountChooser
+      Ui.Chooser.view (forwardTo address AccountChooser) model.accountChooser
 
     categoryChooser =
-      Ui.Chooser.viewLazy (forwardTo address CategoryChooser) model.categoryChooser
+      Ui.Chooser.view (forwardTo address CategoryChooser) model.categoryChooser
   in
     Ui.Container.view { align = "stretch"
                       , direction = "column"
@@ -147,7 +147,7 @@ view address viewModel model =
           [ Ui.inputGroup "Date" datePicker
           , Ui.inputGroup "Account" accountChooser
           , Ui.inputGroup "Category" categoryChooser
-          , Ui.NumberPad.viewLazy
+          , Ui.NumberPad.view
               (forwardTo address NumberPad)
               { bottomLeft = viewModel.bottomLeft
               , bottomRight = viewModel.bottomRight

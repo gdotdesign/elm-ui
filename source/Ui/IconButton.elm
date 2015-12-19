@@ -1,4 +1,5 @@
-module Ui.IconButton where
+module Ui.IconButton
+  (Model, init, view) where
 
 {-| Button with an icon either on the left or right side.
 
@@ -9,6 +10,7 @@ module Ui.IconButton where
 @docs view
 -}
 import Html exposing (node, text)
+import Html.Lazy
 
 import Ui.Button exposing (attributes)
 import Ui
@@ -35,6 +37,11 @@ init glyph text =
 {-| Renders an icon button. -}
 view : Signal.Address a -> a -> Model -> Html.Html
 view address action model =
+  Html.Lazy.lazy3 render address action model
+
+-- Render internal.
+render : Signal.Address a -> a -> Model -> Html.Html
+render address action model =
   let
     icon = Ui.icon model.glyph False []
     span = node "span" [] [text model.text]

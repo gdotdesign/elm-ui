@@ -10,6 +10,7 @@ module Ui.Container (Model, view) where
 -}
 import Html.Attributes exposing (classList, style)
 import Html exposing (node)
+import Html.Lazy
 
 {-| Representation of a container. -}
 type alias Model =
@@ -21,9 +22,14 @@ type alias Model =
 {-| Renders a container. -}
 view : Model -> List Html.Attribute -> List Html.Html -> Html.Html
 view model attributes children =
+  Html.Lazy.lazy3 render model attributes children
+
+-- Render internal
+render : Model -> List Html.Attribute -> List Html.Html -> Html.Html
+render model attributes children =
   node "ui-container" ([classes model] ++ attributes) children
 
-{- Returns classes for a container -}
+-- Returns classes for a container
 classes : Model -> Html.Attribute
 classes model =
   classList [

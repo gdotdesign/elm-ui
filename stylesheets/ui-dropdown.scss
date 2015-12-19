@@ -11,14 +11,17 @@ ui-dropdown {
   box-shadow: 0 5px 20px rgba(0,0,0,0.1);
   padding: 3px;
   opacity: 0;
-  transition: 320ms;
+  transition: opacity 320ms, transform 320ms, visibility 1ms 320ms;
   pointer-events: none;
   max-height: 250px;
   overflow: auto;
+  visibility: hidden;
 }
 
 .dropdown-open ui-dropdown {
+  transition: opacity 320ms, transform 320ms, visibility 1ms;
   transform: translateY(0);
+  visibility: visible;
   pointer-events: auto;
   opacity: 1;
 }

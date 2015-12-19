@@ -19,6 +19,7 @@ import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterStop)
 import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onFocus, onBlur)
 import Html exposing (node, input)
+import Html.Lazy
 
 import Ext.Number exposing (formatFloat)
 import Json.Decode as Json
@@ -116,6 +117,11 @@ update action model =
 {-| Renders a number range. -}
 view: Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render: Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     attributes =
       if model.editing then

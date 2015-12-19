@@ -1,4 +1,5 @@
-module Ui.Button where
+module Ui.Button
+  (Model, init, view, attributes) where
 
 {-| Basic button component with disabled state and different types.
 
@@ -15,6 +16,7 @@ import Html.Extra exposing (onTouch, onEnter)
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
+import Html.Lazy
 
 import Ui
 
@@ -42,6 +44,11 @@ init =
 -}
 view : Signal.Address a -> a -> Model -> Html.Html
 view address action model =
+  Html.Lazy.lazy3 render address action model
+
+-- Render internal.
+render : Signal.Address a -> a -> Model -> Html.Html
+render address action model =
   node "ui-button"
     (attributes address model action)
     [node "span" [] [text model.text]]

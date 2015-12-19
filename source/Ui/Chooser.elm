@@ -1,6 +1,6 @@
 module Ui.Chooser
   (Model, Item, Action, init, update, close, toggleItem,
-   getFirstSelected, view, viewLazy, updateData, selectFirst) where
+   getFirstSelected, view, updateData, selectFirst) where
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
@@ -9,7 +9,7 @@ form a list of choises, with lots of options.
 @docs Model, Item, Action, init, update
 
 # View
-@docs view, viewLazy
+@docs view
 
 # Functions
 @docs toggleItem, close, getFirstSelected, updateData, selectFirst
@@ -151,14 +151,14 @@ update action model =
   in
     model'
 
-{-| Renders a chooser lazily. -}
-viewLazy : Signal.Address Action -> Model -> Html.Html
-viewLazy address model =
-  Html.Lazy.lazy2 view address model
-
 {-| Renders a chooser. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Renders a chooser.
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     dropdown =
       [ Dropdown.view [] (List.map (\item -> renderItem item address model) (items model)) ]

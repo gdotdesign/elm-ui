@@ -12,10 +12,10 @@ module Ui.ColorPicker
 # Functions
 @docs handleMove, handleClick
 -}
-import Html.Attributes exposing (value, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick)
+import Html.Attributes exposing (classList, style)
+import Html exposing (node, div, text)
 import Html.Extra exposing (onKeys)
-import Html exposing (node, input)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
@@ -25,6 +25,7 @@ import Dict
 
 import Ui.Helpers.Dropdown as Dropdown
 import Ui.ColorPanel as ColorPanel
+import Ui
 
 {-| Representation of a color picker:
   - **colorPanel** (internal) - The model of a color panel
@@ -92,23 +93,27 @@ handleClick pressed model =
 -- Render internal.
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
-  node "ui-color-picker" [ classList [ ("dropdown-open", model.open)
-                                     , ("disabled", model.disabled)
-                                     ]
-                        ]
-    [ input
-      [ onFocus address Focus
-      , disabled model.disabled
-      , onClick address Focus
-      , onBlur address Close
-      , readonly True
-      , value (Ext.Color.toCSSRgba model.colorPanel.value)
-      , onKeys address Nothing (Dict.fromList [ (27, Close)
-                                              , (13, Toggle)
-                                              ])
-      ] []
-    , Dropdown.view []
-      [ node "ui-dropdown-overlay" [onClick address Close] []
-      , ColorPanel.view (forwardTo address ColorPanel) model.colorPanel
+  let
+    color = Ext.Color.toCSSRgba model.colorPanel.value
+    actions =
+      if model.disabled then []
+      else [ onFocus address Focus
+           , onClick address Focus
+           , onBlur address Close
+           , onKeys address Nothing (Dict.fromList [ (27, Close)
+                                                   , (13, Toggle)
+                                                   ])
+           ]
+  in
+    node "ui-color-picker" ([ classList [ ("dropdown-open", model.open)
+                                        , ("disabled", model.disabled)
+                                        ]
+                            ] ++ actions ++ (Ui.tabIndex model))
+      [ div [] [text color]
+      , node "ui-color-picker-rect" []
+        [ div [style [("background-color", color)]] [] ]
+      , Dropdown.view []
+        [ node "ui-dropdown-overlay" [onClick address Close] []
+        , ColorPanel.view (forwardTo address ColorPanel) model.colorPanel
+        ]
       ]
-    ]

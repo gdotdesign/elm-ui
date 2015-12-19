@@ -1,0 +1,28 @@
+input:not([type]),
+input[type=text],
+input[type=email],
+input[type=password] {
+  @extend %focused-idle;
+
+  @include colors($input);
+  @include border;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 16px;
+  padding: 6px 9px;
+  height: 36px;
+
+  &::-webkit-input-placeholder {
+    line-height: 22px;
+  }
+
+  &[readonly]:focus, &:focus {
+    @extend %focused;
+  }
+
+  &[readonly] {
+    &::-moz-selection { background: transparent; }
+    &::selection { background: transparent; }
+  }
+}

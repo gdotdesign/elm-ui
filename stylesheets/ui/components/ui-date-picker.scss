@@ -1,0 +1,23 @@
+ui-date-picker {
+  @extend %picker;
+
+  // Styling
+  display: inline-flex;
+  min-width: 220px;
+
+  // Icon on the right side
+  ui-icon {
+    flex: 0 0 30px;
+    margin-left: 10px;
+  }
+
+  // Date text
+  > div {
+    @include ellipsis;
+    flex: 1;
+  }
+
+  ui-calendar {
+    border: 0;
+  }
+}

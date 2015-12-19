@@ -2,6 +2,7 @@ var app = require('koa')();
 var sass = require('node-sass');
 var serve = require('koa-static-folder');
 var router = require('koa-router')();
+var autoprefixer = require('autoprefixer');
 var exec = require('child_process').exec;
 var fs = require('fs')
 
@@ -13,7 +14,11 @@ function renderCSS(callback){
     if(err){
       callback(null, err.formatted)
     } else {
-      callback(null, result.css)
+      autoprefixer
+        .process(result.css)
+        .then(function(result2){
+          callback(null, result2.css)
+        })
     }
   });
 }

@@ -47,11 +47,13 @@ ui-checkbox-radio {
   @include colors($input);
   @include border;
 
+  // Styling
   border-radius: 50%;
   position: relative;
   height: 36px;
   width: 36px;
 
+  // Inside Circle
   ui-checkbox-radio-circle {
     transform: scale(0.4);
     opacity: 0;
@@ -66,11 +68,13 @@ ui-checkbox-radio {
     top: 8px;
   }
 
+  // Checked state
   &.checked ui-checkbox-radio-circle {
     transform: scale(1);
     opacity: 1;
   }
 
+  // Disabled state
   &.disabled {
     @extend %disabled;
     @include colors($disabled);
@@ -80,6 +84,7 @@ ui-checkbox-radio {
     }
   }
 
+  // Focued state
   &:focus {
     @extend %focused;
 

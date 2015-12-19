@@ -7,12 +7,14 @@
 
 @import 'states/disabled';
 @import 'states/focused';
+@import 'states/picker';
 
 @import 'components/ui-app';
 @import 'components/ui-calendar';
 @import 'components/ui-chooser';
 @import 'components/ui-container';
-@import 'components/ui-datepicker';
+@import 'components/ui-date-picker';
+@import 'components/ui-color-picker';
 @import 'components/ui-dropdown';
 @import 'components/ui-icon';
 @import 'components/ui-image';
@@ -25,11 +27,11 @@
 @import 'components/ui-number-pad';
 @import 'components/ui-number-range';
 @import 'components/ui-color-panel';
+@import 'components/ui-input';
 
 * {
   box-sizing: border-box;
   -webkit-touch-callout: none;
-  user-select: none;
 }
 
 html {
@@ -51,6 +53,11 @@ ui-spacer {
 ui-subtitle {
   font-size: 18px;
   font-weight: 600;
+}
+
+ui-panel {
+  display: block;
+  padding: 20px;
 }
 
 ui-pager {

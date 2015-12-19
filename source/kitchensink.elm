@@ -80,16 +80,15 @@ render item =
 
 view address model =
   let
-    chooser = model.chooser
-    colorPanel = model.colorPanel
+    {chooser, colorPanel, datePicker, colorPicker} = model
   in
     Ui.App.view (forwardTo address App) model.app
       [ Ui.panel []
         [ node "h2" [] [text "Buttons"]
         , Ui.Container.view { align = "start", direction = "row", compact = False} []
           [ Ui.Button.view address Nothing { text = "Test", kind = "primary", disabled = False }
-          , Ui.Button.view address Nothing { text = "Disabled", kind = "danger", disabled = True }
           , Ui.IconButton.view address Nothing { side = "left", text = "Download", kind = "success", glyph = "android-download", disabled = False }
+          , Ui.Button.view address Nothing { text = "Disabled", kind = "danger", disabled = True }
           ]
         , node "h2" [] [text "Checkbox"]
         , Ui.Container.view { align = "start", direction = "column", compact = False} []
@@ -112,7 +111,10 @@ view address model =
           , Ui.ColorPanel.view (forwardTo address CP) { colorPanel | disabled = True }
           ]
         , node "h2" [] [text "Color Picker"]
-        , Ui.ColorPicker.view (forwardTo address CPP) model.colorPicker
+        , Ui.Container.view { align = "start", direction = "row", compact = False} []
+          [ Ui.ColorPicker.view (forwardTo address CPP) colorPicker
+          , Ui.ColorPicker.view (forwardTo address CPP) { colorPicker | disabled = True }
+          ]
         , node "h2" [] [text "Number Range"]
         , Ui.NumberRange.view (forwardTo address NR) model.numberRange
         , node "h2" [] [text "Slider"]
@@ -124,7 +126,10 @@ view address model =
           , Ui.Chooser.view (forwardTo address Chooser) { chooser | disabled = True }
           ]
         , node "h2" [] [text "Date Picker"]
-        , Ui.DatePicker.view (forwardTo address DP) model.datePicker
+        , Ui.Container.view { align = "start", direction = "row", compact = False} []
+          [ Ui.DatePicker.view (forwardTo address DP) datePicker
+          , Ui.DatePicker.view (forwardTo address DP) { datePicker | disabled = True }
+          ]
         , node "h2" [] [text "Autogrow Textarea"]
         , Ui.Textarea.view (forwardTo address TA) model.textarea
         , node "h2" [] [text "Calendar"]

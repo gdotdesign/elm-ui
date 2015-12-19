@@ -12,10 +12,10 @@ module Ui.DatePicker
 # Functions
 @docs setValue
 -}
-import Html.Attributes exposing (value, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick)
+import Html.Attributes exposing (classList)
+import Html exposing (node, div, text)
 import Html.Extra exposing (onKeys)
-import Html exposing (node, input)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
@@ -26,6 +26,7 @@ import Date
 
 import Ui.Helpers.Dropdown as Dropdown
 import Ui.Calendar as Calendar
+import Ui
 
 {-| Representation of a date picker component:
   - **calendar** - The model of a calendar
@@ -116,30 +117,33 @@ view address model =
 -- Renders a date picker.
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
-  node "ui-date-picker" [ classList [ ("dropdown-open", model.open)
-                                    , ("disabled", model.disabled)
-                                    ]
-                        ]
-    [ input
-      [ onFocus address Focus
-      , disabled model.disabled
-      , onClick address Focus
-      , onBlur address Close
-      , readonly True
-      , value (format model.format model.calendar.value)
-      , onKeys address Nothing (Dict.fromList [ (27, Close)
-                                              , (13, Toggle)
-                                              , (40, Increment)
-                                              , (38, Decrement)
-                                              , (39, Increment)
-                                              , (37, Decrement)
-                                              ])
-      ] []
-    , Dropdown.view []
-      [ node "ui-dropdown-overlay" [onClick address Close] []
-      , Calendar.view (forwardTo address Calendar) model.calendar
+  let
+    actions =
+      if model.disabled then []
+      else [ onFocus address Focus
+           , onClick address Focus
+           , onBlur address Close
+           , onKeys address Nothing
+             (Dict.fromList [ (27, Close)
+             , (13, Toggle)
+             , (40, Increment)
+             , (38, Decrement)
+             , (39, Increment)
+             , (37, Decrement)
+             ])
+           ]
+  in
+    node "ui-date-picker" ([ classList [ ("dropdown-open", model.open)
+                                       , ("disabled", model.disabled)
+                                       ]
+                           ] ++ actions ++ (Ui.tabIndex model))
+      [ div [] [text (format model.format model.calendar.value)]
+      , Ui.icon "calendar" False []
+      , Dropdown.view []
+        [ node "ui-dropdown-overlay" [onClick address Close] []
+        , Calendar.view (forwardTo address Calendar) model.calendar
+        ]
       ]
-    ]
 
 {-| Sets the value of a date picker -}
 setValue : Date.Date -> Model -> Model

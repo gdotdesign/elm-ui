@@ -1,0 +1,39 @@
+ui-color-picker {
+  @extend %picker;
+
+  display: inline-flex;
+  padding-right: 52px;
+  min-width: 220px;
+
+  // Color preview on the right side
+  ui-color-picker-rect {
+  	background: linear-gradient(45deg, #DDD 25%, transparent 25%, transparent 75%, #DDD 75%, #DDD),
+                linear-gradient(45deg, #DDD 25%, transparent 25%, transparent 75%, #DDD 75%, #DDD);
+    background-position: 0 0, 9px 9px;
+    background-size: 18px 18px;
+
+		box-shadow: 0 0 1px 1px rgba(#000, 0.2) inset;
+  	border-radius: $border-radius;
+  	position: absolute;
+  	display: flex;
+  	width: 37px;
+  	bottom: 4px;
+  	right: 4px;
+  	top: 4px;
+
+  	div {
+  		flex: 1;
+  	}
+  }
+
+  // Color text
+  > div {
+  	text-transform: uppercase;
+    @include ellipsis;
+    flex: 1;
+  }
+
+  ui-color-panel {
+    border: 0;
+  }
+}

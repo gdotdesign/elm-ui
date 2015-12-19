@@ -18,7 +18,8 @@
     "koa": "1.1.2",
     "node-sass": "3.4.2",
     "koa-static-folder": "",
-    "koa-router": ""
+    "koa-router": "",
+    "autoprefixer": ""
   },
   "homepage": "https://github.com/gdotdesign/elm-ui#readme"
 }

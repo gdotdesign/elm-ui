@@ -1,47 +1,63 @@
 ui-color-panel {
-  width: 250px;
-  height: 250px;
-  display: flex;
-  background: $input;
-  border: $border;
-  padding: 15px;
-  border-radius: $border-radius;
-  flex-direction: column;
+  @include colors($input);
+  @include border;
 
+  // Styling
+  flex-direction: column;
+  display: flex;
+  padding: 15px;
+  height: 250px;
+  width: 250px;
+
+  // Disabled State
   &.disabled {
     @extend %disabled;
+    background: $disabled;
+
+    ui-color-panel-hue,
+    ui-color-panel-rect,
+    ui-color-panel-alpha {
+      pointer-events: none;
+    }
+
+    ui-color-panel-handle {
+      border-color: $disabled;
+    }
   }
 
+  // Handle
   ui-color-panel-handle {
-    background: rgba(#666, 0.5);
     transform: translateX(-50%) translateY(-50%);
     box-shadow: 0 0 4px rgba(#000, 0.5);
+    background: rgba(#666, 0.5);
+    border: 2px solid #FFF;
     pointer-events: none;
     position: absolute;
     border-radius: 50%;
-    border: 2px solid #FFF;
     height: 16px;
     width: 16px;
   }
 
+  // Parts
   ui-color-panel-hue,
   ui-color-panel-rect,
   ui-color-panel-alpha {
+    box-shadow: 0 0 1px 1px rgba(#000, 0.2) inset;
     border-radius: $border-radius;
     position: relative;
     cursor: pointer;
-    box-shadow: 0 0 1px 1px rgba(#000, 0.2) inset;
   }
 
+  // Rect + Hue container
   > div {
+    margin-bottom: 10px;
     display: flex;
     flex: 1;
-    margin-bottom: 10px;
 
     ui-color-panel-hue {
-      flex: 0 0 16px;
       background-image: linear-gradient(to bottom, #F00 0%, #FF0 17%, #0F0 33%,
                                         #0FF 50%, #00F 67%, #F0F 83%, #F00 100%);
+      flex: 0 0 16px;
 
       ui-color-panel-handle {
         border-radius: $border-radius;
@@ -61,25 +77,26 @@ ui-color-panel {
     }
   }
 
+  // Alpha
   ui-color-panel-alpha {
     background: linear-gradient(45deg, #DDD 25%, transparent 25%, transparent 75%, #DDD 75%, #DDD),
                 linear-gradient(45deg, #DDD 25%, transparent 25%, transparent 75%, #DDD 75%, #DDD);
-    background-size: 20px 20px;
     background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
     flex: 0 0 16px;
 
     ui-color-panel-handle {
       border-radius: $border-radius;
       transform: translateX(-50%);
+      height: auto;
+      bottom: -4px;
       width: 10px;
       top: -4px;
-      bottom: -4px;
-      height: auto;
     }
 
     > div {
-      height: 16px;
       pointer-events: none;
+      height: 16px;
     }
   }
 }

@@ -123,8 +123,7 @@ ui-chooser {
 
     // Selected state
     &.selected {
-      background: dampen-inverse($primary, 10%);
-      color: readable($primary);
+      @include colors(dampen-inverse($primary, 10%));
 
       &.intended {
         background: dampen-inverse($primary, 2%);

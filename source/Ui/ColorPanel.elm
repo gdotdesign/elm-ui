@@ -97,28 +97,29 @@ render address model =
 
     asPercent value =
       (toString (value * 100)) ++ "%"
+
+    action act =
+      if model.disabled then []
+      else [onWithDimensions "mousedown" True address act]
   in
     node "ui-color-panel" [classList [("disabled", model.disabled)]]
       [ div []
         [ node "ui-color-panel-rect"
-            [ onWithDimensions "mousedown" True address LiftRect
-            , style [ ("background-color", background )
-                    , ("cursor", if model.drag.dragging then "move" else "" )
-                    ]
-            ]
+            ([ style [ ("background-color", background )
+                     , ("cursor", if model.drag.dragging then "move" else "" )
+                     ]
+             ] ++ (action LiftRect))
             [ renderHandle
               (asPercent (1 - color.value))
               (asPercent color.saturation) ]
         , node "ui-color-panel-hue"
-            [ onWithDimensions "mousedown" True address LiftHue
-            , style [("cursor", if model.hueDrag.dragging then "move" else "" )]
-            ]
+            ([ style [("cursor", if model.hueDrag.dragging then "move" else "" )]
+            ] ++ (action LiftHue))
             [ renderHandle (asPercent color.hue) "" ]
         ]
       , node "ui-color-panel-alpha"
-        [ onWithDimensions "mousedown" True address LiftAlpha
-        , style [("cursor", if model.alphaDrag.dragging then "move" else "" )]
-        ]
+        ([ style [("cursor", if model.alphaDrag.dragging then "move" else "" )]
+        ] ++ (action LiftAlpha))
         [ div [style [("background-image", gradient)]] []
         , renderHandle "" (asPercent color.alpha)
         ]

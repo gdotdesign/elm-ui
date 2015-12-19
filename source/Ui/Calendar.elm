@@ -15,7 +15,7 @@ can select a date by clicking on it.
 # Private
 @docs fixDate, renderCell,  paddingLeft
 -}
-import Html.Attributes exposing (classList, style)
+import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)
 import Html exposing (node, text)
 import Html.Lazy
@@ -120,7 +120,7 @@ render address model =
     container =
       Ui.Container.view continerOptions []
         [ Ui.icon "chevron-left" True [onMouseDown address PreviousMonth]
-        , node "div" [style [("flex", "1")]] [text (format "%Y - %B" month)]
+        , node "div" [] [text (format "%Y - %B" month)]
         , Ui.icon "chevron-right" True [onMouseDown address NextMonth]
         ]
   in

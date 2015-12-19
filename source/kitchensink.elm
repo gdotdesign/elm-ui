@@ -81,6 +81,7 @@ render item =
 view address model =
   let
     chooser = model.chooser
+    colorPanel = model.colorPanel
   in
     Ui.App.view (forwardTo address App) model.app
       [ Ui.panel []
@@ -105,10 +106,11 @@ view address model =
             , Ui.Checkbox.radioView (forwardTo address Checkbox2) model.checkbox2
             ]
           ]
-        , node "h2" [] [text "Inplace Input"]
-        , Ui.InplaceInput.view (forwardTo address InplaceInput) model.inplaceInput
         , node "h2" [] [text "Color Panel"]
-        , Ui.ColorPanel.view (forwardTo address CP) model.colorPanel
+        , Ui.Container.view { align = "start", direction = "row", compact = False} []
+          [ Ui.ColorPanel.view (forwardTo address CP) colorPanel
+          , Ui.ColorPanel.view (forwardTo address CP) { colorPanel | disabled = True }
+          ]
         , node "h2" [] [text "Color Picker"]
         , Ui.ColorPicker.view (forwardTo address CPP) model.colorPicker
         , node "h2" [] [text "Number Range"]
@@ -127,6 +129,8 @@ view address model =
         , Ui.Textarea.view (forwardTo address TA) model.textarea
         , node "h2" [] [text "Calendar"]
         , Ui.Calendar.view (forwardTo address Calendar) model.calendar
+        , node "h2" [] [text "Inplace Input"]
+        , Ui.InplaceInput.view (forwardTo address InplaceInput) model.inplaceInput
         ]
       ]
 

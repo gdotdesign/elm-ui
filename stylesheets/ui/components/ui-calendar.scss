@@ -5,6 +5,7 @@ ui-calendar {
   display: inline-block;
   padding: 15px;
 
+  // Header
   ui-container {
     border-bottom: $border;
     border-bottom-style: dashed;
@@ -18,6 +19,7 @@ ui-calendar {
       justify-content: center;
       align-items: center;
       display: flex;
+      flex: 1;
     }
 
     ui-icon {
@@ -33,6 +35,7 @@ ui-calendar {
     }
   }
 
+  // Table
   ui-calendar-table {
     justify-content: space-around;
     flex-wrap: wrap;
@@ -42,6 +45,7 @@ ui-calendar {
     width: 300px;
   }
 
+  // Table Cell
   ui-calendar-cell {
     justify-content: center;
     align-items: center;
@@ -50,16 +54,19 @@ ui-calendar {
     width: 34px;
     margin: 4px;
 
+    // Inactive state
     &.inactive {
       opacity: 0.25;
     }
 
+    // Basic state
     &:not(:empty) {
       @include colors($secondary);
 
       border-radius: $border-radius;
     }
 
+    // Hover & Selected State
     &:not(.inactive):hover,
     &.selected {
       @include colors($primary);

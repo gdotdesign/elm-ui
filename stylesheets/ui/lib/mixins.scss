@@ -1,0 +1,15 @@
+@mixin colors($color) {
+  color: readable($color);
+  background: $color;
+}
+
+@mixin ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@mixin border {
+  border-radius: $border-radius;
+  border: $border;
+}

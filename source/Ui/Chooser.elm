@@ -17,7 +17,7 @@ form a list of choises, with lots of options.
 import Html.Attributes exposing (value, placeholder, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick, onMouseDown)
 import Html.Extra exposing (onInput, onPreventDefault, onKeys)
-import Html exposing (div, text, node, input, Html)
+import Html exposing (span, text, node, input, Html)
 import Html.Lazy
 
 import Set exposing (Set)
@@ -107,7 +107,7 @@ init data placeholder value =
     , multiple = False
     , intended = ""
     , disabled = False
-    , render = (\item -> div [] [text item.label])
+    , render = (\item -> span [] [text item.label])
     }
       |> intendFirst
 

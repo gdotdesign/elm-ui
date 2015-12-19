@@ -59,10 +59,17 @@ attributes : Signal.Address a
            -> a
            -> List Html.Attribute
 attributes address model action =
-  [ classList
-    [ ("disabled", model.disabled)
-    , ("ui-button-" ++ model.kind, True)
-    ]
-    , onClick address action
-    , onEnter False address action
-  ] ++ Ui.tabIndex model
+  let
+    actions =
+      if model.disabled then
+        []
+      else
+        [ onClick address action
+        , onEnter False address action
+        ]
+  in
+    [ classList
+      [ ("disabled", model.disabled)
+      , ("ui-button-" ++ model.kind, True)
+      ]
+    ] ++ (Ui.tabIndex model) ++ actions

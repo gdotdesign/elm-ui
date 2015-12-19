@@ -1,9 +1,8 @@
 ui-calendar {
-  border-radius: $border-radius;
+  @include colors($input);
+  @include border;
+
   display: inline-block;
-  color: readable($input);
-  background: $input;
-  border: $border;
   padding: 15px;
 
   ui-container {
@@ -38,8 +37,9 @@ ui-calendar {
     justify-content: space-around;
     flex-wrap: wrap;
     display: flex;
-    width: 300px;
+
     margin: 0 -5px;
+    width: 300px;
   }
 
   ui-calendar-cell {
@@ -54,21 +54,18 @@ ui-calendar {
       opacity: 0.25;
     }
 
-    &:not(.inactive):hover {
-      background: $color;
-      cursor: pointer;
-      color: readable($color);
-    }
-
     &:not(:empty) {
-      background: $secondary;
+      @include colors($secondary);
+
       border-radius: $border-radius;
     }
 
+    &:not(.inactive):hover,
     &.selected {
-      background: $color;
-      font-weight: 700;
-      color: readable($color);
+      @include colors($primary);
+
+      font-weight: 600;
+      cursor: pointer;
     }
   }
 }

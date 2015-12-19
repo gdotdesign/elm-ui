@@ -8,7 +8,7 @@ ui-dropdown {
   top: calc(100% + 2px);
   transform: translateY(10px);
   background: $input;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 20px rgba(#000, 0.1);
   padding: 3px;
   opacity: 0;
   transition: opacity 320ms, transform 320ms, visibility 1ms 320ms;

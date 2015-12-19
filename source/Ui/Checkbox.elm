@@ -1,5 +1,5 @@
 module Ui.Checkbox
-  (Model, Action, init, update, setValue, view, toggleView) where
+  (Model, Action, init, update, setValue, view, toggleView, radioView) where
 
 {-| Checkbox component.
 
@@ -7,7 +7,7 @@ module Ui.Checkbox
 @docs Model, Action, init, update
 
 # Views
-@docs view, toggleView
+@docs view, toggleView, radioView
 
 # Functions
 @docs setValue
@@ -67,6 +67,19 @@ render address model =
     (attributes address model)
     [Ui.icon "checkmark" False []]
 
+{-| Renders a checkbox as a radio. -}
+radioView : Signal.Address Action -> Model -> Html.Html
+radioView address model =
+  Html.Lazy.lazy2 radioRender address model
+
+-- Render radio internal.
+radioRender : Signal.Address Action -> Model -> Html.Html
+radioRender address model =
+  node "ui-checkbox-radio"
+    (attributes address model)
+    [ node "ui-checkbox-radio-circle" [] []
+    ]
+
 {-| Renders a checkbox as a toggle. -}
 toggleView : Signal.Address Action -> Model -> Html.Html
 toggleView address model =
@@ -84,10 +97,17 @@ toggleRender address model =
 {- Returns attributes for a checkbox -}
 attributes : Signal.Address Action -> Model -> List Html.Attribute
 attributes address model =
-  [ classList [ ("disabled", model.disabled)
-              , ("checked", model.value) ]
-  , onClick address Toggle
-  , onKeys address Nothing (Dict.fromList [ (13, Toggle)
-                                          , (32, Toggle)
-                                          ])
-  ] ++ (Ui.tabIndex model)
+  let
+    actions =
+      if model.disabled then
+        []
+      else
+        [ onClick address Toggle
+        , onKeys address Nothing
+          (Dict.fromList [ (13, Toggle)
+                         , (32, Toggle)
+                         ])]
+  in
+    [ classList [ ("disabled", model.disabled)
+                , ("checked", model.value) ]
+    ] ++ (Ui.tabIndex model) ++ actions

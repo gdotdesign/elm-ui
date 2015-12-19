@@ -1,58 +1,39 @@
-@import "lib/functions";
-@import "lib/variables";
+@import 'lib/functions';
+@import 'lib/variables';
+@import 'lib/mixins';
 
-@import "fonts/open-sans";
-@import "fonts/ionicons";
+@import 'fonts/open-sans';
+@import 'fonts/ionicons';
 
-@import "ui-app";
-@import "ui-calendar";
-@import "ui-chooser";
-@import "ui-container";
-@import "ui-datepicker";
-@import "ui-dropdown";
-@import "ui-icon";
-@import "ui-image";
-@import "ui-slider";
-@import "ui-textarea";
-@import "ui-title";
-@import "ui-button";
-@import "ui-icon-button";
-@import "ui-checkbox";
-@import "ui-number-pad";
-@import "ui-number-range";
-@import "ui-color-panel";
+@import 'states/disabled';
+@import 'states/focused';
 
-%disabled {
-  pointer-events: none;
-  user-select: none;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
+@import 'components/ui-app';
+@import 'components/ui-calendar';
+@import 'components/ui-chooser';
+@import 'components/ui-container';
+@import 'components/ui-datepicker';
+@import 'components/ui-dropdown';
+@import 'components/ui-icon';
+@import 'components/ui-image';
+@import 'components/ui-slider';
+@import 'components/ui-textarea';
+@import 'components/ui-title';
+@import 'components/ui-button';
+@import 'components/ui-icon-button';
+@import 'components/ui-checkbox';
+@import 'components/ui-number-pad';
+@import 'components/ui-number-range';
+@import 'components/ui-color-panel';
 
 * {
   box-sizing: border-box;
-}
-
-* {
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
-input, textarea {
-  -webkit-touch-callout: text;
-  -webkit-user-select: text;
-  -khtml-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-
 html {
--webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(#000, 0);
 }
 
 body {
@@ -78,7 +59,7 @@ ui-pager {
   position: relative;
 
   ui-page {
-    transform: translate3d(0,0,0);
+    transform: translate3d(0, 0, 0);
     display: flex;
     position: absolute;
     top: 0;
@@ -86,7 +67,7 @@ ui-pager {
     width: 100%;
     bottom: 0;
 
-    > * { flex: 1 }
+    > * { flex: 1; }
 
     &.animating {
       transition: left 500ms cubic-bezier(0.77, 0, 0.175, 1);
@@ -206,29 +187,29 @@ ui-fab {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(dampen($color, 5%), $color);
-  color: readable($color);
+  background: linear-gradient(dampen($primary, 5%), $primary);
+  color: readable($primary);
   border-radius: 50%;
   position: absolute;
   bottom: 30px;
-  text-shadow: 0 1px 0 dampen-inverse($color, 15%);
+  text-shadow: 0 1px 0 dampen-inverse($primary, 15%);
   right: 30px;
   font-size: 32px;
-  box-shadow: 0 1px 1px mix($color, #FFF, 5%) inset, 0 5px 10px -5px rgba(#000,0.8);
+  box-shadow: 0 1px 1px mix($primary, $input, 5%) inset, 0 5px 10px -5px rgba(#000, 0.8);
 
   &:active {
-    background: linear-gradient(dampen(dampen-inverse($color, 15%), 5%), dampen-inverse($color, 15%));
+    background: linear-gradient(dampen(dampen-inverse($primary, 15%), 5%), dampen-inverse($primary, 15%));
   }
 }
 
 ui-header {
   display: flex;
   flex: 0 0 auto;
-  color: readable($color);
-  background: linear-gradient($color, dampen-inverse($color, 5%));
-  text-shadow: 0 1px dampen-inverse($color, 20%);
-  border-bottom: 1px solid dampen-inverse($color, 20%);
-  border-top: 1px solid dapmen($color, 10%);
+  color: readable($primary);
+  background: linear-gradient($primary, dampen-inverse($primary, 5%));
+  text-shadow: 0 1px dampen-inverse($primary, 20%);
+  border-bottom: 1px solid dampen-inverse($primary, 20%);
+  border-top: 1px solid dapmen($primary, 10%);
   height: 60px;
 
   ui-header-title:first-child {
@@ -255,6 +236,8 @@ ui-header {
   }
 }
 
+$mobile-frame: #333;
+
 @media (min-width: 600px) {
   .mobile {
     > div {
@@ -274,7 +257,7 @@ ui-header {
       }
 
       &:before {
-        background: #333;
+        background: $mobile-frame;
         border-radius: 10px;
         z-index: 0;
         position: absolute;
@@ -305,10 +288,10 @@ ui-header {
   }
 }
 
-/* Examples */
+// Examples
 
 .money-track {
-  > ui-container { height: 100vh };
+  > ui-container { height: 100vh; };
 
   ui-pager {
     flex: 1;
@@ -319,7 +302,7 @@ ui-header {
   display: flex;
   flex: 1;
 
-  > ui-container { flex: 1 };
+  > ui-container { flex: 1; };
   ui-number-pad {
     flex: 1;
   }

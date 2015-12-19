@@ -53,6 +53,7 @@ data =
   , { label = "French", value = "2" }
   , { label = "Italy", value = "3" }
   , { label = "Russia", value = "4" }
+  , { label = "Some very long named country", value = "5" }
   ]
 
 init =
@@ -78,44 +79,56 @@ render item =
   div [] [text item.label]
 
 view address model =
-  Ui.App.view (forwardTo address App) model.app
-    [ Ui.panel []
-      [ node "h2" [] [text "Buttons"]
-      , Ui.Container.view { align = "start", direction = "row", compact = False} []
-        [ Ui.Button.view address Nothing { text = "Test", kind = "primary", disabled = False }
-        , Ui.Button.view address Nothing { text = "Disabled", kind = "danger", disabled = True }
-        , Ui.IconButton.view address Nothing { side = "left", text = "Download", kind = "success", glyph = "android-download", disabled = False }
+  let
+    chooser = model.chooser
+  in
+    Ui.App.view (forwardTo address App) model.app
+      [ Ui.panel []
+        [ node "h2" [] [text "Buttons"]
+        , Ui.Container.view { align = "start", direction = "row", compact = False} []
+          [ Ui.Button.view address Nothing { text = "Test", kind = "primary", disabled = False }
+          , Ui.Button.view address Nothing { text = "Disabled", kind = "danger", disabled = True }
+          , Ui.IconButton.view address Nothing { side = "left", text = "Download", kind = "success", glyph = "android-download", disabled = False }
+          ]
+        , node "h2" [] [text "Checkbox"]
+        , Ui.Container.view { align = "start", direction = "column", compact = False} []
+          [ Ui.Container.view { align = "start", direction = "row", compact = False} []
+            [ Ui.Checkbox.view (forwardTo address Checkbox) model.checkbox
+            , Ui.Checkbox.view (forwardTo address Checkbox2) model.checkbox2
+            ]
+          , Ui.Container.view { align = "start", direction = "row", compact = False} []
+            [ Ui.Checkbox.toggleView (forwardTo address Checkbox) model.checkbox
+            , Ui.Checkbox.toggleView (forwardTo address Checkbox2) model.checkbox2
+            ]
+          , Ui.Container.view { align = "start", direction = "row", compact = False} []
+            [ Ui.Checkbox.radioView (forwardTo address Checkbox) model.checkbox
+            , Ui.Checkbox.radioView (forwardTo address Checkbox2) model.checkbox2
+            ]
+          ]
+        , node "h2" [] [text "Inplace Input"]
+        , Ui.InplaceInput.view (forwardTo address InplaceInput) model.inplaceInput
+        , node "h2" [] [text "Color Panel"]
+        , Ui.ColorPanel.view (forwardTo address CP) model.colorPanel
+        , node "h2" [] [text "Color Picker"]
+        , Ui.ColorPicker.view (forwardTo address CPP) model.colorPicker
+        , node "h2" [] [text "Number Range"]
+        , Ui.NumberRange.view (forwardTo address NR) model.numberRange
+        , node "h2" [] [text "Slider"]
+        , Ui.Slider.view (forwardTo address Slider) model.draggable
+        , Ui.Slider.view (forwardTo address Slider2) model.slider
+        , node "h2" [] [text "Chooser"]
+        , Ui.Container.view { align = "start", direction = "row", compact = False} []
+          [ Ui.Chooser.view (forwardTo address Chooser) chooser
+          , Ui.Chooser.view (forwardTo address Chooser) { chooser | disabled = True }
+          ]
+        , node "h2" [] [text "Date Picker"]
+        , Ui.DatePicker.view (forwardTo address DP) model.datePicker
+        , node "h2" [] [text "Autogrow Textarea"]
+        , Ui.Textarea.view (forwardTo address TA) model.textarea
+        , node "h2" [] [text "Calendar"]
+        , Ui.Calendar.view (forwardTo address Calendar) model.calendar
         ]
-      , node "h2" [] [text "Checkbox"]
-      , Ui.Container.view { align = "start", direction = "row", compact = False} []
-        [ Ui.Checkbox.view (forwardTo address Checkbox) model.checkbox
-        , Ui.Checkbox.view (forwardTo address Checkbox2) model.checkbox2
-        ]
-      , Ui.Container.view { align = "start", direction = "row", compact = False} []
-        [ Ui.Checkbox.toggleView (forwardTo address Checkbox) model.checkbox
-        , Ui.Checkbox.toggleView (forwardTo address Checkbox2) model.checkbox2
-        ]
-      , node "h2" [] [text "Inplace Input"]
-      , Ui.InplaceInput.view (forwardTo address InplaceInput) model.inplaceInput
-      , node "h2" [] [text "Color Panel"]
-      , Ui.ColorPanel.view (forwardTo address CP) model.colorPanel
-      , node "h2" [] [text "Color Picker"]
-      , Ui.ColorPicker.view (forwardTo address CPP) model.colorPicker
-      , node "h2" [] [text "Number Range"]
-      , Ui.NumberRange.view (forwardTo address NR) model.numberRange
-      , node "h2" [] [text "Slider"]
-      , Ui.Slider.view (forwardTo address Slider) model.draggable
-      , Ui.Slider.view (forwardTo address Slider2) model.slider
-      , node "h2" [] [text "Chooser"]
-      , Ui.Chooser.view (forwardTo address Chooser) model.chooser
-      , node "h2" [] [text "Date Picker"]
-      , Ui.DatePicker.view (forwardTo address DP) model.datePicker
-      , node "h2" [] [text "Autogrow Textarea"]
-      , Ui.Textarea.view (forwardTo address TA) model.textarea
-      , node "h2" [] [text "Calendar"]
-      , Ui.Calendar.view (forwardTo address Calendar) model.calendar
       ]
-    ]
 
 update action model =
   case action of

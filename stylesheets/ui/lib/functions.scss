@@ -16,8 +16,8 @@
 
 @function readable($c) {
   @if(lightness($c) > 50%) {
-    @return mix($c, black, 40%);
+    @return mix($c, #000, 40%);
   } @else {
-    @return mix($c, white, 5%);
+    @return mix($c, #FFF, 5%);
   }
 }

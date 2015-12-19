@@ -43,7 +43,6 @@ Elm.Native.Browser.make = function(elm) {
 
   function moveCursorToEnd(el) {
     el.focus();
-    console.log(el)
     if (typeof el.selectionStart == "number") {
       el.selectionStart = el.selectionEnd = el.value.length;
     } else if (typeof el.createTextRange != "undefined") {

@@ -1,0 +1,71 @@
+ui-button {
+  // Layout
+  justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+
+  // Styling
+  border-radius: $border-radius;
+  position: relative;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 20px;
+  height: 36px;
+
+  // Ellipsis for Text
+  span { @include ellipsis; }
+
+  // Children are not clickable
+  > * { pointer-events: none; }
+
+  // Types
+  &:not(.disabled) {
+    @each $type, $type-color in (
+        secondary $secondary,
+        primary $primary,
+        success $success,
+        warning $warning,
+        danger $danger) {
+      &.ui-button-#{$type} {
+        @include colors($type-color);
+
+        &:focus:before {
+          border: 1px solid dampen($type-color, 20%);
+        }
+
+        &:hover {
+          background: dampen-inverse($type-color, 5%);
+          color: readable(dampen-inverse($type-color, 5%));
+        }
+
+        &:active {
+          background: dampen($type-color, 5%);
+          color: readable(dampen($type-color, 5%));
+        }
+      }
+    }
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+    @include colors($disabled);
+  }
+
+  // Focused state
+  &:focus {
+    outline: none;
+
+    &:before {
+      border-radius: $border-radius;
+      pointer-events: none;
+      position: absolute;
+      bottom: -2px;
+      content: '';
+      right: -2px;
+      left: -2px;
+      top: -2px;
+    }
+  }
+}

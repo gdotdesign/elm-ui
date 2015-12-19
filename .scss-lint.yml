@@ -1,0 +1,40 @@
+linters:
+  SelectorFormat:
+    enabled: false
+
+  ColorVariable:
+    enabled: false
+
+  SpaceBetweenParens:
+    enabled: false
+
+  SingleLinePerSelector:
+    enabled: false
+
+  PropertySortOrder:
+    enabled: false
+
+  PlaceholderInExtend:
+    enabled: false
+
+  VendorPrefix:
+    enabled: false
+
+  LeadingZero:
+    style: include_zero
+
+  HexNotation:
+    style: uppercase
+
+  SelectorDepth:
+    enabled: false
+
+  NestingDepth:
+    enabled: false
+
+  QualifyingElement:
+    enabled: false
+
+  Indentation:
+    enabled: true
+    width: 2

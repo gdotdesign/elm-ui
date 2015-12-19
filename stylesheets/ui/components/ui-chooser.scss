@@ -1,0 +1,150 @@
+ui-chooser {
+  @include colors($input);
+
+  // Styles
+  display: inline-block;
+  position: relative;
+
+  // Input
+  input {
+    position: relative;
+    cursor: pointer;
+    width: 100%;
+    z-index: 2;
+  }
+
+  // Arrow on the right side
+  &:before {
+    border-color: currentColor transparent transparent;
+    border-width: 6px 5px 0;
+    border-style: solid;
+
+    pointer-events: none;
+
+    transform: scale(0.6);
+    transition: 320ms;
+    opacity: 0;
+
+    top: calc(50% - 3px);
+    position: absolute;
+    right: 15px;
+    content: '';
+    z-index: 4;
+    height: 0;
+    width: 0;
+  }
+
+  // If the user cannot search or the focus isn't in
+  // the input then we need to display a gradient to hide
+  // the end of the text because it can be ellipsised
+  &:not(.searchable), &.searchable:not(.dropdown-open) {
+    &:after {
+      background: linear-gradient(90deg, rgba($input, 0), $input 70%);
+      border-bottom-right-radius: inherit;
+      border-top-right-radius: inherit;
+      pointer-events: none;
+      position: absolute;
+      width: 33.33%;
+      content: '';
+      bottom: 4px;
+      right: 4px;
+      z-index: 3;
+      top: 4px;
+    }
+
+    &:before {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+
+    ui-dropdown {
+      display: none;
+    }
+
+    &:not(.searchable), &.searchable:not(.dropdown-open) {
+      &:after {
+        background: linear-gradient(90deg, rgba($disabled, 0), $disabled 70%);
+      }
+    }
+
+    input {
+      @include colors($disabled);
+      border-color: $disabled;
+      pointer-events: none;
+    }
+  }
+
+  // Empty state
+  ui-dropdown {
+    &:empty:before {
+      content: 'No items to display!';
+      font-style: italic;
+      display: block;
+      padding: 12px;
+      opacity: 0.5;
+    }
+  }
+
+  // Chooser item
+  ui-chooser-item {
+    @include ellipsis;
+
+    border-radius: $border-radius;
+    position: relative;
+    padding: 8px 10px;
+    cursor: pointer;
+    display: block;
+
+    // Hover state
+    &:hover {
+      background: dampen($input, 5%);
+    }
+
+    // Intended state
+    &.intended {
+      background: dampen($input, 5%);
+      padding-right: 25px;
+
+      // Chevron at the end
+      &:before {
+        font-family: Ionicons;
+        top: calc(50% - 7px);
+        position: absolute;
+        content: '\f124';
+        font-size: 14px;
+        right: 10px;
+      }
+    }
+
+    // Selected state
+    &.selected {
+      background: dampen-inverse($primary, 10%);
+      color: readable($primary);
+
+      &.intended {
+        background: dampen-inverse($primary, 2%);
+      }
+    }
+
+    + * {
+      margin-top: 3px;
+
+      &:after {
+        border-top: $border;
+        position: absolute;
+        content: '';
+        top: -2px;
+        right: 0;
+        left: 0;
+      }
+    }
+
+    // Children not clicable
+    > * { pointer-events: none; }
+  }
+}

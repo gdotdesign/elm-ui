@@ -58,14 +58,14 @@ ui-textarea {
     display: block;
 
     span-line:empty:before {
-      content: "a";
+      content: 'a';
     }
 
     span-last {
       display: block;
 
       &:before {
-        content: "a";
+        content: 'a';
       }
     }
   }

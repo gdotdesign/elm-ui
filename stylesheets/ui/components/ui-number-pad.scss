@@ -62,8 +62,8 @@ ui-number-pad {
       }
 
       &:active {
-        color: readable($color);
-        background: $color;
+        color: readable($primary);
+        background: $primary;
         transition: 50ms;
       }
     }

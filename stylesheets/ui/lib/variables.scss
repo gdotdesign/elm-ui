@@ -1,17 +1,23 @@
-$border-color: rgba(#000, 0.1);
-$color: #0278AE;
-$danger: #D1573C;
+// Types
+$primary: #0278AE;
 $success: #0BC449;
 $warning: #F79C00;
-$danger: orangered;
-$input: mix($color, #FFF, 1%);
-$disabled: desaturate(dampen($input, 20%), 60%);
-$secondary: mix($color, #EFEFEF, 3%);
+$danger: #D1573C;
 
-$background: mix($color, #FCFCFC, 3%);
+// Calulated colros
+$background: mix($primary, #FCFCFC, 3%);
+$secondary: mix($primary, #EFEFEF, 3%);
+$input: mix($primary, #FFF, 1%);
+
+// Border
 $border-radius: 3px;
 $border: 1px solid $secondary;
-$focus: dampen($color, 30%);
+$border-color: rgba(#000, 0.1);
 
+// Disabled
+$disabled: desaturate(dampen($input, 15%), 60%);
+
+// Focus
+$focus: dampen($primary, 30%);
 $focus-shadow: 0 0 0 1px $focus inset, 0 0 4px rgba($focus, 0.5), 0 0 4px rgba($focus, 0.5) inset;
 $focus-shadow-idle: 0 0 0 1px transparent inset, 0 0 4px transparent, 0 0 4px transparent inset;

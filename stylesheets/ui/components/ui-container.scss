@@ -6,7 +6,7 @@ ui-container {
   }
 
   &.align-center {
-    align-itemst: center;
+    align-items: center;
   }
 
   &.align-end {
@@ -63,7 +63,7 @@ input[type=password] {
   }
 
   &[readonly] {
-    &::-moz-selection { background: transparent }
-    &::selection { background: transparent }
+    &::-moz-selection { background: transparent; }
+    &::selection { background: transparent; }
   }
 }

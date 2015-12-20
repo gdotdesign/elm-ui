@@ -142,7 +142,6 @@ ui-checkbox-toggle {
     @include colors($input);
     @include border;
 
-    transition: 200ms;
     height: inherit;
     display: flex;
     padding: 2px;
@@ -175,7 +174,7 @@ ui-checkbox-toggle {
   ui-checkbox-toggle-handle {
     border-radius: $border-radius;
     background: $primary;
-    transition: 200ms;
+    transition: 400ms;
 
     width: calc(50% - 5px);
     position: absolute;

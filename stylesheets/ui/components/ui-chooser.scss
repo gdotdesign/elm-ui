@@ -1,6 +1,4 @@
 ui-chooser {
-  @include colors($input);
-
   // Styles
   display: inline-block;
   position: relative;
@@ -43,8 +41,8 @@ ui-chooser {
   &:not(.searchable), &.searchable:not(.dropdown-open) {
     &:after {
       background: linear-gradient(90deg, rgba($input, 0), $input 70%);
-      border-bottom-right-radius: inherit;
-      border-top-right-radius: inherit;
+      border-bottom-right-radius: $border-radius;
+      border-top-right-radius: $border-radius;
       pointer-events: none;
       position: absolute;
       width: 33.33%;

@@ -1,15 +1,17 @@
 ui-number-pad {
   display: flex;
   flex-direction: column;
+  min-height: 400px;
 
   ui-number-pad-value {
+    @extend %focused-idle;
+
+    @include colors($input);
+    @include border;
+
     display: flex;
-    background: $input;
-    color: readable($input);
     padding: 10px 15px;
     margin-bottom: 10px;
-    border-radius: $border-radius;
-    border: $border;
 
     span {
       font-size: 24px;
@@ -49,6 +51,10 @@ ui-number-pad {
         margin-bottom: 0;
       }
 
+      &:empty {
+        background: transparent;
+      }
+
       > * {
         position: absolute;
         bottom: 0;
@@ -69,7 +75,34 @@ ui-number-pad {
     }
   }
 
-  &:focus {
+  &.disabled {
+    @extend %disabled;
+
+    > * {
+      pointer-events: none;
+    }
+
+    ui-number-pad-value {
+      background: $disabled;
+      border-color: $disabled;
+    }
+  }
+
+  &.readonly {
+    ui-number-pad-button, ui-icon {
+      pointer-events: none;
+    }
+
+    &:focus {
+      outline: none;
+
+      ui-number-pad-value {
+        box-shadow: $focus-shadow-readonly;
+      }
+    }
+  }
+
+  &:not(.readonly):not(.disabled):focus {
     outline: none;
 
     ui-number-pad-value {

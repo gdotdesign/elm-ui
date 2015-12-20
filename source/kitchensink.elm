@@ -17,6 +17,7 @@ import Ui.Textarea
 import Ui.InplaceInput
 import Ui.NumberRange
 import Ui.ColorPanel
+import Ui.NumberPad
 import Ui.ColorPicker
 import Ui.Image
 import Ui
@@ -47,6 +48,7 @@ type Action
   | CP Ui.ColorPanel.Action
   | CPP Ui.ColorPicker.Action
   | Image Ui.Image.Action
+  | NumberPad Ui.NumberPad.Action
   | Nothing
 
 data =
@@ -75,6 +77,7 @@ init =
      , numberRange = Ui.NumberRange.init 0
      , colorPanel = Ui.ColorPanel.init Color.blue
      , colorPicker = Ui.ColorPicker.init Color.yellow
+     , numberPad = Ui.NumberPad.init 0
      , datePicker = { datePickerOptions | format = "%Y %B %e." }
      }, Effects.none)
 
@@ -95,71 +98,93 @@ view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker
     , numberRange, slider, checkbox, checkbox2, checkbox3
-    , calendar, inplaceInput, textarea } = model
+    , calendar, inplaceInput, textarea, numberPad } = model
+    numberPadVM =
+      { bottomLeft = text ""
+      , bottomRight = text "" }
   in
     Ui.App.view (forwardTo address App) model.app
       [ Ui.panel []
-        [ node "h2" [] [text "Button"]
-        , Ui.Container.row []
-          [ Ui.Button.view address Nothing { text = "Primary"
-                                           , kind = "primary"
-                                           , disabled = False }
-          , Ui.Button.view address Nothing { text = "Success"
-                                           , kind = "success"
-                                           , disabled = False }
-          , Ui.Button.view address Nothing { text = "Warning"
-                                           , kind = "warning"
-                                           , disabled = False }
-          , Ui.Button.view address Nothing { text = "Danger"
-                                           , kind = "danger"
-                                           , disabled = False }
-          , Ui.Button.view address Nothing { text = "Disabled"
-                                           , kind = "danger"
-                                           , disabled = True }
-          ]
-
-        , node "h2" [] [text "Icon Button"]
-        , Ui.Container.row []
-          [ Ui.IconButton.view address Nothing { side = "right"
-                                               , text = "Primary"
-                                               , kind = "Primary"
-                                               , glyph = "android-download"
-                                               , disabled = False }
-          , Ui.IconButton.view address Nothing { side = "right"
-                                               , text = ""
-                                               , kind = "Primary"
-                                               , glyph = "archive"
-                                               , disabled = False }
-          , Ui.IconButton.view address Nothing { side = "right"
-                                               , text = "Success"
-                                               , kind = "success"
-                                               , glyph = "checkmark"
-                                               , disabled = False }
-          , Ui.IconButton.view address Nothing { side = "right"
-                                               , text = "Warning"
-                                               , kind = "warning"
-                                               , glyph = "alert"
-                                               , disabled = False }
-          , Ui.IconButton.view address Nothing { side = "right"
-                                               , text = "Danger"
-                                               , kind = "danger"
-                                               , glyph = "close"
-                                               , disabled = False }
-          , Ui.IconButton.view address Nothing { side = "left"
-                                               , text = "Disabled"
-                                               , kind = "success"
-                                               , glyph = "paper-airplane"
-                                               , disabled = True }
-          ]
-
-        , node "h2" [] [text "Image"]
-        , Ui.Image.view (forwardTo address Image) model.image
-
-        , table []
+        [ table []
           [ tr [] [ td [] [text "Active"]
                   , td [] [text "Readonly"]
                   , td [] [text "Disabled"]
                   ]
+
+          , componentHeader "Button"
+          , tr []
+            [ td [colspan 3]
+              [ Ui.Container.row []
+                [ Ui.Button.view address Nothing { text = "Primary"
+                                                 , kind = "primary"
+                                                 , disabled = False }
+                , Ui.Button.view address Nothing { text = "Secondary"
+                                                 , kind = "secondary"
+                                                 , disabled = False }
+                , Ui.Button.view address Nothing { text = "Success"
+                                                 , kind = "success"
+                                                 , disabled = False }
+                , Ui.Button.view address Nothing { text = "Warning"
+                                                 , kind = "warning"
+                                                 , disabled = False }
+                , Ui.Button.view address Nothing { text = "Danger"
+                                                 , kind = "danger"
+                                                 , disabled = False }
+                , Ui.Button.view address Nothing { text = "Disabled"
+                                                 , kind = "danger"
+                                                 , disabled = True }
+                ]
+              ]
+            ]
+
+          , componentHeader "Icon Button"
+          , tr []
+            [ td [colspan 3]
+              [ Ui.Container.row []
+                [ Ui.IconButton.view address Nothing { side = "right"
+                                                     , text = "Primary"
+                                                     , kind = "Primary"
+                                                     , glyph = "android-download"
+                                                     , disabled = False }
+                , Ui.IconButton.view address Nothing { side = "right"
+                                                     , text = ""
+                                                     , kind = "Primary"
+                                                     , glyph = "archive"
+                                                     , disabled = False }
+                , Ui.IconButton.view address Nothing { side = "left"
+                                                     , text = "Secondary"
+                                                     , kind = "secondary"
+                                                     , glyph = "arrow-left-c"
+                                                     , disabled = False }
+                , Ui.IconButton.view address Nothing { side = "right"
+                                                     , text = "Success"
+                                                     , kind = "success"
+                                                     , glyph = "checkmark"
+                                                     , disabled = False }
+                , Ui.IconButton.view address Nothing { side = "right"
+                                                     , text = "Warning"
+                                                     , kind = "warning"
+                                                     , glyph = "alert"
+                                                     , disabled = False }
+                , Ui.IconButton.view address Nothing { side = "right"
+                                                     , text = "Danger"
+                                                     , kind = "danger"
+                                                     , glyph = "close"
+                                                     , disabled = False }
+                , Ui.IconButton.view address Nothing { side = "left"
+                                                     , text = "Disabled"
+                                                     , kind = "success"
+                                                     , glyph = "paper-airplane"
+                                                     , disabled = True }
+                ]
+              ]
+            ]
+
+          , componentHeader "Image"
+          , tr []
+            [ td [colspan 3]
+              [ Ui.Image.view (forwardTo address Image) model.image ]
+            ]
 
           , componentHeader "Calendar"
           , tableRow (Ui.Calendar.view (forwardTo address Calendar) calendar)
@@ -243,6 +268,14 @@ view address model =
                        { inplaceInput | readonly = True })
                      (Ui.InplaceInput.view (forwardTo address InplaceInput)
                        { inplaceInput | disabled = True })
+
+          , componentHeader "Number Pad"
+          , tableRow (Ui.NumberPad.view (forwardTo address NumberPad)
+                       numberPadVM numberPad)
+                     (Ui.NumberPad.view (forwardTo address NumberPad)
+                       numberPadVM { numberPad | readonly = True })
+                     (Ui.NumberPad.view (forwardTo address NumberPad)
+                       numberPadVM { numberPad | disabled = True })
           ]
       ]
     ]
@@ -291,6 +324,9 @@ update action model =
       ({ model | inplaceInput = Ui.InplaceInput.update act model.inplaceInput}, Effects.none)
     Image act ->
       ({ model | image = Ui.Image.update act model.image}, Effects.none)
+    NumberPad act ->
+      ({ model | numberPad = Ui.NumberPad.update act model.numberPad}, Effects.none)
+
     Nothing ->
       (model, Effects.none)
 

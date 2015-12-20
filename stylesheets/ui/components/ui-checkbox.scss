@@ -8,7 +8,7 @@ ui-checkbox {
   height: 36px;
   width: 36px;
 
-  &:not(.readonly) {
+  &:not(.readonly):not(.disabled) {
     cursor: pointer;
   }
 
@@ -66,7 +66,7 @@ ui-checkbox-radio {
   height: 36px;
   width: 36px;
 
-  &:not(.readonly) {
+  &:not(.readonly):not(.disabled) {
     cursor: pointer;
   }
 
@@ -131,7 +131,7 @@ ui-checkbox-toggle {
   min-width: 76px;
   height: 36px;
 
-  &:not(.readonly) {
+  &:not(.readonly):not(.disabled) {
     cursor: pointer;
   }
 

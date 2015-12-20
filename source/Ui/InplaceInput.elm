@@ -99,9 +99,10 @@ render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
     content =
-      case model.open of
-        True -> form address model
-        False -> display address model
+      if model.open && not (model.disabled || model.readonly) then
+        form address model
+      else
+        display address model
   in
     node "ui-inplace-input" [] [content]
 
@@ -129,7 +130,12 @@ form address model =
 {-| Renders the display. -}
 display : Signal.Address Action -> Model -> Html.Html
 display address model =
-  div [onClick address Edit] [text model.value]
+  let
+    click =
+      if model.disabled || model.readonly then []
+      else [onClick address Edit]
+  in
+    div click [text model.value]
 
 
 {-| Returns whether the given inplace input is empty. -}

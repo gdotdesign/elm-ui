@@ -61,7 +61,7 @@ ui-calendar {
 
     // Basic state
     &:not(:empty) {
-      @include colors($secondary);
+      @include colors(dampen($background,1%));
 
       border-radius: $border-radius;
     }
@@ -98,7 +98,7 @@ ui-calendar {
 
     ui-calendar-cell {
       &:not(:empty) {
-        @include colors(dampen($disabled, 10%));
+        @include colors(dampen($disabled, 6%));
       }
 
       &.selected {

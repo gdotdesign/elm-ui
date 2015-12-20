@@ -50,8 +50,14 @@
     @extend %focused;
   }
 
-  &.readonly:focus {
-    @extend %focused-readonly;
+  &.readonly {
+    &:focus {
+      @extend %focused-readonly;
+    }
+
+    ui-dropdown {
+      display: none;
+    }
   }
 
   // Disabled state

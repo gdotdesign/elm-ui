@@ -232,6 +232,7 @@ ui-header {
 table {
   @include border;
   border-collapse: collapse;
+  margin: 0 auto;
 
   td {
     border: 1px solid $secondary;

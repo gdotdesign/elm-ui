@@ -53,14 +53,14 @@ ui-number-range {
     }
   }
 
+  &:not(.readonly) input:read-only {
+    cursor: move;
+  }
+
   // Input
   input {
     text-align: center;
     width: 100%;
     z-index: 0;
-
-    &:read-only {
-      cursor: move;
-    }
   }
 }

@@ -8,9 +8,12 @@ ui-chooser {
   // Input
   input {
     position: relative;
-    cursor: pointer;
     width: 100%;
     z-index: 2;
+  }
+
+  &:not(.readonly) input {
+    cursor: pointer;
   }
 
   // Arrow on the right side
@@ -76,6 +79,12 @@ ui-chooser {
       @include colors($disabled);
       border-color: $disabled;
       pointer-events: none;
+    }
+  }
+
+  &.readonly {
+    input:not([type]):focus {
+      @extend %focused-readonly;
     }
   }
 

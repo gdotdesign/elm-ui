@@ -33,6 +33,7 @@ import Ui
   - **format** - The format of the date to render in the input
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
   - **disabled** - Whether or not the chooser is disabled
+  - **readonly** - Whether or not the dropdown is readonly
   - **open** - Whether or not the dropdown is open
 -}
 type alias Model =
@@ -41,6 +42,7 @@ type alias Model =
   , format : String
   , open : Bool
   , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions that a date picker can make:
@@ -71,6 +73,7 @@ init date =
   , format = "%Y-%m-%d"
   , open = False
   , disabled = False
+  , readonly = False
   }
 
 {-| Updates a date picker. -}
@@ -119,7 +122,7 @@ render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
     actions =
-      if model.disabled then []
+      if model.disabled || model.readonly then []
       else [ onFocus address Focus
            , onClick address Focus
            , onBlur address Close
@@ -135,6 +138,7 @@ render address model =
   in
     node "ui-date-picker" ([ classList [ ("dropdown-open", model.open)
                                        , ("disabled", model.disabled)
+                                       , ("readonly", model.readonly)
                                        ]
                            ] ++ actions ++ (Ui.tabIndex model))
       [ div [] [text (format model.format model.calendar.value)]

@@ -27,6 +27,8 @@ import Ui.Helpers.Drag as Drag
   - **alphaDrag** (internal) - The drag model of the alpha slider
   - **hueDrag** (internal) - The drag model of the hue slider
   - **value** - The current vlaue
+  - **readonly** - Whether the color panel is editable
+  - **disabled** - Whether the color panel is disabled
 -}
 type alias Model =
   { drag : Drag.Model
@@ -34,6 +36,7 @@ type alias Model =
   , hueDrag : Drag.Model
   , value : Hsv
   , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions that a color panel can make. -}
@@ -53,6 +56,7 @@ init color =
   , hueDrag = Drag.init
   , value = Ext.Color.toHsv color
   , disabled = False
+  , readonly = False
   }
 
 {-| Updates a color panel. -}
@@ -99,10 +103,13 @@ render address model =
       (toString (value * 100)) ++ "%"
 
     action act =
-      if model.disabled then []
+      if model.disabled || model.readonly then []
       else [onWithDimensions "mousedown" True address act]
   in
-    node "ui-color-panel" [classList [("disabled", model.disabled)]]
+    node "ui-color-panel" [ classList [ ("disabled", model.disabled)
+                                      , ("readonly", model.readonly)
+                                      ]
+                          ]
       [ div []
         [ node "ui-color-panel-rect"
             ([ style [ ("background-color", background )

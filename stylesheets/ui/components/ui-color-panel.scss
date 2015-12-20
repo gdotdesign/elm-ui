@@ -40,6 +40,14 @@ ui-color-panel {
     width: 16px;
   }
 
+  &:not(.readonly) {
+    ui-color-panel-hue,
+    ui-color-panel-rect,
+    ui-color-panel-alpha {
+      cursor: pointer;
+    }
+  }
+
   // Parts
   ui-color-panel-hue,
   ui-color-panel-rect,
@@ -47,7 +55,6 @@ ui-color-panel {
     box-shadow: 0 0 1px 1px rgba(#000, 0.2) inset;
     border-radius: $border-radius;
     position: relative;
-    cursor: pointer;
   }
 
   // Rect + Hue container

@@ -76,6 +76,13 @@ ui-calendar {
     }
   }
 
+  // Readonly state
+  &.readonly {
+    > * {
+      pointer-events: none;
+    }
+  }
+
   // Disabled state
   &.disabled {
     @extend %disabled;

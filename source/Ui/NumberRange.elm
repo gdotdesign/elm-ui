@@ -39,6 +39,7 @@ import Ui
   - **max** - The maximum allowed value
   - **round** - The decimals to round the value
   - **disabled** - Whether or not the component is disabled
+  - **readonly** - Whether or not the component is readonly
 -}
 type alias Model =
   { drag : Drag.Model
@@ -54,6 +55,7 @@ type alias Model =
   , focused : Bool
   , editing : Bool
   , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions that a number range can make. -}
@@ -84,6 +86,7 @@ init value =
   , focused = False
   , editing = False
   , disabled = False
+  , readonly = False
   }
 
 {-| Updates a number range. -}
@@ -123,35 +126,44 @@ view address model =
 render: Signal.Address Action -> Model -> Html.Html
 render address model =
   let
-    attributes =
-      if model.editing then
-        [ value model.inputValue
-        , onInput address Input
+    actions =
+      if model.readonly || model.disabled then []
+      else if model.editing then
+        [ onInput address Input
         , onEnterStop address Save
         ]
       else
         [ onWithDimensions "mousedown" True address Lift
         , onWithDimensions "dblclick" True address DoubleClick
-        , value ((formatFloat model.round model.value) ++ model.affix)
         , onKeys address Nothing (Dict.fromList [ (40, Decrement)
                                                 , (38, Increment)
                                                 , (37, Decrement)
                                                 , (39, Increment) ])
         ]
+    attributes =
+      if model.editing then
+        [ value model.inputValue ]
+      else
+        [ value ((formatFloat model.round model.value) ++ model.affix) ]
 
     inputElement =
       input ([ onFocus address Focus
              , onBlur address Blur
              , readonly (not model.editing)
              , disabled model.disabled
-             ] ++ attributes) []
+             ] ++ attributes ++ actions) []
 
     focusedInput =
-      case model.focusNext of
+      case model.focusNext && not model.disabled && not model.readonly of
         True -> Native.Browser.focus inputElement
         False -> inputElement
   in
-    node "ui-number-range" [classList [("disabled", model.disabled)]] [ focusedInput ]
+    node "ui-number-range"
+      [ classList [ ("disabled", model.disabled)
+                  , ("readonly", model.readonly)
+                  ]
+      ]
+      [ focusedInput ]
 
 {-| Focused the component. -}
 focus : Model -> Model

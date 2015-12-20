@@ -24,6 +24,7 @@ import Ui
 {-| Representation of a checkbox. -}
 type alias Model =
   { disabled : Bool
+  , readonly : Bool
   , value : Bool
   }
 
@@ -38,6 +39,7 @@ type Action
 init : Bool -> Model
 init value =
   { disabled = False
+  , readonly = False
   , value = value
   }
 
@@ -99,8 +101,7 @@ attributes : Signal.Address Action -> Model -> List Html.Attribute
 attributes address model =
   let
     actions =
-      if model.disabled then
-        []
+      if model.disabled || model.readonly then []
       else
         [ onClick address Toggle
         , onKeys address Nothing
@@ -109,5 +110,6 @@ attributes address model =
                          ])]
   in
     [ classList [ ("disabled", model.disabled)
+                , ("readonly", model.readonly)
                 , ("checked", model.value) ]
     ] ++ (Ui.tabIndex model) ++ actions

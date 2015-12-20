@@ -50,7 +50,16 @@ ui-slider {
   }
 
   // Focused state
-  &:focus {
+  &.readonly:focus {
+    outline: none;
+
+    ui-slider-handle {
+      border: 2px solid $input;
+      background: $focus-readonly;
+    }
+  }
+
+  &:not(.readonly):focus {
     outline: none;
 
     ui-slider-handle {

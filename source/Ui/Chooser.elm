@@ -52,6 +52,7 @@ type alias Item =
   - **value** - (Internal) The value of the input
   - **intended** - (Internal) The currently intended value (for keyboard selection)
   - **open** - Whether or not the dropdown is open
+  - **readonly** - Whether or not the dropdown is readonly
 -}
 type alias Model =
   { placeholder : String
@@ -65,6 +66,7 @@ type alias Model =
   , deselectable: Bool
   , intended : String
   , disabled : Bool
+  , readonly : Bool
   , render : Item -> Html
   }
 
@@ -107,6 +109,7 @@ init data placeholder value =
     , multiple = False
     , intended = ""
     , disabled = False
+    , readonly = False
     , render = (\item -> span [] [text item.label])
     }
       |> intendFirst
@@ -168,25 +171,30 @@ render address model =
         model.value
       else
         label model
+
+    actions =
+      if model.disabled || model.readonly then []
+      else [onInput address Filter
+           , onClick address Focus
+           , onFocus address Focus
+           , onBlur address Close
+           , onKeys address Nothing (Dict.fromList [ (27, Close)
+                                                   , (13, Enter)
+                                                   , (40, Next)
+                                                   , (38, Prev) ])
+           ]
   in
     node "ui-chooser" ([classList [ ("dropdown-open", model.open)
                                   , ("searchable", model.searchable)
                                   , ("disabled", model.disabled)
+                                  , ("readonly", model.readonly)
                                   ]
                        ])
-      ([ input [ onInput address Filter
-               , onClick address Focus
-               , onFocus address Focus
-               , onBlur address Close
-               , disabled model.disabled
-               , onKeys address Nothing (Dict.fromList [ (27, Close)
-                                                       , (13, Enter)
-                                                       , (40, Next)
-                                                       , (38, Prev) ])
-               , placeholder model.placeholder
-               , value val
-               , readonly (not model.searchable || not model.open)
-               ] []] ++ dropdown)
+      ([ input ([ disabled model.disabled
+                , placeholder model.placeholder
+                , value val
+                , readonly (not model.searchable || not model.open || model.readonly)
+                ] ++ actions) []] ++ dropdown)
 
 
 {-| Closes the dropdown of a chooser. -}

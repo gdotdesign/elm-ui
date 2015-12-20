@@ -5,9 +5,12 @@ ui-checkbox {
 
   // Styling
   display: inline-block;
-  cursor: pointer;
   height: 36px;
   width: 36px;
+
+  &:not(.readonly) {
+    cursor: pointer;
+  }
 
   // Checkmark
   ui-icon {
@@ -31,8 +34,17 @@ ui-checkbox {
     opacity: 1;
   }
 
-  // Focused state
-  &:focus {
+  // Focused & readonly
+  &.readonly:focus {
+    @extend %focused-readonly;
+
+    ui-icon {
+      color: $focus-readonly;
+    }
+  }
+
+  // Focused not readonly
+  &:focus:not(.readonly) {
     @extend %focused;
 
     ui-icon {
@@ -52,6 +64,10 @@ ui-checkbox-radio {
   position: relative;
   height: 36px;
   width: 36px;
+
+  &:not(.readonly) {
+    cursor: pointer;
+  }
 
   // Inside Circle
   ui-checkbox-radio-circle {
@@ -84,8 +100,17 @@ ui-checkbox-radio {
     }
   }
 
-  // Focued state
-  &:focus {
+  // Focused & readonly
+  &.readonly:focus {
+    @extend %focused-readonly;
+
+    ui-checkbox-radio-circle {
+      background: $focus-readonly;
+    }
+  }
+
+  // Focused not readonly
+  &:focus:not(.readonly) {
     @extend %focused;
 
     ui-checkbox-radio-circle {
@@ -102,9 +127,12 @@ ui-checkbox-toggle {
   position: relative;
 
   // Styling
-  cursor: pointer;
   min-width: 76px;
   height: 36px;
+
+  &:not(.readonly) {
+    cursor: pointer;
+  }
 
   // Background
   ui-checkbox-toggle-bg {
@@ -177,8 +205,21 @@ ui-checkbox-toggle {
     }
   }
 
-  // Focused state
-  &:focus {
+  // Focused & readonly
+  &.readonly:focus {
+    outline: none;
+
+    ui-checkbox-toggle-bg {
+      @extend %focused-readonly;
+    }
+
+    ui-checkbox-toggle-handle {
+      background: $focus-readonly;
+    }
+  }
+
+  // Focused not readonly
+  &:focus:not(.readonly) {
     outline: none;
 
     ui-checkbox-toggle-bg {

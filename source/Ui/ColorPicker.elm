@@ -31,10 +31,12 @@ import Ui
   - **colorPanel** (internal) - The model of a color panel
   - **disabled** - Whether or not the color picker is disabled
   - **open** - Whether or not the color picker is open
+  - **readonly** - Whether or not the color picker is readonly
 -}
 type alias Model =
   { colorPanel : ColorPanel.Model
   , disabled : Bool
+  , readonly : Bool
   , open : Bool
   }
 
@@ -54,6 +56,7 @@ init : Color.Color -> Model
 init color =
   { colorPanel = ColorPanel.init color
   , disabled = False
+  , readonly = False
   , open = False
   }
 
@@ -96,7 +99,7 @@ render address model =
   let
     color = Ext.Color.toCSSRgba model.colorPanel.value
     actions =
-      if model.disabled then []
+      if model.disabled || model.readonly then []
       else [ onFocus address Focus
            , onClick address Focus
            , onBlur address Close
@@ -107,6 +110,7 @@ render address model =
   in
     node "ui-color-picker" ([ classList [ ("dropdown-open", model.open)
                                         , ("disabled", model.disabled)
+                                        , ("readonly", model.readonly)
                                         ]
                             ] ++ actions ++ (Ui.tabIndex model))
       [ div [] [text color]

@@ -113,6 +113,11 @@ view address model =
                                                , glyph = "android-download"
                                                , disabled = False }
           , Ui.IconButton.view address Nothing { side = "right"
+                                               , text = ""
+                                               , kind = "Primary"
+                                               , glyph = "archive"
+                                               , disabled = False }
+          , Ui.IconButton.view address Nothing { side = "right"
                                                , text = "Success"
                                                , kind = "success"
                                                , glyph = "checkmark"
@@ -138,6 +143,8 @@ view address model =
         , Ui.Container.row []
           [ Ui.Calendar.view (forwardTo address Calendar) calendar
           , Ui.Calendar.view (forwardTo address Calendar)
+              { calendar | readonly = True }
+          , Ui.Calendar.view (forwardTo address Calendar)
               { calendar | disabled = True }
           ]
 
@@ -146,15 +153,21 @@ view address model =
           [ Ui.Container.row []
             [ Ui.Checkbox.view (forwardTo address Checkbox) checkbox
             , Ui.Checkbox.view (forwardTo address Checkbox)
+                { checkbox | readonly = True }
+            , Ui.Checkbox.view (forwardTo address Checkbox)
                 { checkbox | disabled = True }
             ]
           , Ui.Container.row []
             [ Ui.Checkbox.toggleView (forwardTo address Checkbox2) checkbox2
             , Ui.Checkbox.toggleView (forwardTo address Checkbox2)
+                { checkbox2 | readonly = True }
+            , Ui.Checkbox.toggleView (forwardTo address Checkbox2)
                 { checkbox2 | disabled = True }
             ]
           , Ui.Container.row []
             [ Ui.Checkbox.radioView (forwardTo address Checkbox3) checkbox3
+            , Ui.Checkbox.radioView (forwardTo address Checkbox3)
+                { checkbox3 | readonly = True }
             , Ui.Checkbox.radioView (forwardTo address Checkbox3)
                 { checkbox3 | disabled = True }
             ]
@@ -164,12 +177,16 @@ view address model =
         , Ui.Container.row []
           [ Ui.Chooser.view (forwardTo address Chooser) chooser
           , Ui.Chooser.view (forwardTo address Chooser)
+              { chooser | readonly = True }
+          , Ui.Chooser.view (forwardTo address Chooser)
               { chooser | disabled = True }
           ]
 
         , node "h2" [] [text "Color Panel"]
         , Ui.Container.row []
           [ Ui.ColorPanel.view (forwardTo address CP) colorPanel
+          , Ui.ColorPanel.view (forwardTo address CP)
+              { colorPanel | readonly = True }
           , Ui.ColorPanel.view (forwardTo address CP)
               { colorPanel | disabled = True }
           ]
@@ -178,12 +195,16 @@ view address model =
         , Ui.Container.row []
           [ Ui.ColorPicker.view (forwardTo address CPP) colorPicker
           , Ui.ColorPicker.view (forwardTo address CPP)
+              { colorPicker | readonly = True }
+          , Ui.ColorPicker.view (forwardTo address CPP)
               { colorPicker | disabled = True }
           ]
 
         , node "h2" [] [text "Date Picker"]
         , Ui.Container.row []
           [ Ui.DatePicker.view (forwardTo address DP) datePicker
+          , Ui.DatePicker.view (forwardTo address DP)
+              { datePicker | readonly = True }
           , Ui.DatePicker.view (forwardTo address DP)
               { datePicker | disabled = True }
           ]
@@ -192,12 +213,16 @@ view address model =
         , Ui.Container.row []
           [ Ui.NumberRange.view (forwardTo address NR) numberRange
           , Ui.NumberRange.view (forwardTo address NR)
+              { numberRange | readonly = True }
+          , Ui.NumberRange.view (forwardTo address NR)
               { numberRange | disabled = True }
           ]
 
         , node "h2" [] [text "Slider"]
         , Ui.Container.row []
           [ Ui.Slider.view (forwardTo address Slider) slider
+          , Ui.Slider.view (forwardTo address Slider)
+            { slider | readonly = True }
           , Ui.Slider.view (forwardTo address Slider)
             { slider | disabled = True }
           ]

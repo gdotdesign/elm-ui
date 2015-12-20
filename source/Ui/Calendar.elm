@@ -33,12 +33,14 @@ import Ui
   - **value** - The current selected date
   - **selectable** - Whether the user can select a date by clicking
   - **disabled** - Whether the calendar is disabled
+  - **readonly** - Whether the calendar is interactive
 -}
 type alias Model =
   { date : Date.Date
   , value : Date.Date
   , selectable : Bool
   , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions that a calendar can make:
@@ -61,6 +63,7 @@ init date =
   , value = date
   , selectable = True
   , disabled = False
+  , readonly = False
   }
 
 {-| Updates a calendar. -}
@@ -121,22 +124,25 @@ render address model =
       , compact = False }
 
     nextAction =
-      if model.disabled then []
+      if model.disabled || model.readonly then []
       else [onMouseDown address NextMonth]
 
     previousAction =
-      if model.disabled then []
+      if model.disabled || model.readonly then []
       else [onMouseDown address PreviousMonth]
 
     {- Header container -}
     container =
       Ui.Container.view continerOptions []
-        [ Ui.icon "chevron-left" True previousAction
+        [ Ui.icon "chevron-left" (not model.readonly) previousAction
         , node "div" [] [text (format "%Y - %B" month)]
-        , Ui.icon "chevron-right" True nextAction
+        , Ui.icon "chevron-right" (not model.readonly) nextAction
         ]
   in
-    node "ui-calendar" [classList [("disabled", model.disabled)]]
+    node "ui-calendar" [classList [ ("disabled", model.disabled)
+                                  , ("readonly", model.readonly)
+                                  ]
+                       ]
       [ container
       , node "ui-calendar-table" [] cells ]
 
@@ -189,7 +195,7 @@ renderCell address date model =
       Ext.Date.isSameDate date model.value
 
     click =
-      if model.selectable && sameMonth && not model.disabled then
+      if model.selectable && sameMonth && not model.disabled && not model.readonly then
         [onMouseDown address (Select date)]
       else
         []

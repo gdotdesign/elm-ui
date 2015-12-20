@@ -46,6 +46,7 @@ import Ui
   - **value** - The current value (0 - 100)
   - **startDistance** - The distance in pixels when the dragging can start
   - **disabled** - Whether or not the slide is disabled
+  - **readonly** - Whether or not the slide is readonly
   - **dragging** (internal) - Wheter or not the slider is currently dragging
   - **top** (internal) - The top position of the handle
   - **left** (internal) - The left position of the handle
@@ -58,6 +59,7 @@ type alias Model =
   , value : Float
   , startDistance : Float
   , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions that a slider can make. -}
@@ -78,6 +80,7 @@ init value =
   , value = value
   , startDistance = 0
   , disabled = False
+  , readonly = False
   }
 
 {-| Updates a slider. -}
@@ -110,7 +113,7 @@ render address model =
     position =
       (toString (clamp 0 100 model.value)) ++ "%"
     actions =
-      if model.disabled then [classList [("disabled", model.disabled)]]
+      if model.disabled || model.readonly then []
       else [ onWithDimensions "mousedown" True address Lift
            , onKeys address Nothing (Dict.fromList [ (40, Increment)
                                                    , (38, Decrement)
@@ -119,12 +122,15 @@ render address model =
            ]
     element =
       node "ui-slider"
-        ((Ui.tabIndex model) ++ actions)
+        ([ classList [ ("disabled", model.disabled)
+                     , ("readonly", model.readonly)
+                     ]
+         ] ++ (Ui.tabIndex model) ++ actions)
         [ node "ui-slider-bar" []
           [ node "ui-slider-progress" [style [("width", position)]] [] ]
         , node "ui-slider-handle" [style [("left", position)]] [] ]
   in
-    if model.drag.dragging then
+    if model.drag.dragging && not model.disabled && not model.readonly then
       Native.Browser.focus element
     else
       element

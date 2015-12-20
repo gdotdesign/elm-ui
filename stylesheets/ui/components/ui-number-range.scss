@@ -46,6 +46,13 @@ ui-number-range {
     }
   }
 
+  // Readonly state
+  &.readonly {
+    input:not([type]):focus {
+      @extend %focused-readonly;
+    }
+  }
+
   // Input
   input {
     text-align: center;

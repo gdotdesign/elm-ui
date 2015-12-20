@@ -12,7 +12,7 @@ thus creating an automatically growing textarea.
 # Functions
 @docs setValue, focus
 -}
-import Html.Attributes exposing (value, spellcheck, placeholder, classList)
+import Html.Attributes exposing (value, spellcheck, placeholder, classList, readonly, disabled)
 import Html.Extra exposing (onEnterStop, onInput, onStop)
 import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onFocus, onBlur)
@@ -26,6 +26,8 @@ import List
   - **value** - The value
   - **enterAllowed** - Whether or not to allow new lines when pressing enter
   - **focused** (internal) - Whether the textarea is focused or not
+  - **disabled** - Whether or not the component is disabled
+  - **readonly** - Whether or not the component is readonly
 -}
 type alias Model =
   { placeholder : String
@@ -33,6 +35,8 @@ type alias Model =
   , focused : Bool
   , enterAllowed : Bool
   , focusNext : Bool
+  , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions a textrea can make. -}
@@ -53,6 +57,8 @@ init value =
   , focused = False
   , enterAllowed = True
   , focusNext = False
+  , disabled = False
+  , readonly = False
   }
 
 {-| Updates a textrea. -}
@@ -82,12 +88,18 @@ render address model =
   let
     base =
       [ placeholder model.placeholder
-      , onStop "select" address Nothing
-      , onInput address Input
+      , value model.value
       , onFocus address Focus
       , onBlur address Blur
-      , value model.value
-      , spellcheck False ]
+      , readonly model.readonly
+      , disabled model.disabled
+      , spellcheck False ] ++ actions
+
+    actions =
+      if model.disabled || model.readonly then []
+      else [ onStop "select" address Nothing
+           , onInput address Input
+           ]
 
     attributes =
       if model.enterAllowed then
@@ -101,7 +113,10 @@ render address model =
       else
         textarea attributes []
   in
-    node "ui-textarea" ([classList [("focused", model.focused)]])
+    node "ui-textarea" ([classList [ ("focused", model.focused)
+                                   , ("disabled", model.disabled)
+                                   , ("readonly", model.readonly)
+                                   ]])
       [ node "ui-textarea-background" [] []
       , node "ui-textarea-mirror" [] (process model.value)
       , textarea'

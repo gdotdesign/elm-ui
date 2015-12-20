@@ -31,6 +31,7 @@ import Debug exposing (log)
   - **ctrlSave** - Whether or not to save on ctrl+enter
   - **required** - Whether or not to disable the component if the value is empty
   - **disabled** - Whether or not the component is disabled
+  - **readonly** - Whether or not the component is readonly
   - **value** - The value of the component
   - **textarea** (internal) - The state of the textarea
   - **open** (internal) - Whether the component is open or not
@@ -40,6 +41,7 @@ type alias Model =
   , required : Bool
   , ctrlSave : Bool
   , disabled : Bool
+  , readonly : Bool
   , value : String
   , textarea : Ui.Textarea.Model
   }
@@ -59,6 +61,7 @@ init value =
   , open = False
   , ctrlSave = True
   , disabled = False
+  , readonly = False
   , value = value
   , textarea = Ui.Textarea.init value
   }

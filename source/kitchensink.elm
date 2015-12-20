@@ -21,9 +21,9 @@ import Ui.ColorPicker
 import Ui.Image
 import Ui
 
-import Html.Attributes exposing (style, classList)
+import Html.Attributes exposing (style, classList, colspan)
 import Html.Events exposing (onMouseEnter, onMouseLeave)
-import Html exposing (div, text, node)
+import Html exposing (div, text, node, table, tr, td)
 import Debug exposing (log)
 
 import Ext.Date
@@ -71,7 +71,7 @@ init =
      , checkbox2 = Ui.Checkbox.init False
      , checkbox3 = Ui.Checkbox.init False
      , inplaceInput = Ui.InplaceInput.init "Test Value"
-     , image = Ui.Image.init "https://upload.wikimedia.org/wikipedia/commons/c/c4/PM5544_with_non-PAL_signals.png"
+     , image = Ui.Image.init "http://rs1371.pbsrc.com/albums/ag299/Victor_Binhara/Despicable%20Me/DespicableMe2_zpsc67ebdc5.jpg~c200"
      , numberRange = Ui.NumberRange.init 0
      , colorPanel = Ui.ColorPanel.init Color.blue
      , colorPicker = Ui.ColorPicker.init Color.yellow
@@ -81,11 +81,21 @@ init =
 render item =
   div [] [text item.label]
 
+componentHeader title =
+  tr [] [ td [colspan 3] [text title] ]
+
+tableRow active readonly disabled =
+  tr []
+    [ td [] [ active   ]
+    , td [] [ readonly ]
+    , td [] [ disabled ]
+    ]
+
 view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker
     , numberRange, slider, checkbox, checkbox2, checkbox3
-    , calendar } = model
+    , calendar, inplaceInput, textarea } = model
   in
     Ui.App.view (forwardTo address App) model.app
       [ Ui.panel []
@@ -145,103 +155,97 @@ view address model =
         , node "h2" [] [text "Image"]
         , Ui.Image.view (forwardTo address Image) model.image
 
-        , node "h2" [] [text "Calendar"]
-        , Ui.Container.row []
-          [ Ui.Calendar.view (forwardTo address Calendar) calendar
-          , Ui.Calendar.view (forwardTo address Calendar)
-              { calendar | readonly = True }
-          , Ui.Calendar.view (forwardTo address Calendar)
-              { calendar | disabled = True }
+        , table []
+          [ tr [] [ td [] [text "Active"]
+                  , td [] [text "Readonly"]
+                  , td [] [text "Disabled"]
+                  ]
+
+          , componentHeader "Calendar"
+          , tableRow (Ui.Calendar.view (forwardTo address Calendar) calendar)
+                     (Ui.Calendar.view (forwardTo address Calendar)
+                       { calendar | readonly = True })
+                     (Ui.Calendar.view (forwardTo address Calendar)
+                       { calendar | disabled = True })
+
+          , componentHeader "Checkbox"
+          , tableRow (Ui.Checkbox.view (forwardTo address Checkbox) checkbox)
+                     (Ui.Checkbox.view (forwardTo address Checkbox)
+                       { checkbox | readonly = True })
+                     (Ui.Checkbox.view (forwardTo address Checkbox)
+                       { checkbox | disabled = True })
+          , tableRow (Ui.Checkbox.toggleView (forwardTo address Checkbox2)
+                       checkbox2)
+                     (Ui.Checkbox.toggleView (forwardTo address Checkbox2)
+                       { checkbox2 | readonly = True })
+                     (Ui.Checkbox.toggleView (forwardTo address Checkbox2)
+                       { checkbox2 | disabled = True })
+          , tableRow (Ui.Checkbox.radioView (forwardTo address Checkbox3)
+                       checkbox3)
+                     (Ui.Checkbox.radioView (forwardTo address Checkbox3)
+                       { checkbox3 | readonly = True })
+                     (Ui.Checkbox.radioView (forwardTo address Checkbox3)
+                       { checkbox3 | disabled = True })
+
+          , componentHeader "Chooser"
+          , tableRow (Ui.Chooser.view (forwardTo address Chooser) chooser)
+                     (Ui.Chooser.view (forwardTo address Chooser)
+                       { chooser | readonly = True })
+                     (Ui.Chooser.view (forwardTo address Chooser)
+                       { chooser | disabled = True })
+
+          , componentHeader "Color Panel"
+          , tableRow (Ui.ColorPanel.view (forwardTo address CP) colorPanel)
+                     (Ui.ColorPanel.view (forwardTo address CP)
+                       { colorPanel | readonly = True })
+                     (Ui.ColorPanel.view (forwardTo address CP)
+                       { colorPanel | disabled = True })
+
+          , componentHeader "Color Picker"
+          , tableRow (Ui.ColorPicker.view (forwardTo address CPP) colorPicker)
+                     (Ui.ColorPicker.view (forwardTo address CPP)
+                       { colorPicker | readonly = True })
+                     (Ui.ColorPicker.view (forwardTo address CPP)
+                       { colorPicker | disabled = True })
+
+          , componentHeader "Date Picker"
+          , tableRow (Ui.DatePicker.view (forwardTo address DP) datePicker)
+                     (Ui.DatePicker.view (forwardTo address DP)
+                       { datePicker | readonly = True })
+                     (Ui.DatePicker.view (forwardTo address DP)
+                       { datePicker | disabled = True })
+
+          , componentHeader "Number Range"
+          , tableRow (Ui.NumberRange.view (forwardTo address NR) numberRange)
+                     (Ui.NumberRange.view (forwardTo address NR)
+                       { numberRange | readonly = True })
+                     (Ui.NumberRange.view (forwardTo address NR)
+                       { numberRange | disabled = True })
+
+          , componentHeader "Slider"
+          , tableRow (Ui.Slider.view (forwardTo address Slider) slider)
+                     (Ui.Slider.view (forwardTo address Slider)
+                       { slider | readonly = True })
+                     (Ui.Slider.view (forwardTo address Slider)
+                       { slider | disabled = True })
+
+          , componentHeader "Autogrow Textarea"
+          , tableRow (Ui.Textarea.view (forwardTo address TA) textarea)
+                     (Ui.Textarea.view (forwardTo address TA)
+                       { textarea | readonly = True })
+                     (Ui.Textarea.view (forwardTo address TA)
+                       { textarea | disabled = True })
+
+          , componentHeader "Inplace Input"
+          , tableRow (Ui.InplaceInput.view (forwardTo address InplaceInput)
+                       inplaceInput)
+                     (Ui.InplaceInput.view (forwardTo address InplaceInput)
+                       { inplaceInput | readonly = True })
+                     (Ui.InplaceInput.view (forwardTo address InplaceInput)
+                       { inplaceInput | disabled = True })
           ]
-
-        , node "h2" [] [text "Checkbox"]
-        , Ui.Container.column []
-          [ Ui.Container.row []
-            [ Ui.Checkbox.view (forwardTo address Checkbox) checkbox
-            , Ui.Checkbox.view (forwardTo address Checkbox)
-                { checkbox | readonly = True }
-            , Ui.Checkbox.view (forwardTo address Checkbox)
-                { checkbox | disabled = True }
-            ]
-          , Ui.Container.row []
-            [ Ui.Checkbox.toggleView (forwardTo address Checkbox2) checkbox2
-            , Ui.Checkbox.toggleView (forwardTo address Checkbox2)
-                { checkbox2 | readonly = True }
-            , Ui.Checkbox.toggleView (forwardTo address Checkbox2)
-                { checkbox2 | disabled = True }
-            ]
-          , Ui.Container.row []
-            [ Ui.Checkbox.radioView (forwardTo address Checkbox3) checkbox3
-            , Ui.Checkbox.radioView (forwardTo address Checkbox3)
-                { checkbox3 | readonly = True }
-            , Ui.Checkbox.radioView (forwardTo address Checkbox3)
-                { checkbox3 | disabled = True }
-            ]
-          ]
-
-        , node "h2" [] [text "Chooser"]
-        , Ui.Container.row []
-          [ Ui.Chooser.view (forwardTo address Chooser) chooser
-          , Ui.Chooser.view (forwardTo address Chooser)
-              { chooser | readonly = True }
-          , Ui.Chooser.view (forwardTo address Chooser)
-              { chooser | disabled = True }
-          ]
-
-        , node "h2" [] [text "Color Panel"]
-        , Ui.Container.row []
-          [ Ui.ColorPanel.view (forwardTo address CP) colorPanel
-          , Ui.ColorPanel.view (forwardTo address CP)
-              { colorPanel | readonly = True }
-          , Ui.ColorPanel.view (forwardTo address CP)
-              { colorPanel | disabled = True }
-          ]
-
-        , node "h2" [] [text "Color Picker"]
-        , Ui.Container.row []
-          [ Ui.ColorPicker.view (forwardTo address CPP) colorPicker
-          , Ui.ColorPicker.view (forwardTo address CPP)
-              { colorPicker | readonly = True }
-          , Ui.ColorPicker.view (forwardTo address CPP)
-              { colorPicker | disabled = True }
-          ]
-
-        , node "h2" [] [text "Date Picker"]
-        , Ui.Container.row []
-          [ Ui.DatePicker.view (forwardTo address DP) datePicker
-          , Ui.DatePicker.view (forwardTo address DP)
-              { datePicker | readonly = True }
-          , Ui.DatePicker.view (forwardTo address DP)
-              { datePicker | disabled = True }
-          ]
-
-        , node "h2" [] [text "Number Range"]
-        , Ui.Container.row []
-          [ Ui.NumberRange.view (forwardTo address NR) numberRange
-          , Ui.NumberRange.view (forwardTo address NR)
-              { numberRange | readonly = True }
-          , Ui.NumberRange.view (forwardTo address NR)
-              { numberRange | disabled = True }
-          ]
-
-        , node "h2" [] [text "Slider"]
-        , Ui.Container.row []
-          [ Ui.Slider.view (forwardTo address Slider) slider
-          , Ui.Slider.view (forwardTo address Slider)
-            { slider | readonly = True }
-          , Ui.Slider.view (forwardTo address Slider)
-            { slider | disabled = True }
-          ]
-
-        , node "h2" [] [text "Autogrow Textarea"]
-        , Ui.Textarea.view (forwardTo address TA)
-            model.textarea
-
-        , node "h2" [] [text "Inplace Input"]
-        , Ui.InplaceInput.view (forwardTo address InplaceInput)
-            model.inplaceInput
-        ]
       ]
+    ]
 
 update action model =
   case action of

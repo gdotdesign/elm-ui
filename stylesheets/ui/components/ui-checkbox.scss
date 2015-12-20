@@ -60,6 +60,7 @@ ui-checkbox-radio {
   @include border;
 
   // Styling
+  display: inline-block;
   border-radius: 50%;
   position: relative;
   height: 36px;

@@ -7,21 +7,34 @@ ui-textarea {
   margin-bottom: -24px;
 
   ui-textarea-background {
-    transition: box-shadow 400ms linear;
-    box-shadow: $focus-shadow-idle;
-    border-radius: $border-radius;
-    background: $input;
+    @extend %focused-idle;
+
+    @include colors($input);
+    @include border;
+
     position: absolute;
-    border: $border;
     bottom: 24px;
     right: 0;
     left: 0;
     top: 0;
   }
 
-  &.focused ui-textarea-background {
-    transition: box-shadow 200ms linear;
-    box-shadow: $focus-shadow;
+  &:not(.disabled):not(.readonly).focused ui-textarea-background {
+    @extend %focused;
+  }
+
+  &.readonly.focused ui-textarea-background {
+    @extend %focused-readonly;
+  }
+
+  &.disabled {
+    @extend %disabled;
+
+    > * { pointer-events: none; }
+
+    ui-textarea-background {
+      background: $disabled;
+    }
   }
 
   textarea {

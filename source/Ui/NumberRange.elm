@@ -133,7 +133,7 @@ render address model =
         , onEnterStop address Save
         ]
       else
-        [ onWithDimensions "mousedown" True address Lift
+        [ onWithDimensions "mousedown" False address Lift
         , onWithDimensions "dblclick" True address DoubleClick
         , onKeys address Nothing (Dict.fromList [ (40, Decrement)
                                                 , (38, Increment)

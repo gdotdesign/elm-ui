@@ -78,6 +78,10 @@ ui-calendar {
 
   // Readonly state
   &.readonly {
+    ui-icon {
+      display: none;
+    }
+
     > * {
       pointer-events: none;
     }

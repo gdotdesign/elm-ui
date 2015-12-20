@@ -18,6 +18,7 @@ import Ui.InplaceInput
 import Ui.NumberRange
 import Ui.ColorPanel
 import Ui.ColorPicker
+import Ui.Image
 import Ui
 
 import Html.Attributes exposing (style, classList)
@@ -45,6 +46,7 @@ type Action
   | NR Ui.NumberRange.Action
   | CP Ui.ColorPanel.Action
   | CPP Ui.ColorPicker.Action
+  | Image Ui.Image.Action
   | Nothing
 
 data =
@@ -69,6 +71,7 @@ init =
      , checkbox2 = Ui.Checkbox.init False
      , checkbox3 = Ui.Checkbox.init False
      , inplaceInput = Ui.InplaceInput.init "Test Value"
+     , image = Ui.Image.init "https://upload.wikimedia.org/wikipedia/commons/c/c4/PM5544_with_non-PAL_signals.png"
      , numberRange = Ui.NumberRange.init 0
      , colorPanel = Ui.ColorPanel.init Color.blue
      , colorPicker = Ui.ColorPicker.init Color.yellow
@@ -138,6 +141,9 @@ view address model =
                                                , glyph = "paper-airplane"
                                                , disabled = True }
           ]
+
+        , node "h2" [] [text "Image"]
+        , Ui.Image.view (forwardTo address Image) model.image
 
         , node "h2" [] [text "Calendar"]
         , Ui.Container.row []
@@ -279,6 +285,8 @@ update action model =
       ({ model | colorPicker = Ui.ColorPicker.update act model.colorPicker}, Effects.none)
     InplaceInput act ->
       ({ model | inplaceInput = Ui.InplaceInput.update act model.inplaceInput}, Effects.none)
+    Image act ->
+      ({ model | image = Ui.Image.update act model.image}, Effects.none)
     Nothing ->
       (model, Effects.none)
 

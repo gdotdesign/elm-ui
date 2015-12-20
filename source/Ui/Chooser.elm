@@ -142,8 +142,8 @@ update action model =
 
         Prev ->
           { model | intended = Intendable.previous
-                                  model.intended
-                                  (availableItems model) }
+                                model.intended
+                                (availableItems model) }
             |> Dropdown.open
 
         Select value ->

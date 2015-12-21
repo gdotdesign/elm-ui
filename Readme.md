@@ -3,7 +3,7 @@
 ------------------------
 
 # Elm UI
-An opinionated UI library for the web in Elm, following the **Elm Architecture**. 
+An opinionated UI library for the web in Elm, following the **Elm Architecture**.
 
 ## Implemented Componets
 All components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).
@@ -14,7 +14,7 @@ Interactive components so far:
 - [x] Ui.Calendar - A calendar component (orignially for the date picker)
 - [x] Ui.Checkbox - Basic checkobx with three variations (checkbox, toggle, radio)
 - [x] Ui.Chooser - A searchable, customizable select box with lots of features
-- [x] Ui.ColorPanel - An interface for manipulating a **hue**, **saturation** and **value** properties of a color 
+- [x] Ui.ColorPanel - An interface for manipulating a **hue**, **saturation** and **value** properties of a color
 - [x] Ui.ColorPicker - An input for selecting a color with a color panel
 - [x] Ui.Container - A flexbox container for layouts
 - [x] Ui.DatePicker - A date picker component using a calendar
@@ -47,8 +47,8 @@ Static components so far:
 
 ## Getting Started
 For now, you will need to **clone** or **download** this repository into a directory for server reasons:
-  * It uses **Native Modules** because of this its not included int the **Elm packages repository** 
-  * It uses **Sass** to render the stylesheets 
+  * It uses **Native Modules** because of this its not included int the **Elm packages repository**
+  * It uses **Sass** to render the stylesheets
   * It uses **Koa** to provide a development environment
   * It uses **Gulp** to build the final files
 
@@ -58,7 +58,7 @@ For now, you will need to **clone** or **download** this repository into a direc
 
 ### Installing dependencies
 You will need to install both **Elm** and **Node** dependencies:
-  * To install the Node ones run `npm isntall` in the root of the directory
+  * To install the Node ones run `npm install` in the root of the directory
   * To install the Elm ones run `elm package install` in the root of the directory
 
 ### Development environment
@@ -71,11 +71,11 @@ Your applications main file lives in `source/Main.elm`, this will be the file th
 The main file for your applications styles is the `stylesheets/main.scss`, it will include all of the styles neccessary for the components defined by this library. You can add your styles here or import from anywhere inside the `stylesheets` directory.
 
 ### Building
-You can build your application with the `npm build` command. This will:
+You can build your application with the `npm run build` command. This will:
  * Compile and uglify your the Elm files into the `dist/main.js`
  * Compile, autoprefix and uglify your the stylesheets into `dist/main.css`
  * Build the `dist/index.html`
- * Copy all of the static assets from the `public` folder into `dist`, 
+ * Copy all of the static assets from the `public` folder into `dist`,
 
 You should end up with something like this:
 ```
@@ -96,7 +96,7 @@ Any contributions are welcome, you should keep in mind the following when submit
   * The components files should follow the current structure:
     * The Elm file should be under `source/ui/ComponentName.elm` (capitalized)
     * The Style file should be under `stylesheets/ui/component-name.elm` (dasherized)
-  * The source should be **documented** and **exposed** in the `elm-package.json` file for documentation purposes. 
+  * The source should be **documented** and **exposed** in the `elm-package.json` file for documentation purposes.
   * The views should use **lazy rendering** from `Html.Lazy`
   * The views should return a single **node** with a tag matching the filenames (dasherized) with the **ui-** prefix (`ui-component-name`).
   * It should be one of **3 types of components**

@@ -10,23 +10,30 @@ All components **business logic** is written completely in Elm (while using the 
 
 Interactive components so far:
 - [x] Ui.App - The base for a web or mobile application
-- [x] Ui.Button - Basic button
+- [x] Ui.Button - Basic button component with sizes
 - [x] Ui.Calendar - A calendar component (orignially for the date picker)
 - [x] Ui.Checkbox - Basic checkobx with three variations (checkbox, toggle, radio)
 - [x] Ui.Chooser - A searchable, customizable select box with lots of features
-- [x] Ui.ColorPanel - An interface for manipulating a colors **hue**, **saturation** and **value**
+- [x] Ui.ColorPanel - An interface for manipulating a **hue**, **saturation** and **value** properties of a color 
 - [x] Ui.ColorPicker - An input for selecting a color with a color panel
 - [x] Ui.Container - A flexbox container for layouts
 - [x] Ui.DatePicker - A date picker component using a calendar
-- [x] Ui.IconButton - A button with icons at the left or right sides
+- [x] Ui.IconButton - A button with an icon on the left or right side
 - [x] Ui.Image - An image that fades when loaded
 - [x] Ui.InplaceInput - An input that can be edited in place (display and form view with a save button)
 - [x] Ui.Input - Basic input component
-- [x] Ui.NumberPad - An interface for provind number values (like a calculator or lock screen)
+- [x] Ui.NumberPad - An interface for providing number values (like a calculator or lock screen)
 - [x] Ui.NumberRange - An interface for maniuplating a number value by dragging
 - [x] Ui.Pager - A pager component
 - [x] Ui.Slider - A slider component
 - [x] Ui.Textarea - An automatically growing textarea
+- [ ] Ui.Tabs - A tab component
+- [ ] Ui.Upload - A file upload component
+- [ ] Ui.Modal - A base for modal dialogs
+- [ ] Ui.ButtonGroup - A component for selecting a value via buttons
+- [ ] Ui.Rating - A rating component
+- [ ] Ui.MaskedInput - An input component where the value is masked by a pattern
+- [ ] Ui.CheckboxGroup - A component for selecting a value via checkboxes
 
 Static components so far:
 - [x] Ui.icon - Icons from Ionicons
@@ -41,7 +48,9 @@ Static components so far:
 ## Getting Started
 For now, you will need to **clone** or **download** this repository into a directory for server reasons:
   * It uses **Native Modules** because of this its not included int the **Elm packages repository** 
-  * It uses **Sass** to render the stylesheets and **Koa** to provide a development environment so it need some **Node Modules**
+  * It uses **Sass** to render the stylesheets 
+  * It uses **Koa** to provide a development environment
+  * It uses **Gulp** to build the final files
 
 #### Prerequisites
 * A working version of Elm v0.16
@@ -56,7 +65,7 @@ You will need to install both **Elm** and **Node** dependencies:
 You can start the development environment with the `npm start` command, this will start a server that listens on `http://localhost:8001`.
 
 ### The Main Module
-Your applications main file lives in `source/Main.elm`, this will be the file that is compiled and served as your application. This is probably where you want to set up your [StartApp](https://github.com/evancz/start-app). By default the **examples (kitchensink)** of all components will be displayed.
+Your applications main file lives in `source/Main.elm`, this will be the file that is compiled and served as your application. This is probably where you want to set up your [StartApp](https://github.com/evancz/start-app). By default the **examples (kitchen sink)** of all components will be displayed.
 
 ### Styles
 The main file for your applications styles is the `stylesheets/main.scss`, it will include all of the styles neccessary for the components defined by this library. You can add your styles here or import from anywhere inside the `stylesheets` directory.

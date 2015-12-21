@@ -63,7 +63,7 @@ type alias Model =
 
 init : (Model, Effects.Effects Action)
 init =
-  ({ app = Ui.App.init
+  ({ app = Ui.App.init "MoneyTrack"
    , pager = Ui.Pager.init 0
    , dashboard = Dashboard.init
    , settings = Settings.init

@@ -52,21 +52,6 @@ function renderHtml(title, str) {
     </html>`
 }
 
-function renderIframe(title, id) {
-  return `<html>
-            <head>
-              <title>${title}</title>
-              <link rel="stylesheet" href="/main.css"/>
-              <meta name="viewport" content="width=device-width, initial-scale=1">
-            </head>
-            <body class="mobile">
-              <div>
-                <iframe src='/html/${id}'></iframe>
-              </div>
-            </body>
-          </html>`
-}
-
 router.get('/', function *(next) {
   this.body = renderHtml('Elm-UI Kitchensink','main.js')
 })
@@ -81,7 +66,7 @@ router.get('/main.css', function *(next) {
   this.body = yield renderCSS
 })
 
-router.get('/html/:id', function *(next) {
+router.get('/examples/:id', function *(next) {
   this.type = 'text/html'
   this.body = renderHtml(this.params.id, `/js/${this.params.id}`)
 })
@@ -89,11 +74,6 @@ router.get('/html/:id', function *(next) {
 router.get('/js/:id', function *(next){
   this.type = 'text/javascript';
   this.body = yield renderElm(`examples/${this.params.id}/Main.elm`)
-})
-
-router.get('/examples/:id', function *(next){
-  this.type = 'text/html'
-  this.body = renderIframe(this.params.id, this.params.id)
 })
 
 app.use(router.routes())

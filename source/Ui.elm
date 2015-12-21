@@ -1,6 +1,7 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
-   stylesheetLink, tabIndex, header, headerTitle, fab, text, open) where
+   stylesheetLink, tabIndex, header, headerTitle, fab, text, open,
+   redirect) where
 
 {-| UI Library for ELM!
 
@@ -9,7 +10,7 @@ module Ui
 @docs headerTitle, fab, text
 
 # Helper Functions
-@docs tabIndex, open
+@docs tabIndex, open, redirect
 -}
 import Html.Attributes exposing (classList, tabindex, rel, href)
 import Html.Extra exposing (onLoad)
@@ -94,3 +95,8 @@ text value =
 open : String -> a -> a
 open url model =
   Native.Browser.open url model
+
+{-| Replace the current page with the given url. -}
+redirect : String -> a -> a
+redirect url model =
+  Native.Browser.redirect url model

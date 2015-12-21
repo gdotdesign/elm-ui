@@ -48,7 +48,13 @@ ui-button {
   }
 
   &.size-big {
+    line-height: 47px;
     font-size: 22px;
+    height: 49px;
+
+    span {
+      align-self: flex-start;
+    }
   }
 
   &.size-small {

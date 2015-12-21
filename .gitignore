@@ -3,3 +3,4 @@ node_modules
 documentation.json
 index.html
 npm-debug.log
+dist

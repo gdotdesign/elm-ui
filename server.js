@@ -43,7 +43,6 @@ function renderElm(str) {
 function renderHtml(title, str) {
   return `<html>
       <head>
-        <title>${title}</title>
       </head>
       <body>
         <script src='${str}' type='application/javascript'>
@@ -57,7 +56,7 @@ function renderIframe(title, id) {
   return `<html>
             <head>
               <title>${title}</title>
-              <link rel="stylesheet" href="/index.css"/>
+              <link rel="stylesheet" href="/main.css"/>
               <meta name="viewport" content="width=device-width, initial-scale=1">
             </head>
             <body class="mobile">
@@ -69,15 +68,15 @@ function renderIframe(title, id) {
 }
 
 router.get('/', function *(next) {
-  this.body = renderHtml('Kitchensink','index.js')
+  this.body = renderHtml('Elm-UI Kitchensink','main.js')
 })
 
-router.get('/index.js', function *(next) {
+router.get('/main.js', function *(next) {
   this.type = 'text/javascript';
-  this.body = yield renderElm('source/kitchensink.elm')
+  this.body = yield renderElm('source/Main.elm')
 })
 
-router.get('/index.css', function *(next) {
+router.get('/main.css', function *(next) {
   this.type = 'text/css';
   this.body = yield renderCSS
 })
@@ -97,9 +96,7 @@ router.get('/examples/:id', function *(next){
   this.body = renderIframe(this.params.id, this.params.id)
 })
 
-app
-  .use(router.routes())
-
+app.use(router.routes())
 app.listen(8001);
 
 console.log("Listening on localhost:8001")

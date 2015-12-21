@@ -14,14 +14,16 @@ module Ui.App
 -}
 import Html.Attributes exposing (name, content)
 import Html.Events exposing (onClick)
-import Html exposing (node)
+import Html exposing (node, text)
 import Html.Lazy
 
 import Ui
 
 {-| Representation of an application. -}
 type alias Model =
-  { loaded: Bool }
+  { loaded: Bool
+  , title: String
+  }
 
 {-| Actions an application can make:
   - **Clicked** - Dispatched when a click is made
@@ -32,9 +34,11 @@ type Action
   | Loaded
 
 {-| Initializes an application. -}
-init : Model
-init =
-  { loaded = False }
+init : String -> Model
+init title =
+  { loaded = False
+  , title = title
+  }
 
 {-| Updates an application. -}
 update : Action -> Model -> Model
@@ -58,7 +62,8 @@ view address model children =
 render : Signal.Address Action -> Model -> List Html.Html -> Html.Html
 render address model children =
   node "ui-app" [onClick address Clicked]
-    ([ Ui.stylesheetLink "/index.css" address Loaded
+    ([ Ui.stylesheetLink "main.css" address Loaded
+     , node "title" [] [text model.title]
      , node "meta" [ name "viewport"
                    , content "initial-scale=1.0, user-scalable=no"] []
      ] ++ if model.loaded then children else [])

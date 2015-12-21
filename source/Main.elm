@@ -22,7 +22,7 @@ import Ui.ColorPicker
 import Ui.Image
 import Ui
 
-import Html.Attributes exposing (style, classList, colspan)
+import Html.Attributes exposing (style, classList, colspan, href)
 import Html.Events exposing (onMouseEnter, onMouseLeave)
 import Html exposing (div, text, node, table, tr, td)
 import Debug exposing (log)
@@ -64,7 +64,7 @@ init =
   let
     datePickerOptions = Ui.DatePicker.init Ext.Date.now
   in
-    ({ app = Ui.App.init
+    ({ app = Ui.App.init "Elm-UI Kitchen Sink"
      , chooser = Ui.Chooser.init data "Select a country..." ""
      , calendar = Ui.Calendar.init Ext.Date.now
      , textarea = Ui.Textarea.init "Test"
@@ -109,12 +109,14 @@ view address model =
         , Ui.text "An opinionated UI library for the web in Elm, following
                    the Elm Architecture."
         , node "p" []
-          [  Ui.IconButton.view address Nothing { side = "right"
-                                                , text = "Get Started at Github"
-                                                , kind = "Primary"
-                                                , glyph = "social-github"
-                                                , size = "big"
-                                                , disabled = False } ]
+          [ node "a" [href "https://github.com/gdotdesign/elm-ui"]
+            [ Ui.IconButton.view address Nothing { side = "right"
+                                                 , text = "Get Started at Github"
+                                                 , kind = "Primary"
+                                                 , glyph = "social-github"
+                                                 , size = "big"
+                                                 , disabled = False } ]
+          ]
         , Ui.subTitle [] [text "Components"]
         , Ui.text "The business logic for following components are
                    implemented fully in Elm, with minimal Native

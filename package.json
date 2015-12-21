@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "UI Libary in Elm",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "gulp build"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,15 @@
     "node-sass": "3.4.2",
     "koa-static-folder": "",
     "koa-router": "",
-    "autoprefixer": ""
+    "autoprefixer": "",
+    "gulp": "",
+    "gulp-elm": "",
+    "gulp-uglify": "",
+    "gulp-rename": "",
+    "gulp-file": "",
+    "gulp-autoprefixer": "",
+    "gulp-sass": "",
+    "gulp-minify-css": ""
   },
   "homepage": "https://github.com/gdotdesign/elm-ui#readme"
 }

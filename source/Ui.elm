@@ -1,6 +1,6 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
-   stylesheetLink, tabIndex, header, headerTitle, fab, text) where
+   stylesheetLink, tabIndex, header, headerTitle, fab, text, open) where
 
 {-| UI Library for ELM!
 
@@ -9,11 +9,13 @@ module Ui
 @docs headerTitle, fab, text
 
 # Helper Functions
-@docs tabIndex
+@docs tabIndex, open
 -}
 import Html.Attributes exposing (classList, tabindex, rel, href)
 import Html.Extra exposing (onLoad)
 import Html exposing (node)
+
+import Native.Browser
 
 {-| An icon component from Ionicons. -}
 icon : String -> Bool -> List Html.Attribute -> Html.Html
@@ -87,3 +89,8 @@ fab glyph attributes =
 text : String -> Html.Html
 text value =
   node "ui-text" [] [Html.text value]
+
+{-| Opens a link. -}
+open : String -> a -> a
+open url model =
+  Native.Browser.open url model

@@ -14,9 +14,10 @@ module Ui.Button
 -}
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
-import Html.Extra exposing (onEnter)
+import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
 import Html.Lazy
+import Dict
 
 import Ui
 
@@ -67,7 +68,10 @@ attributes address model action =
         []
       else
         [ onClick address action
-        , onEnter False address action
+        , onKeys address
+          (Dict.fromList [ (13, action)
+                         , (32, action)
+                         ])
         ]
   in
     [ classList

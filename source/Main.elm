@@ -47,6 +47,7 @@ type Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
   | MouseIsDown Bool
+  | Open String
   | Nothing
 
 type alias Model =
@@ -133,14 +134,15 @@ view address model =
         , Ui.text "An opinionated UI library for the web in Elm, following
                    the Elm Architecture."
         , node "p" []
-          [ node "a" [href "https://github.com/gdotdesign/elm-ui"]
-            [ Ui.IconButton.view address Nothing { side = "right"
-                                                 , text = "Get Started at Github"
-                                                 , kind = "Primary"
-                                                 , glyph = "social-github"
-                                                 , size = "big"
-                                                 , disabled = False } ]
-          ]
+          [ Ui.IconButton.view
+              address
+              (Open "https://github.com/gdotdesign/elm-ui")
+              { side = "right"
+              , text = "Get Started at Github"
+              , kind = "Primary"
+              , glyph = "social-github"
+              , size = "big"
+              , disabled = False } ]
         , Ui.subTitle [] [text "Components"]
         , Ui.text "The business logic for following components are
                    implemented fully in Elm, with minimal Native
@@ -401,6 +403,9 @@ update action model =
         , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel
         , slider = Ui.Slider.handleMove x y model.slider
         }
+
+    Open url ->
+      Ui.open url model
 
     Nothing ->
       model

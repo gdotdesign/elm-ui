@@ -97,6 +97,7 @@ Elm.Native.Browser.make = function(elm) {
   /* Interface. */
   return elm.Native.Browser.values = {
     toFixed: F2(function(value,decimals) { return value.toFixed(decimals) }),
+    open: F2(function(url,value) { window.open(url); return value; }),
     rem: F2(function(a,b){ return a % b }),
     focusEnd: focusEnd,
     focus: focus,

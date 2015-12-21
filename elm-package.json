@@ -4,8 +4,7 @@
   "repository": "https://github.com/gdotdesign/elm-ui.git",
   "license": "BSD-2-Clause",
   "source-directories": [
-    "source",
-    "examples"
+    "source"
   ],
   "native-modules": true,
   "exposed-modules": [

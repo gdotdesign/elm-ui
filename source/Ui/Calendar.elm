@@ -1,4 +1,6 @@
-module Ui.Calendar where
+module Ui.Calendar
+  (Model, Action(Select), init, update, view, render, setValue, nextDay
+  ,previousDay)where
 
 {-| This is a calendar component where the user
 can select a date by clicking on it.
@@ -11,9 +13,6 @@ can select a date by clicking on it.
 
 # Functions
 @docs setValue, nextDay, previousDay
-
-# Private
-@docs fixDate, renderCell,  paddingLeft
 -}
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)

@@ -87,7 +87,6 @@ type Action
   | Next
   | Prev
   | Enter
-  | Nothing
 
 {-| Initializes a chooser with the given values.
 
@@ -148,9 +147,6 @@ update action model =
 
         Select value ->
           toggleItemAndClose value model
-
-        _ ->
-          model
   in
     model'
 
@@ -178,10 +174,10 @@ render address model =
            , onClick address Focus
            , onFocus address Focus
            , onBlur address Close
-           , onKeys address Nothing (Dict.fromList [ (27, Close)
-                                                   , (13, Enter)
-                                                   , (40, Next)
-                                                   , (38, Prev) ])
+           , onKeys address (Dict.fromList [ (27, Close)
+                                           , (13, Enter)
+                                           , (40, Next)
+                                           , (38, Prev) ])
            ]
   in
     node "ui-chooser" ([classList [ ("dropdown-open", model.open)

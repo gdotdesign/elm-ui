@@ -51,7 +51,6 @@ type Action
   = Edit
   | Textarea Ui.Textarea.Action
   | Save
-  | Nothing
   | Close
 
 {-| Initializes an inplace input with the given value. -}
@@ -86,8 +85,6 @@ update action model =
         model
       else
         close { model | value = model.textarea.value }
-
-    _ -> model
 
 {-| Renders an inplace input. -}
 view : Signal.Address Action -> Model -> Html.Html

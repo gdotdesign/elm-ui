@@ -20,10 +20,10 @@ import Ext.Number exposing (roundTo)
 
 {-| Hsv color type. -}
 type alias Hsv =
-  { hue : Float
-  , saturation : Float
+  { saturation : Float
   , value : Float
   , alpha : Float
+  , hue : Float
   }
 
 {-| Renders the given HSV color to CSS rgba string. -}
@@ -42,8 +42,8 @@ hsvToRgb : Hsv -> Color
 hsvToRgb color =
   let
     saturation = color.saturation
-    value = color.value
     hue = color.hue * 360
+    value = color.value
 
     c = value * saturation
     x = c * (1 - (abs (((hue / 60) `Ext.Number.remFloat` 2) - 1)))
@@ -74,9 +74,9 @@ toHsv color =
   let
     rgba = (Color.toRgb color)
 
-    red = (toFloat rgba.red) / 255
     green = (toFloat rgba.green) / 255
     blue = (toFloat rgba.blue) / 255
+    red = (toFloat rgba.red) / 255
 
     cmax = max green (max red blue)
     cmin = min green (min red blue)
@@ -93,8 +93,8 @@ toHsv color =
            else
              60 * (((red - green) / delta) + 4)
   in
-    { hue = hue / 360
-    , saturation = saturation
-    , value = cmax
+    { saturation = saturation
     , alpha = rgba.alpha
+    , hue = hue / 360
+    , value = cmax
     }

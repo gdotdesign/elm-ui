@@ -12,7 +12,7 @@ formatFloat : Int -> Float -> String
 formatFloat precision number =
   Native.Browser.toFixed number precision
 
-{-| Runs native modulo. -}
+{-| Remainder function that works on floats. -}
 remFloat : Float -> Float -> Float
 remFloat a b =
   Native.Browser.rem a b

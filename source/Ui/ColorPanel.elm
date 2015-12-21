@@ -41,9 +41,9 @@ type alias Model =
 
 {-| Actions that a color panel can make. -}
 type Action
-  = LiftAlpha (Html.Extra.DnD)
-  | LiftRect (Html.Extra.DnD)
-  | LiftHue (Html.Extra.DnD)
+  = LiftAlpha (Html.Extra.PositionAndDimension)
+  | LiftRect (Html.Extra.PositionAndDimension)
+  | LiftHue (Html.Extra.PositionAndDimension)
 
 {-| Initializes a color panel with the given Elm color.
 

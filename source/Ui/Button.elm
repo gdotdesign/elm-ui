@@ -12,9 +12,9 @@ module Ui.Button
 # Functions
 @docs attributes
 -}
-import Html.Extra exposing (onTouch, onEnter)
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
+import Html.Extra exposing (onEnter)
 import Html exposing (node, text)
 import Html.Lazy
 

@@ -54,7 +54,6 @@ type alias ViewModel =
 type Action
   = Pressed Int
   | Delete
-  | Nothing
 
 {-| Initializes a number pad with the given value.
 
@@ -79,8 +78,6 @@ update action model =
       addDigit number model
     Delete ->
       deleteDigit model
-    _ ->
-      model
 
 {-| Renders a number pad. -}
 view : Signal.Address Action -> ViewModel -> Model -> Html.Html
@@ -106,7 +103,7 @@ render address viewModel model =
 
     actions =
       if model.disabled || model.readonly then []
-      else [ onKeys address Nothing
+      else [ onKeys address
               (Dict.fromList [ (8, Delete)
               , (46, Delete)
               , (48, Pressed 0)

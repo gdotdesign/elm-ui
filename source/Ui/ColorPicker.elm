@@ -43,7 +43,6 @@ type alias Model =
 {-| Actions that a color picker can make. -}
 type Action
   = Focus
-  | Nothing
   | Close
   | Toggle
   | ColorPanel ColorPanel.Action
@@ -76,8 +75,6 @@ update action model =
     ColorPanel act ->
       { model | colorPanel = ColorPanel.update act model.colorPanel }
 
-    _ -> model
-
 {-| Renders a color picker. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
@@ -103,9 +100,9 @@ render address model =
       else [ onFocus address Focus
            , onClick address Focus
            , onBlur address Close
-           , onKeys address Nothing (Dict.fromList [ (27, Close)
-                                                   , (13, Toggle)
-                                                   ])
+           , onKeys address (Dict.fromList [ (27, Close)
+                                           , (13, Toggle)
+                                           ])
            ]
   in
     node "ui-color-picker" ([ classList [ ("dropdown-open", model.open)

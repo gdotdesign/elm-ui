@@ -25,9 +25,9 @@ now : Date.Date
 now =
   Native.DateTime.now Nothing
 
-{-| Creates a date from the given inputs.
+{-| Creates a date from the given year, month and day.
 
-    createDate 2015 01 01
+    createDate 2015 1 1
 -}
 createDate : Int -> Int -> Int -> Date.Date
 createDate year month day =
@@ -35,7 +35,7 @@ createDate year month day =
 
 {-| Returns the month from the given date.
 
-    month (createDate 2015 01 01) -- 1
+    month (createDate 2015 1 1) -- 1
 -}
 month : Date.Date -> Int
 month date =
@@ -43,7 +43,7 @@ month date =
 
 {-| Returns how many days are in the month of the given date.
 
-    daysInMonth (createDate 2015 01 01) -- 31
+    daysInMonth (createDate 2015 1 1) -- 31
 -}
 daysInMonth : Date.Date -> Int
 daysInMonth date =
@@ -51,7 +51,7 @@ daysInMonth date =
 
 {-| Return the dates in the month of the given date.
 
-    datesInMonth (createDate 2015 01 01) -- [2015-01-01,2015-02-02,...]
+    datesInMonth (createDate 2015 1 1) -- [2015-01-01,2015-02-02,...]
 -}
 datesInMonth : Date.Date -> List Date.Date
 datesInMonth date =
@@ -63,7 +63,7 @@ datesInMonth date =
 
 {-| Returns the previous days date in relation to the given date.
 
-    previousDay (createDate 2015 01 01) -- 2014-12-31
+    previousDay (createDate 2015 1 1) -- 2014-12-31
 -}
 previousDay : Date.Date -> Date.Date
 previousDay date =
@@ -71,7 +71,7 @@ previousDay date =
 
 {-| Returns the next days date in relation to the given date.
 
-    nextDay (createDate 2015 01 01) -- 2015-01-02
+    nextDay (createDate 2015 1 1) -- 2015-01-02
 -}
 nextDay : Date.Date -> Date.Date
 nextDay date =
@@ -79,7 +79,7 @@ nextDay date =
 
 {-| Returns the next month date in relation to the given date.
 
-    nextMonth (createDate 2015 01 05) -- 2015-02-05
+    nextMonth (createDate 2015 1 5) -- 2015-02-05
 -}
 nextMonth : Date.Date -> Date.Date
 nextMonth date =
@@ -87,7 +87,7 @@ nextMonth date =
 
 {-| Returns the previous month date in relation to the given date.
 
-    previousMonth (createDate 2015 01 05) -- 2014-12-05
+    previousMonth (createDate 2015 1 5) -- 2014-12-05
 -}
 previousMonth : Date.Date -> Date.Date
 previousMonth date =
@@ -95,7 +95,7 @@ previousMonth date =
 
 {-| Returns the first date in of the month of the given date.
 
-    begginingOfMonth (createDate 2015 01 05) -- 2015-01-01
+    begginingOfMonth (createDate 2015 1 5) -- 2015-01-01
 -}
 begginingOfMonth : Date.Date -> Date.Date
 begginingOfMonth date =
@@ -103,7 +103,7 @@ begginingOfMonth date =
 
 {-| Returns the last date in of the month of the given date.
 
-    endOfMonth (createDate 2015 01 05) -- 2015-01-31
+    endOfMonth (createDate 2015 1 5) -- 2015-01-31
 -}
 endOfMonth : Date.Date -> Date.Date
 endOfMonth date =

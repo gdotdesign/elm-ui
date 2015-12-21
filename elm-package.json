@@ -12,6 +12,7 @@
     "Ext.Date",
     "Ext.Number",
     "Ext.Color",
+    "Html.Extra",
     "Storage.Local",
     "Ui",
     "Ui.App",

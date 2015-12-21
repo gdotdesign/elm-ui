@@ -13,7 +13,7 @@ thus creating an automatically growing textarea.
 @docs setValue, focus
 -}
 import Html.Attributes exposing (value, spellcheck, placeholder, classList, readonly, disabled)
-import Html.Extra exposing (onEnterStop, onInput, onStop)
+import Html.Extra exposing (onEnterPreventDefault, onInput, onStop)
 import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onFocus, onBlur)
 import Html.Lazy
@@ -105,7 +105,7 @@ render address model =
       if model.enterAllowed then
         base
       else
-        base ++ [onEnterStop address Nothing]
+        base ++ [onEnterPreventDefault address Nothing]
 
     textarea' =
       if model.focusNext then

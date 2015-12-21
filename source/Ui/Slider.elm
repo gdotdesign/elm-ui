@@ -64,8 +64,7 @@ type alias Model =
 
 {-| Actions that a slider can make. -}
 type Action
-  = Lift (Html.Extra.DnD)
-  | Nothing
+  = Lift (Html.Extra.PositionAndDimension)
   | Increment
   | Decrement
 
@@ -98,9 +97,6 @@ update action model =
               , left = position.pageX - dimensions.left }
         |> clampLeft
 
-    _ ->
-      model
-
 {-| Renders a slider. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
@@ -115,10 +111,10 @@ render address model =
     actions =
       if model.disabled || model.readonly then []
       else [ onWithDimensions "mousedown" True address Lift
-           , onKeys address Nothing (Dict.fromList [ (40, Increment)
-                                                   , (38, Decrement)
-                                                   , (37, Increment)
-                                                   , (39, Decrement) ])
+           , onKeys address (Dict.fromList [ (40, Increment)
+                                           , (38, Decrement)
+                                           , (37, Increment)
+                                           , (39, Decrement) ])
            ]
     element =
       node "ui-slider"

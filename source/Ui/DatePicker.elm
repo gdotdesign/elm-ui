@@ -55,7 +55,6 @@ type alias Model =
 -}
 type Action
   = Focus
-  | Nothing
   | Increment
   | Decrement
   | Close
@@ -110,8 +109,6 @@ update action model =
               updatedModel
           _ -> updatedModel
 
-    _ -> model
-
 {-| Renders a date picker. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
@@ -126,7 +123,7 @@ render address model =
       else [ onFocus address Focus
            , onClick address Focus
            , onBlur address Close
-           , onKeys address Nothing
+           , onKeys address
              (Dict.fromList [ (27, Close)
              , (13, Toggle)
              , (40, Increment)

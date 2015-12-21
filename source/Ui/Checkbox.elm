@@ -13,8 +13,8 @@ module Ui.Checkbox
 @docs setValue
 -}
 import Html.Attributes exposing (classList, tabindex)
-import Html.Extra exposing (onKeys, onTouch)
 import Html.Events exposing (onClick)
+import Html.Extra exposing (onKeys)
 import Html exposing (node)
 import Html.Lazy
 import Dict
@@ -33,7 +33,6 @@ type alias Model =
 -}
 type Action
   = Toggle
-  | Nothing
 
 {-| Initiaizes a checkbox with the given value. -}
 init : Bool -> Model
@@ -49,8 +48,6 @@ update action model =
   case action of
     Toggle ->
       { model | value = not model.value }
-    Nothing ->
-      model
 
 {-| Sets the value of a checkbox to the given one. -}
 setValue : Bool -> Model -> Model
@@ -104,7 +101,7 @@ attributes address model =
       if model.disabled || model.readonly then []
       else
         [ onClick address Toggle
-        , onKeys address Nothing
+        , onKeys address
           (Dict.fromList [ (13, Toggle)
                          , (32, Toggle)
                          ])]

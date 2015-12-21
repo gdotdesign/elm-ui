@@ -15,7 +15,7 @@ double clicking on the component.
 # Functions
 @docs focus, handleClick, handleMove, setValue, increment, decrement
 -}
-import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterStop)
+import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterPreventDefault)
 import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onFocus, onBlur)
 import Html exposing (node, input)
@@ -60,12 +60,11 @@ type alias Model =
 
 {-| Actions that a number range can make. -}
 type Action
-  = Lift (Html.Extra.DnD)
-  | DoubleClick (Html.Extra.DnD)
+  = Lift (Html.Extra.PositionAndDimension)
+  | DoubleClick (Html.Extra.PositionAndDimension)
   | Focus
   | Blur
   | Input String
-  | Nothing
   | Increment
   | Decrement
   | Save
@@ -93,8 +92,6 @@ init value =
 update: Action -> Model -> Model
 update action model =
   case action of
-    Nothing ->
-      model
     Increment ->
       increment model
     Decrement ->
@@ -130,15 +127,15 @@ render address model =
       if model.readonly || model.disabled then []
       else if model.editing then
         [ onInput address Input
-        , onEnterStop address Save
+        , onEnterPreventDefault address Save
         ]
       else
         [ onWithDimensions "mousedown" False address Lift
         , onWithDimensions "dblclick" True address DoubleClick
-        , onKeys address Nothing (Dict.fromList [ (40, Decrement)
-                                                , (38, Increment)
-                                                , (37, Decrement)
-                                                , (39, Increment) ])
+        , onKeys address (Dict.fromList [ (40, Decrement)
+                                        , (38, Increment)
+                                        , (37, Decrement)
+                                        , (39, Increment) ])
         ]
     attributes =
       if model.editing then

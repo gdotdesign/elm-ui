@@ -4,7 +4,8 @@
   "description": "UI Libary in Elm",
   "scripts": {
     "start": "node server.js",
-    "build": "gulp build"
+    "build": "gulp build",
+    "deploy": "gulp deploy"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,8 @@
     "gulp-file": "",
     "gulp-autoprefixer": "",
     "gulp-sass": "",
-    "gulp-minify-css": ""
+    "gulp-minify-css": "",
+    "gulp-gh-pages": ""
   },
   "homepage": "https://github.com/gdotdesign/elm-ui#readme"
 }

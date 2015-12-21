@@ -6,6 +6,12 @@ var file = require("gulp-file");
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var minifyCss = require('gulp-minify-css');
+var ghPages = require('gulp-gh-pages');
+
+gulp.task('deploy', ['build'], function() {
+  return gulp.src('./dist/**/*')
+    .pipe(ghPages());
+});
 
 html =
 	`<html>

@@ -14,16 +14,17 @@ ui-textarea {
 
     position: absolute;
     bottom: 24px;
+    z-index: 0;
     right: 0;
     left: 0;
     top: 0;
   }
 
-  &:not(.disabled):not(.readonly).focused ui-textarea-background {
+  &:not(.disabled):not(.readonly) textarea:focus + ui-textarea-background {
     @extend %focused;
   }
 
-  &.readonly.focused ui-textarea-background {
+  &.readonly textarea:focus + ui-textarea-background {
     @extend %focused-readonly;
   }
 
@@ -51,6 +52,7 @@ ui-textarea {
     resize: none;
     height: 100%;
     width: 100%;
+    z-index: 1;
     margin: 0;
     border: 0;
     left: 0;

@@ -62,7 +62,7 @@ view address model children =
 render : Signal.Address Action -> Model -> List Html.Html -> Html.Html
 render address model children =
   node "ui-app" [onClick address Clicked]
-    ([ Ui.stylesheetLink "/main.css" address Loaded
+    ([ Ui.stylesheetLink "main.css" address Loaded
      , node "title" [] [text model.title]
      , node "meta" [ name "viewport"
                    , content "initial-scale=1.0, user-scalable=no"] []

@@ -240,12 +240,27 @@ ui-text {
 
 ui-dropdown-menu {
   ui-dropdown-menu-items {
+    @include colors($input);
+    @include border;
+
     position: fixed;
     visibility: hidden;
     background: $input;
+    padding: 10px;
+
+    box-shadow: 0 5px 20px rgba(#000, 0.1);
+    transition: opacity 150ms, transform 150ms, visibility 1ms 150ms;
+    transform: translateY(10px);
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
 
     &.open {
+      transition: opacity 150ms, transform 150ms, visibility 1ms;
+      transform: translateY(0);
+      pointer-events: auto;
       visibility: visible;
+      opacity: 1;
     }
   }
 }

@@ -36,7 +36,6 @@ Elm.Native.Browser.make = function(elm) {
       enumerable: false,
       writeable: false,
       get: function() {
-        console.log(this)
         var rect = this.getBoundingClientRect()
         /* Offset values with scroll positions. */
         return { bottom: rect.bottom + window.pageYOffset,

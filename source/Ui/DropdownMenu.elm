@@ -23,21 +23,23 @@ init =
   }
 
 updatePosition : BothDimensions -> Model -> Model
-updatePosition {parent,dropdown,window} model =
+updatePosition {parent,dropdown} model =
   let
     top =
-      window.height - dropdown.height
+      parent.top + parent.height + 5
     left =
-      window.width - dropdown.width
+      parent.left
   in
     { model | top = top, left = left }
 
 view address element children model =
   node "ui-dropdown-menu"
-    [ openHandler "click" address Open ]
+    [ openHandler "mouseup" address Open
+    ]
     [ element
     , node "ui-dropdown-menu-items"
-      [ onStopNothing "mousedown"
+      [ onStopNothing "mouseup"
+      , onStopNothing "mousedown"
       , classList [("open", model.open)]
       , style [ ("top", (toString model.top) ++ "px")
               , ("left", (toString model.left) ++ "px")
@@ -47,7 +49,7 @@ view address element children model =
     ]
 
 open model =
-  { model | open = True }
+  { model | open = not model.open }
 
 handleClick pressed model =
   if not pressed then

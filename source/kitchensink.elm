@@ -113,7 +113,7 @@ view address model =
 
           , componentHeader "Button"
           , tr []
-            [ td [colspan 3]
+            [ td [colspan 2]
               [ Ui.Container.row []
                 [ Ui.Button.view address Nothing { text = "Primary"
                                                  , kind = "primary"
@@ -130,19 +130,21 @@ view address model =
                 , Ui.Button.view address Nothing { text = "Danger"
                                                  , kind = "danger"
                                                  , disabled = False }
-                , Ui.Button.view address Nothing { text = "Disabled"
+                ]
+              ]
+            , td []
+                [ Ui.Button.view address Nothing { text = "Disabled"
                                                  , kind = "danger"
                                                  , disabled = True }
                 ]
-              ]
             ]
 
           , componentHeader "Icon Button"
           , tr []
-            [ td [colspan 3]
+            [ td [colspan 2]
               [ Ui.Container.row []
                 [ Ui.IconButton.view address Nothing { side = "right"
-                                                     , text = "Primary"
+                                                     , text = "Load"
                                                      , kind = "Primary"
                                                      , glyph = "android-download"
                                                      , disabled = False }
@@ -152,7 +154,7 @@ view address model =
                                                      , glyph = "archive"
                                                      , disabled = False }
                 , Ui.IconButton.view address Nothing { side = "left"
-                                                     , text = "Secondary"
+                                                     , text = "Send"
                                                      , kind = "secondary"
                                                      , glyph = "arrow-left-c"
                                                      , disabled = False }
@@ -171,12 +173,14 @@ view address model =
                                                      , kind = "danger"
                                                      , glyph = "close"
                                                      , disabled = False }
-                , Ui.IconButton.view address Nothing { side = "left"
-                                                     , text = "Disabled"
-                                                     , kind = "success"
-                                                     , glyph = "paper-airplane"
-                                                     , disabled = True }
                 ]
+              ]
+            , td []
+              [ Ui.IconButton.view address Nothing { side = "left"
+                                                   , text = "Disabled"
+                                                   , kind = "success"
+                                                   , glyph = "paper-airplane"
+                                                   , disabled = True }
               ]
             ]
 

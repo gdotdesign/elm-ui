@@ -1,1 +1,18 @@
 @import 'ui/ui';
+
+table {
+  @include border;
+  border-collapse: collapse;
+  margin: 0 auto;
+
+  td {
+    border: 1px solid $secondary;
+    padding: 10px;
+
+    &[colspan='3'] {
+      background: dampen-inverse($background, 60%);
+      font-weight: 600;
+      font-size: 18px;
+    }
+  }
+}

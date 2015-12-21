@@ -172,9 +172,9 @@ ui-checkbox-toggle {
 
   // Handle
   ui-checkbox-toggle-handle {
+    transition: all 200ms, background 400ms linear;
     border-radius: $border-radius;
     background: $primary;
-    transition: 400ms;
 
     width: calc(50% - 5px);
     position: absolute;
@@ -214,6 +214,7 @@ ui-checkbox-toggle {
     }
 
     ui-checkbox-toggle-handle {
+      transition: all 200ms;
       background: $focus-readonly;
     }
   }
@@ -227,6 +228,7 @@ ui-checkbox-toggle {
     }
 
     ui-checkbox-toggle-handle {
+      transition: all 200ms;
       background: $focus;
     }
   }

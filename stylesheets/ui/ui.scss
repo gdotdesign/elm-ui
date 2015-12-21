@@ -238,6 +238,18 @@ ui-text {
   margin-bottom: 20px;
 }
 
+ui-dropdown-menu {
+  ui-dropdown-menu-items {
+    position: fixed;
+    visibility: hidden;
+    background: $input;
+
+    &.open {
+      visibility: visible;
+    }
+  }
+}
+
 // MOBILE DEVICE...
 
 @media (max-width: 600px) {

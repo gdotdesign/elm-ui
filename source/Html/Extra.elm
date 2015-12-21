@@ -59,7 +59,7 @@ positionAndDimensionDecoder : Json.Decoder PositionAndDimension
 positionAndDimensionDecoder =
   Json.object2
     PositionAndDimension
-    dimensionsDecoder
+    atDimensionsDecoder
     positionDecoder
 
 {-| Decodes a position from an event. -}
@@ -69,15 +69,19 @@ positionDecoder =
     ("pageX" := Json.float)
     ("pageY" := Json.float)
 
+-- Decoder dimensions from target
+atDimensionsDecoder : Json.Decoder Dimensions
+atDimensionsDecoder =
+  Json.at ["target", "dimensions"] dimensionsDecoder
+
 {-| Decodes dimensions from an event. -}
 dimensionsDecoder : Json.Decoder Dimensions
 dimensionsDecoder =
-    (Json.at ["target", "dimensions"]
-      (Json.object4 Dimensions
-        ("height" := Json.float)
-        ("width" := Json.float)
-        ("left" := Json.float)
-        ("top" := Json.float)))
+  Json.object4 Dimensions
+    ("height" := Json.float)
+    ("width" := Json.float)
+    ("left" := Json.float)
+    ("top" := Json.float)
 
 {-| Prevent default options. -}
 preventDefaultOptions : Html.Events.Options

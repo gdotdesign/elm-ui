@@ -5,6 +5,30 @@ Elm.Native.Browser.make = function(elm) {
   if (elm.Native.Browser.values) { return elm.Native.Browser.values; }
 
   if(typeof HTMLElement === "function") {
+    var fallbackMenu = { getBoundingClientRect: function(){
+        return { bottom: 0,
+          height: 0,
+          width: 0,
+          right: 0,
+          left: 0,
+          top: 0
+        }
+      }
+    }
+    Object.defineProperty(HTMLElement.prototype, "dropdownMenu", {
+      configurable: false,
+      enumerable: false,
+      writeable: false,
+      get: function(){
+        var dropdown = this.closest('ui-dropdown-menu')
+        if(dropdown){
+          return { element: dropdown.firstElementChild || fallbackMenu
+                 , dropdown: dropdown.lastElementChild || fallbackMenu }
+        }else {
+          return { element: fallbackMenu, dropdown: fallbackMenu }
+        }
+      }
+    })
     /* Add dimensions property to HTMLElement so we can decode it, it's not
        exposed so it won't conflict with anything hopefully. */
     Object.defineProperty(HTMLElement.prototype, "dimensions", {
@@ -12,6 +36,7 @@ Elm.Native.Browser.make = function(elm) {
       enumerable: false,
       writeable: false,
       get: function() {
+        console.log(this)
         var rect = this.getBoundingClientRect()
         /* Offset values with scroll positions. */
         return { bottom: rect.bottom + window.pageYOffset,
@@ -105,3 +130,22 @@ Elm.Native.Browser.make = function(elm) {
     blur: blur,
   };
 };
+
+/* CLOSEST POLYFILL */
+(function (ELEMENT) {
+  ELEMENT.matches = ELEMENT.matches || ELEMENT.mozMatchesSelector || ELEMENT.msMatchesSelector || ELEMENT.oMatchesSelector || ELEMENT.webkitMatchesSelector;
+
+  ELEMENT.closest = ELEMENT.closest || function closest(selector) {
+    var element = this;
+
+    while (element) {
+      if (element.matches(selector)) {
+        break;
+      }
+
+      element = element.parentElement;
+    }
+
+    return element;
+  };
+}(Element.prototype));

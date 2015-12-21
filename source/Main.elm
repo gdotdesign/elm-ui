@@ -27,6 +27,9 @@ import Ui.Button
 import Ui.Slider
 import Ui.Image
 import Ui.App
+
+import Ui.DropdownMenu
+
 import Ui
 
 type Action
@@ -50,6 +53,8 @@ type Action
   | Open String
   | Nothing
 
+  | DropdownMenu Ui.DropdownMenu.Action
+
 type alias Model =
   { app : Ui.App.Model
   , datePicker : Ui.DatePicker.Model
@@ -66,6 +71,8 @@ type alias Model =
   , chooser : Ui.Chooser.Model
   , slider : Ui.Slider.Model
   , image : Ui.Image.Model
+
+  , menu : Ui.DropdownMenu.Model
   }
 
 init : Model
@@ -88,6 +95,8 @@ init =
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
     , slider = Ui.Slider.init 50
+
+    , menu = Ui.DropdownMenu.init
     }
 
 data : List Ui.Chooser.Item
@@ -158,10 +167,14 @@ view address model =
           , tr []
             [ td [colspan 2]
               [ Ui.Container.row []
-                [ Ui.Button.view address Nothing { text = "Primary"
-                                                 , kind = "primary"
-                                                 , size = "big"
-                                                 , disabled = False }
+                [ Ui.DropdownMenu.view
+                  (forwardTo address DropdownMenu)
+                  (Ui.Button.view address Nothing { text = "Primary"
+                                                  , kind = "primary"
+                                                  , size = "big"
+                                                  , disabled = False })
+                  [text "asd"]
+                  model.menu
                 , Ui.Button.view address Nothing { text = "Secondary"
                                                  , kind = "secondary"
                                                  , size = "medium"
@@ -395,6 +408,7 @@ update action model =
         , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
         , colorPicker = Ui.ColorPicker.handleClick value model.colorPicker
         , slider = Ui.Slider.handleClick value model.slider
+        , menu = Ui.DropdownMenu.handleClick value model.menu
         }
     MousePosition (x,y) ->
       { model
@@ -406,6 +420,9 @@ update action model =
 
     Open url ->
       Ui.open url model
+
+    DropdownMenu act ->
+      { model | menu = Ui.DropdownMenu.update act model.menu }
 
     Nothing ->
       model

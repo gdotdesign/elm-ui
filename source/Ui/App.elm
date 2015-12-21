@@ -12,7 +12,7 @@ module Ui.App
 # View
 @docs view
 -}
-import Html.Attributes exposing (name, content)
+import Html.Attributes exposing (name, content, style)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
@@ -61,9 +61,12 @@ view address model children =
 -- Render (Internal)
 render : Signal.Address Action -> Model -> List Html.Html -> Html.Html
 render address model children =
-  node "ui-app" [onClick address Clicked]
+  node "ui-app" [ onClick address Clicked
+                , style [("opacity", if model.loaded then "1" else "0")
+                        ,("display", "block")]
+                ]
     ([ Ui.stylesheetLink "main.css" address Loaded
      , node "title" [] [text model.title]
      , node "meta" [ name "viewport"
                    , content "initial-scale=1.0, user-scalable=no"] []
-     ] ++ if model.loaded then children else [])
+     ] ++ children)

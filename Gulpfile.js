@@ -17,7 +17,7 @@ html =
 	`<html>
     <head>
     </head>
-    <body>
+    <body style="overflow: hidden;margin:0;">
       <script src='main.js' type='application/javascript'>
       </script>
       <script>Elm.fullscreen(Elm.Main);</script>

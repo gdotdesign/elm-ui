@@ -44,7 +44,7 @@ function renderHtml(title, str) {
   return `<html>
       <head>
       </head>
-      <body>
+      <body style="overflow: hidden;margin:0;">
         <script src='${str}' type='application/javascript'>
         </script>
         <script>Elm.fullscreen(Elm.Main);</script>

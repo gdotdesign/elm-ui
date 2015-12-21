@@ -4,7 +4,7 @@
 }
 
 %focused-readonly {
-	transition: box-shadow 200ms linear;
+  transition: box-shadow 200ms linear;
   box-shadow: $focus-shadow-readonly;
   outline: none;
 }

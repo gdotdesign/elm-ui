@@ -1,10 +1,10 @@
-var app = require('koa')();
-var sass = require('node-sass');
-var serve = require('koa-static-folder');
-var router = require('koa-router')();
 var autoprefixer = require('autoprefixer');
 var exec = require('child_process').exec;
-var fs = require('fs')
+var router = require('koa-router')();
+var serve = require('koa-static');
+var sass = require('node-sass');
+var app = require('koa')();
+var fs = require('fs');
 
 /* Renders the CSS */
 function renderCSS(callback){
@@ -76,7 +76,10 @@ router.get('/js/:id', function *(next){
   this.body = yield renderElm(`examples/${this.params.id}/Main.elm`)
 })
 
-app.use(router.routes())
+app
+  .use(router.routes())
+  .use(serve('./public'));
+
 app.listen(8001);
 
 console.log("Listening on localhost:8001")

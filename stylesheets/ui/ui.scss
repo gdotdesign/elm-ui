@@ -51,8 +51,10 @@ ui-spacer {
 }
 
 ui-subtitle {
-  font-size: 18px;
+  display: block;
+  font-size: 24px;
   font-weight: 600;
+  margin-bottom: 15px;
 }
 
 ui-panel {
@@ -227,6 +229,13 @@ ui-header {
     width: 60px;
     font-size: 32px;
   }
+}
+
+ui-text {
+  display: block;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 20px;
 }
 
 // MOBILE DEVICE...

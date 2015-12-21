@@ -2,10 +2,10 @@ ui-icon-button {
   @extend ui-button;
 
   ui-icon + span:not(:empty) {
-    margin-left: 10px;
+    margin-left: 0.625em;
   }
 
   span:not(:empty) + ui-icon {
-    margin-left: 10px;
+    margin-left: 0.625em;
   }
 }

@@ -8,10 +8,10 @@ ui-button {
   // Styling
   border-radius: $border-radius;
   position: relative;
+  padding: 0 1.25em;
   font-weight: 600;
   cursor: pointer;
-  padding: 0 20px;
-  height: 36px;
+  height: 2.25em;
 
   // Ellipsis for Text
   span { @include ellipsis; }
@@ -45,6 +45,14 @@ ui-button {
         }
       }
     }
+  }
+
+  &.size-big {
+    font-size: 22px;
+  }
+
+  &.size-small {
+    font-size: 12px;
   }
 
   // Disabled state

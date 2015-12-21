@@ -25,6 +25,7 @@ type alias Model =
   { disabled: Bool
   , text: String
   , kind: String
+  , size: String
   }
 
 {-| Initializes a button. -}
@@ -33,6 +34,7 @@ init =
   { disabled = False
   , text = ""
   , kind = "primary"
+  , size = "medium"
   }
 
 {-| Renders a button.
@@ -55,7 +57,7 @@ render address action model =
 
 {-| Creates the attributes for a button. -}
 attributes : Signal.Address a
-           -> { b | disabled : Bool, kind : String }
+           -> { b | disabled : Bool, kind : String, size : String }
            -> a
            -> List Html.Attribute
 attributes address model action =
@@ -70,6 +72,7 @@ attributes address model action =
   in
     [ classList
       [ ("disabled", model.disabled)
+      , ("size-" ++ model.size, True)
       , ("ui-button-" ++ model.kind, True)
       ]
     ] ++ (Ui.tabIndex model) ++ actions

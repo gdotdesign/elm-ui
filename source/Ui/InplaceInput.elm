@@ -121,9 +121,17 @@ form address model =
                           , direction = "row"
                           , compact = False
                           } []
-        [ Ui.Button.view address Save { disabled = disabled, kind = "primary", text = "Save" }
+        [ Ui.Button.view address Save { disabled = disabled
+                                      , kind = "primary"
+                                      , text = "Save"
+                                      , size = "medium"
+                                      }
         , Ui.spacer
-        , Ui.Button.view address Close { disabled = False, kind = "secondary", text = "Close" }
+        , Ui.Button.view address Close { disabled = False
+                                       , kind = "secondary"
+                                       , text = "Close"
+                                       , size = "medium"
+                                       }
         ]
       ]
 

@@ -1,18 +1,24 @@
 @import 'ui/ui';
 
-table {
-  @include border;
-  border-collapse: collapse;
+kitchen-sink {
+  display: block;
   margin: 0 auto;
+  width: 1031px;
+  padding-top: 40px;
 
-  td {
-    border: 1px solid $secondary;
-    padding: 10px;
+  table {
+    @include border;
+    border-collapse: collapse;
 
-    &[colspan='3'] {
-      background: dampen-inverse($background, 60%);
-      font-weight: 600;
-      font-size: 18px;
+    td {
+      border: 1px solid $secondary;
+      padding: 10px;
+
+      &[colspan='3'] {
+        background: dampen-inverse($background, 60%);
+        font-weight: 600;
+        font-size: 18px;
+      }
     }
   }
 }

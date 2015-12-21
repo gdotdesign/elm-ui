@@ -22,6 +22,7 @@ type alias Model =
   , text : String
   , kind : String
   , side : String
+  , size : String
   }
 
 {-| Initializes an icon button with a glyph and text. -}
@@ -32,6 +33,7 @@ init glyph text =
   , glyph = glyph
   , kind = "primary"
   , side = "left"
+  , size = "medium"
   }
 
 {-| Renders an icon button. -}

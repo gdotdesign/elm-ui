@@ -104,8 +104,23 @@ view address model =
       , bottomRight = text "" }
   in
     Ui.App.view (forwardTo address App) model.app
-      [ Ui.panel []
-        [ table []
+      [ node "kitchen-sink" []
+        [ Ui.title [] [text "Elm-UI Kitchen Sink"]
+        , Ui.text "An opinionated UI library for the web in Elm, following
+                   the Elm Architecture."
+        , node "p" []
+          [  Ui.IconButton.view address Nothing { side = "right"
+                                                , text = "Get Started at Github"
+                                                , kind = "Primary"
+                                                , glyph = "social-github"
+                                                , size = "big"
+                                                , disabled = False } ]
+        , Ui.subTitle [] [text "Components"]
+        , Ui.text "The business logic for following components are
+                   implemented fully in Elm, with minimal Native
+                   bindings, following the Elm Architecture. Most
+                   components implement disabled and readonly states."
+        , table []
           [ tr [] [ td [] [text "Active"]
                   , td [] [text "Readonly"]
                   , td [] [text "Disabled"]
@@ -117,24 +132,30 @@ view address model =
               [ Ui.Container.row []
                 [ Ui.Button.view address Nothing { text = "Primary"
                                                  , kind = "primary"
+                                                 , size = "big"
                                                  , disabled = False }
                 , Ui.Button.view address Nothing { text = "Secondary"
                                                  , kind = "secondary"
+                                                 , size = "medium"
                                                  , disabled = False }
                 , Ui.Button.view address Nothing { text = "Success"
                                                  , kind = "success"
+                                                 , size = "medium"
                                                  , disabled = False }
                 , Ui.Button.view address Nothing { text = "Warning"
                                                  , kind = "warning"
+                                                 , size = "medium"
                                                  , disabled = False }
                 , Ui.Button.view address Nothing { text = "Danger"
                                                  , kind = "danger"
+                                                 , size = "small"
                                                  , disabled = False }
                 ]
               ]
             , td []
                 [ Ui.Button.view address Nothing { text = "Disabled"
                                                  , kind = "danger"
+                                                 , size = "medium"
                                                  , disabled = True }
                 ]
             ]
@@ -147,31 +168,37 @@ view address model =
                                                      , text = "Load"
                                                      , kind = "Primary"
                                                      , glyph = "android-download"
+                                                     , size = "big"
                                                      , disabled = False }
                 , Ui.IconButton.view address Nothing { side = "right"
                                                      , text = ""
                                                      , kind = "Primary"
                                                      , glyph = "archive"
+                                                     , size = "medium"
                                                      , disabled = False }
                 , Ui.IconButton.view address Nothing { side = "left"
                                                      , text = "Send"
                                                      , kind = "secondary"
                                                      , glyph = "arrow-left-c"
+                                                     , size = "medium"
                                                      , disabled = False }
                 , Ui.IconButton.view address Nothing { side = "right"
                                                      , text = "Success"
                                                      , kind = "success"
                                                      , glyph = "checkmark"
+                                                     , size = "medium"
                                                      , disabled = False }
                 , Ui.IconButton.view address Nothing { side = "right"
                                                      , text = "Warning"
                                                      , kind = "warning"
                                                      , glyph = "alert"
+                                                     , size = "medium"
                                                      , disabled = False }
                 , Ui.IconButton.view address Nothing { side = "right"
                                                      , text = "Danger"
                                                      , kind = "danger"
                                                      , glyph = "close"
+                                                     , size = "small"
                                                      , disabled = False }
                 ]
               ]
@@ -180,14 +207,9 @@ view address model =
                                                    , text = "Disabled"
                                                    , kind = "success"
                                                    , glyph = "paper-airplane"
+                                                   , size = "medium"
                                                    , disabled = True }
               ]
-            ]
-
-          , componentHeader "Image"
-          , tr []
-            [ td [colspan 3]
-              [ Ui.Image.view (forwardTo address Image) model.image ]
             ]
 
           , componentHeader "Calendar"
@@ -280,6 +302,12 @@ view address model =
                        numberPadVM { numberPad | readonly = True })
                      (Ui.NumberPad.view (forwardTo address NumberPad)
                        numberPadVM { numberPad | disabled = True })
+
+          , componentHeader "Image"
+          , tr []
+            [ td [colspan 3]
+              [ Ui.Image.view (forwardTo address Image) model.image ]
+            ]
           ]
       ]
     ]

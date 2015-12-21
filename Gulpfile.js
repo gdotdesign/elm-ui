@@ -1,12 +1,12 @@
-var gulp = require('gulp');
-var uglify = require('gulp-uglify');
-var elm  = require('gulp-elm');
-var rename = require("gulp-rename");
-var file = require("gulp-file");
-var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var minifyCss = require('gulp-minify-css');
 var ghPages = require('gulp-gh-pages');
+var rename = require("gulp-rename");
+var uglify = require('gulp-uglify');
+var file = require("gulp-file");
+var sass = require('gulp-sass');
+var elm  = require('gulp-elm');
+var gulp = require('gulp');
 
 gulp.task('deploy', ['build'], function() {
   return gulp.src('./dist/**/*')

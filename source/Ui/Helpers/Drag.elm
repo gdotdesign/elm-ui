@@ -1,30 +1,65 @@
 module Ui.Helpers.Drag where
 
+{-| Helper functions for handling drags.
+
+    drag = Drag.init
+    -- Later on when the mouse is down
+    Drag.lift dimensions startPosition drag
+    -- During mouse move calulate things when necessary
+    distanceMoved = Drag.diff pageX pageY drag
+    -- When the mouse is released
+    Drag.handleClick False drag
+
+# Model
+@docs Point, Model, init
+
+# Lifecycle
+@docs lift, handleClick
+
+# Functions
+@docs diff, relativePosition, relativePercentPosition
+-}
 import Html.Extra
 
+{-| Represents a drag. -}
 type alias Model =
-  { dragging : Bool
+  { mouseStartPosition : Html.Extra.Position
   , dimensions : Html.Extra.Dimensions
-  , mouseStartPosition : Html.Extra.Position
+  , dragging : Bool
   }
 
+{-| Represents a point. -}
 type alias Point =
-  { top : Float
-  , left : Float
+  { left : Float
+  , top : Float
   }
 
+{-| Initilalizes a drag model. -}
+init : Model
+init =
+  { dimensions = { top = 0, left = 0, width = 0, height = 0 }
+  , mouseStartPosition = { pageX = 0, pageY = 0 }
+  , dragging = False
+  }
+
+{-| Calculates the difference between the start position and
+the given position. -}
 diff : Int -> Int -> Model -> Point
 diff x y model =
-  { top = (toFloat y) - model.mouseStartPosition.pageY
-  , left = (toFloat x) - model.mouseStartPosition.pageX
+  { left = (toFloat x) - model.mouseStartPosition.pageX
+  , top = (toFloat y) - model.mouseStartPosition.pageY
   }
 
+{-| Returns the given points relative position to the
+dimensions of the drag. -}
 relativePosition : Int -> Int -> Model -> Point
 relativePosition x y model =
-  { top = (toFloat y) - model.dimensions.top
-  , left = (toFloat x) - model.dimensions.left
+  { left = (toFloat x) - model.dimensions.left
+  , top = (toFloat y) - model.dimensions.top
   }
 
+{-| Returns the give points relative position to the
+dimensions of the drag as a percentage. -}
 relativePercentPosition : Int -> Int -> Model -> Point
 relativePercentPosition x y model =
   let
@@ -34,19 +69,16 @@ relativePercentPosition x y model =
     , left = point.left / model.dimensions.width
     }
 
-init : Model
-init =
-  { dragging = False
-  , dimensions = { top = 0, left = 0, width = 0, height = 0 }
-  , mouseStartPosition = { pageX = 0, pageY = 0 }
-  }
-
+{-| Starts a drag. -}
 lift : Html.Extra.Dimensions -> Html.Extra.Position -> Model -> Model
 lift dimensions position model =
-  { model | dragging = True
+  { model | mouseStartPosition = position
           , dimensions = dimensions
-          , mouseStartPosition = position }
+          , dragging = True
+          }
 
+{-| Handles the "mouseup" event, if the given pressed value is False
+stopping the drag. -}
 handleClick : Bool -> Model -> Model
 handleClick pressed model =
   if not pressed && model.dragging then

@@ -21,7 +21,7 @@ import Html.Events exposing (onFocus, onBlur)
 import Html exposing (node, input)
 import Html.Lazy
 
-import Ext.Number exposing (formatFloat)
+import Ext.Number exposing (toFixed)
 import Json.Decode as Json
 import Native.Browser
 import Result
@@ -107,7 +107,7 @@ update action model =
         |> endEdit
     DoubleClick {dimensions, position} ->
       { model | editing = True
-              , inputValue = formatFloat model.round model.value }
+              , inputValue = toFixed model.round model.value }
         |> focus
     Lift {dimensions, position} ->
       { model | drag = Drag.lift dimensions position model.drag
@@ -141,7 +141,7 @@ render address model =
       if model.editing then
         [ value model.inputValue ]
       else
-        [ value ((formatFloat model.round model.value) ++ model.affix) ]
+        [ value ((toFixed model.round model.value) ++ model.affix) ]
 
     inputElement =
       input ([ onFocus address Focus

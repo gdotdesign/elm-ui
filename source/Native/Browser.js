@@ -1,46 +1,56 @@
-Object.defineProperty(HTMLElement.prototype, "dimensions", {
-  writeable: false,
-  enumerable: false,
-  configurable: false,
-  get: function() {
-    var rect = this.getBoundingClientRect()
-    return { top: rect.top + window.pageYOffset,
-             left: rect.left + window.pageXOffset,
-             right: rect.right + window.pageXOffset,
-             bottom: rect.bottom + window.pageYOffset,
-             height: rect.height,
-             width: rect.width
-           }
-   }
-})
-
-Object.defineProperty(HTMLElement.prototype, "ontransitionend", {
-  writeable: false,
-  enumerable: false,
-  configurable: false,
-  set: function(handler) {
-    var h = function(event) {
-      if(event.target != this) return;
-      handler.call(event)
-    }.bind(this)
-
-    if (this._ontransitionend_hadler) {
-      this.removeEventListener('transitionend', this._ontransitionend_hadler)
-      this._ontransitionend_hadler = null
-    }
-    this.addEventListener('transitionend', h)
-    this._ontransitionend_hadler = h
-  }
-})
-
 Elm.Native.Browser = {};
 Elm.Native.Browser.make = function(elm) {
   elm.Native = elm.Native || {};
   elm.Native.Browser = elm.Native.Browser || {};
-  if (elm.Native.Browser.values) {
-    return elm.Native.Browser.values;
+  if (elm.Native.Browser.values) { return elm.Native.Browser.values; }
+
+  if(typeof HTMLElement === "function") {
+    /* Add dimensions property to HTMLElement so we can decode it, it's not
+       exposed so it won't conflict with anything hopefully. */
+    Object.defineProperty(HTMLElement.prototype, "dimensions", {
+      configurable: false,
+      enumerable: false,
+      writeable: false,
+      get: function() {
+        var rect = this.getBoundingClientRect()
+        /* Offset values with scroll positions. */
+        return { bottom: rect.bottom + window.pageYOffset,
+                 right: rect.right + window.pageXOffset,
+                 left: rect.left + window.pageXOffset,
+                 top: rect.top + window.pageYOffset,
+                 height: rect.height,
+                 width: rect.width
+               }
+       }
+    })
+
+    /* Add ontransitionend property to use virtual node attributes. Maybe this
+       needs a better implementation. */
+    Object.defineProperty(HTMLElement.prototype, "ontransitionend", {
+      configurable: false,
+      enumerable: false,
+      writeable: false,
+      set: function(handler) {
+        var wrap = function(event) {
+          /* Don't forward bubbled events from children. */
+          if(event.target != this) return;
+          handler.call(event)
+        }.bind(this)
+
+        /* Remove old handler if present. */
+        if (this._ontransitionend_hadler) {
+          this.removeEventListener('transitionend', this._ontransitionend_hadler)
+          this._ontransitionend_hadler = null
+        }
+
+        /* Add event listener. */
+        this.addEventListener('transitionend', wrap)
+        this._ontransitionend_hadler = wrap
+      }
+    })
   }
 
+  /* Focus an element and place the cursor at the end of it's text. */
   function moveCursorToEnd(el) {
     el.focus();
     if (typeof el.selectionStart == "number") {
@@ -52,6 +62,7 @@ Elm.Native.Browser.make = function(elm) {
     }
   }
 
+  /* Focus hook for VirtualDom. */
   function MutableFocusHook(selectEnd) { this.selectEnd = selectEnd }
   MutableFocusHook.prototype.hook = function (node) {
     setTimeout(function () {
@@ -77,16 +88,18 @@ Elm.Native.Browser.make = function(elm) {
     return object;
   }
 
+  /* Blurs the active element. */
   function blur(x){
     document.activeElement && document.activeElement.blur();
     return x;
   }
 
-  return Elm.Native.Browser.values = {
-    blur: blur,
-    focus: focus,
-    focusEnd: focusEnd,
+  /* Interface. */
+  return elm.Native.Browser.values = {
     toFixed: F2(function(value,decimals) { return value.toFixed(decimals) }),
-    rem: F2(function(a,b){ return a % b })
+    rem: F2(function(a,b){ return a % b }),
+    focusEnd: focusEnd,
+    focus: focus,
+    blur: blur,
   };
 };

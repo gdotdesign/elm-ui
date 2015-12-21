@@ -50,8 +50,8 @@ type alias Position =
 
 {-| Represents dimensions and position retrieved from an event. -}
 type alias PositionAndDimension =
-  { position: Position
-  , dimensions : Dimensions
+  { dimensions : Dimensions
+  , position: Position
   }
 
 {-| Decodes a position and dimesion from an event. -}
@@ -59,8 +59,8 @@ positionAndDimensionDecoder : Json.Decoder PositionAndDimension
 positionAndDimensionDecoder =
   Json.object2
     PositionAndDimension
-    positionDecoder
     dimensionsDecoder
+    positionDecoder
 
 {-| Decodes a position from an event. -}
 positionDecoder : Json.Decoder Position

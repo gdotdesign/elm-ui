@@ -20,8 +20,8 @@ type alias Item =
 {-| Represents a bar chart. -}
 type alias Model =
   { items : List Item
-  , affix : String
   , prefix : String
+  , affix : String
   }
 
 {-| Renders a bar chart. -}

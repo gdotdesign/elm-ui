@@ -44,8 +44,13 @@ ui-number-pad {
       font-size: 20px;
       font-weight: 600;
 
-      transition: 300ms;
       position: relative;
+      transition: 200ms;
+      cursor: pointer;
+
+      &:hover {
+        background: dampen($secondary, 7%);
+      }
 
       &:nth-child(n+10) {
         margin-bottom: 0;
@@ -53,6 +58,8 @@ ui-number-pad {
 
       &:empty {
         background: transparent;
+        pointer-events: none;
+        cursor: auto;
       }
 
       > * {

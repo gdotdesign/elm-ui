@@ -2,7 +2,7 @@
   "version": "0.1.0",
   "summary": "UI Library in ELM",
   "repository": "https://github.com/gdotdesign/elm-ui.git",
-  "license": "BSD3",
+  "license": "BSD2",
   "source-directories": [
     "source",
     "examples"
@@ -34,6 +34,8 @@
     "Ui.Slider",
     "Ui.Textarea",
     "Ui.Charts.Bar",
+    "Ui.Helpers.Drag",
+    "Ui.Helpers.Animation",
     "Ui.Helpers.Dropdown",
     "Ui.Helpers.Intendable"
   ],

@@ -3,7 +3,7 @@ module Html.Extra
   , positionDecoder, positionAndDimensionDecoder, preventDefaultOptions
   , stopPropagationOptions, stopOptions, onTransitionEnd
   , onPreventDefault, onEnterPreventDefault, onStop, onStopNothing, onEnter
-  , onLoad, onKeys, onInput, onWithDimensions) where
+  , onLoad, onKeys, onInput, onWithDimensions, onScroll) where
 
 {-| Extra functions / events / decoders for working with HTML.
 
@@ -17,10 +17,10 @@ module Html.Extra
 @docs preventDefaultOptions, stopPropagationOptions, stopOptions
 
 # Events
-@docs onTransitionEnd, onPreventDefault, onEnterPreventDefault, onStop
+@docs onTransitionEnd, onPreventDefault, onEnterPreventDefault, onStop, onScroll
 @docs onStopNothing, onEnter, onLoad, onKeys, onInput, onWithDimensions
 -}
-import Html.Events exposing (on, onWithOptions, targetValue, keyCode)
+import Html.Events exposing (on, onWithOptions, targetValue, keyCode, defaultOptions)
 import Html
 
 import Json.Decode as Json exposing ((:=))
@@ -193,6 +193,15 @@ onInput address handler =
 onLoad : Signal.Address a -> a -> Html.Attribute
 onLoad address handler =
   on "load" Json.value (\_ -> Signal.message address handler)
+
+{-| A scroll event listner. -}
+onScroll : Signal.Address a -> a -> Html.Attribute
+onScroll address handler =
+  onWithOptions
+    "scroll"
+    defaultOptions
+    Json.value
+    (\_ -> Signal.message address handler)
 
 -- A decoder that will only succeed if the ctrlKey is true.
 controlKey : Json.Decoder Int

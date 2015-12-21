@@ -48,8 +48,11 @@ view address element children model =
       children
     ]
 
-open model =
+toggle model =
   { model | open = not model.open }
+
+close model =
+  { model | open = False }
 
 handleClick pressed model =
   if not pressed then
@@ -61,7 +64,7 @@ update action model =
   case (log "a" action) of
     Open dimensions ->
       updatePosition dimensions model
-        |> open
+        |> toggle
 
 type alias WindowDimensions =
   { width : Float

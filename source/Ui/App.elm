@@ -1,5 +1,5 @@
 module Ui.App
-  (Model, Action, init, update, view) where
+  (Model, Action(Scrolled, Clicked), init, update, view) where
 
 {-| Base frame for a web/mobile application:
   - Loads the stylesheet
@@ -14,6 +14,7 @@ module Ui.App
 -}
 import Html.Attributes exposing (name, content, style)
 import Html.Events exposing (onClick)
+import Html.Extra exposing (onScroll)
 import Html exposing (node, text)
 import Html.Lazy
 
@@ -32,6 +33,7 @@ type alias Model =
 type Action
   = Clicked
   | Loaded
+  | Scrolled
 
 {-| Initializes an application. -}
 init : String -> Model
@@ -46,7 +48,7 @@ update action model =
   case action of
     Loaded ->
       { model | loaded = True }
-    Clicked ->
+    _ ->
       model
 
 {-| Renders an application.
@@ -62,6 +64,7 @@ view address model children =
 render : Signal.Address Action -> Model -> List Html.Html -> Html.Html
 render address model children =
   node "ui-app" [ onClick address Clicked
+                , onScroll address Scrolled
                 , style [("opacity", if model.loaded then "1" else "0")
                         ,("display", "block")]
                 ]

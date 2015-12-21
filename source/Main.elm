@@ -400,7 +400,11 @@ update action model =
     Image act ->
       { model | image = Ui.Image.update act model.image                      }
     App act ->
-      { model | app = Ui.App.update act model.app                            }
+      case act of
+        Ui.App.Scrolled ->
+          { model | menu = Ui.DropdownMenu.close model.menu }
+        _ ->
+          { model | app = Ui.App.update act model.app                        }
 
     MouseIsDown value ->
       { model

@@ -1,5 +1,10 @@
 @import 'ui/ui';
 
+ui-app {
+  overflow: auto;
+  transition: opacity 320ms;
+}
+
 a {
   text-decoration: none;
 }

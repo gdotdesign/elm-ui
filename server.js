@@ -40,7 +40,7 @@ function renderElm(str) {
   }
 }
 
-function renderHtml(title, str) {
+function renderHtml(str) {
   return `<html>
       <head>
       </head>
@@ -53,7 +53,7 @@ function renderHtml(title, str) {
 }
 
 router.get('/', function *(next) {
-  this.body = renderHtml('Elm-UI Kitchensink','main.js')
+  this.body = renderHtml('main.js')
 })
 
 router.get('/main.js', function *(next) {
@@ -64,16 +64,6 @@ router.get('/main.js', function *(next) {
 router.get('/main.css', function *(next) {
   this.type = 'text/css';
   this.body = yield renderCSS
-})
-
-router.get('/examples/:id', function *(next) {
-  this.type = 'text/html'
-  this.body = renderHtml(this.params.id, `/js/${this.params.id}`)
-})
-
-router.get('/js/:id', function *(next){
-  this.type = 'text/javascript';
-  this.body = yield renderElm(`examples/${this.params.id}/Main.elm`)
 })
 
 app

@@ -126,7 +126,7 @@ focus model =
 {-| Processes the value for the mirror object. -}
 process : String -> List Html.Html
 process value =
-  (String.split "\n" value
+  String.split "\n" value
     |> List.map (\data -> node "span-line" [] [text data])
     |> List.intersperse (br [] [])
-  ) ++ [node "span-last" [] []]
+

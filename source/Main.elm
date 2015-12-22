@@ -7,7 +7,7 @@ import Color
 import Task
 
 import Html.Attributes exposing (style, classList, colspan, href)
-import Html.Events exposing (onMouseEnter, onMouseLeave)
+import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
 import Debug exposing (log)
 
@@ -50,6 +50,7 @@ type Action
   | MousePosition (Int, Int)
   | MouseIsDown Bool
   | Open String
+  | CloseMenu
   | Nothing
 
 type alias Model =
@@ -257,10 +258,12 @@ view address model =
                           , size = "medium"
                           , disabled = False })
                        [ Ui.DropdownMenu.item
+                          [ onClick address CloseMenu ]
                           [ Ui.icon "android-download" True []
                           , node "span" [] [text "Download"]
                           ]
                        , Ui.DropdownMenu.item
+                          [ onClick address CloseMenu ]
                           [ Ui.icon "trash-b" True []
                           , node "span" [] [text "Delete"]
                           ]
@@ -439,6 +442,8 @@ update action model =
         , slider = Ui.Slider.handleMove x y model.slider
         }
 
+    CloseMenu ->
+      { model | menu = Ui.DropdownMenu.close model.menu }
     Open url ->
       Ui.open url model
 

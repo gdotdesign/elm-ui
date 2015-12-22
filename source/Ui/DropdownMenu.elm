@@ -18,8 +18,6 @@ import Html.Extra exposing (onStopNothing, WindowDimensions, windowDimensionsDec
 import Html exposing (node)
 import Json.Decode as Json exposing ((:=))
 
-import Debug exposing (log)
-
 {-| Represents a dropdown menu. -}
 type alias Model =
   { top : Float
@@ -70,14 +68,14 @@ view address element children model =
     ]
 
 {-| Renders a dropdown item. -}
-item : List Html.Html -> Html.Html
-item children =
-  node "ui-dropdown-menu-item" [] children
+item : List Html.Attribute -> List Html.Html -> Html.Html
+item attributes children =
+  node "ui-dropdown-menu-item" attributes children
 
 {-| Updates a dropdown menu. -}
 update: Action -> Model -> Model
 update action model =
-  case (log "a" action) of
+  case action of
     Toggle dimensions ->
       updatePosition dimensions model
         |> toggle

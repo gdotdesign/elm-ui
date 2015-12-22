@@ -14,9 +14,11 @@ form a list of choises, with lots of options.
 # Functions
 @docs toggleItem, close, getFirstSelected, updateData, selectFirst
 -}
-import Html.Attributes exposing (value, placeholder, readonly, classList, disabled)
+import Html.Extra exposing (onInput, onPreventDefault, onWithDropdownDimensions
+                           ,onKeysWithDimensions)
+import Html.Attributes exposing (value, placeholder, readonly, classList
+                                , disabled)
 import Html.Events exposing (onFocus, onBlur, onClick, onMouseDown)
-import Html.Extra exposing (onInput, onPreventDefault, onKeys)
 import Html exposing (span, text, node, input, Html)
 import Html.Lazy
 
@@ -53,6 +55,7 @@ type alias Item =
   - **intended** - (Internal) The currently intended value (for keyboard selection)
   - **open** - Whether or not the dropdown is open
   - **readonly** - Whether or not the dropdown is readonly
+  - **dropdownPosition** (Internal) - Where the dropdown is positioned
 -}
 type alias Model =
   { placeholder : String
@@ -68,6 +71,7 @@ type alias Model =
   , disabled : Bool
   , readonly : Bool
   , render : Item -> Html
+  , dropdownPosition : String
   }
 
 {-| Actions that a chooser can make:
@@ -81,12 +85,13 @@ type alias Model =
 -}
 type Action
   = Filter String
-  | Focus
+  | Focus Html.Extra.DropdownDimensions
   | Select String
-  | Close
-  | Next
-  | Prev
-  | Enter
+  | Blur
+  | Close Html.Extra.DropdownDimensions
+  | Next Html.Extra.DropdownDimensions
+  | Prev Html.Extra.DropdownDimensions
+  | Enter Html.Extra.DropdownDimensions
 
 {-| Initializes a chooser with the given values.
 
@@ -110,6 +115,7 @@ init data placeholder value =
     , disabled = False
     , readonly = False
     , render = (\item -> span [] [text item.label])
+    , dropdownPosition = "bottom"
     }
       |> intendFirst
 
@@ -123,27 +129,30 @@ update action model =
           setValue value model
            |> intendFirst
 
-        Focus ->
-          Dropdown.open model
+        Focus dimensions ->
+          Dropdown.openWithDimensions dimensions model
            |> intendFirst
 
-        Close ->
+        Close _ ->
           close model
 
-        Enter ->
+        Blur ->
+          close model
+
+        Enter _ ->
           toggleItemAndClose model.intended model
 
-        Next ->
+        Next dimensions ->
           { model | intended = Intendable.next
                                 model.intended
                                 (availableItems model) }
-            |> Dropdown.open
+            |> Dropdown.openWithDimensions dimensions
 
-        Prev ->
+        Prev dimensions ->
           { model | intended = Intendable.previous
                                 model.intended
                                 (availableItems model) }
-            |> Dropdown.open
+            |> Dropdown.openWithDimensions dimensions
 
         Select value ->
           toggleItemAndClose value model
@@ -160,7 +169,8 @@ render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
     dropdown =
-      [ Dropdown.view [] (List.map (\item -> renderItem item address model) (items model)) ]
+      [ Dropdown.view model.dropdownPosition
+        (List.map (\item -> renderItem item address model) (items model)) ]
 
     val =
       if model.open && model.searchable then
@@ -170,14 +180,14 @@ render address model =
 
     actions =
       if model.disabled || model.readonly then []
-      else [onInput address Filter
-           , onClick address Focus
-           , onFocus address Focus
-           , onBlur address Close
-           , onKeys address (Dict.fromList [ (27, Close)
-                                           , (13, Enter)
-                                           , (40, Next)
-                                           , (38, Prev) ])
+      else [ onInput address Filter
+           , onWithDropdownDimensions "click" address Focus
+           , onWithDropdownDimensions "focus" address Focus
+           , onBlur address Blur
+           , onKeysWithDimensions address (Dict.fromList [ (27, Close)
+                                                         , (13, Enter)
+                                                         , (40, Next)
+                                                         , (38, Prev) ])
            ]
   in
     node "ui-chooser" ([classList [ ("dropdown-open", model.open)

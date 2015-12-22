@@ -12,10 +12,10 @@ module Ui.DatePicker
 # Functions
 @docs setValue
 -}
+import Html.Extra exposing (onKeysWithDimensions, onWithDropdownDimensions)
 import Html.Events exposing (onFocus, onBlur, onClick)
 import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
-import Html.Extra exposing (onKeys)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
@@ -38,11 +38,12 @@ import Ui
 -}
 type alias Model =
   { calendar : Calendar.Model
+  , dropdownPosition : String
   , closeOnSelect : Bool
   , format : String
-  , open : Bool
   , disabled : Bool
   , readonly : Bool
+  , open : Bool
   }
 
 {-| Actions that a date picker can make:
@@ -54,12 +55,13 @@ type alias Model =
   - **Calendar** - Calendar actions
 -}
 type Action
-  = Focus
-  | Increment
-  | Decrement
-  | Close
-  | Toggle
+  = Focus Html.Extra.DropdownDimensions
+  | Increment Html.Extra.DropdownDimensions
+  | Decrement Html.Extra.DropdownDimensions
+  | Close Html.Extra.DropdownDimensions
+  | Toggle Html.Extra.DropdownDimensions
   | Calendar Calendar.Action
+  | Blur
 
 {-| Initializes a date picker with the given values.
 
@@ -68,33 +70,37 @@ type Action
 init : Date.Date -> Model
 init date =
   { calendar = Calendar.init date
+  , dropdownPosition = "bottom"
   , closeOnSelect = False
   , format = "%Y-%m-%d"
-  , open = False
   , disabled = False
   , readonly = False
+  , open = False
   }
 
 {-| Updates a date picker. -}
 update : Action -> Model -> Model
 update action model =
   case action of
-    Focus ->
-      Dropdown.open model
+    Focus dimensions ->
+      Dropdown.openWithDimensions dimensions model
 
-    Close ->
+    Close _ ->
       Dropdown.close model
 
-    Toggle ->
-      Dropdown.toggle model
+    Blur ->
+      Dropdown.close model
 
-    Decrement ->
+    Toggle dimensions ->
+      Dropdown.toggleWithDimensions dimensions model
+
+    Decrement dimensions ->
       { model | calendar = Calendar.previousDay model.calendar }
-        |> Dropdown.open
+        |> Dropdown.openWithDimensions dimensions
 
-    Increment ->
+    Increment dimensions ->
       { model | calendar = Calendar.nextDay model.calendar }
-        |> Dropdown.open
+        |> Dropdown.openWithDimensions dimensions
 
     Calendar act ->
       let
@@ -120,17 +126,17 @@ render address model =
   let
     actions =
       if model.disabled || model.readonly then []
-      else [ onFocus address Focus
-           , onClick address Focus
-           , onBlur address Close
-           , onKeys address
+      else [ onWithDropdownDimensions "click" address Focus
+           , onWithDropdownDimensions "focus" address Focus
+           , onBlur address Blur
+           , onKeysWithDimensions address
              (Dict.fromList [ (27, Close)
-             , (13, Toggle)
-             , (40, Increment)
-             , (38, Decrement)
-             , (39, Increment)
-             , (37, Decrement)
-             ])
+                            , (13, Toggle)
+                            , (40, Increment)
+                            , (38, Decrement)
+                            , (39, Increment)
+                            , (37, Decrement)
+                            ])
            ]
   in
     node "ui-date-picker" ([ classList [ ("dropdown-open", model.open)
@@ -140,8 +146,8 @@ render address model =
                            ] ++ actions ++ (Ui.tabIndex model))
       [ div [] [text (format model.format model.calendar.value)]
       , Ui.icon "calendar" False []
-      , Dropdown.view []
-        [ node "ui-dropdown-overlay" [onClick address Close] []
+      , Dropdown.view model.dropdownPosition
+        [ node "ui-dropdown-overlay" [onClick address Blur] []
         , Calendar.view (forwardTo address Calendar) model.calendar
         ]
       ]

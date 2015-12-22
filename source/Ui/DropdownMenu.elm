@@ -2,7 +2,7 @@ module Ui.DropdownMenu where
 
 import Html.Attributes exposing (style, classList)
 import Html.Events exposing (onWithOptions)
-import Html.Extra exposing (onStopNothing)
+import Html.Extra exposing (onStopNothing, WindowDimensions, windowDimensionsDecoder)
 import Html exposing (node)
 import Json.Decode as Json exposing ((:=))
 
@@ -12,29 +12,64 @@ type alias Model =
   { top : Float
   , left : Float
   , open : Bool
+  , offsetX : Float
+  , offsetY : Float
+  , favoredSides : { horizontal : String
+                   , vertical : String
+                   }
   }
 
-type Action = Open BothDimensions
+type Action = Toggle BothDimensions
 
 init =
   { top = 0
   , left = 0
   , open = False
+  , offsetX = 0
+  , offsetY = 5
+  , favoredSides = { horizontal = "left"
+                   , vertical = "bottom"
+                   }
   }
 
 updatePosition : BothDimensions -> Model -> Model
-updatePosition {parent,dropdown} model =
+updatePosition {parent,dropdown,window} model =
   let
+    topSpace = parent.top - dropdown.height - model.offsetY
+    topPosition = topSpace
+
+    bottomSpace = window.height - (parent.bottom + dropdown.height + model.offsetY)
+    bottomPosition = parent.bottom + model.offsetY
+
+    leftSpace = parent.left + dropdown.width + model.offsetX
+    leftPosition = parent.left + model.offsetX
+
+    rightSpace = parent.right - dropdown.width - model.offsetX
+    rightPosition = rightSpace
+
     top =
-      parent.top + parent.height + 5
+      if model.favoredSides.vertical == "top" then
+        if topSpace > 0 then topPosition
+        else bottomPosition
+      else if bottomSpace > 0 then
+        bottomPosition
+      else
+        topPosition
+
     left =
-      parent.left
+      if model.favoredSides.horizontal == "right" then
+        if rightSpace > 0 then rightPosition
+        else leftPosition
+      else if leftSpace < window.width then
+        leftPosition
+      else
+        rightPosition
   in
     { model | top = top, left = left }
 
 view address element children model =
   node "ui-dropdown-menu"
-    [ openHandler "mouseup" address Open
+    [ openHandler "mouseup" address Toggle
     ]
     [ element
     , node "ui-dropdown-menu-items"
@@ -62,14 +97,9 @@ handleClick pressed model =
 
 update action model =
   case (log "a" action) of
-    Open dimensions ->
+    Toggle dimensions ->
       updatePosition dimensions model
         |> toggle
-
-type alias WindowDimensions =
-  { width : Float
-  , height : Float
-  }
 
 type alias BothDimensions =
   { parent : Html.Extra.Dimensions
@@ -83,12 +113,7 @@ dimensionsDecoder =
     BothDimensions
     (Json.at ["target", "dropdownMenu", "element", "dimensions"] Html.Extra.dimensionsDecoder)
     (Json.at ["target", "dropdownMenu", "dropdown", "dimensions"] Html.Extra.dimensionsDecoder)
-    (Json.at ["target", "ownerDocument", "defaultView"] windowDimensionsDecoder)
-
-windowDimensionsDecoder =
-  Json.object2 WindowDimensions
-    ("innerWidth" := Json.float)
-    ("innerHeight" := Json.float)
+    windowDimensionsDecoder
 
 openHandler event address action =
   onWithOptions

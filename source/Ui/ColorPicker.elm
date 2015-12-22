@@ -12,10 +12,10 @@ module Ui.ColorPicker
 # Functions
 @docs handleMove, handleClick
 -}
+import Html.Extra exposing (onWithDropdownDimensions,onKeysWithDimensions)
 import Html.Events exposing (onFocus, onBlur, onClick)
 import Html.Attributes exposing (classList, style)
 import Html exposing (node, div, text)
-import Html.Extra exposing (onKeys)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
@@ -32,9 +32,11 @@ import Ui
   - **disabled** - Whether or not the color picker is disabled
   - **open** - Whether or not the color picker is open
   - **readonly** - Whether or not the color picker is readonly
+  - **dropdownPosition** (Internal) - Where the dropdown is positioned
 -}
 type alias Model =
   { colorPanel : ColorPanel.Model
+  , dropdownPosition : String
   , disabled : Bool
   , readonly : Bool
   , open : Bool
@@ -42,10 +44,11 @@ type alias Model =
 
 {-| Actions that a color picker can make. -}
 type Action
-  = Focus
-  | Close
-  | Toggle
+  = Focus Html.Extra.DropdownDimensions
+  | Close Html.Extra.DropdownDimensions
+  | Toggle Html.Extra.DropdownDimensions
   | ColorPanel ColorPanel.Action
+  | Blur
 
 {-| Initializes a color picker with the given color.
 
@@ -54,6 +57,7 @@ type Action
 init : Color.Color -> Model
 init color =
   { colorPanel = ColorPanel.init color
+  , dropdownPosition = "bottom"
   , disabled = False
   , readonly = False
   , open = False
@@ -63,14 +67,17 @@ init color =
 update : Action -> Model -> Model
 update action model =
   case action of
-    Focus ->
-      Dropdown.open model
+    Focus dimensions ->
+      Dropdown.openWithDimensions dimensions model
 
-    Close ->
+    Close _ ->
       Dropdown.close model
 
-    Toggle ->
-      Dropdown.toggle model
+    Blur ->
+      Dropdown.close model
+
+    Toggle dimensions ->
+      Dropdown.toggleWithDimensions dimensions model
 
     ColorPanel act ->
       { model | colorPanel = ColorPanel.update act model.colorPanel }
@@ -97,12 +104,12 @@ render address model =
     color = Ext.Color.toCSSRgba model.colorPanel.value
     actions =
       if model.disabled || model.readonly then []
-      else [ onFocus address Focus
-           , onClick address Focus
-           , onBlur address Close
-           , onKeys address (Dict.fromList [ (27, Close)
-                                           , (13, Toggle)
-                                           ])
+      else [ onWithDropdownDimensions "focus" address Focus
+           , onWithDropdownDimensions "click" address Focus
+           , onBlur address Blur
+           , onKeysWithDimensions address (Dict.fromList [ (27, Close)
+                                                         , (13, Toggle)
+                                                         ])
            ]
   in
     node "ui-color-picker" ([ classList [ ("dropdown-open", model.open)
@@ -113,8 +120,8 @@ render address model =
       [ div [] [text color]
       , node "ui-color-picker-rect" []
         [ div [style [("background-color", color)]] [] ]
-      , Dropdown.view []
-        [ node "ui-dropdown-overlay" [onClick address Close] []
+      , Dropdown.view model.dropdownPosition
+        [ node "ui-dropdown-overlay" [onClick address Blur] []
         , ColorPanel.view (forwardTo address ColorPanel) model.colorPanel
         ]
       ]

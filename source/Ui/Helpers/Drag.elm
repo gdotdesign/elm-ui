@@ -37,7 +37,12 @@ type alias Point =
 {-| Initilalizes a drag model. -}
 init : Model
 init =
-  { dimensions = { top = 0, left = 0, width = 0, height = 0 }
+  { dimensions = { top = 0
+                 , left = 0
+                 , width = 0
+                 , height = 0
+                 , bottom = 0
+                 , right = 0 }
   , mouseStartPosition = { pageX = 0, pageY = 0 }
   , dragging = False
   }

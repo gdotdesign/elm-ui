@@ -3,7 +3,6 @@ ui-dropdown {
   @include border;
 
   // Position & Size
-  top: calc(100% + 2px);
   position: absolute;
   max-height: 250px;
   z-index: 100;
@@ -17,10 +16,21 @@ ui-dropdown {
 
   // Effect
   transition: opacity 320ms, transform 320ms, visibility 1ms 320ms;
-  transform: translateY(10px);
   pointer-events: none;
   visibility: hidden;
   opacity: 0;
+
+  // Top Position
+  &.position-top {
+    transform: translateY(-10px);
+    bottom: calc(100% + 4px);
+  }
+
+  // Bottom Position
+  &.position-bottom {
+    transform: translateY(10px);
+    top: calc(100% + 4px);
+  }
 }
 
 // Open state

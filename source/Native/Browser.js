@@ -15,6 +15,18 @@ Elm.Native.Browser.make = function(elm) {
         }
       }
     }
+
+    Object.defineProperty(HTMLElement.prototype, "dropdown", {
+      configurable: false,
+      enumerable: false,
+      writeable: false,
+      get: function(){
+        return this.querySelector('ui-dropdown') ||
+               this.parentElement.querySelector('ui-dropdown')
+               fallbackMenu
+      }
+    })
+
     Object.defineProperty(HTMLElement.prototype, "dropdownMenu", {
       configurable: false,
       enumerable: false,
@@ -29,6 +41,7 @@ Elm.Native.Browser.make = function(elm) {
         }
       }
     })
+
     /* Add dimensions property to HTMLElement so we can decode it, it's not
        exposed so it won't conflict with anything hopefully. */
     Object.defineProperty(HTMLElement.prototype, "dimensions", {

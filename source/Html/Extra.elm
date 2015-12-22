@@ -1,17 +1,19 @@
 module Html.Extra
-  ( Dimensions, Position, PositionAndDimension, dimensionsDecoder
-  , positionDecoder, positionAndDimensionDecoder, preventDefaultOptions
-  , stopPropagationOptions, stopOptions, onTransitionEnd
+  ( Dimensions, Position, PositionAndDimension, WindowDimensions, dimensionsDecoder
+  , positionDecoder, positionAndDimensionDecoder, windowDimensionsDecoder
+  , preventDefaultOptions, stopPropagationOptions, stopOptions, onTransitionEnd
   , onPreventDefault, onEnterPreventDefault, onStop, onStopNothing, onEnter
-  , onLoad, onKeys, onInput, onWithDimensions, onScroll) where
+  , onLoad, onKeys, onInput, onWithDimensions, onScroll, onWithDropdownDimensions
+  , DropdownDimensions, onKeysWithDimensions) where
 
 {-| Extra functions / events / decoders for working with HTML.
 
 # Types
-@docs Dimensions, Position, PositionAndDimension
+@docs Dimensions, Position, PositionAndDimension, WindowDimensions, DropdownDimensions
 
 # Decoders
 @docs dimensionsDecoder, positionDecoder, positionAndDimensionDecoder
+@docs windowDimensionsDecoder
 
 # Options
 @docs preventDefaultOptions, stopPropagationOptions, stopOptions
@@ -19,6 +21,7 @@ module Html.Extra
 # Events
 @docs onTransitionEnd, onPreventDefault, onEnterPreventDefault, onStop, onScroll
 @docs onStopNothing, onEnter, onLoad, onKeys, onInput, onWithDimensions
+@docs onWithDropdownDimensions, onKeysWithDimensions
 -}
 import Html.Events exposing (on, onWithOptions, targetValue, keyCode, defaultOptions)
 import Html
@@ -38,6 +41,8 @@ nothingMailbox = Signal.mailbox Nothing
 type alias Dimensions =
   { height: Float
   , width: Float
+  , bottom: Float
+  , right: Float
   , left: Float
   , top: Float
   }
@@ -53,6 +58,27 @@ type alias PositionAndDimension =
   { dimensions : Dimensions
   , position: Position
   }
+
+{-| Represents the windows dimensions. -}
+type alias WindowDimensions =
+  { width : Float
+  , height : Float
+  }
+
+{-| Represents an elemen and its dropdowns dimensions. -}
+type alias DropdownDimensions =
+  { dimensions : Dimensions
+  , dropdown : Dimensions
+  , window : WindowDimensions
+  }
+
+{-| Decodes the window dimesions. -}
+windowDimensionsDecoder : Json.Decoder WindowDimensions
+windowDimensionsDecoder =
+  Json.at ["target", "ownerDocument", "defaultView"]
+    (Json.object2 WindowDimensions
+      ("innerWidth" := Json.float)
+      ("innerHeight" := Json.float))
 
 {-| Decodes a position and dimesion from an event. -}
 positionAndDimensionDecoder : Json.Decoder PositionAndDimension
@@ -77,11 +103,21 @@ atDimensionsDecoder =
 {-| Decodes dimensions from an event. -}
 dimensionsDecoder : Json.Decoder Dimensions
 dimensionsDecoder =
-  Json.object4 Dimensions
+  Json.object6 Dimensions
     ("height" := Json.float)
     ("width" := Json.float)
+    ("bottom" := Json.float)
+    ("right" := Json.float)
     ("left" := Json.float)
     ("top" := Json.float)
+
+{-| Decodes dimensions for a element and its dropdown. -}
+dropdownDimensionsDecoder : Json.Decoder DropdownDimensions
+dropdownDimensionsDecoder =
+  Json.object3 DropdownDimensions
+    atDimensionsDecoder
+    (Json.at ["target", "dropdown", "dimensions"] dimensionsDecoder)
+    windowDimensionsDecoder
 
 {-| Prevent default options. -}
 preventDefaultOptions : Html.Events.Options
@@ -103,6 +139,16 @@ stopOptions =
   { stopPropagation = True
   , preventDefault = True
   }
+
+{-| Returns dimensions for an element and its dropdown. -}
+onWithDropdownDimensions : String -> Signal.Address a ->
+                           (DropdownDimensions -> a) -> Html.Attribute
+onWithDropdownDimensions event address action =
+  onWithOptions
+    event
+    defaultOptions
+    dropdownDimensionsDecoder
+    (\dimensions -> Signal.message address (action dimensions))
 
 {-| An event listener that will returns the dimensions of the element that
 triggered it and position of the mouse.
@@ -177,9 +223,20 @@ onEnter control address handler =
 onKeys : Signal.Address a -> Dict Int a -> Html.Attribute
 onKeys address mappings =
   let
-    message code =
-      case Dict.get code mappings of
+    message data =
+      case Dict.get data.code mappings of
         Just handler -> Signal.message address handler
+        _ -> Signal.message nothingMailbox.address Nothing
+  in
+    onWithOptions "keydown" preventDefaultOptions (mappingsDecoder mappings) message
+
+{-| An event listener that will run the given actions on the associated keys. -}
+onKeysWithDimensions : Signal.Address a -> Dict Int (DropdownDimensions -> a) -> Html.Attribute
+onKeysWithDimensions address mappings =
+  let
+    message data =
+      case Dict.get data.code mappings of
+        Just handler -> Signal.message address (handler data.dimensions)
         _ -> Signal.message nothingMailbox.address Nothing
   in
     onWithOptions "keydown" preventDefaultOptions (mappingsDecoder mappings) message
@@ -233,8 +290,13 @@ keyCodeIf code =
   in
     Json.andThen keyCode func
 
+type alias KeyWithDimensions =
+  { code : Int
+  , dimensions: DropdownDimensions
+  }
+
 -- A decoder that will run the associated action when the right key is pressed
-mappingsDecoder : Dict Int a -> Json.Decoder Int
+mappingsDecoder : Dict Int a -> Json.Decoder KeyWithDimensions
 mappingsDecoder mappings =
   let
     decodeIf value mappings =
@@ -243,4 +305,6 @@ mappingsDecoder mappings =
       else
         Json.fail "Key pressed not in mappings"
   in
-    ("keyCode" := Json.int) `Json.andThen` (\value -> decodeIf value mappings)
+    Json.object2 KeyWithDimensions
+      (("keyCode" := Json.int) `Json.andThen` (\value -> decodeIf value mappings))
+      dropdownDimensionsDecoder

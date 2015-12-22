@@ -265,6 +265,21 @@ ui-dropdown-menu {
   }
 }
 
+ui-inplace-input {
+  ui-textarea {
+    z-index: 0;
+  }
+
+  > div {
+    white-space: pre-wrap;
+  }
+
+  button {
+    position: relative;
+    z-index: 1;
+  }
+}
+
 // MOBILE DEVICE...
 
 @media (max-width: 600px) {

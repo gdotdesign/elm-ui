@@ -1,5 +1,5 @@
 module Ui.DropdownMenu
-  (Model, Action, init, update, view, handleClick, close) where
+  (Model, Action, init, update, view, item, handleClick, close) where
 
 {-| Dropdown menu that is allways visible on the screen.
 
@@ -7,7 +7,7 @@ module Ui.DropdownMenu
 @docs Model, Action, init, update
 
 # View
-@docs view
+@docs view, item
 
 # Functions
 @docs handleClick, close
@@ -68,6 +68,11 @@ view address element children model =
       ]
       children
     ]
+
+{-| Renders a dropdown item. -}
+item : List Html.Html -> Html.Html
+item children =
+  node "ui-dropdown-menu-item" [] children
 
 {-| Updates a dropdown menu. -}
 update: Action -> Model -> Model

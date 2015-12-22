@@ -11,6 +11,7 @@ import Html.Events exposing (onMouseEnter, onMouseLeave)
 import Html exposing (div, text, node, table, tr, td)
 import Debug exposing (log)
 
+import Ui.DropdownMenu
 import Ui.InplaceInput
 import Ui.NumberRange
 import Ui.ColorPicker
@@ -27,13 +28,11 @@ import Ui.Button
 import Ui.Slider
 import Ui.Image
 import Ui.App
-
-import Ui.DropdownMenu
-
 import Ui
 
 type Action
   = InplaceInput Ui.InplaceInput.Action
+  | DropdownMenu Ui.DropdownMenu.Action
   | NumberRange Ui.NumberRange.Action
   | ColorPicker Ui.ColorPicker.Action
   | ColorPanel Ui.ColorPanel.Action
@@ -53,8 +52,6 @@ type Action
   | Open String
   | Nothing
 
-  | DropdownMenu Ui.DropdownMenu.Action
-
 type alias Model =
   { app : Ui.App.Model
   , datePicker : Ui.DatePicker.Model
@@ -68,11 +65,10 @@ type alias Model =
   , checkbox : Ui.Checkbox.Model
   , textarea : Ui.Textarea.Model
   , calendar : Ui.Calendar.Model
+  , menu : Ui.DropdownMenu.Model
   , chooser : Ui.Chooser.Model
   , slider : Ui.Slider.Model
   , image : Ui.Image.Model
-
-  , menu : Ui.DropdownMenu.Model
   }
 
 init : Model
@@ -95,7 +91,6 @@ init =
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
     , slider = Ui.Slider.init 50
-
     , menu = Ui.DropdownMenu.init
     }
 
@@ -167,14 +162,10 @@ view address model =
           , tr []
             [ td [colspan 2]
               [ Ui.Container.row []
-                [ Ui.DropdownMenu.view
-                  (forwardTo address DropdownMenu)
-                  (Ui.Button.view address Nothing { text = "Primary"
-                                                  , kind = "primary"
-                                                  , size = "big"
-                                                  , disabled = False })
-                  [text "asd"]
-                  model.menu
+                [ Ui.Button.view address Nothing { text = "Primary"
+                                                 , kind = "primary"
+                                                 , size = "big"
+                                                 , disabled = False }
                 , Ui.Button.view address Nothing { text = "Secondary"
                                                  , kind = "secondary"
                                                  , size = "medium"
@@ -253,6 +244,30 @@ view address model =
               ]
             ]
 
+          , componentHeader "Dropdown Menu"
+          , tableRow ( Ui.DropdownMenu.view
+                       (forwardTo address DropdownMenu)
+                       (Ui.IconButton.view
+                          address
+                          Nothing
+                          { side = "right"
+                          , text = "Open"
+                          , kind = "secondary"
+                          , glyph = "chevron-down"
+                          , size = "medium"
+                          , disabled = False })
+                       [ Ui.DropdownMenu.item
+                          [ Ui.icon "android-download" True []
+                          , node "span" [] [text "Download"]
+                          ]
+                       , Ui.DropdownMenu.item
+                          [ Ui.icon "trash-b" True []
+                          , node "span" [] [text "Delete"]
+                          ]
+                       ]
+                       model.menu)
+                     (text "")
+                     (text "")
           , componentHeader "Calendar"
           , tableRow (Ui.Calendar.view (forwardTo address Calendar)
                        calendar)
@@ -395,6 +410,8 @@ update action model =
       { model | calendar = Ui.Calendar.update act model.calendar             }
     Chooser act ->
       { model | chooser = Ui.Chooser.update act model.chooser                }
+    DropdownMenu act ->
+      { model | menu = Ui.DropdownMenu.update act model.menu                 }
     Slider act ->
       { model | slider = Ui.Slider.update act model.slider                   }
     Image act ->
@@ -424,9 +441,6 @@ update action model =
 
     Open url ->
       Ui.open url model
-
-    DropdownMenu act ->
-      { model | menu = Ui.DropdownMenu.update act model.menu }
 
     Nothing ->
       model

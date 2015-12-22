@@ -13,8 +13,8 @@ module Ui.ColorPicker
 @docs handleMove, handleClick
 -}
 import Html.Extra exposing (onWithDropdownDimensions,onKeysWithDimensions)
-import Html.Events exposing (onFocus, onBlur, onClick)
 import Html.Attributes exposing (classList, style)
+import Html.Events exposing (onBlur, onClick)
 import Html exposing (node, div, text)
 import Html.Lazy
 
@@ -105,7 +105,6 @@ render address model =
     actions =
       if model.disabled || model.readonly then []
       else [ onWithDropdownDimensions "focus" address Focus
-           , onWithDropdownDimensions "click" address Focus
            , onBlur address Blur
            , onKeysWithDimensions address (Dict.fromList [ (27, Close)
                                                          , (13, Toggle)

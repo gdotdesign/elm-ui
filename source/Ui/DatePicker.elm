@@ -13,7 +13,7 @@ module Ui.DatePicker
 @docs setValue
 -}
 import Html.Extra exposing (onKeysWithDimensions, onWithDropdownDimensions)
-import Html.Events exposing (onFocus, onBlur, onClick)
+import Html.Events exposing (onBlur, onClick)
 import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
 import Html.Lazy
@@ -126,8 +126,7 @@ render address model =
   let
     actions =
       if model.disabled || model.readonly then []
-      else [ onWithDropdownDimensions "click" address Focus
-           , onWithDropdownDimensions "focus" address Focus
+      else [ onWithDropdownDimensions "focus" address Focus
            , onBlur address Blur
            , onKeysWithDimensions address
              (Dict.fromList [ (27, Close)

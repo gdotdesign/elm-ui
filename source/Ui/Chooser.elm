@@ -181,7 +181,6 @@ render address model =
     actions =
       if model.disabled || model.readonly then []
       else [ onInput address Filter
-           , onWithDropdownDimensions "click" address Focus
            , onWithDropdownDimensions "focus" address Focus
            , onBlur address Blur
            , onKeysWithDimensions address (Dict.fromList [ (27, Close)

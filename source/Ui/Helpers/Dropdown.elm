@@ -57,6 +57,6 @@ openWithDimensions : Html.Extra.DropdownDimensions -> Dropdown a -> Dropdown a
 openWithDimensions {dimensions,dropdown,window} model =
   let
     bottom = dimensions.bottom + dropdown.height
-    position = if bottom  < window.height then "bottom" else "top"
+    position = if bottom < window.height then "bottom" else "top"
   in
     { model | open = True, dropdownPosition = position }

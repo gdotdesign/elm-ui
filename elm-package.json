@@ -23,6 +23,7 @@
     "Ui.ColorPicker",
     "Ui.Container",
     "Ui.DatePicker",
+    "Ui.DropdownMenu",
     "Ui.IconButton",
     "Ui.Image",
     "Ui.InplaceInput",

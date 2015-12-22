@@ -1,7 +1,7 @@
 ui-number-pad {
   display: flex;
   flex-direction: column;
-  min-height: 400px;
+  min-height: 300px;
 
   ui-number-pad-value {
     @extend %focused-idle;

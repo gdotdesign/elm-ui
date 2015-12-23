@@ -1,0 +1,119 @@
+ui-number-pad {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+
+  ui-number-pad-value {
+    @extend %focused-idle;
+
+    @include colors($input);
+    @include border;
+
+    display: flex;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+
+    span {
+      font-size: 24px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    ui-icon {
+      font-size: 26px;
+    }
+  }
+
+  ui-number-pad-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex: 1;
+
+    ui-number-pad-button {
+      width: calc((100% - 20px) / 3);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background: $secondary;
+      color: readable($secondary);
+      border-radius: $border-radius;
+
+      font-size: 20px;
+      font-weight: 600;
+
+      position: relative;
+      transition: 200ms;
+      cursor: pointer;
+
+      &:hover {
+        background: dampen($secondary, 7%);
+      }
+
+      &:nth-child(n+10) {
+        margin-bottom: 0;
+      }
+
+      &:empty {
+        background: transparent;
+        pointer-events: none;
+        cursor: auto;
+      }
+
+      > * {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      &:active {
+        color: readable($primary);
+        background: $primary;
+        transition: 50ms;
+      }
+    }
+  }
+
+  &.disabled {
+    @extend %disabled;
+
+    > * {
+      pointer-events: none;
+    }
+
+    ui-number-pad-value {
+      background: $disabled;
+      border-color: $disabled;
+    }
+  }
+
+  &.readonly {
+    ui-number-pad-button, ui-icon {
+      pointer-events: none;
+    }
+
+    &:focus {
+      outline: none;
+
+      ui-number-pad-value {
+        box-shadow: $focus-shadow-readonly;
+      }
+    }
+  }
+
+  &:not(.readonly):not(.disabled):focus {
+    outline: none;
+
+    ui-number-pad-value {
+      box-shadow: $focus-shadow;
+    }
+  }
+}

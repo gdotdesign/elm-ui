@@ -34,6 +34,7 @@ handle mouse events like so:
 import Html.Extra exposing (onWithDimensions, onKeys)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
+import Html.Lazy
 
 import Native.Browser
 import Dict
@@ -45,6 +46,7 @@ import Ui
   - **value** - The current value (0 - 100)
   - **startDistance** - The distance in pixels when the dragging can start
   - **disabled** - Whether or not the slide is disabled
+  - **readonly** - Whether or not the slide is readonly
   - **dragging** (internal) - Wheter or not the slider is currently dragging
   - **top** (internal) - The top position of the handle
   - **left** (internal) - The left position of the handle
@@ -57,12 +59,12 @@ type alias Model =
   , value : Float
   , startDistance : Float
   , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions that a slider can make. -}
 type Action
-  = Lift (Html.Extra.DnD)
-  | Nothing
+  = Lift (Html.Extra.PositionAndDimension)
   | Increment
   | Decrement
 
@@ -76,7 +78,8 @@ init value =
   , left = 0
   , value = value
   , startDistance = 0
-  , disabled = True
+  , disabled = False
+  , readonly = False
   }
 
 {-| Updates a slider. -}
@@ -94,29 +97,36 @@ update action model =
               , left = position.pageX - dimensions.left }
         |> clampLeft
 
-    _ ->
-      model
-
 {-| Renders a slider. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     position =
       (toString (clamp 0 100 model.value)) ++ "%"
+    actions =
+      if model.disabled || model.readonly then []
+      else [ onWithDimensions "mousedown" True address Lift
+           , onKeys address (Dict.fromList [ (40, Increment)
+                                           , (38, Decrement)
+                                           , (37, Increment)
+                                           , (39, Decrement) ])
+           ]
     element =
-      node "ui-slider" ((Ui.tabIndex model) ++
-                       [ onWithDimensions "mousedown" True address Lift
-                       , classList [("disabled", model.disabled)]
-                       , onKeys address Nothing (Dict.fromList [ (40, Increment)
-                                                               , (38, Decrement)
-                                                               , (37, Increment)
-                                                               , (39, Decrement) ])
-                       ])
-                       [ node "ui-slider-bar" []
-                         [ node "ui-slider-progress" [style [("width", position)]] [] ]
-                       , node "ui-slider-handle" [style [("left", position)]] [] ]
+      node "ui-slider"
+        ([ classList [ ("disabled", model.disabled)
+                     , ("readonly", model.readonly)
+                     ]
+         ] ++ (Ui.tabIndex model) ++ actions)
+        [ node "ui-slider-bar" []
+          [ node "ui-slider-progress" [style [("width", position)]] [] ]
+        , node "ui-slider-handle" [style [("left", position)]] [] ]
   in
-    if model.drag.dragging then
+    if model.drag.dragging && not model.disabled && not model.readonly then
       Native.Browser.focus element
     else
       element

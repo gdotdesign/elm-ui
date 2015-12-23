@@ -2,16 +2,17 @@
   "version": "0.1.0",
   "summary": "UI Library in ELM",
   "repository": "https://github.com/gdotdesign/elm-ui.git",
-  "license": "BSD3",
+  "license": "BSD-2-Clause",
   "source-directories": [
-    "source",
-    "examples"
+    "source"
   ],
   "native-modules": true,
   "exposed-modules": [
     "Ext.Date",
     "Ext.Number",
     "Ext.Color",
+    "Html.Extra",
+    "Storage.Local",
     "Ui",
     "Ui.App",
     "Ui.Button",
@@ -19,8 +20,10 @@
     "Ui.Checkbox",
     "Ui.Chooser",
     "Ui.ColorPanel",
+    "Ui.ColorPicker",
     "Ui.Container",
     "Ui.DatePicker",
+    "Ui.DropdownMenu",
     "Ui.IconButton",
     "Ui.Image",
     "Ui.InplaceInput",
@@ -31,6 +34,8 @@
     "Ui.Slider",
     "Ui.Textarea",
     "Ui.Charts.Bar",
+    "Ui.Helpers.Drag",
+    "Ui.Helpers.Animation",
     "Ui.Helpers.Dropdown",
     "Ui.Helpers.Intendable"
   ],

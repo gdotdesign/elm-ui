@@ -1,0 +1,66 @@
+ui-number-range {
+  // Styling
+  display: inline-block;
+  background: $input;
+  position: relative;
+  width: 238px;
+
+  // Common styles for the arrows
+  &:before,
+  &:after {
+    border-style: solid;
+    position: absolute;
+    margin-top: -5px;
+    content: '';
+    opacity: 0.5;
+    top: 50%;
+    height: 0;
+    width: 0;
+  }
+
+  // Left arrow
+  &:after {
+    border-color: transparent currentColor transparent transparent;
+    border-width: 5px 6px 5px 0;
+    left: 12px;
+    z-index: 1;
+  }
+
+  // Right arrow
+  &:before {
+    border-color: transparent transparent transparent currentColor;
+    border-width: 5px 0 5px 6px;
+    right: 12px;
+    z-index: 1;
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+    user-select: none;
+
+    input {
+      border-color: $disabled;
+      background: $disabled;
+      pointer-events: none;
+    }
+  }
+
+  // Readonly state
+  &.readonly {
+    input:not([type]):focus {
+      @extend %focused-readonly;
+    }
+  }
+
+  &:not(.readonly) input:read-only {
+    cursor: move;
+  }
+
+  // Input
+  input {
+    text-align: center;
+    width: 100%;
+    z-index: 0;
+  }
+}

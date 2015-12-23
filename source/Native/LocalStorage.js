@@ -2,12 +2,11 @@ Elm.Native.LocalStorage = {};
 Elm.Native.LocalStorage.make = function(elm) {
   elm.Native = elm.Native || {};
   elm.Native.LocalStorage = elm.Native.LocalStorage || {};
-  if (elm.Native.LocalStorage.values) {
-    return elm.Native.LocalStorage.values;
-  }
+  if (elm.Native.LocalStorage.values) {return elm.Native.LocalStorage.values; }
 
   var Result = Elm.Result.make(elm);
 
+  /* Gets a value from the localStorage as a result. */
   function get(key){
     result = window.localStorage.getItem(key);
     if(result) {
@@ -17,6 +16,7 @@ Elm.Native.LocalStorage.make = function(elm) {
     }
   }
 
+  /* Sets a value to the localStoraget as a result. */
   function set(key, value){
     try {
       window.localStorage.setItem(key, value);
@@ -26,6 +26,7 @@ Elm.Native.LocalStorage.make = function(elm) {
     }
   }
 
+  /* Removes a value from the localStorage as a result. */
   function remove(key) {
     try {
       window.localStorage.removeItem(key);
@@ -35,9 +36,10 @@ Elm.Native.LocalStorage.make = function(elm) {
     }
   }
 
-  return Elm.Native.LocalStorage.values = {
-    get: get,
+  /* Interface. */
+  return elm.Native.LocalStorage.values = {
+    remove: remove,
     set: F2(set),
-    remove: remove
+    get: get
   };
 };

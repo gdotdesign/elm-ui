@@ -1,0 +1,43 @@
+ui-dropdown {
+  @include colors($input);
+  @include border;
+
+  // Position & Size
+  position: absolute;
+  max-height: 250px;
+  z-index: 100;
+  right: 0;
+  left: 0;
+
+  // Stlying
+  box-shadow: 0 5px 20px rgba(#000, 0.1);
+  overflow: auto;
+  padding: 3px;
+
+  // Effect
+  transition: opacity 320ms, transform 320ms, visibility 1ms 320ms;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+
+  // Top Position
+  &.position-top {
+    transform: translateY(-10px);
+    bottom: calc(100% + 4px);
+  }
+
+  // Bottom Position
+  &.position-bottom {
+    transform: translateY(10px);
+    top: calc(100% + 4px);
+  }
+}
+
+// Open state
+.dropdown-open ui-dropdown {
+  transition: opacity 320ms, transform 320ms, visibility 1ms;
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+}

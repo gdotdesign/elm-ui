@@ -1,0 +1,87 @@
+ui-slider {
+  // Styling
+  box-sizing: content-box;
+  align-items: center;
+  position: relative;
+  user-select: none;
+  min-width: 200px;
+  display: flex;
+  height: 36px;
+
+  &:not(.readonly):not(.disabled) {
+    cursor: pointer;
+  }
+
+  * {
+    pointer-events: none;
+  }
+
+  // Bar background
+  ui-slider-bar {
+    @include border;
+
+    position: relative;
+    background: $input;
+    display: block;
+    height: 12px;
+    flex: 1;
+  }
+
+  // Progress bar
+  ui-slider-progress {
+    border-radius: $border-radius;
+    background: $primary;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+  }
+
+  // Handle
+  ui-slider-handle {
+    @include border;
+
+    box-shadow: 0 2px 2px rgba(#000, 0.1);
+    position: absolute;
+    margin-left: -6px;
+    background: $input;
+    width: 12px;
+    bottom: 3px;
+    top: 3px;
+    left: 0;
+  }
+
+  // Focused state
+  &.readonly:focus {
+    outline: none;
+
+    ui-slider-handle {
+      border: 2px solid $input;
+      background: $focus-readonly;
+    }
+  }
+
+  &:not(.readonly):focus {
+    outline: none;
+
+    ui-slider-handle {
+      border: 2px solid $input;
+      background: $focus;
+    }
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+
+    ui-slider-bar,
+    ui-slider-handle {
+      border-color: $disabled;
+    }
+
+    ui-slider-progress {
+      background: $disabled;
+    }
+  }
+}

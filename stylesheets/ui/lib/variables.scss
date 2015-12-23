@@ -1,0 +1,24 @@
+// Types
+$primary: #0278AE;
+$success: #0BC449;
+$warning: #EB9500;
+$danger: #DB2D06;
+
+// Calulated colros
+$background: mix($primary, #FCFCFC, 3%);
+$secondary: mix($primary, #EFEFEF, 3%);
+$input: mix($primary, #FFF, 1%);
+
+// Border
+$border-radius: 2px;
+$border: 1px solid rgba(#000, 0.1);
+
+// Disabled
+$disabled: desaturate(dampen($input, 15%), 60%);
+
+// Focus
+$focus: dampen($primary, 30%);
+$focus-readonly: dampen($warning, 30%);
+$focus-shadow: 0 0 0 1px $focus inset, 0 0 4px rgba($focus, 0.5), 0 0 4px rgba($focus, 0.5) inset;
+$focus-shadow-readonly: 0 0 0 1px $focus-readonly inset, 0 0 4px rgba($focus-readonly, 0.5), 0 0 4px rgba($focus-readonly, 0.5) inset;
+$focus-shadow-idle: 0 0 0 1px transparent inset, 0 0 4px transparent, 0 0 4px transparent inset;

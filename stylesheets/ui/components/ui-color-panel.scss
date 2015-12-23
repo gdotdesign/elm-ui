@@ -1,0 +1,111 @@
+ui-color-panel {
+  @include colors($input);
+  @include border;
+
+  // Styling
+  flex-direction: column;
+  display: flex;
+  padding: 15px;
+  height: 250px;
+  width: 250px;
+
+  // Disabled State
+  &.disabled {
+    @extend %disabled;
+
+    background: $disabled;
+    filter: saturate(0);
+
+    ui-color-panel-hue,
+    ui-color-panel-rect,
+    ui-color-panel-alpha {
+      pointer-events: none;
+    }
+
+    ui-color-panel-handle {
+      border-color: $disabled;
+    }
+  }
+
+  // Handle
+  ui-color-panel-handle {
+    transform: translateX(-50%) translateY(-50%);
+    box-shadow: 0 0 4px rgba(#000, 0.5);
+    background: rgba(#666, 0.5);
+    border: 2px solid #FFF;
+    pointer-events: none;
+    position: absolute;
+    border-radius: 50%;
+    height: 16px;
+    width: 16px;
+  }
+
+  &:not(.readonly) {
+    ui-color-panel-hue,
+    ui-color-panel-rect,
+    ui-color-panel-alpha {
+      cursor: pointer;
+    }
+  }
+
+  // Parts
+  ui-color-panel-hue,
+  ui-color-panel-rect,
+  ui-color-panel-alpha {
+    box-shadow: 0 0 1px 1px rgba(#000, 0.2) inset;
+    border-radius: $border-radius;
+    position: relative;
+  }
+
+  // Rect + Hue container
+  > div {
+    margin-bottom: 10px;
+    display: flex;
+    flex: 1;
+
+    ui-color-panel-hue {
+      background-image: linear-gradient(to bottom, #F00 0%, #FF0 17%, #0F0 33%,
+                                        #0FF 50%, #00F 67%, #F0F 83%, #F00 100%);
+      flex: 0 0 16px;
+
+      ui-color-panel-handle {
+        border-radius: $border-radius;
+        transform: translateY(-50%);
+        height: 10px;
+        left: -4px;
+        right: -4px;
+        width: auto;
+      }
+    }
+
+    ui-color-panel-rect {
+      background-image: linear-gradient(0deg, #000 0%, transparent 100%),
+                        linear-gradient(90deg, #FFF 0%, rgba(#FFF, 0) 100%);
+      margin-right: 10px;
+      flex: 1;
+    }
+  }
+
+  // Alpha
+  ui-color-panel-alpha {
+    background: linear-gradient(45deg, #DDD 25%, transparent 25%, transparent 75%, #DDD 75%, #DDD),
+                linear-gradient(45deg, #DDD 25%, transparent 25%, transparent 75%, #DDD 75%, #DDD);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+    flex: 0 0 16px;
+
+    ui-color-panel-handle {
+      border-radius: $border-radius;
+      transform: translateX(-50%);
+      height: auto;
+      bottom: -4px;
+      width: 10px;
+      top: -4px;
+    }
+
+    > div {
+      pointer-events: none;
+      height: 16px;
+    }
+  }
+}

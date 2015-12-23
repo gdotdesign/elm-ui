@@ -1,0 +1,16 @@
+%focused-idle {
+  transition: box-shadow 400ms linear;
+  box-shadow: $focus-shadow-idle;
+}
+
+%focused-readonly {
+  transition: box-shadow 200ms linear;
+  box-shadow: $focus-shadow-readonly;
+  outline: none;
+}
+
+%focused {
+  transition: box-shadow 200ms linear;
+  box-shadow: $focus-shadow;
+  outline: none;
+}

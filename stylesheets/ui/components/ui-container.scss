@@ -1,0 +1,31 @@
+ui-container {
+  display: flex;
+
+  &.align-start {
+    align-items: flex-start;
+  }
+
+  &.align-center {
+    align-items: center;
+  }
+
+  &.align-end {
+    align-items: flex-end;
+  }
+
+  &.direction-row {
+    flex-direction: row;
+
+    &:not(.compact) > * + * {
+      margin-left: 10px;
+    }
+  }
+
+  &.direction-column {
+    flex-direction: column;
+
+    &:not(.compact) > * + * {
+      margin-top: 10px;
+    }
+  }
+}

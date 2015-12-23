@@ -13,11 +13,12 @@ module Ui.ColorPanel
 # Functions
 @docs handleMove, handleClick
 -}
+import Html.Attributes exposing (style, classList)
 import Html.Extra exposing (onWithDimensions)
-import Html.Attributes exposing (style)
 import Html exposing (node, div, text)
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
+import Html.Lazy
 
 import Ui.Helpers.Drag as Drag
 
@@ -26,19 +27,23 @@ import Ui.Helpers.Drag as Drag
   - **alphaDrag** (internal) - The drag model of the alpha slider
   - **hueDrag** (internal) - The drag model of the hue slider
   - **value** - The current vlaue
+  - **readonly** - Whether the color panel is editable
+  - **disabled** - Whether the color panel is disabled
 -}
 type alias Model =
   { drag : Drag.Model
   , alphaDrag : Drag.Model
   , hueDrag : Drag.Model
   , value : Hsv
+  , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions that a color panel can make. -}
 type Action
-  = LiftAlpha (Html.Extra.DnD)
-  | LiftRect (Html.Extra.DnD)
-  | LiftHue (Html.Extra.DnD)
+  = LiftAlpha (Html.Extra.PositionAndDimension)
+  | LiftRect (Html.Extra.PositionAndDimension)
+  | LiftHue (Html.Extra.PositionAndDimension)
 
 {-| Initializes a color panel with the given Elm color.
 
@@ -50,6 +55,8 @@ init color =
   , alphaDrag = Drag.init
   , hueDrag = Drag.init
   , value = Ext.Color.toHsv color
+  , disabled = False
+  , readonly = False
   }
 
 {-| Updates a color panel. -}
@@ -71,6 +78,11 @@ update action model =
 {-| Renders a color panel. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     background =
       "hsla(" ++ (toString (round (model.value.hue * 360))) ++ ", 100%, 50%, 1)"
@@ -89,28 +101,32 @@ view address model =
 
     asPercent value =
       (toString (value * 100)) ++ "%"
+
+    action act =
+      if model.disabled || model.readonly then []
+      else [onWithDimensions "mousedown" True address act]
   in
-    node "ui-color-panel" []
+    node "ui-color-panel" [ classList [ ("disabled", model.disabled)
+                                      , ("readonly", model.readonly)
+                                      ]
+                          ]
       [ div []
         [ node "ui-color-panel-rect"
-            [ onWithDimensions "mousedown" False address LiftRect
-            , style [ ("background-color", background )
-                    , ("cursor", if model.drag.dragging then "move" else "" )
-                    ]
-            ]
+            ([ style [ ("background-color", background )
+                     , ("cursor", if model.drag.dragging then "move" else "" )
+                     ]
+             ] ++ (action LiftRect))
             [ renderHandle
               (asPercent (1 - color.value))
               (asPercent color.saturation) ]
         , node "ui-color-panel-hue"
-            [ onWithDimensions "mousedown" False address LiftHue
-            , style [("cursor", if model.hueDrag.dragging then "move" else "" )]
-            ]
+            ([ style [("cursor", if model.hueDrag.dragging then "move" else "" )]
+            ] ++ (action LiftHue))
             [ renderHandle (asPercent color.hue) "" ]
         ]
       , node "ui-color-panel-alpha"
-        [ onWithDimensions "mousedown" False address LiftAlpha
-        , style [("cursor", if model.alphaDrag.dragging then "move" else "" )]
-        ]
+        ([ style [("cursor", if model.alphaDrag.dragging then "move" else "" )]
+        ] ++ (action LiftAlpha))
         [ div [style [("background-image", gradient)]] []
         , renderHandle "" (asPercent color.alpha)
         ]

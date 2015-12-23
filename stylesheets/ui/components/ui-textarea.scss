@@ -1,0 +1,89 @@
+ui-textarea {
+  position: relative;
+  overflow: visible;
+  min-height: 1em;
+  display: block;
+  line-height: 24px;
+
+  ui-textarea-background {
+    @extend %focused-idle;
+
+    @include colors($input);
+    @include border;
+
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+  }
+
+  &:not(.disabled):not(.readonly) textarea:focus + ui-textarea-background {
+    @extend %focused;
+  }
+
+  &.readonly textarea:focus + ui-textarea-background {
+    @extend %focused-readonly;
+  }
+
+  &.disabled {
+    @extend %disabled;
+
+    > * { pointer-events: none; }
+
+    ui-textarea-background {
+      background: $disabled;
+      border-color: $disabled;
+    }
+  }
+
+  &:after {
+    position: absolute;
+    bottom: -24px;
+    height: 24px;
+    content: "";
+    z-index: 2;
+    right: 0;
+    left: 0;
+  }
+
+  textarea {
+    height: calc(100% + 24px);
+    background: transparent;
+    font-family: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    position: absolute;
+    font-size: inherit;
+    overflow: hidden;
+    color: inherit;
+    outline: none;
+    resize: none;
+    width: 100%;
+    z-index: 1;
+    margin: 0;
+    border: 0;
+    left: 0;
+    top: 0;
+
+    padding: 6px 9px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  ui-textarea-mirror {
+    word-wrap: break-word;
+    white-space: normal;
+    visibility: hidden;
+    user-select: none;
+    padding: 6px 9px;
+    display: block;
+
+    span-line:empty:before {
+      content: 'a';
+    }
+  }
+}

@@ -1,19 +1,22 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
-   stylesheetLink, tabIndex, header, headerTitle, fab) where
+   stylesheetLink, tabIndex, header, headerTitle, fab, text, open,
+   redirect) where
 
 {-| UI Library for ELM!
 
 # Static Components
 @docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup, header
-@docs headerTitle, fab
+@docs headerTitle, fab, text
 
 # Helper Functions
-@docs tabIndex
+@docs tabIndex, open, redirect
 -}
 import Html.Attributes exposing (classList, tabindex, rel, href)
 import Html.Extra exposing (onLoad)
-import Html exposing (node, text)
+import Html exposing (node)
+
+import Native.Browser
 
 {-| An icon component from Ionicons. -}
 icon : String -> Bool -> List Html.Attribute -> Html.Html
@@ -45,7 +48,7 @@ panel attributes children =
 inputGroup : String -> Html.Html -> Html.Html
 inputGroup label input =
   node "ui-input-group" []
-    [ node "ui-input-group-label" [] [text label]
+    [ node "ui-input-group-label" [] [Html.text label]
     , input
     ]
 
@@ -82,3 +85,18 @@ fab : String -> List Html.Attribute -> Html.Html
 fab glyph attributes =
   node "ui-fab" attributes
     [ icon glyph False []]
+
+{-| Renders a text block. -}
+text : String -> Html.Html
+text value =
+  node "ui-text" [] [Html.text value]
+
+{-| Opens a link. -}
+open : String -> a -> a
+open url model =
+  Native.Browser.open url model
+
+{-| Replace the current page with the given url. -}
+redirect : String -> a -> a
+redirect url model =
+  Native.Browser.redirect url model

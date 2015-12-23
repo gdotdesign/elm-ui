@@ -1,6 +1,6 @@
 module Ui.Chooser
   (Model, Item, Action, init, update, close, toggleItem,
-   getFirstSelected, view, viewLazy, updateData, selectFirst, select) where
+   getFirstSelected, view, updateData, selectFirst, select) where
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
@@ -9,15 +9,17 @@ form a list of choises, with lots of options.
 @docs Model, Item, Action, init, update
 
 # View
-@docs view, viewLazy
+@docs view
 
 # Functions
 @docs toggleItem, close, getFirstSelected, updateData, selectFirst, select
 -}
-import Html.Attributes exposing (value, placeholder, readonly, classList, disabled)
+import Html.Extra exposing (onInput, onPreventDefault, onWithDropdownDimensions
+                           ,onKeysWithDimensions)
+import Html.Attributes exposing (value, placeholder, readonly, classList
+                                , disabled)
 import Html.Events exposing (onFocus, onBlur, onClick, onMouseDown)
-import Html.Extra exposing (onInput, onPreventDefault, onKeys)
-import Html exposing (div, text, node, input, Html)
+import Html exposing (span, text, node, input, Html)
 import Html.Lazy
 
 import Set exposing (Set)
@@ -52,6 +54,8 @@ type alias Item =
   - **value** - (Internal) The value of the input
   - **intended** - (Internal) The currently intended value (for keyboard selection)
   - **open** - Whether or not the dropdown is open
+  - **readonly** - Whether or not the dropdown is readonly
+  - **dropdownPosition** (Internal) - Where the dropdown is positioned
 -}
 type alias Model =
   { placeholder : String
@@ -65,7 +69,9 @@ type alias Model =
   , deselectable: Bool
   , intended : String
   , disabled : Bool
+  , readonly : Bool
   , render : Item -> Html
+  , dropdownPosition : String
   }
 
 {-| Actions that a chooser can make:
@@ -79,13 +85,13 @@ type alias Model =
 -}
 type Action
   = Filter String
-  | Focus
+  | Focus Html.Extra.DropdownDimensions
   | Select String
-  | Close
-  | Next
-  | Prev
-  | Enter
-  | Nothing
+  | Blur
+  | Close Html.Extra.DropdownDimensions
+  | Next Html.Extra.DropdownDimensions
+  | Prev Html.Extra.DropdownDimensions
+  | Enter Html.Extra.DropdownDimensions
 
 {-| Initializes a chooser with the given values.
 
@@ -107,7 +113,9 @@ init data placeholder value =
     , multiple = False
     , intended = ""
     , disabled = False
-    , render = (\item -> div [] [text item.label])
+    , readonly = False
+    , render = (\item -> span [] [text item.label])
+    , dropdownPosition = "bottom"
     }
       |> intendFirst
 
@@ -121,72 +129,77 @@ update action model =
           setValue value model
            |> intendFirst
 
-        Focus ->
-          Dropdown.open model
+        Focus dimensions ->
+          Dropdown.openWithDimensions dimensions model
            |> intendFirst
 
-        Close ->
+        Close _ ->
           close model
 
-        Enter ->
+        Blur ->
+          close model
+
+        Enter _ ->
           toggleItemAndClose model.intended model
 
-        Next ->
+        Next dimensions ->
           { model | intended = Intendable.next
                                 model.intended
                                 (availableItems model) }
-            |> Dropdown.open
+            |> Dropdown.openWithDimensions dimensions
 
-        Prev ->
+        Prev dimensions ->
           { model | intended = Intendable.previous
-                                  model.intended
-                                  (availableItems model) }
-            |> Dropdown.open
+                                model.intended
+                                (availableItems model) }
+            |> Dropdown.openWithDimensions dimensions
 
         Select value ->
           toggleItemAndClose value model
-
-        _ ->
-          model
   in
     model'
-
-{-| Renders a chooser lazily. -}
-viewLazy : Signal.Address Action -> Model -> Html.Html
-viewLazy address model =
-  Html.Lazy.lazy2 view address model
 
 {-| Renders a chooser. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Renders a chooser.
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     dropdown =
-      [ Dropdown.view [] (List.map (\item -> renderItem item address model) (items model)) ]
+      [ Dropdown.view model.dropdownPosition
+        (List.map (\item -> renderItem item address model) (items model)) ]
 
     val =
       if model.open && model.searchable then
         model.value
       else
         label model
+
+    actions =
+      if model.disabled || model.readonly then []
+      else [ onInput address Filter
+           , onWithDropdownDimensions "focus" address Focus
+           , onBlur address Blur
+           , onKeysWithDimensions address (Dict.fromList [ (27, Close)
+                                                         , (13, Enter)
+                                                         , (40, Next)
+                                                         , (38, Prev) ])
+           ]
   in
     node "ui-chooser" ([classList [ ("dropdown-open", model.open)
                                   , ("searchable", model.searchable)
                                   , ("disabled", model.disabled)
+                                  , ("readonly", model.readonly)
                                   ]
                        ])
-      ([ input [ onInput address Filter
-               , onClick address Focus
-               , onFocus address Focus
-               , onBlur address Close
-               , disabled model.disabled
-               , onKeys address Nothing (Dict.fromList [ (27, Close)
-                                                       , (13, Enter)
-                                                       , (40, Next)
-                                                       , (38, Prev) ])
-               , placeholder model.placeholder
-               , value val
-               , readonly (not model.searchable || not model.open)
-               ] []] ++ dropdown)
+      ([ input ([ disabled model.disabled
+                , placeholder model.placeholder
+                , value val
+                , readonly (not model.searchable || not model.open || model.readonly)
+                ] ++ actions) []] ++ dropdown)
 
 {-| Selects the given value of chooser. -}
 select : String -> Model -> Model

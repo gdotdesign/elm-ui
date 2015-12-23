@@ -1,4 +1,6 @@
-module Ui.Calendar where
+module Ui.Calendar
+  (Model, Action(Select), init, update, view, render, setValue, nextDay
+  ,previousDay)where
 
 {-| This is a calendar component where the user
 can select a date by clicking on it.
@@ -7,15 +9,12 @@ can select a date by clicking on it.
 @docs Model, Action, init, update
 
 # View
-@docs view, viewLazy
+@docs view, render
 
 # Functions
 @docs setValue, nextDay, previousDay
-
-# Private
-@docs fixDate, renderCell,  paddingLeft
 -}
-import Html.Attributes exposing (classList, style)
+import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)
 import Html exposing (node, text)
 import Html.Lazy
@@ -32,11 +31,16 @@ import Ui
   - **date** - The month in which this date is will be displayed
   - **value** - The current selected date
   - **selectable** - Whether the user can select a date by clicking
+  - **disabled** - Whether the calendar is disabled
+  - **readonly** - Whether the calendar is interactive
 -}
 type alias Model =
   { date : Date.Date
   , value : Date.Date
-  , selectable : Bool }
+  , selectable : Bool
+  , disabled : Bool
+  , readonly : Bool
+  }
 
 {-| Actions that a calendar can make:
   - **NextMonth** - Steps the calendar to show next month
@@ -57,6 +61,8 @@ init date =
   { date = date
   , value = date
   , selectable = True
+  , disabled = False
+  , readonly = False
   }
 
 {-| Updates a calendar. -}
@@ -72,14 +78,14 @@ update action model =
     Select date ->
       { model | value = date }
 
-{-| Renders a calendar lazily. -}
-viewLazy : Signal.Address Action -> Model -> Html.Html
-viewLazy address model =
-  Html.Lazy.lazy2 view address model
-
-{-| Renders a calendar. -}
+{-| Renders a calendar (lazy). -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+{-| Renders a calendar. -}
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     {- The date of the month -}
     month =
@@ -116,15 +122,26 @@ view address model =
       , direction = "row"
       , compact = False }
 
+    nextAction =
+      if model.disabled || model.readonly then []
+      else [onMouseDown address NextMonth]
+
+    previousAction =
+      if model.disabled || model.readonly then []
+      else [onMouseDown address PreviousMonth]
+
     {- Header container -}
     container =
       Ui.Container.view continerOptions []
-        [ Ui.icon "chevron-left" True [onMouseDown address PreviousMonth]
-        , node "div" [style [("flex", "1")]] [text (format "%Y - %B" month)]
-        , Ui.icon "chevron-right" True [onMouseDown address NextMonth]
+        [ Ui.icon "chevron-left" (not model.readonly) previousAction
+        , node "div" [] [text (format "%Y - %B" month)]
+        , Ui.icon "chevron-right" (not model.readonly) nextAction
         ]
   in
-    node "ui-calendar" []
+    node "ui-calendar" [classList [ ("disabled", model.disabled)
+                                  , ("readonly", model.readonly)
+                                  ]
+                       ]
       [ container
       , node "ui-calendar-table" [] cells ]
 
@@ -177,7 +194,7 @@ renderCell address date model =
       Ext.Date.isSameDate date model.value
 
     click =
-      if model.selectable && sameMonth then
+      if model.selectable && sameMonth && not model.disabled && not model.readonly then
         [onMouseDown address (Select date)]
       else
         []

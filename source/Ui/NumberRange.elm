@@ -15,12 +15,13 @@ double clicking on the component.
 # Functions
 @docs focus, handleClick, handleMove, setValue, increment, decrement
 -}
-import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterStop)
+import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterPreventDefault)
 import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onFocus, onBlur)
 import Html exposing (node, input)
+import Html.Lazy
 
-import Ext.Number exposing (formatFloat)
+import Ext.Number exposing (toFixed)
 import Json.Decode as Json
 import Native.Browser
 import Result
@@ -38,6 +39,7 @@ import Ui
   - **max** - The maximum allowed value
   - **round** - The decimals to round the value
   - **disabled** - Whether or not the component is disabled
+  - **readonly** - Whether or not the component is readonly
 -}
 type alias Model =
   { drag : Drag.Model
@@ -53,16 +55,16 @@ type alias Model =
   , focused : Bool
   , editing : Bool
   , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions that a number range can make. -}
 type Action
-  = Lift (Html.Extra.DnD)
-  | DoubleClick (Html.Extra.DnD)
+  = Lift (Html.Extra.PositionAndDimension)
+  | DoubleClick (Html.Extra.PositionAndDimension)
   | Focus
   | Blur
   | Input String
-  | Nothing
   | Increment
   | Decrement
   | Save
@@ -83,14 +85,13 @@ init value =
   , focused = False
   , editing = False
   , disabled = False
+  , readonly = False
   }
 
 {-| Updates a number range. -}
 update: Action -> Model -> Model
 update action model =
   case action of
-    Nothing ->
-      model
     Increment ->
       increment model
     Decrement ->
@@ -106,7 +107,7 @@ update action model =
         |> endEdit
     DoubleClick {dimensions, position} ->
       { model | editing = True
-              , inputValue = formatFloat model.round model.value }
+              , inputValue = toFixed model.round model.value }
         |> focus
     Lift {dimensions, position} ->
       { model | drag = Drag.lift dimensions position model.drag
@@ -116,36 +117,50 @@ update action model =
 {-| Renders a number range. -}
 view: Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render: Signal.Address Action -> Model -> Html.Html
+render address model =
   let
-    attributes =
-      if model.editing then
-        [ value model.inputValue
-        , onInput address Input
-        , onEnterStop address Save
+    actions =
+      if model.readonly || model.disabled then []
+      else if model.editing then
+        [ onInput address Input
+        , onEnterPreventDefault address Save
         ]
       else
-        [ onWithDimensions "mousedown" True address Lift
+        [ onWithDimensions "mousedown" False address Lift
         , onWithDimensions "dblclick" True address DoubleClick
-        , value ((formatFloat model.round model.value) ++ model.affix)
-        , onKeys address Nothing (Dict.fromList [ (40, Increment)
-                                                , (38, Decrement)
-                                                , (37, Increment)
-                                                , (39, Decrement) ])
+        , onKeys address (Dict.fromList [ (40, Decrement)
+                                        , (38, Increment)
+                                        , (37, Decrement)
+                                        , (39, Increment) ])
         ]
+    attributes =
+      if model.editing then
+        [ value model.inputValue ]
+      else
+        [ value ((toFixed model.round model.value) ++ model.affix) ]
 
     inputElement =
       input ([ onFocus address Focus
              , onBlur address Blur
              , readonly (not model.editing)
              , disabled model.disabled
-             ] ++ attributes) []
+             ] ++ attributes ++ actions) []
 
     focusedInput =
-      case model.focusNext of
+      case model.focusNext && not model.disabled && not model.readonly of
         True -> Native.Browser.focus inputElement
         False -> inputElement
   in
-    node "ui-number-range" [classList [("disabled", model.disabled)]] [ focusedInput ]
+    node "ui-number-range"
+      [ classList [ ("disabled", model.disabled)
+                  , ("readonly", model.readonly)
+                  ]
+      ]
+      [ focusedInput ]
 
 {-| Focused the component. -}
 focus : Model -> Model

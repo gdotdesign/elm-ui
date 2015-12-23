@@ -1,0 +1,109 @@
+ui-calendar {
+  @include colors($input);
+  @include border;
+
+  display: inline-block;
+  padding: 15px;
+
+  // Header
+  ui-container {
+    border-bottom: $border;
+    border-bottom-style: dashed;
+    margin-bottom: 5px;
+    height: 45px;
+
+    padding: 5px;
+    padding-bottom: 10px;
+
+    div {
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      flex: 1;
+    }
+
+    ui-icon {
+      width: 30px;
+
+      &:first-child {
+        justify-content: flex-start;
+      }
+
+      &:last-child {
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  // Table
+  ui-calendar-table {
+    justify-content: space-around;
+    flex-wrap: wrap;
+    display: flex;
+
+    margin: 0 -5px;
+    width: 300px;
+  }
+
+  // Table Cell
+  ui-calendar-cell {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    height: 34px;
+    width: 34px;
+    margin: 4px;
+
+    // Inactive state
+    &.inactive {
+      opacity: 0.25;
+    }
+
+    // Basic state
+    &:not(:empty) {
+      @include colors(dampen($background, 1%));
+
+      border-radius: $border-radius;
+    }
+
+    // Hover & Selected State
+    &:not(.inactive):hover,
+    &.selected {
+      @include colors($primary);
+
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  // Readonly state
+  &.readonly {
+    ui-icon {
+      display: none;
+    }
+
+    > * {
+      pointer-events: none;
+    }
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+    background: $disabled;
+
+    > * {
+      pointer-events: none;
+    }
+
+    ui-calendar-cell {
+      &:not(:empty) {
+        @include colors(dampen($disabled, 6%));
+      }
+
+      &.selected {
+        @include colors(dampen($disabled, 50%));
+      }
+    }
+  }
+}

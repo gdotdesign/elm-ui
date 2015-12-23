@@ -13,6 +13,8 @@ import Html exposing (node, textarea, div, text, button)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onEnter)
+import Html.Lazy
+
 import Signal exposing (forwardTo)
 import String
 
@@ -29,6 +31,7 @@ import Debug exposing (log)
   - **ctrlSave** - Whether or not to save on ctrl+enter
   - **required** - Whether or not to disable the component if the value is empty
   - **disabled** - Whether or not the component is disabled
+  - **readonly** - Whether or not the component is readonly
   - **value** - The value of the component
   - **textarea** (internal) - The state of the textarea
   - **open** (internal) - Whether the component is open or not
@@ -38,6 +41,7 @@ type alias Model =
   , required : Bool
   , ctrlSave : Bool
   , disabled : Bool
+  , readonly : Bool
   , value : String
   , textarea : Ui.Textarea.Model
   }
@@ -47,7 +51,6 @@ type Action
   = Edit
   | Textarea Ui.Textarea.Action
   | Save
-  | Nothing
   | Close
 
 {-| Initializes an inplace input with the given value. -}
@@ -57,6 +60,7 @@ init value =
   , open = False
   , ctrlSave = True
   , disabled = False
+  , readonly = False
   , value = value
   , textarea = Ui.Textarea.init value
   }
@@ -82,16 +86,20 @@ update action model =
       else
         close { model | value = model.textarea.value }
 
-    _ -> model
-
 {-| Renders an inplace input. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     content =
-      case model.open of
-        True -> form address model
-        False -> display address model
+      if model.open && not (model.disabled || model.readonly) then
+        form address model
+      else
+        display address model
   in
     node "ui-inplace-input" [] [content]
 
@@ -110,16 +118,29 @@ form address model =
                           , direction = "row"
                           , compact = False
                           } []
-        [ Ui.Button.view address Save { disabled = disabled, kind = "primary", text = "Save" }
+        [ Ui.Button.view address Save { disabled = disabled
+                                      , kind = "primary"
+                                      , text = "Save"
+                                      , size = "medium"
+                                      }
         , Ui.spacer
-        , Ui.Button.view address Close { disabled = False, kind = "secondary", text = "Close" }
+        , Ui.Button.view address Close { disabled = False
+                                       , kind = "secondary"
+                                       , text = "Close"
+                                       , size = "medium"
+                                       }
         ]
       ]
 
 {-| Renders the display. -}
 display : Signal.Address Action -> Model -> Html.Html
 display address model =
-  div [onClick address Edit] [text model.value]
+  let
+    click =
+      if model.disabled || model.readonly then []
+      else [onClick address Edit]
+  in
+    div click [text model.value]
 
 
 {-| Returns whether the given inplace input is empty. -}

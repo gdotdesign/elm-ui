@@ -1,0 +1,235 @@
+ui-checkbox {
+  @extend %focused-idle;
+  @include colors($input);
+  @include border;
+
+  // Styling
+  display: inline-block;
+  height: 36px;
+  width: 36px;
+
+  &:not(.readonly):not(.disabled) {
+    cursor: pointer;
+  }
+
+  // Checkmark
+  ui-icon {
+    transform: scale(0.4) rotate(45deg);
+    transition: 200ms;
+    font-size: 18px;
+    height: 34px;
+    width: 34px;
+    opacity: 0;
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+    @include colors($disabled);
+  }
+
+  // Checked state
+  &.checked ui-icon {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  // Focused & readonly
+  &.readonly:focus {
+    @extend %focused-readonly;
+
+    ui-icon {
+      color: $focus-readonly;
+    }
+  }
+
+  // Focused not readonly
+  &:focus:not(.readonly) {
+    @extend %focused;
+
+    ui-icon {
+      color: $primary;
+    }
+  }
+}
+
+ui-checkbox-radio {
+  @extend %focused-idle;
+
+  @include colors($input);
+  @include border;
+
+  // Styling
+  display: inline-block;
+  border-radius: 50%;
+  position: relative;
+  height: 36px;
+  width: 36px;
+
+  &:not(.readonly):not(.disabled) {
+    cursor: pointer;
+  }
+
+  // Inside Circle
+  ui-checkbox-radio-circle {
+    transform: scale(0.4);
+    opacity: 0;
+
+    background: $primary;
+    border-radius: 50%;
+    position: absolute;
+    transition: 200ms;
+    bottom: 8px;
+    right: 8px;
+    left: 8px;
+    top: 8px;
+  }
+
+  // Checked state
+  &.checked ui-checkbox-radio-circle {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+    @include colors($disabled);
+
+    ui-checkbox-radio-circle {
+      background: dampen($disabled, 30%);
+    }
+  }
+
+  // Focused & readonly
+  &.readonly:focus {
+    @extend %focused-readonly;
+
+    ui-checkbox-radio-circle {
+      background: $focus-readonly;
+    }
+  }
+
+  // Focused not readonly
+  &:focus:not(.readonly) {
+    @extend %focused;
+
+    ui-checkbox-radio-circle {
+      background: $focus;
+    }
+  }
+}
+
+ui-checkbox-toggle {
+  // Layout
+  justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+
+  // Styling
+  min-width: 76px;
+  height: 36px;
+
+  &:not(.readonly):not(.disabled) {
+    cursor: pointer;
+  }
+
+  // Background
+  ui-checkbox-toggle-bg {
+    @extend %focused-idle;
+
+    @include colors($input);
+    @include border;
+
+    height: inherit;
+    display: flex;
+    padding: 2px;
+    flex: 1;
+
+    // ON / OFF Labels
+    &:before, &:after {
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      flex: 1;
+
+      font-weight: 700;
+      font-size: 12px;
+
+      position: relative;
+      top: 1px;
+    }
+
+    &:before {
+      content: 'ON';
+    }
+
+    &:after {
+      content: 'OFF';
+    }
+  }
+
+  // Handle
+  ui-checkbox-toggle-handle {
+    transition: all 200ms, background 400ms linear;
+    border-radius: $border-radius;
+    background: $primary;
+
+    width: calc(50% - 5px);
+    position: absolute;
+    display: block;
+    bottom: 5px;
+    left: 5px;
+    top: 5px;
+  }
+
+  // Checked state
+  &.checked {
+    ui-checkbox-toggle-handle {
+      left: calc(50%);
+    }
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+
+    ui-checkbox-toggle-handle {
+      background: dampen($disabled, 30%);
+    }
+
+    ui-checkbox-toggle-bg {
+      border-color: $disabled;
+      background: $disabled;
+    }
+  }
+
+  // Focused & readonly
+  &.readonly:focus {
+    outline: none;
+
+    ui-checkbox-toggle-bg {
+      @extend %focused-readonly;
+    }
+
+    ui-checkbox-toggle-handle {
+      transition: all 200ms;
+      background: $focus-readonly;
+    }
+  }
+
+  // Focused not readonly
+  &:focus:not(.readonly) {
+    outline: none;
+
+    ui-checkbox-toggle-bg {
+      @extend %focused;
+    }
+
+    ui-checkbox-toggle-handle {
+      transition: all 200ms;
+      background: $focus;
+    }
+  }
+}

@@ -1,19 +1,24 @@
-var app = require('koa')();
-var sass = require('node-sass');
-var serve = require('koa-static-folder');
-var router = require('koa-router')();
+var autoprefixer = require('autoprefixer');
 var exec = require('child_process').exec;
-var fs = require('fs')
+var router = require('koa-router')();
+var serve = require('koa-static');
+var sass = require('node-sass');
+var app = require('koa')();
+var fs = require('fs');
 
 /* Renders the CSS */
 function renderCSS(callback){
   sass.render({
-    file: './stylesheets/ui.scss',
+    file: './stylesheets/main.scss',
   }, function(err, result) {
     if(err){
       callback(null, err.formatted)
     } else {
-      callback(null, result.css)
+      autoprefixer
+        .process(result.css)
+        .then(function(result2){
+          callback(null, result2.css)
+        })
     }
   });
 }
@@ -35,12 +40,11 @@ function renderElm(str) {
   }
 }
 
-function renderHtml(title, str) {
+function renderHtml(str) {
   return `<html>
       <head>
-        <title>${title}</title>
       </head>
-      <body>
+      <body style="overflow: hidden;margin:0;">
         <script src='${str}' type='application/javascript'>
         </script>
         <script>Elm.fullscreen(Elm.Main);</script>
@@ -48,52 +52,23 @@ function renderHtml(title, str) {
     </html>`
 }
 
-function renderIframe(title, id) {
-  return `<html>
-            <head>
-              <title>${title}</title>
-              <link rel="stylesheet" href="/index.css"/>
-              <meta name="viewport" content="width=device-width, initial-scale=1">
-            </head>
-            <body class="mobile">
-              <div>
-                <iframe src='/html/${id}'></iframe>
-              </div>
-            </body>
-          </html>`
-}
-
 router.get('/', function *(next) {
-  this.body = renderHtml('Kitchensink','index.js')
+  this.body = renderHtml('main.js')
 })
 
-router.get('/index.js', function *(next) {
+router.get('/main.js', function *(next) {
   this.type = 'text/javascript';
-  this.body = yield renderElm('source/kitchensink.elm')
+  this.body = yield renderElm('source/Main.elm')
 })
 
-router.get('/index.css', function *(next) {
+router.get('/main.css', function *(next) {
   this.type = 'text/css';
   this.body = yield renderCSS
 })
 
-router.get('/html/:id', function *(next) {
-  this.type = 'text/html'
-  this.body = renderHtml(this.params.id, `/js/${this.params.id}`)
-})
-
-router.get('/js/:id', function *(next){
-  this.type = 'text/javascript';
-  this.body = yield renderElm(`examples/${this.params.id}/Main.elm`)
-})
-
-router.get('/examples/:id', function *(next){
-  this.type = 'text/html'
-  this.body = renderIframe(this.params.id, this.params.id)
-})
-
 app
   .use(router.routes())
+  .use(serve('./public'));
 
 app.listen(8001);
 

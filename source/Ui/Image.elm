@@ -1,4 +1,5 @@
-module Ui.Image where
+module Ui.Image
+  (Model, Action, init, update, view) where
 
 {-| Image component that fades when loaded.
 
@@ -11,6 +12,7 @@ module Ui.Image where
 import Html.Attributes exposing (src, classList)
 import Html.Extra exposing (onLoad)
 import Html exposing (node, img)
+import Html.Lazy
 
 {-| Representation of an image. -}
 type alias Model =
@@ -37,6 +39,11 @@ update action model =
 {-| Renders an image. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   node "ui-image" [classList [("loaded", model.loaded)]] [
     img [src model.src, onLoad address Loaded] []
   ]

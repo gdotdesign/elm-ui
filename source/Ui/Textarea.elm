@@ -12,10 +12,11 @@ thus creating an automatically growing textarea.
 # Functions
 @docs setValue, focus
 -}
-import Html.Attributes exposing (value, spellcheck, placeholder, classList)
-import Html.Extra exposing (onEnterStop, onInput, onStop)
+import Html.Attributes exposing (value, spellcheck, placeholder, classList, readonly, disabled)
+import Html.Extra exposing (onEnterPreventDefault, onInput, onStop)
 import Html exposing (node, textarea, text, br)
-import Html.Events exposing (onFocus, onBlur)
+import Html.Events exposing (onFocus)
+import Html.Lazy
 import Native.Browser
 import String
 import List
@@ -24,14 +25,16 @@ import List
   - **placeholder** - The text to display when there is no value
   - **value** - The value
   - **enterAllowed** - Whether or not to allow new lines when pressing enter
-  - **focused** (internal) - Whether the textarea is focused or not
+  - **disabled** - Whether or not the component is disabled
+  - **readonly** - Whether or not the component is readonly
 -}
 type alias Model =
   { placeholder : String
   , value : String
-  , focused : Bool
   , enterAllowed : Bool
   , focusNext : Bool
+  , disabled : Bool
+  , readonly : Bool
   }
 
 {-| Actions a textrea can make. -}
@@ -39,7 +42,6 @@ type Action
   = Input String
   | Nothing
   | Focus
-  | Blur
 
 {-| Initializes a textraea with the given value.
 
@@ -49,9 +51,10 @@ init : String -> Model
 init value =
   { placeholder = ""
   , value = value
-  , focused = False
   , enterAllowed = True
   , focusNext = False
+  , disabled = False
+  , readonly = False
   }
 
 {-| Updates a textrea. -}
@@ -62,10 +65,7 @@ update action model =
       setValue value model
 
     Focus ->
-      { model | focused = True, focusNext = False }
-
-    Blur ->
-      { model | focused = False }
+      { model | focusNext = False }
 
     _ ->
       model
@@ -73,21 +73,31 @@ update action model =
 {-| Renders a textarea. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+-- Render internal
+render : Signal.Address Action -> Model -> Html.Html
+render address model =
   let
     base =
       [ placeholder model.placeholder
-      , onStop "select" address Nothing
-      , onInput address Input
-      , onFocus address Focus
-      , onBlur address Blur
       , value model.value
-      , spellcheck False ]
+      , onFocus address Focus
+      , readonly model.readonly
+      , disabled model.disabled
+      , spellcheck False ] ++ actions
+
+    actions =
+      if model.disabled || model.readonly then []
+      else [ onStop "select" address Nothing
+           , onInput address Input
+           ]
 
     attributes =
       if model.enterAllowed then
         base
       else
-        base ++ [onEnterStop address Nothing]
+        base ++ [onEnterPreventDefault address Nothing]
 
     textarea' =
       if model.focusNext then
@@ -95,10 +105,12 @@ view address model =
       else
         textarea attributes []
   in
-    node "ui-textarea" ([classList [("focused", model.focused)]])
-      [ node "ui-textarea-background" [] []
+    node "ui-textarea" ([classList [ ("disabled", model.disabled)
+                                   , ("readonly", model.readonly)
+                                   ]])
+      [ textarea'
+      , node "ui-textarea-background" [] []
       , node "ui-textarea-mirror" [] (process model.value)
-      , textarea'
       ]
 
 {-| Sets the value of the given textarea. -}
@@ -114,7 +126,7 @@ focus model =
 {-| Processes the value for the mirror object. -}
 process : String -> List Html.Html
 process value =
-  (String.split "\n" value
+  String.split "\n" value
     |> List.map (\data -> node "span-line" [] [text data])
     |> List.intersperse (br [] [])
-  ) ++ [node "span-last" [] []]
+

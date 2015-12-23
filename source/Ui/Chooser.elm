@@ -1,6 +1,6 @@
 module Ui.Chooser
   (Model, Item, Action, init, update, close, toggleItem,
-   getFirstSelected, view, viewLazy, updateData, selectFirst) where
+   getFirstSelected, view, viewLazy, updateData, selectFirst, select) where
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
@@ -12,7 +12,7 @@ form a list of choises, with lots of options.
 @docs view, viewLazy
 
 # Functions
-@docs toggleItem, close, getFirstSelected, updateData, selectFirst
+@docs toggleItem, close, getFirstSelected, updateData, selectFirst, select
 -}
 import Html.Attributes exposing (value, placeholder, readonly, classList, disabled)
 import Html.Events exposing (onFocus, onBlur, onClick, onMouseDown)
@@ -188,6 +188,10 @@ view address model =
                , readonly (not model.searchable || not model.open)
                ] []] ++ dropdown)
 
+{-| Selects the given value of chooser. -}
+select : String -> Model -> Model
+select value model =
+  { model | selected = Set.singleton value }
 
 {-| Closes the dropdown of a chooser. -}
 close : Model -> Model

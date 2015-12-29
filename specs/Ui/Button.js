@@ -1,9 +1,8 @@
 define([
   'intern!bdd',
   'intern/chai!assert',
-  'specs/helpers',
-  'intern/dojo/node!leadfoot/helpers/pollUntil'
-], function (bdd, assert, helpers, pollUntil) {
+  'specs/helpers'
+], function (bdd, assert, helpers) {
   bdd.describe('Ui.Button', function(){
 
     bdd.describe('Enabled', function(){
@@ -67,10 +66,68 @@ define([
           button = helpers.getElement(this.remote, 'td ui-button.size-big')
         })
 
-        bdd.it('should be 49px height', function(){
-          button.getSize(function(value){
-            assert.equal(value.height, 49)
-          })
+        bdd.it('should be the right styles', function(){
+          return button
+            .getSize().then(function(value){
+              assert.equal(value.height, 49)
+            })
+            .getComputedStyle('padding-left').then(function(value){
+              assert.equal(value, '27.5px')
+            })
+            .getComputedStyle('padding-right').then(function(value){
+              assert.equal(value, '27.5px')
+            })
+            .getComputedStyle('font-size').then(function(value){
+              assert.equal(value, '22px')
+            })
+        })
+      })
+
+      bdd.describe('Medium', function(){
+        var button;
+
+        bdd.before(function(){
+          button = helpers.getElement(this.remote, 'td ui-button.size-medium')
+        })
+
+        bdd.it('should be the right styles', function(){
+          return button
+            .getSize().then(function(value){
+              assert.equal(value.height, 36)
+            })
+            .getComputedStyle('padding-left').then(function(value){
+              assert.equal(value, '20px')
+            })
+            .getComputedStyle('padding-right').then(function(value){
+              assert.equal(value, '20px')
+            })
+            .getComputedStyle('font-size').then(function(value){
+              assert.equal(value, '16px')
+            })
+        })
+      })
+
+      bdd.describe('Small', function(){
+        var button;
+
+        bdd.before(function(){
+          button = helpers.getElement(this.remote, 'td ui-button.size-small')
+        })
+
+        bdd.it('should be the right styles', function(){
+          return button
+            .getSize().then(function(value){
+              assert.equal(value.height, 27)
+            })
+            .getComputedStyle('padding-left').then(function(value){
+              assert.equal(value, '15px')
+            })
+            .getComputedStyle('padding-right').then(function(value){
+              assert.equal(value, '15px')
+            })
+            .getComputedStyle('font-size').then(function(value){
+              assert.equal(value, '12px')
+            })
         })
       })
     })

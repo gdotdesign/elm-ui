@@ -5,9 +5,12 @@ define({
   ],
   tunnel: 'NullTunnel',
 
-  functionalSuites: [ 'specs/Ui/Button.js' ],
+  functionalSuites: [
+  	'specs/Ui/Button.js',
+  	'specs/Ui/Checkbox.js'
+	],
 
-  //reporters: [ 'Pretty' ],
+  reporters: [ 'Pretty' ],
 
-  excludeInstrumentation: /./
+  excludeInstrumentation: /^(?:tests|node_modules|specs)\//
 });

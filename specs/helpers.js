@@ -7,12 +7,18 @@ define(['intern/chai!assert'], function(assert) {
     },
     assertAlert: function(command){
       return command
-        .sleep(100)
+        .sleep(250)
         .getAlertText()
         .then(function(value){
           assert.equal(value, 'Clicked!')
         })
         .acceptAlert()
+    },
+    assertChecked: function(value) {
+      assert.equal(value, "checked")
+    },
+    assertUnchecked: function(value) {
+      assert.equal(value, "")
     },
     assertTabindex: function(value) {
       assert.equal(value, '0');

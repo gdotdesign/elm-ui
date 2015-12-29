@@ -28,6 +28,7 @@ gulp.task('build-js', function () {
   return gulp
     .src('./source/Main.elm')
     .pipe(elm())
+    .on("error", console.log)
     .pipe(uglify())
     .pipe(rename("main.js"))
     .pipe(gulp.dest('./dist/'));

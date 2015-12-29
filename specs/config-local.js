@@ -6,9 +6,9 @@ define({
   tunnel: 'NullTunnel',
 
   functionalSuites: [
-  	'specs/Ui/Button.js',
-  	'specs/Ui/Checkbox.js'
-	],
+    'specs/Ui/Button.js',
+    'specs/Ui/Checkbox.js'
+  ],
 
   reporters: [ 'Pretty' ],
 

@@ -2,17 +2,15 @@ define(['intern/chai!assert'], function(assert) {
   return {
     getElement: function(remote, selector) {
       return remote
+      .setFindTimeout(10000)
       .get(require.toUrl('dist/index.html'))
       .findByCssSelector(selector)
     },
     assertAlert: function(command){
       return command
-        .sleep(250)
-        .getAlertText()
-        .then(function(value){
-          assert.equal(value, 'Clicked!')
-        })
-        .acceptAlert()
+        .end()
+        .findByCssSelector('clicked')
+        .waitForDeletedByCssSelector('clicked')
     },
     assertChecked: function(value) {
       assert.equal(value, "checked")
@@ -27,7 +25,7 @@ define(['intern/chai!assert'], function(assert) {
       assert.equal(value, 'not-allowed')
     },
     assertDisabledOpacity: function(value) {
-      assert.equal(value, '0.6')
+      assert.match(value, /^0\.6/)
     }
   }
 })

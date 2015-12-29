@@ -5,3 +5,4 @@ documentation.json
 index.html
 npm-debug.log
 dist
+.env

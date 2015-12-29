@@ -53,6 +53,7 @@ type Action
   | CloseMenu
   | Nothing
   | Alert
+  | Clicked
 
 type alias Model =
   { app : Ui.App.Model
@@ -71,6 +72,7 @@ type alias Model =
   , chooser : Ui.Chooser.Model
   , slider : Ui.Slider.Model
   , image : Ui.Image.Model
+  , clicked : Bool
   }
 
 init : Model
@@ -94,6 +96,7 @@ init =
     , image = Ui.Image.init imageUrl
     , slider = Ui.Slider.init 50
     , menu = Ui.DropdownMenu.init
+    , clicked = False
     }
 
 data : List Ui.Chooser.Item
@@ -128,6 +131,9 @@ view address model =
     { chooser, colorPanel, datePicker, colorPicker, numberRange, slider
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
     , numberPad } = model
+
+    clicked =
+      if model.clicked then [node "clicked" [] [text "clicked"]] else []
 
     numberPadViewModel =
       { bottomLeft = text ""
@@ -164,7 +170,7 @@ view address model =
           , tr []
             [ td [colspan 2]
               [ Ui.Container.row []
-                [ Ui.Button.view address Alert { text = "Primary"
+                ([ Ui.Button.view address Alert { text = "Primary"
                                                , kind = "primary"
                                                , size = "big"
                                                , disabled = False }
@@ -184,7 +190,7 @@ view address model =
                                                  , kind = "danger"
                                                  , size = "small"
                                                  , disabled = False }
-                ]
+                ] ++ clicked)
               ]
             , td []
                 [ Ui.Button.view address Nothing { text = "Disabled"
@@ -380,8 +386,8 @@ view address model =
             , td [] []
             ]
           ]
+        ]
       ]
-    ]
 
 fxNone : Model -> (Model, Effects.Effects Action)
 fxNone model =
@@ -448,16 +454,20 @@ update action model =
     Open url ->
       Ui.open url model
 
-    Alert ->
-      Ui.alert "Clicked!" model
+    Clicked ->
+      { model | clicked = False }
 
-    Nothing ->
+    _ ->
       model
 
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
-  update action model
-    |> fxNone
+  case action of
+    Alert ->
+      ({ model | clicked = True }, Effects.task (Task.andThen (Task.sleep 10000) (\_ ->Task.succeed Clicked)))
+    _ ->
+      update action model
+        |> fxNone
 
 app =
   StartApp.start { init = (init, Effects.none)

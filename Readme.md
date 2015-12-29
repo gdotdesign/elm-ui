@@ -5,6 +5,8 @@
 # Elm UI
 An opinionated UI library for the web in Elm, following the **Elm Architecture**.
 
+![Test Status](https://saucelabs.com/browser-matrix/elmui.svg)
+
 ## Implemented Componets
 All components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).
 

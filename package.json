@@ -7,6 +7,7 @@
     "deploy": "gulp deploy",
     "build": "gulp build",
     "test": "node tests.js",
+    "elm-install": "elm-package install -y",
     "spec-sauce": "intern-runner config=specs/config-sauce",
     "spec-local": "intern-runner config=specs/config-local",
     "selenium": "selenium-standalone install; selenium-standalone start"
@@ -37,7 +38,8 @@
     "gulp": "3.9.0",
     "intern": "3.0.6",
     "selenium-standalone": "4.8.0",
-    "dotenv": "1.2.0"
+    "dotenv": "1.2.0",
+    "elm": "0.16.0"
   },
   "homepage": "https://github.com/gdotdesign/elm-ui#readme"
 }

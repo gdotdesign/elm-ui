@@ -52,6 +52,7 @@ type Action
   | Open String
   | CloseMenu
   | Nothing
+  | Alert
 
 type alias Model =
   { app : Ui.App.Model
@@ -163,10 +164,10 @@ view address model =
           , tr []
             [ td [colspan 2]
               [ Ui.Container.row []
-                [ Ui.Button.view address Nothing { text = "Primary"
-                                                 , kind = "primary"
-                                                 , size = "big"
-                                                 , disabled = False }
+                [ Ui.Button.view address Alert { text = "Primary"
+                                               , kind = "primary"
+                                               , size = "big"
+                                               , disabled = False }
                 , Ui.Button.view address Nothing { text = "Secondary"
                                                  , kind = "secondary"
                                                  , size = "medium"
@@ -446,6 +447,9 @@ update action model =
       { model | menu = Ui.DropdownMenu.close model.menu }
     Open url ->
       Ui.open url model
+
+    Alert ->
+      Ui.alert "Clicked!" model
 
     Nothing ->
       model

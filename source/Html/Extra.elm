@@ -224,11 +224,11 @@ onKeys : Signal.Address a -> Dict Int a -> Html.Attribute
 onKeys address mappings =
   let
     message data =
-      case Dict.get data.code mappings of
+      case Dict.get data mappings of
         Just handler -> Signal.message address handler
         _ -> Signal.message nothingMailbox.address Nothing
   in
-    onWithOptions "keydown" preventDefaultOptions (mappingsDecoder mappings) message
+    onWithOptions "keydown" preventDefaultOptions (simpleMappingsDecoder mappings) message
 
 {-| An event listener that will run the given actions on the associated keys. -}
 onKeysWithDimensions : Signal.Address a -> Dict Int (DropdownDimensions -> a) -> Html.Attribute
@@ -294,6 +294,17 @@ type alias KeyWithDimensions =
   { code : Int
   , dimensions: DropdownDimensions
   }
+
+simpleMappingsDecoder : Dict Int a -> Json.Decoder Int
+simpleMappingsDecoder mappings =
+  let
+    decodeIf value mappings =
+      if List.member value (Dict.keys mappings) then
+        Json.succeed value
+      else
+        Json.fail "Key pressed not in mappings"
+  in
+    (("keyCode" := Json.int) `Json.andThen` (\value -> decodeIf value mappings))
 
 -- A decoder that will run the associated action when the right key is pressed
 mappingsDecoder : Dict Int a -> Json.Decoder KeyWithDimensions

@@ -5,7 +5,10 @@
   "scripts": {
     "start": "node server.js",
     "deploy": "gulp deploy",
-    "build": "gulp build"
+    "build": "gulp build",
+    "test": "node tests.js",
+    "spec": "intern-runner config=specs/config",
+    "selenium": "selenium-standalone install; selenium-standalone start"
   },
   "repository": {
     "type": "git",
@@ -30,7 +33,9 @@
     "gulp-file": "0.2.0",
     "gulp-sass": "2.1.1",
     "gulp-elm": "0.2.0",
-    "gulp": "3.9.0"
+    "gulp": "3.9.0",
+    "intern": "3.0.6",
+    "selenium-standalone": "4.8.0"
   },
   "homepage": "https://github.com/gdotdesign/elm-ui#readme"
 }

@@ -1,5 +1,5 @@
 module Ui.App
-  (Model, Action(Scrolled, Clicked), init, update, view) where
+  (Model, Action(..), init, update, view) where
 
 {-| Base frame for a web/mobile application:
   - Loads the stylesheet

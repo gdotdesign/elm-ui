@@ -4,7 +4,8 @@
   "repository": "https://github.com/gdotdesign/elm-ui.git",
   "license": "BSD-2-Clause",
   "source-directories": [
-    "source"
+    "source",
+    "tests"
   ],
   "native-modules": true,
   "exposed-modules": [
@@ -43,6 +44,8 @@
     "circuithub/elm-number-format": "1.0.2 <= v < 2.0.0",
     "circuithub/elm-json-extra": "2.2.0 <= v < 3.0.0",
     "circuithub/elm-list-extra": "3.7.1 <= v < 4.0.0",
+    "deadfoxygrandpa/elm-test": "3.0.1 <= v < 4.0.0",
+    "laszlopandy/elm-console" : "1.0.3 <= v < 2.0.0",
     "mgold/elm-date-format": "1.0.3 <= v < 2.0.0",
     "evancz/elm-markdown": "2.0.0 <= v < 3.0.0",
     "evancz/elm-effects": "2.0.0 <= v < 3.0.0",

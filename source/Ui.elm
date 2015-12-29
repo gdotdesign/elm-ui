@@ -1,7 +1,7 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
    stylesheetLink, tabIndex, header, headerTitle, fab, text, open,
-   redirect) where
+   redirect, alert) where
 
 {-| UI Library for ELM!
 
@@ -10,7 +10,7 @@ module Ui
 @docs headerTitle, fab, text
 
 # Helper Functions
-@docs tabIndex, open, redirect
+@docs tabIndex, open, redirect, alert
 -}
 import Html.Attributes exposing (classList, tabindex, rel, href)
 import Html.Extra exposing (onLoad)
@@ -100,3 +100,8 @@ open url model =
 redirect : String -> a -> a
 redirect url model =
   Native.Browser.redirect url model
+
+{-| Shows an alert box. -}
+alert : String -> a -> a
+alert message model =
+  Native.Browser.alert message model

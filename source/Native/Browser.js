@@ -131,12 +131,18 @@ Elm.Native.Browser.make = function(elm) {
     return x;
   }
 
+  function alertWindow(message, returnValue) {
+    window.alert(message);
+    return returnValue;
+  }
+
   /* Interface. */
   return elm.Native.Browser.values = {
     redirect: F2(function(url,value) { window.location.href = url; return value; }),
     toFixed: F2(function(value,decimals) { return value.toFixed(decimals) }),
     open: F2(function(url,value) { window.open(url); return value; }),
     rem: F2(function(a,b){ return a % b }),
+    alert: F2(alertWindow),
     focusEnd: focusEnd,
     focus: focus,
     blur: blur,
@@ -160,4 +166,4 @@ Elm.Native.Browser.make = function(elm) {
 
     return element;
   };
-}(Element.prototype));
+}(typeof Element == "function" && Element.prototype));

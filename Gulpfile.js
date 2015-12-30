@@ -30,8 +30,8 @@ gulp.task('build-js', function () {
     .src('./source/Main.elm')
     .pipe(plumber())
     .pipe(elm())
+    .pipe(uglify())
     .pipe(rename("main.js"))
-    .pipe(uglify)
     .pipe(gulp.dest('./dist/'));
 });
 

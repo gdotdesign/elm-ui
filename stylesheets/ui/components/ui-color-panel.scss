@@ -4,6 +4,7 @@ ui-color-panel {
 
   // Styling
   flex-direction: column;
+  user-select: none;
   display: flex;
   padding: 15px;
   height: 250px;

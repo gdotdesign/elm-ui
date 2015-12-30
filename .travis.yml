@@ -8,4 +8,4 @@ before_script:
   - npm run build
 script:
   - npm test
-  - npm spec-sauce
+  - npm run spec-sauce

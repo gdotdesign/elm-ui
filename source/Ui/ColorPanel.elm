@@ -104,7 +104,7 @@ render address model =
 
     action act =
       if model.disabled || model.readonly then []
-      else [onWithDimensions "mousedown" True address act]
+      else [onWithDimensions "mousedown" False address act]
   in
     node "ui-color-panel" [ classList [ ("disabled", model.disabled)
                                       , ("readonly", model.readonly)

@@ -122,7 +122,7 @@ openHandler : String -> Signal.Address Action ->
 openHandler event address action =
   onWithOptions
     event
-    Html.Extra.stopOptions
+    Html.Events.defaultOptions
     dimensionsDecoder
     (\dimensions -> Signal.message address (action dimensions))
 

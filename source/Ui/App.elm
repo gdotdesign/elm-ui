@@ -5,6 +5,7 @@ module Ui.App
   - Loads the stylesheet
   - Sets up a click handler
   - Sets the viewport to be mobile friendly
+  - Sets the title of the application
 
 # Model
 @docs Model, Action, update, init

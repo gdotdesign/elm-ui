@@ -1,6 +1,7 @@
 var autoprefixer = require('gulp-autoprefixer');
 var minifyCss = require('gulp-minify-css');
 var ghPages = require('gulp-gh-pages');
+var plumber = require('gulp-plumber');
 var rename = require("gulp-rename");
 var uglify = require('gulp-uglify');
 var file = require("gulp-file");
@@ -27,8 +28,8 @@ html =
 gulp.task('build-js', function () {
   return gulp
     .src('./source/Main.elm')
+    .pipe(plumber())
     .pipe(elm())
-    .on("error", console.log)
     .pipe(uglify())
     .pipe(rename("main.js"))
     .pipe(gulp.dest('./dist/'));

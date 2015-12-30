@@ -65,8 +65,7 @@ render : Signal.Address Action -> Model -> List Html.Html -> Html.Html
 render address model children =
   node "ui-app" [ onClick address Clicked
                 , onScroll address Scrolled
-                , style [("opacity", if model.loaded then "1" else "0")
-                        ,("display", "block")]
+                , style [("visibility", if model.loaded then "" else "hidden")]
                 ]
     ([ Ui.stylesheetLink "main.css" address Loaded
      , node "title" [] [text model.title]

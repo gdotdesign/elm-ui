@@ -2,7 +2,7 @@ define(['intern/chai!assert'], function(assert) {
   return {
     getElement: function(remote, selector) {
       return remote
-      .setFindTimeout(10000)
+      .setFindTimeout(20000)
       .get(require.toUrl('dist/index.html'))
       .findByCssSelector(selector)
     },

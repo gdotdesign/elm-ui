@@ -1,16 +1,13 @@
-define({
-  environments: [
-    { browserName: 'chrome' },
-    { browserName: 'firefox'}
-  ],
-  tunnel: 'NullTunnel',
-
-  functionalSuites: [
-    'specs/Ui/Button.js',
-    'specs/Ui/Checkbox.js'
-  ],
-
-  reporters: [ 'Pretty' ],
-
-  excludeInstrumentation: /^(?:tests|node_modules|specs)\//
+define(['specs/specs'],function(specs) {
+  return {
+    environments: [{
+      browserName: 'chrome'
+    }, {
+      browserName: 'firefox'
+    }],
+    tunnel: 'NullTunnel',
+    functionalSuites: specs,
+    reporters: ['Pretty'],
+    excludeInstrumentation: /^(?:tests|node_modules|specs)\//
+  }
 });

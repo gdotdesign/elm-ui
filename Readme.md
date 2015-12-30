@@ -5,6 +5,8 @@
 # Elm UI
 An opinionated UI library for the web in Elm, following the **Elm Architecture**.
 
+[![Build Status](https://travis-ci.org/gdotdesign/elm-ui.svg?branch=master)](https://travis-ci.org/gdotdesign/elm-ui)
+
 ![Test Status](https://saucelabs.com/browser-matrix/elmui.svg)
 
 ## Implemented Componets
@@ -55,19 +57,18 @@ For now, you will need to **clone** or **download** this repository into a direc
   * It uses **Gulp** to build the final files
 
 #### Prerequisites
-* A working version of Elm v0.16
 * A working version of Node
 
 ### Installing dependencies
 You will need to install both **Elm** and **Node** dependencies:
   * To install the Node ones run `npm install` in the root of the directory
-  * To install the Elm ones run `elm package install` in the root of the directory
+  * To install the Elm ones run `npm run elm-install` in the root of the directory
 
 ### Development environment
 You can start the development environment with the `npm start` command, this will start a server that listens on `http://localhost:8001`.
 
 ### The Main Module
-Your applications main file lives in `source/Main.elm`, this will be the file that is compiled and served as your application. This is probably where you want to set up your [StartApp](https://github.com/evancz/start-app). By default the **examples (kitchen sink)** of all components will be displayed.
+Your applications main file lives in `source/Main.elm`, this will be the file that is compiled and served as your application. This is probably where you want to set up your [StartApp](https://github.com/evancz/start-app). By default the **examples (kitchen sink)** of all components will be displayed (which are used for tests).
 
 ### Styles
 The main file for your applications styles is the `stylesheets/main.scss`, it will include all of the styles neccessary for the components defined by this library. You can add your styles here or import from anywhere inside the `stylesheets` directory.
@@ -90,7 +91,7 @@ dist/
 ```
 
 ## Documentation
-Currently to only documentation is the Elm documentation that you can generate with the `elm-make --docs=documentation.json` and then opening it with the **preview** feature in [http://package.elm-lang.org/help/docs-preview](http://package.elm-lang.org/help/docs-preview).
+Currently the only documentation is the Elm documentation that you can generate with the `elm-make --docs=documentation.json` and then opening it with the **preview** feature in [http://package.elm-lang.org/help/docs-preview](http://package.elm-lang.org/help/docs-preview).
 
 ## Contributing
 Any contributions are welcome, you should keep in mind the following when submitting a new **component**:

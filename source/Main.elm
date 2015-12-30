@@ -53,7 +53,6 @@ type Action
   | CloseMenu
   | Nothing
   | Alert
-  | Clicked
 
 type alias Model =
   { app : Ui.App.Model
@@ -133,7 +132,7 @@ view address model =
     , numberPad } = model
 
     clicked =
-      if model.clicked then [node "clicked" [] [text "clicked"]] else []
+      if model.clicked then [node "clicked" [] [text ""]] else []
 
     numberPadViewModel =
       { bottomLeft = text ""
@@ -454,20 +453,16 @@ update action model =
     Open url ->
       Ui.open url model
 
-    Clicked ->
-      { model | clicked = False }
+    Alert ->
+      { model | clicked = True }
 
-    _ ->
+    Nothing ->
       model
 
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
-  case action of
-    Alert ->
-      ({ model | clicked = True }, Effects.task (Task.andThen (Task.sleep 10000) (\_ ->Task.succeed Clicked)))
-    _ ->
-      update action model
-        |> fxNone
+  update action model
+    |> fxNone
 
 app =
   StartApp.start { init = (init, Effects.none)

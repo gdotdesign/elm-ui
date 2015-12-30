@@ -8,7 +8,7 @@ define([
     bdd.describe('Enabled', function(){
       var button;
 
-      bdd.before(function(){
+      bdd.beforeEach(function(){
         button = helpers
           .getElement(this.remote, 'td ui-button.size-big.ui-button-primary')
       })

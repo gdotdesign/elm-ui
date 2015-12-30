@@ -31,6 +31,7 @@ gulp.task('build-js', function () {
     .pipe(plumber())
     .pipe(elm())
     .pipe(rename("main.js"))
+    .pipe(uglify)
     .pipe(gulp.dest('./dist/'));
 });
 

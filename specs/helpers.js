@@ -10,7 +10,6 @@ define(['intern/chai!assert'], function(assert) {
       return command
         .end()
         .findByCssSelector('clicked')
-        .waitForDeletedByCssSelector('clicked')
     },
     assertChecked: function(value) {
       assert.equal(value, "checked")

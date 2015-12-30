@@ -13,7 +13,7 @@ define([
         bdd.describe('Enabled', function(){
           var checkbox;
 
-          bdd.before(function(){
+          bdd.beforeEach(function(){
             checkbox = helpers
               .getElement(this.remote, `td ${type}`)
           })
@@ -33,9 +33,9 @@ define([
 
           bdd.it('should toggle on enter', function(){
             return checkbox
-              .getAttribute('class').then(helpers.assertChecked)
-              .type("").sleep(250)
               .getAttribute('class').then(helpers.assertUnChecked)
+              .type("").sleep(250)
+              .getAttribute('class').then(helpers.assertChecked)
           })
 
           bdd.it('should toggle on space', function(){

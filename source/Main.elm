@@ -5,6 +5,7 @@ import Effects
 import Mouse
 import Color
 import Task
+import Date
 
 import Html.Attributes exposing (style, classList, colspan, href)
 import Html.Events exposing (onClick)
@@ -85,7 +86,7 @@ init =
     , inplaceInput = Ui.InplaceInput.init "Test Value"
     , colorPicker = Ui.ColorPicker.init Color.yellow
     , colorPanel = Ui.ColorPanel.init Color.blue
-    , calendar = Ui.Calendar.init Ext.Date.now
+    , calendar = Ui.Calendar.init (Date.fromTime 1430438400000)
     , numberRange = Ui.NumberRange.init 0
     , checkbox3 = Ui.Checkbox.init False
     , checkbox2 = Ui.Checkbox.init False

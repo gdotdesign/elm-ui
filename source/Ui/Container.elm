@@ -22,7 +22,7 @@ type alias Model =
 -- Options for row
 rowOptions : Model
 rowOptions =
-  { align = "start"
+  { align = "stretch"
   , compact = False
   , direction = "row"
   }
@@ -30,7 +30,7 @@ rowOptions =
 -- Options for column
 columnOptions : Model
 columnOptions =
-  { align = "start"
+  { align = "stretch"
   , compact = False
   , direction = "column"
   }

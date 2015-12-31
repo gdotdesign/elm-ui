@@ -10,7 +10,7 @@ define([
 
       bdd.beforeEach(function() {
         button = helpers
-          .getElement(this.remote, 'td ui-button.size-big.ui-button-primary')
+          .getElement(this.remote, 'td ui-button.ui-button-big.ui-button-primary')
       })
 
       bdd.it('should have tabindex', function() {
@@ -63,7 +63,7 @@ define([
         var button;
 
         bdd.before(function() {
-          button = helpers.getElement(this.remote, 'td ui-button.size-big')
+          button = helpers.getElement(this.remote, 'td ui-button.ui-button-big')
         })
 
         bdd.it('should be the right styles', function() {
@@ -87,7 +87,7 @@ define([
         var button;
 
         bdd.before(function() {
-          button = helpers.getElement(this.remote, 'td ui-button.size-medium')
+          button = helpers.getElement(this.remote, 'td ui-button.ui-button-medium')
         })
 
         bdd.it('should be the right styles', function() {
@@ -111,7 +111,7 @@ define([
         var button;
 
         bdd.before(function() {
-          button = helpers.getElement(this.remote, 'td ui-button.size-small')
+          button = helpers.getElement(this.remote, 'td ui-button.ui-button-small')
         })
 
         bdd.it('should be the right styles', function() {

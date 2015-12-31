@@ -65,13 +65,13 @@ tabIndex : { a | disabled : Bool } -> List Html.Attribute
 tabIndex model =
   if model.disabled then [] else [tabindex 0]
 
-{-| Retruns the given attributes unless the model is disabled, in that
-case it returs an empty list. This is usefull when you only want to add
-for example some event listeners when the component is not disabled.
+{-| Retruns the given attributes unless the model is disabled or readonly, in
+that case it returs an empty list. This is usefull when you only want to add
+for example some event listeners when the component is not disabled or readonly.
 -}
-enabledActions : { a | disabled : Bool } -> List b -> List b
+enabledActions : { a | disabled : Bool, readonly : Bool } -> List b -> List b
 enabledActions model attributes =
-  if model.disabled then [] else attributes
+  if model.disabled || model.readonly then [] else attributes
 
 {-| Renders a spacer element. -}
 spacer : Html.Html

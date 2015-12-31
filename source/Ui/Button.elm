@@ -68,7 +68,7 @@ attributes : Signal.Address a
 attributes address action model =
   let
     actions =
-      Ui.enabledActions model
+      Ui.enabledActions { disabled = model.disabled, readonly = False }
         [ onClick address action
         , onKeys address
           (Dict.fromList [ (13, action)

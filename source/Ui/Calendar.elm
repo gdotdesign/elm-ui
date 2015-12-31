@@ -1,6 +1,6 @@
 module Ui.Calendar
-  (Model, Action(Select), init, update, view, render, setValue, nextDay
-  ,previousDay)where
+  ( Model, Action(..), init, update, view, render, setValue, nextDay
+  , previousDay ) where
 
 {-| This is a calendar component where the user
 can select a date by clicking on it.
@@ -28,23 +28,23 @@ import Ui.Container
 import Ui
 
 {-| Representation of a calendar component:
+  - **selectable** - Whether the user can select a date by clicking
   - **date** - The month in which this date is will be displayed
   - **value** - The current selected date
-  - **selectable** - Whether the user can select a date by clicking
   - **disabled** - Whether the calendar is disabled
   - **readonly** - Whether the calendar is interactive
 -}
 type alias Model =
-  { date : Date.Date
+  { selectable : Bool
   , value : Date.Date
-  , selectable : Bool
+  , date : Date.Date
   , disabled : Bool
   , readonly : Bool
   }
 
 {-| Actions that a calendar can make:
-  - **NextMonth** - Steps the calendar to show next month
   - **PreviousMonth** - Steps the calendar to show previous month
+  - **NextMonth** - Steps the calendar to show next month
   - **Select Date.Date** - Selects a date
 -}
 type Action
@@ -87,52 +87,44 @@ view address model =
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
-    {- The date of the month -}
+    -- The date of the month
     month =
       Ext.Date.begginingOfMonth model.date
 
-    {- List of dates in the month -}
+    -- List of dates in the month
     dates =
       Ext.Date.datesInMonth month
 
-    {- The left padding in the table -}
+    -- The left padding in the table
     leftPadding =
       paddingLeft month
 
-    {- The cells before the month -}
+    -- The cells before the month
     paddingLeftItems =
       Ext.Date.datesInMonth (Ext.Date.previousMonth month)
       |> List.reverse
       |> List.take (paddingLeft month)
       |> List.reverse
 
-    {- The cells after the month -}
+    -- The cells after the month -
     paddingRightItems =
       Ext.Date.datesInMonth (Ext.Date.nextMonth month)
       |> List.take (42 - leftPadding - (List.length dates))
 
-    {- All of the 42 cells combined -}
+    -- All of the 42 cells combined --
     cells =
       paddingLeftItems ++ dates ++ paddingRightItems
       |> List.map (\item -> renderCell address item model)
 
-    {- Options for the container -}
-    continerOptions =
-      { align = "stretch"
-      , direction = "row"
-      , compact = False }
-
     nextAction =
-      if model.disabled || model.readonly then []
-      else [onMouseDown address NextMonth]
+      Ui.enabledActions model [onMouseDown address NextMonth]
 
     previousAction =
-      if model.disabled || model.readonly then []
-      else [onMouseDown address PreviousMonth]
+      Ui.enabledActions model [onMouseDown address PreviousMonth]
 
     {- Header container -}
     container =
-      Ui.Container.view continerOptions []
+      Ui.Container.row []
         [ Ui.icon "chevron-left" (not model.readonly) previousAction
         , node "div" [] [text (format "%Y - %B" month)]
         , Ui.icon "chevron-right" (not model.readonly) nextAction
@@ -163,7 +155,7 @@ previousDay model =
   { model | value = Ext.Date.previousDay model.value }
     |> fixDate
 
-{-| Fixes the date in order to make sure the selected date is visible -}
+-- Fixes the date in order to make sure the selected date is visible
 fixDate : Model -> Model
 fixDate model =
   if Ext.Date.isSameMonth model.date model.value then
@@ -171,7 +163,7 @@ fixDate model =
   else
     { model | date = model.value }
 
-{-| Returns the padding based on the day of the week -}
+-- Returns the padding based on the day of the week
 paddingLeft : Date.Date -> Int
 paddingLeft date =
   case Date.dayOfWeek date of
@@ -183,7 +175,7 @@ paddingLeft date =
     Date.Sat -> 5
     Date.Sun -> 6
 
-{-| Renders a single cell -}
+-- Renders a single cell
 renderCell : Signal.Address Action -> Date.Date -> Model -> Html.Html
 renderCell address date model =
   let
@@ -194,7 +186,8 @@ renderCell address date model =
       Ext.Date.isSameDate date model.value
 
     click =
-      if model.selectable && sameMonth && not model.disabled && not model.readonly then
+      if model.selectable && sameMonth &&
+         not model.disabled && not model.readonly then
         [onMouseDown address (Select date)]
       else
         []

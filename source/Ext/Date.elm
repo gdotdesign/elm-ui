@@ -84,6 +84,7 @@ nextDay date =
 nextMonth : Date.Date -> Date.Date
 nextMonth date =
   createDate (Date.year date) ((month date) + 1) (Date.day date)
+    |> begginingOfMonth
 
 {-| Returns the previous month date in relation to the given date.
 
@@ -92,6 +93,7 @@ nextMonth date =
 previousMonth : Date.Date -> Date.Date
 previousMonth date =
   createDate (Date.year date) (month date) 0
+    |> begginingOfMonth
 
 {-| Returns the first date in of the month of the given date.
 

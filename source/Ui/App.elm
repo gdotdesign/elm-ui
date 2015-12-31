@@ -34,7 +34,10 @@ type Action
   = Loaded
   | Scrolled
 
-{-| Initializes an application. -}
+{-| Initializes an application.
+
+    App.init "My Application"
+-}
 init : String -> Model
 init title =
   { loaded = False

@@ -117,10 +117,10 @@ render address model =
       |> List.map (\item -> renderCell address item model)
 
     nextAction =
-      Ui.enabledActions model [onMouseDown address NextMonth]
+      Ui.enabledActions model [ onMouseDown address NextMonth ]
 
     previousAction =
-      Ui.enabledActions model [onMouseDown address PreviousMonth]
+      Ui.enabledActions model [ onMouseDown address PreviousMonth ]
 
     {- Header container -}
     container =
@@ -135,7 +135,8 @@ render address model =
                                   ]
                        ]
       [ container
-      , node "ui-calendar-table" [] cells ]
+      , node "ui-calendar-table" [] cells
+      ]
 
 {-| Sets the value of a calendar -}
 setValue : Date.Date -> Model -> Model

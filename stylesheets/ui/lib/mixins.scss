@@ -13,3 +13,10 @@
   border-radius: $border-radius;
   border: $border;
 }
+
+@mixin inline-flex-center {
+  justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+}

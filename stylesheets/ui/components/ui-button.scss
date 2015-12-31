@@ -1,9 +1,5 @@
 ui-button {
-  // Layout
-  justify-content: center;
-  display: inline-flex;
-  align-items: center;
-  text-align: center;
+  @include inline-flex-center;
 
   // Styling
   border-radius: $border-radius;
@@ -35,29 +31,30 @@ ui-button {
         }
 
         &:hover {
-          background: dampen-inverse($type-color, 5%);
-          color: readable(dampen-inverse($type-color, 5%));
+          @include colors(dampen-inverse($type-color, 15%));
         }
 
         &:active {
-          background: dampen($type-color, 5%);
-          color: readable(dampen($type-color, 5%));
+          @include colors(dampen($type-color, 5%));
         }
       }
     }
   }
 
-  &.size-big {
+  // Big size
+  &.ui-button-big {
     line-height: 47px;
     font-size: 22px;
     height: 49px;
 
+    // Align text to top
     span {
       align-self: flex-start;
     }
   }
 
-  &.size-small {
+  // Small size
+  &.ui-button-small {
     font-size: 12px;
   }
 

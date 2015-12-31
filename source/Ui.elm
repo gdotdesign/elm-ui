@@ -1,7 +1,7 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
    stylesheetLink, tabIndex, header, headerTitle, fab, text, open,
-   redirect, alert) where
+   redirect, alert, enabledActions) where
 
 {-| UI Library for ELM!
 
@@ -10,7 +10,7 @@ module Ui
 @docs headerTitle, fab, text
 
 # Helper Functions
-@docs tabIndex, open, redirect, alert
+@docs tabIndex, open, redirect, alert, enabledActions
 -}
 import Html.Attributes exposing (classList, tabindex, rel, href)
 import Html.Extra exposing (onLoad)
@@ -64,6 +64,14 @@ stylesheetLink path address action =
 tabIndex : { a | disabled : Bool } -> List Html.Attribute
 tabIndex model =
   if model.disabled then [] else [tabindex 0]
+
+{-| Retruns the given attributes unless the model is disabled, in that
+case it returs an empty list. This is usefull when you only want to add
+for example some event listeners when the component is not disabled.
+-}
+enabledActions : { a | disabled : Bool } -> List b -> List b
+enabledActions model attributes =
+  if model.disabled then [] else attributes
 
 {-| Renders a spacer element. -}
 spacer : Html.Html

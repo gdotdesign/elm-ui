@@ -3,7 +3,7 @@ module Ui.App
 
 {-| Base frame for a web/mobile application:
   - Loads the stylesheet
-  - Sets up a click handler
+  - Sets up a scroll handler
   - Sets the viewport to be mobile friendly
   - Sets the title of the application
 
@@ -14,7 +14,6 @@ module Ui.App
 @docs view
 -}
 import Html.Attributes exposing (name, content, style)
-import Html.Events exposing (onClick)
 import Html.Extra exposing (onScroll)
 import Html exposing (node, text)
 import Html.Lazy
@@ -28,12 +27,11 @@ type alias Model =
   }
 
 {-| Actions an application can make:
-  - **Clicked** - Dispatched when a click is made
   - **Loaded** - Dispatched when the stylesheet is loaded
+  - **Scrolled** - Dispatched when something inside the application scrolled.
 -}
 type Action
-  = Clicked
-  | Loaded
+  = Loaded
   | Scrolled
 
 {-| Initializes an application. -}
@@ -49,7 +47,7 @@ update action model =
   case action of
     Loaded ->
       { model | loaded = True }
-    _ ->
+    Scrolled ->
       model
 
 {-| Renders an application.
@@ -64,8 +62,7 @@ view address model children =
 -- Render (Internal)
 render : Signal.Address Action -> Model -> List Html.Html -> Html.Html
 render address model children =
-  node "ui-app" [ onClick address Clicked
-                , onScroll address Scrolled
+  node "ui-app" [ onScroll address Scrolled
                 , style [("visibility", if model.loaded then "" else "hidden")]
                 ]
     ([ Ui.stylesheetLink "main.css" address Loaded

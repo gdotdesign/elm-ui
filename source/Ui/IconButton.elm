@@ -53,5 +53,5 @@ render address action model =
   in
     node
       "ui-icon-button"
-      (attributes address model action)
+      (attributes address action model)
       children

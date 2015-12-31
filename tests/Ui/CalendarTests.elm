@@ -11,7 +11,37 @@ tests =
   suite "Ui.Calendar"
     [ updatePreviousMonth
     , updateNextMonth
+    , previousDay
+    , nextDay
     ]
+
+nextDay : Test
+nextDay =
+  let
+    initial = Ui.Calendar.init (Date.fromTime 1433030400000)
+    changed = Ui.Calendar.nextDay initial
+    expected = Date.fromTime 1433116800000
+  in
+    suite "nextDay"
+      [ test "Should switch selected date"
+         (assertEqual (Ext.Date.isSameDate changed.value expected) True)
+      , test "Should switch to next month"
+        (assertEqual (Ext.Date.isSameDate changed.date expected) True)
+      ]
+
+previousDay : Test
+previousDay =
+  let
+    initial = Ui.Calendar.init (Date.fromTime 1430438400000)
+    changed = Ui.Calendar.previousDay initial
+    expected = Date.fromTime 1430352000000
+  in
+    suite "previousDay"
+      [ test "Should switch to selected date"
+         (assertEqual (Ext.Date.isSameDate changed.value expected) True)
+      , test "Should switch to previous month"
+        (assertEqual (Ext.Date.isSameDate changed.date expected) True)
+      ]
 
 updatePreviousMonth : Test
 updatePreviousMonth =

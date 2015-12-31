@@ -111,10 +111,11 @@ render address model =
     actions =
       if model.disabled || model.readonly then []
       else [ onWithDimensions "mousedown" True address Lift
-           , onKeys address (Dict.fromList [ (40, Increment)
-                                           , (38, Decrement)
-                                           , (37, Increment)
-                                           , (39, Decrement) ])
+           , onKeys address [ (40, Increment)
+                            , (38, Decrement)
+                            , (37, Increment)
+                            , (39, Decrement)
+                            ]
            ]
     element =
       node "ui-slider"

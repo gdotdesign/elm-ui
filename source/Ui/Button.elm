@@ -70,10 +70,9 @@ attributes address action model =
     actions =
       Ui.enabledActions { disabled = model.disabled, readonly = False }
         [ onClick address action
-        , onKeys address
-          (Dict.fromList [ (13, action)
+        , onKeys address [ (13, action)
                          , (32, action)
-                         ])
+                         ]
         ]
   in
     [ classList

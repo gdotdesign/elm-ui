@@ -220,26 +220,28 @@ onEnter control address handler =
         (\code -> Signal.message address handler)
 
 {-| An event listener that will run the given actions on the associated keys. -}
-onKeys : Signal.Address a -> Dict Int a -> Html.Attribute
+onKeys : Signal.Address a -> List (Int, a) -> Html.Attribute
 onKeys address mappings =
   let
+    mappingsDict = Dict.fromList mappings
     message data =
-      case Dict.get data mappings of
+      case Dict.get data mappingsDict of
         Just handler -> Signal.message address handler
         _ -> Signal.message nothingMailbox.address Nothing
   in
-    onWithOptions "keydown" preventDefaultOptions (simpleMappingsDecoder mappings) message
+    onWithOptions "keydown" preventDefaultOptions (simpleMappingsDecoder mappingsDict) message
 
 {-| An event listener that will run the given actions on the associated keys. -}
-onKeysWithDimensions : Signal.Address a -> Dict Int (DropdownDimensions -> a) -> Html.Attribute
+onKeysWithDimensions : Signal.Address a -> List (Int, (DropdownDimensions -> a)) -> Html.Attribute
 onKeysWithDimensions address mappings =
   let
+    mappingsDict = Dict.fromList mappings
     message data =
-      case Dict.get data.code mappings of
+      case Dict.get data.code mappingsDict of
         Just handler -> Signal.message address (handler data.dimensions)
         _ -> Signal.message nothingMailbox.address Nothing
   in
-    onWithOptions "keydown" preventDefaultOptions (mappingsDecoder mappings) message
+    onWithOptions "keydown" preventDefaultOptions (mappingsDecoder mappingsDict) message
 
 {-| An event listener that runs on input. -}
 onInput : Signal.Address a -> (String -> a) -> Html.Attribute

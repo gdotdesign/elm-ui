@@ -128,14 +128,13 @@ render address model =
       if model.disabled || model.readonly then []
       else [ onWithDropdownDimensions "focus" address Focus
            , onBlur address Blur
-           , onKeysWithDimensions address
-             (Dict.fromList [ (27, Close)
-                            , (13, Toggle)
-                            , (40, Increment)
-                            , (38, Decrement)
-                            , (39, Increment)
-                            , (37, Decrement)
-                            ])
+           , onKeysWithDimensions address [ (27, Close)
+                                          , (13, Toggle)
+                                          , (40, Increment)
+                                          , (38, Decrement)
+                                          , (39, Increment)
+                                          , (37, Decrement)
+                                          ]
            ]
   in
     node "ui-date-picker" ([ classList [ ("dropdown-open", model.open)

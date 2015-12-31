@@ -139,8 +139,9 @@ update action model =
         Blur ->
           close model
 
-        Enter _ ->
-          toggleItemAndClose model.intended model
+        Enter dimensions ->
+          toggleItem model.intended model
+            |> Dropdown.toggleWithDimensions dimensions
 
         Next dimensions ->
           { model | intended = Intendable.next
@@ -183,10 +184,11 @@ render address model =
       else [ onInput address Filter
            , onWithDropdownDimensions "focus" address Focus
            , onBlur address Blur
-           , onKeysWithDimensions address (Dict.fromList [ (27, Close)
-                                                         , (13, Enter)
-                                                         , (40, Next)
-                                                         , (38, Prev) ])
+           , onKeysWithDimensions address [ (27, Close)
+                                          , (13, Enter)
+                                          , (40, Next)
+                                          , (38, Prev)
+                                          ]
            ]
   in
     node "ui-chooser" ([classList [ ("dropdown-open", model.open)

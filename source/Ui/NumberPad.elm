@@ -13,8 +13,8 @@ module Ui.NumberPad
 @docs setValue
 -}
 import Html.Attributes exposing (classList)
-import Html.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
+import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
 import Html.Lazy
 
@@ -103,30 +103,29 @@ render address viewModel model =
 
     actions =
       if model.disabled || model.readonly then []
-      else [ onKeys address
-              (Dict.fromList [ (8, Delete)
-              , (46, Delete)
-              , (48, Pressed 0)
-              , (49, Pressed 1)
-              , (50, Pressed 2)
-              , (51, Pressed 3)
-              , (52, Pressed 4)
-              , (53, Pressed 5)
-              , (54, Pressed 6)
-              , (55, Pressed 7)
-              , (56, Pressed 8)
-              , (57, Pressed 9)
-              , (96, Pressed 0)
-              , (97, Pressed 1)
-              , (98, Pressed 2)
-              , (99, Pressed 3)
-              , (100, Pressed 4)
-              , (101, Pressed 5)
-              , (102, Pressed 6)
-              , (103, Pressed 7)
-              , (104, Pressed 8)
-              , (105, Pressed 9)
-              ])
+      else [ onKeys address [ (8, Delete)
+                            , (46, Delete)
+                            , (48, Pressed 0)
+                            , (49, Pressed 1)
+                            , (50, Pressed 2)
+                            , (51, Pressed 3)
+                            , (52, Pressed 4)
+                            , (53, Pressed 5)
+                            , (54, Pressed 6)
+                            , (55, Pressed 7)
+                            , (56, Pressed 8)
+                            , (57, Pressed 9)
+                            , (96, Pressed 0)
+                            , (97, Pressed 1)
+                            , (98, Pressed 2)
+                            , (99, Pressed 3)
+                            , (100, Pressed 4)
+                            , (101, Pressed 5)
+                            , (102, Pressed 6)
+                            , (103, Pressed 7)
+                            , (104, Pressed 8)
+                            , (105, Pressed 9)
+                            ]
             ]
   in
     node "ui-number-pad"

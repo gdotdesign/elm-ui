@@ -93,18 +93,17 @@ toggleRender address model =
     , node "ui-checkbox-toggle-handle" [] []
     ]
 
-{- Returns attributes for a checkbox -}
+-- Returns attributes for a checkbox
 attributes : Signal.Address Action -> Model -> List Html.Attribute
 attributes address model =
   let
     actions =
-      if model.disabled || model.readonly then []
-      else
+      Ui.enabledActions model
         [ onClick address Toggle
-        , onKeys address
-          (Dict.fromList [ (13, Toggle)
+        , onKeys address [ (13, Toggle)
                          , (32, Toggle)
-                         ])]
+                         ]
+        ]
   in
     [ classList [ ("disabled", model.disabled)
                 , ("readonly", model.readonly)

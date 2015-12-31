@@ -132,10 +132,11 @@ render address model =
       else
         [ onWithDimensions "mousedown" False address Lift
         , onWithDimensions "dblclick" True address DoubleClick
-        , onKeys address (Dict.fromList [ (40, Decrement)
-                                        , (38, Increment)
-                                        , (37, Decrement)
-                                        , (39, Increment) ])
+        , onKeys address [ (40, Decrement)
+                         , (38, Increment)
+                         , (37, Decrement)
+                         , (39, Increment)
+                         ]
         ]
     attributes =
       if model.editing then

@@ -106,9 +106,9 @@ render address model =
       if model.disabled || model.readonly then []
       else [ onWithDropdownDimensions "focus" address Focus
            , onBlur address Blur
-           , onKeysWithDimensions address (Dict.fromList [ (27, Close)
-                                                         , (13, Toggle)
-                                                         ])
+           , onKeysWithDimensions address [ (27, Close)
+                                          , (13, Toggle)
+                                          ]
            ]
   in
     node "ui-color-picker" ([ classList [ ("dropdown-open", model.open)

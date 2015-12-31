@@ -58,11 +58,11 @@ type Action
 -}
 init : Date.Date -> Model
 init date =
-  { date = date
-  , value = date
-  , selectable = True
+  { selectable = True
   , disabled = False
   , readonly = False
+  , value = date
+  , date = date
   }
 
 {-| Updates a calendar. -}

@@ -168,12 +168,7 @@ view address model =
           ]
         , footer =
           [ Ui.Container.rowEnd []
-            [ Ui.Button.view address CloseModal { text = "Close"
-                                                , kind = "Primary"
-                                                , size = "medium"
-                                                , disabled = False
-                                                }
-            ]
+            [ Ui.Button.primary "Close" address CloseModal ]
           ]
         }
         model.modal
@@ -206,27 +201,12 @@ view address model =
           , tr []
             [ td [colspan 2]
               [ Ui.Container.row []
-                ([ Ui.Button.view address Alert { text = "Primary"
-                                               , kind = "primary"
-                                               , size = "big"
-                                               , disabled = False }
-                , Ui.Button.view address Nothing { text = "Secondary"
-                                                 , kind = "secondary"
-                                                 , size = "medium"
-                                                 , disabled = False }
-                , Ui.Button.view address Nothing { text = "Success"
-                                                 , kind = "success"
-                                                 , size = "medium"
-                                                 , disabled = False }
-                , Ui.Button.view address Nothing { text = "Warning"
-                                                 , kind = "warning"
-                                                 , size = "medium"
-                                                 , disabled = False }
-                , Ui.Button.view address Nothing { text = "Danger"
-                                                 , kind = "danger"
-                                                 , size = "small"
-                                                 , disabled = False }
-                ] ++ clicked)
+                ([ Ui.Button.primaryBig "Primary" address Alert
+                 , Ui.Button.secondary "Secondary" address Nothing
+                 , Ui.Button.success "Success" address Nothing
+                 , Ui.Button.warning "Warning" address Nothing
+                 , Ui.Button.danger "Danger" address Nothing
+                 ] ++ clicked)
               ]
             , td []
                 [ Ui.Button.view address Nothing { text = "Disabled"

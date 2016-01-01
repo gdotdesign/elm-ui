@@ -1,5 +1,5 @@
 module Ui.Chooser
-  (Model, Item, Action, init, update, close, toggleItem,
+  (Model, Item, Action(..), init, update, close, toggleItem,
    getFirstSelected, view, updateData, selectFirst, select) where
 
 {-| This is a component for selecting a single / multiple items
@@ -26,7 +26,6 @@ import Set exposing (Set)
 import Native.Browser
 import String
 import Regex
-import List.Extra
 import List
 import Dict
 
@@ -34,6 +33,7 @@ import Debug exposing (log)
 
 import Ui.Helpers.Intendable as Intendable
 import Ui.Helpers.Dropdown as Dropdown
+import Ui
 
 {-| Representation of an selectable item. -}
 type alias Item =
@@ -58,20 +58,20 @@ type alias Item =
   - **dropdownPosition** (Internal) - Where the dropdown is positioned
 -}
 type alias Model =
-  { placeholder : String
+  { dropdownPosition : String
+  , render : Item -> Html
   , selected : Set String
-  , searchable : Bool
+  , placeholder : String
   , closeOnSelect : Bool
-  , data : List Item
-  , multiple : Bool
-  , value : String
-  , open : Bool
   , deselectable: Bool
   , intended : String
+  , searchable : Bool
+  , data : List Item
+  , multiple : Bool
   , disabled : Bool
   , readonly : Bool
-  , render : Item -> Html
-  , dropdownPosition : String
+  , value : String
+  , open : Bool
   }
 
 {-| Actions that a chooser can make:
@@ -84,14 +84,14 @@ type alias Model =
   - **Enter** - Selects the currently intended selection
 -}
 type Action
-  = Filter String
-  | Focus Html.Extra.DropdownDimensions
-  | Select String
-  | Blur
+  = Focus Html.Extra.DropdownDimensions
   | Close Html.Extra.DropdownDimensions
+  | Enter Html.Extra.DropdownDimensions
   | Next Html.Extra.DropdownDimensions
   | Prev Html.Extra.DropdownDimensions
-  | Enter Html.Extra.DropdownDimensions
+  | Filter String
+  | Select String
+  | Blur
 
 {-| Initializes a chooser with the given values.
 
@@ -102,20 +102,20 @@ init data placeholder value =
   let
     selected = if value == "" then Set.empty else Set.singleton value
   in
-    { data = data
-    , searchable = False
-    , closeOnSelect = False
+    { render = (\item -> span [] [text item.label])
+    , dropdownPosition = "bottom"
     , placeholder = placeholder
-    , value = ""
-    , selected = selected
-    , open = False
+    , closeOnSelect = False
     , deselectable = False
+    , selected = selected
+    , searchable = False
     , multiple = False
-    , intended = ""
     , disabled = False
     , readonly = False
-    , render = (\item -> span [] [text item.label])
-    , dropdownPosition = "bottom"
+    , intended = ""
+    , open = False
+    , data = data
+    , value = ""
     }
       |> intendFirst
 
@@ -179,28 +179,30 @@ render address model =
       else
         label model
 
+    isReadOnly = not model.searchable || not model.open || model.readonly
+
     actions =
-      if model.disabled || model.readonly then []
-      else [ onInput address Filter
-           , onWithDropdownDimensions "focus" address Focus
-           , onBlur address Blur
-           , onKeysWithDimensions address [ (27, Close)
-                                          , (13, Enter)
-                                          , (40, Next)
-                                          , (38, Prev)
-                                          ]
-           ]
+      Ui.enabledActions model
+        [ onInput address Filter
+        , onWithDropdownDimensions "focus" address Focus
+        , onBlur address Blur
+        , onKeysWithDimensions address [ (27, Close)
+                                       , (13, Enter)
+                                       , (40, Next)
+                                       , (38, Prev)
+                                       ]
+        ]
   in
-    node "ui-chooser" ([classList [ ("dropdown-open", model.open)
-                                  , ("searchable", model.searchable)
+    node "ui-chooser" ([classList [ ("searchable", model.searchable)
+                                  , ("dropdown-open", model.open)
                                   , ("disabled", model.disabled)
                                   , ("readonly", model.readonly)
                                   ]
                        ])
-      ([ input ([ disabled model.disabled
-                , placeholder model.placeholder
+      ([ input ([ placeholder model.placeholder
+                , disabled model.disabled
+                , readonly isReadOnly
                 , value val
-                , readonly (not model.searchable || not model.open || model.readonly)
                 ] ++ actions) []] ++ dropdown)
 
 {-| Selects the given value of chooser. -}
@@ -213,13 +215,6 @@ close : Model -> Model
 close model =
   Dropdown.close model
     |> setValue ""
-
-{-| Select or deslect a single item with the given value and closes
-the dropdown if needed. -}
-toggleItemAndClose : String -> Model -> Model
-toggleItemAndClose value model =
-  toggleItem value model
-    |> closeIfShouldClose
 
 {-| Selects or deselects the item with the given value. -}
 toggleItem : String -> Model -> Model
@@ -242,22 +237,26 @@ updateData data model =
 {-| Selects the first item if available. -}
 selectFirst : Model -> Model
 selectFirst model =
-  let
-    first = List.Extra.find (\_ -> True) model.data
-  in
-    case first of
-      Just item -> { model | selected = Set.singleton item.value }
-      _ -> model
+  case List.head model.data of
+    Just item -> { model | selected = Set.singleton item.value }
+    _ -> model
 
-{- ========================= PRIVATE ========================= -}
+-- ========================= PRIVATE =========================
 
-{- Toggle item if multiple is True. -}
+{- Select or deslect a single item with the given value and closes
+the dropdown if needed. -}
+toggleItemAndClose : String -> Model -> Model
+toggleItemAndClose value model =
+  toggleItem value model
+    |> closeIfShouldClose
+
+-- Toggle item if multiple is True.
 toggleMultipleItem : String -> Model -> Model
 toggleMultipleItem value model =
   let
     updated_set =
       if Set.member value model.selected then
-        if model.deselectable || (List.length (Set.toList model.selected)) > 1 then
+        if model.deselectable || (Set.size model.selected) > 1 then
           Set.remove value model.selected
         else
           model.selected
@@ -266,7 +265,7 @@ toggleMultipleItem value model =
   in
    {model | selected = updated_set }
 
-{- Toggle item if multiple is False.  -}
+-- Toggle item if multiple is False.
 toggleSingleItem : String -> Model -> Model
 toggleSingleItem value model =
   if (Set.member value model.selected) && model.deselectable then
@@ -274,7 +273,7 @@ toggleSingleItem value model =
   else
     { model | selected = Set.singleton value }
 
-{- Intends the first item if it is available. -}
+-- Intends the first item if it is available.
 intendFirst : Model -> Model
 intendFirst model =
   let
@@ -286,31 +285,31 @@ intendFirst model =
     else
       model
 
-{- Sets the value of a chooser. -}
+-- Sets the value of a chooser.
 setValue : String -> Model -> Model
 setValue value model =
   { model | value = value }
 
-{- Returns the label of a chooser. -}
+-- Returns the label of a chooser.
 label : Model -> String
 label model =
   List.filter (\item -> Set.member item.value model.selected) model.data
     |> List.map .label
     |> String.join ", "
 
-{- Closes a chooser if indicated -}
+-- Closes a chooser if indicated
 closeIfShouldClose : Model -> Model
 closeIfShouldClose model =
   if model.closeOnSelect then close model else model
 
-{- Creates a regexp for filtering -}
+-- Creates a regexp for filtering
 createRegex : String -> Regex.Regex
 createRegex value =
   Regex.escape value
     |> Regex.regex
     |> Regex.caseInsensitive
 
-{- Renders an item -}
+-- Renders an item
 renderItem : Item -> Signal.Address Action -> Model -> Html.Html
 renderItem item address model =
   let
@@ -328,7 +327,7 @@ renderItem item address model =
       ]
       [ model.render item ]
 
-{- Returns the items to display for a chooser. -}
+-- Returns the items to display for a chooser.
 items : Model -> List Item
 items model =
   let
@@ -340,7 +339,7 @@ items model =
     else
       List.filter test model.data
 
-{- Returns the values of available items -}
+-- Returns the values of available items
 availableItems : Model -> List String
 availableItems model =
   List.map .value (items model)

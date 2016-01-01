@@ -1,4 +1,4 @@
-module Ui.Container (Model, view, row, column) where
+module Ui.Container (Model, view, row, rowEnd, column) where
 
 {-| Flexbox container component.
 
@@ -6,7 +6,7 @@ module Ui.Container (Model, view, row, column) where
 @docs Model
 
 # View
-@docs view, row, column
+@docs view, row, rowEnd, column
 -}
 import Html.Attributes exposing (classList, style)
 import Html exposing (node)
@@ -44,6 +44,11 @@ view model attributes children =
 row : List Html.Attribute -> List Html.Html -> Html.Html
 row attributes children =
   Html.Lazy.lazy3 render rowOptions attributes children
+
+{-| Renders a container as a row with content aligned to the end. -}
+rowEnd : List Html.Attribute -> List Html.Html -> Html.Html
+rowEnd attributes children =
+  Html.Lazy.lazy3 render { rowOptions | align = "end" } attributes children
 
 {-| Renders a container as a column. -}
 column : List Html.Attribute -> List Html.Html -> Html.Html

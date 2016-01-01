@@ -29,6 +29,7 @@
     "Ui.Image",
     "Ui.InplaceInput",
     "Ui.Input",
+    "Ui.Modal",
     "Ui.NumberPad",
     "Ui.NumberRange",
     "Ui.Pager",

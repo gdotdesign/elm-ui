@@ -3,9 +3,9 @@ ui-dropdown {
   @include border;
 
   // Position & Size
+  z-index: map-get($z-index, dropdown);
   position: absolute;
   max-height: 250px;
-  z-index: 100;
   right: 0;
   left: 0;
 

@@ -1,6 +1,7 @@
 import Signal exposing (forwardTo)
 import Ext.Date
 import StartApp
+import Keyboard
 import Effects
 import Mouse
 import Color
@@ -27,6 +28,7 @@ import Ui.Textarea
 import Ui.Chooser
 import Ui.Button
 import Ui.Slider
+import Ui.Modal
 import Ui.Image
 import Ui.App
 import Ui
@@ -47,11 +49,15 @@ type Action
   | Chooser Ui.Chooser.Action
   | Slider Ui.Slider.Action
   | Image Ui.Image.Action
+  | Modal Ui.Modal.Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
   | MouseIsDown Bool
+  | EscIsDown Bool
   | Open String
   | CloseMenu
+  | CloseModal
+  | OpenModal
   | Nothing
   | Alert
 
@@ -71,6 +77,7 @@ type alias Model =
   , menu : Ui.DropdownMenu.Model
   , chooser : Ui.Chooser.Model
   , slider : Ui.Slider.Model
+  , modal : Ui.Modal.Model
   , image : Ui.Image.Model
   , clicked : Bool
   }
@@ -92,6 +99,7 @@ init =
     , checkbox2 = Ui.Checkbox.init False
     , checkbox = Ui.Checkbox.init False
     , textarea = Ui.Textarea.init "Test"
+    , modal = Ui.Modal.init "Test Modal"
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
     , slider = Ui.Slider.init 50
@@ -141,7 +149,35 @@ view address model =
       }
   in
     Ui.App.view (forwardTo address App) model.app
-      [ node "kitchen-sink" []
+      [ Ui.Modal.view
+        (forwardTo address Modal)
+        { content =
+          [ node "p" [] [text "This is a modal window."]
+          , node "p" [] [text "Lorem ipsum dolor sit amet, consectetur
+                               adipiscing elit. Pellentesque ornare odio sed
+                               lorem malesuada, id efficitur elit consequat.
+                               Aenean suscipit, est a varius aliquam,
+                               turpis diam sollicitudin tortor, in venenatis
+                               felis nisl ac ex. Quisque finibus nisl nec urna
+                               laoreet aliquet. Maecenas et volutpat arcu, a
+                               dapibus tellus. Praesent nec enim velit. Class
+                               aptent taciti sociosqu ad litora torquent per
+                               conubia nostra, per inceptos himenaeos. Nullam
+                               volutpat turpis vel lorem fringilla, pulvinar
+                               viverra dolor varius."]
+          ]
+        , footer =
+          [ Ui.Container.rowEnd []
+            [ Ui.Button.view address CloseModal { text = "Close"
+                                                , kind = "Primary"
+                                                , size = "medium"
+                                                , disabled = False
+                                                }
+            ]
+          ]
+        }
+        model.modal
+      , node "kitchen-sink" []
         [ Ui.title [] [text "Elm-UI Kitchen Sink"]
         , Ui.text "An opinionated UI library for the web in Elm, following
                    the Elm Architecture."
@@ -251,7 +287,15 @@ view address model =
                                                    , disabled = True }
               ]
             ]
-
+          , componentHeader "Modal"
+          , tableRow ( Ui.IconButton.view address OpenModal { text = "Open Modal"
+                                                            , side = "right"
+                                                            , glyph = "android-open"
+                                                            , kind = "primary"
+                                                            , size = "medium"
+                                                            , disabled = False })
+                     (text "")
+                     (text "")
           , componentHeader "Dropdown Menu"
           , tableRow ( Ui.DropdownMenu.view
                        (forwardTo address DropdownMenu)
@@ -424,6 +468,8 @@ update action model =
       { model | menu = Ui.DropdownMenu.update act model.menu                 }
     Slider act ->
       { model | slider = Ui.Slider.update act model.slider                   }
+    Modal act ->
+      { model | modal = Ui.Modal.update act model.modal                      }
     Image act ->
       { model | image = Ui.Image.update act model.image                      }
     App act ->
@@ -454,6 +500,17 @@ update action model =
     Open url ->
       Ui.open url model
 
+    EscIsDown bool ->
+      { model | menu = Ui.DropdownMenu.close model.menu
+              , modal = Ui.Modal.close model.modal
+      }
+
+    CloseModal ->
+      { model | modal = Ui.Modal.close model.modal }
+
+    OpenModal ->
+      { model | modal = Ui.Modal.open model.modal }
+
     Alert ->
       { model | clicked = True }
 
@@ -471,6 +528,7 @@ app =
                  , update = update'
                  , inputs = [ Signal.map MousePosition Mouse.position
                             , Signal.map MouseIsDown Mouse.isDown
+                            , Signal.map EscIsDown (Keyboard.isDown 27)
                             ]
                  }
 

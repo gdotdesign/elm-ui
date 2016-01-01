@@ -1,0 +1,82 @@
+ui-modal {
+  z-index: map-get($z-index, modal);
+  transform: translate3d(0, 0, 0);
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top:0;
+
+  justify-content: center;
+  align-items: center;
+  display: flex;
+
+  transition: opacity 320ms, transform 320ms, visibility 1ms 320ms;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+
+  ui-modal-backdrop {
+    background-color: rgba(#000, 0.5);
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+  }
+
+  &.ui-modal-open {
+    transition: opacity 320ms, transform 320ms, visibility 1ms;
+    pointer-events: auto;
+    visibility: visible;
+    opacity: 1;
+
+    ui-modal-wrapper {
+      transform: translateY(0);
+    }
+  }
+
+  ui-modal-wrapper {
+    @include colors($input);
+
+    box-shadow: 0 5px 20px rgba(#000, 0.1);
+    border-radius: $border-radius;
+    transform: translateY(-5vh);
+    transition: transform 320ms;
+    position: relative;
+    max-height: 80vh;
+    max-width: 80vw;
+    z-index: 1;
+
+    &:last-child {
+      @include border;
+    }
+  }
+
+  ui-modal-content,
+  ui-modal-header,
+  ui-modal-footer {
+    display: block;
+    padding: 20px;
+  }
+
+  ui-modal-footer {
+    border-top: $border;
+  }
+
+  ui-modal-header {
+    border-bottom: $border;
+    font-size: 20px;
+    display: flex;
+
+    ui-modal-title {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    ui-icon {
+      margin-left: 20px;
+    }
+  }
+}

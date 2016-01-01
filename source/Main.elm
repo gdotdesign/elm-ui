@@ -177,15 +177,9 @@ view address model =
         , Ui.text "An opinionated UI library for the web in Elm, following
                    the Elm Architecture."
         , node "p" []
-          [ Ui.IconButton.view
-              address
-              (Open "https://github.com/gdotdesign/elm-ui")
-              { side = "right"
-              , text = "Get Started at Github"
-              , kind = "Primary"
-              , glyph = "social-github"
-              , size = "big"
-              , disabled = False } ]
+          [ Ui.IconButton.primaryBig
+              "Get Started at Github" "social-github" "right"
+              address (Open "https://github.com/gdotdesign/elm-ui") ]
         , Ui.subTitle [] [text "Components"]
         , Ui.text "The business logic for following components are
                    implemented fully in Elm, with minimal Native
@@ -205,7 +199,7 @@ view address model =
                  , Ui.Button.secondary "Secondary" address Nothing
                  , Ui.Button.success "Success" address Nothing
                  , Ui.Button.warning "Warning" address Nothing
-                 , Ui.Button.danger "Danger" address Nothing
+                 , Ui.Button.dangerSmall "Danger" address Nothing
                  ] ++ clicked)
               ]
             , td []
@@ -220,42 +214,18 @@ view address model =
           , tr []
             [ td [colspan 2]
               [ Ui.Container.row []
-                [ Ui.IconButton.view address Nothing { side = "right"
-                                                     , text = "Load"
-                                                     , kind = "Primary"
-                                                     , glyph = "android-download"
-                                                     , size = "big"
-                                                     , disabled = False }
-                , Ui.IconButton.view address Nothing { side = "right"
-                                                     , text = ""
-                                                     , kind = "Primary"
-                                                     , glyph = "archive"
-                                                     , size = "medium"
-                                                     , disabled = False }
-                , Ui.IconButton.view address Nothing { side = "left"
-                                                     , text = "Send"
-                                                     , kind = "secondary"
-                                                     , glyph = "arrow-left-c"
-                                                     , size = "medium"
-                                                     , disabled = False }
-                , Ui.IconButton.view address Nothing { side = "right"
-                                                     , text = "Success"
-                                                     , kind = "success"
-                                                     , glyph = "checkmark"
-                                                     , size = "medium"
-                                                     , disabled = False }
-                , Ui.IconButton.view address Nothing { side = "right"
-                                                     , text = "Warning"
-                                                     , kind = "warning"
-                                                     , glyph = "alert"
-                                                     , size = "medium"
-                                                     , disabled = False }
-                , Ui.IconButton.view address Nothing { side = "right"
-                                                     , text = "Danger"
-                                                     , kind = "danger"
-                                                     , glyph = "close"
-                                                     , size = "small"
-                                                     , disabled = False }
+                [ Ui.IconButton.primaryBig
+                    "Load" "android-download" "right" address Nothing
+                , Ui.IconButton.primary
+                    "" "archive" "right" address Nothing
+                , Ui.IconButton.secondary
+                    "Send" "arrow-left-c" "left" address Nothing
+                , Ui.IconButton.success
+                    "Success" "checkmark" "right" address Nothing
+                , Ui.IconButton.warning
+                    "Warning" "alert" "right" address Nothing
+                , Ui.IconButton.dangerSmall
+                    "Danger" "close" "right" address Nothing
                 ]
               ]
             , td []
@@ -268,26 +238,15 @@ view address model =
               ]
             ]
           , componentHeader "Modal"
-          , tableRow ( Ui.IconButton.view address OpenModal { text = "Open Modal"
-                                                            , side = "right"
-                                                            , glyph = "android-open"
-                                                            , kind = "primary"
-                                                            , size = "medium"
-                                                            , disabled = False })
+          , tableRow ( Ui.IconButton.primary
+                        "Open Modal" "android-open" "right" address OpenModal)
                      (text "")
                      (text "")
           , componentHeader "Dropdown Menu"
           , tableRow ( Ui.DropdownMenu.view
                        (forwardTo address DropdownMenu)
-                       (Ui.IconButton.view
-                          address
-                          Nothing
-                          { side = "right"
-                          , text = "Open"
-                          , kind = "secondary"
-                          , glyph = "chevron-down"
-                          , size = "medium"
-                          , disabled = False })
+                       (Ui.IconButton.secondary
+                          "Open" "chevron-down" "right" address Nothing)
                        [ Ui.DropdownMenu.item
                           [ onClick address CloseMenu ]
                           [ Ui.icon "android-download" True []

@@ -1,5 +1,4 @@
-module Ui.App
-  (Model, Action(..), init, update, view) where
+module Ui.App (Model, Action(..), init, update, view) where
 
 {-| Base frame for a web/mobile application:
   - Loads the stylesheet
@@ -22,17 +21,17 @@ import Ui
 
 {-| Representation of an application. -}
 type alias Model =
-  { loaded: Bool
-  , title: String
+  { title: String
+  , loaded: Bool
   }
 
 {-| Actions an application can make:
+  - **Scrolled** - Dispatched when something inside the application has scrolled
   - **Loaded** - Dispatched when the stylesheet is loaded
-  - **Scrolled** - Dispatched when something inside the application scrolled.
 -}
 type Action
-  = Loaded
-  | Scrolled
+  = Scrolled
+  | Loaded
 
 {-| Initializes an application.
 
@@ -50,13 +49,13 @@ update action model =
   case action of
     Loaded ->
       { model | loaded = True }
+
     Scrolled ->
       model
 
 {-| Renders an application.
 
-    view address []
-      [text "Hello there!"]
+    App.view address app [text "Hello there!"]
 -}
 view: Signal.Address Action -> Model -> List Html.Html -> Html.Html
 view address model children =
@@ -71,5 +70,6 @@ render address model children =
     ([ Ui.stylesheetLink "main.css" address Loaded
      , node "title" [] [text model.title]
      , node "meta" [ name "viewport"
-                   , content "initial-scale=1.0, user-scalable=no"] []
+                   , content "initial-scale=1.0, user-scalable=no"
+                   ] []
      ] ++ children)

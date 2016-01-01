@@ -1,10 +1,9 @@
-module Ui.Button
-  (Model, init, view, attributes) where
+module Ui.Button (Model, init, view, attributes) where
 
-{-| Basic button component that can have:
-  - disabled state
+{-| Basic button component that implements:
   - 5 different types (primary, secondary, warning, danger, success)
   - 3 different sizes (small, medium, big)
+  - disabled state
 
 # Model
 @docs Model, init
@@ -20,7 +19,6 @@ import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
 import Html.Lazy
-import Dict
 
 import Ui
 
@@ -43,11 +41,11 @@ init =
 
 {-| Renders a button.
 
-    view address { disabled = False
-                 , text = "Button"
-                 , kind = "Primary"
-                 , size = "medium"
-                 }
+    Button.view address { disabled = False
+                        , kind = "Primary"
+                        , text = "Button"
+                        , size = "medium"
+                        }
 -}
 view : Signal.Address a -> a -> Model -> Html.Html
 view address action model =
@@ -60,7 +58,8 @@ render address action model =
     (attributes address action model)
     [node "span" [] [text model.text]]
 
-{-| Creates the attributes for a button. -}
+{-| Creates the attributes for a button that contains events, tabindex and
+classes. -}
 attributes : Signal.Address a
            -> a
            -> { b | disabled : Bool, kind : String, size : String }
@@ -68,7 +67,9 @@ attributes : Signal.Address a
 attributes address action model =
   let
     actions =
-      Ui.enabledActions { disabled = model.disabled, readonly = False }
+      Ui.enabledActions { disabled = model.disabled
+                        , readonly = False
+                        }
         [ onClick address action
         , onKeys address [ (13, action)
                          , (32, action)

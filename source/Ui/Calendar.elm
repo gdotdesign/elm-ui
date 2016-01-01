@@ -1,5 +1,5 @@
 module Ui.Calendar
-  ( Model, Action(..), init, update, view, render, setValue, nextDay
+  ( Model, Action(..), init, update, view, setValue, nextDay
   , previousDay ) where
 
 {-| This is a calendar component where the user
@@ -9,7 +9,7 @@ can select a date by clicking on it.
 @docs Model, Action, init, update
 
 # View
-@docs view, render
+@docs view
 
 # Functions
 @docs setValue, nextDay, previousDay
@@ -30,9 +30,9 @@ import Ui
 {-| Representation of a calendar component:
   - **selectable** - Whether the user can select a date by clicking
   - **date** - The month in which this date is will be displayed
-  - **value** - The current selected date
-  - **disabled** - Whether the calendar is disabled
   - **readonly** - Whether the calendar is interactive
+  - **disabled** - Whether the calendar is disabled
+  - **value** - The current selected date
 -}
 type alias Model =
   { selectable : Bool
@@ -78,12 +78,12 @@ update action model =
     Select date ->
       { model | value = date }
 
-{-| Renders a calendar (lazy). -}
+{-| Renders a calendar. -}
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
   Html.Lazy.lazy2 render address model
 
-{-| Renders a calendar. -}
+-- Render internal
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let

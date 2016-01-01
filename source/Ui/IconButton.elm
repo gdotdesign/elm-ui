@@ -1,5 +1,4 @@
-module Ui.IconButton
-  (Model, init, view) where
+module Ui.IconButton (Model, init, view) where
 
 {-| Button with an icon either on the left or right side.
 
@@ -25,15 +24,18 @@ type alias Model =
   , size : String
   }
 
-{-| Initializes an icon button with a glyph and text. -}
+{-| Initializes an icon button with a glyph and text.
+
+    IconButton.initialite "android-download" "Download"
+-}
 init : String -> String -> Model
 init glyph text =
   { disabled = False
-  , text = text
-  , glyph = glyph
   , kind = "primary"
-  , side = "left"
   , size = "medium"
+  , glyph = glyph
+  , side = "left"
+  , text = text
   }
 
 {-| Renders an icon button. -}
@@ -46,6 +48,7 @@ render : Signal.Address a -> a -> Model -> Html.Html
 render address action model =
   let
     icon = Ui.icon model.glyph False []
+
     span = node "span" [] [text model.text]
 
     children =

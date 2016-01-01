@@ -136,9 +136,7 @@ form address model =
 display : Signal.Address Action -> Model -> Html.Html
 display address model =
   let
-    click =
-      if model.disabled || model.readonly then []
-      else [onClick address Edit]
+    click = Ui.enabledActions model [onClick address Edit]
   in
     div click [text model.value]
 

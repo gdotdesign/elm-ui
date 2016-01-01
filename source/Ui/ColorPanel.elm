@@ -21,6 +21,7 @@ import Color exposing (Color)
 import Html.Lazy
 
 import Ui.Helpers.Drag as Drag
+import Ui
 
 {-| Representation of a color panel:
   - **drag** (internal) - The drag model of the value / saturation rectangle
@@ -31,12 +32,12 @@ import Ui.Helpers.Drag as Drag
   - **disabled** - Whether the color panel is disabled
 -}
 type alias Model =
-  { drag : Drag.Model
-  , alphaDrag : Drag.Model
+  { alphaDrag : Drag.Model
   , hueDrag : Drag.Model
-  , value : Hsv
+  , drag : Drag.Model
   , disabled : Bool
   , readonly : Bool
+  , value : Hsv
   }
 
 {-| Actions that a color panel can make. -}
@@ -51,10 +52,10 @@ type Action
 -}
 init : Color -> Model
 init color =
-  { drag = Drag.init
+  { value = Ext.Color.toHsv color
   , alphaDrag = Drag.init
   , hueDrag = Drag.init
-  , value = Ext.Color.toHsv color
+  , drag = Drag.init
   , disabled = False
   , readonly = False
   }
@@ -103,8 +104,8 @@ render address model =
       (toString (value * 100)) ++ "%"
 
     action act =
-      if model.disabled || model.readonly then []
-      else [onWithDimensions "mousedown" False address act]
+      Ui.enabledActions model
+        [ onWithDimensions "mousedown" False address act ]
   in
     node "ui-color-panel" [ classList [ ("disabled", model.disabled)
                                       , ("readonly", model.readonly)
@@ -151,9 +152,9 @@ handleMove x y model =
 {-| Updates a color panel, stopping the drags if the mouse isnt pressed. -}
 handleClick : Bool -> Model -> Model
 handleClick value model =
-  { model | drag = Drag.handleClick value model.drag
-          , alphaDrag = Drag.handleClick value model.alphaDrag
-          , hueDrag = Drag.handleClick value model.hueDrag  }
+  { model | alphaDrag = Drag.handleClick value model.alphaDrag
+          , hueDrag = Drag.handleClick value model.hueDrag
+          , drag = Drag.handleClick value model.drag }
 
 -- Handles the hue drag
 handleHue : Int -> Int -> Hsv -> Drag.Model -> Hsv

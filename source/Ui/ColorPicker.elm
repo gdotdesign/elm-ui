@@ -103,13 +103,13 @@ render address model =
   let
     color = Ext.Color.toCSSRgba model.colorPanel.value
     actions =
-      if model.disabled || model.readonly then []
-      else [ onWithDropdownDimensions "focus" address Focus
-           , onBlur address Blur
-           , onKeysWithDimensions address [ (27, Close)
-                                          , (13, Toggle)
-                                          ]
-           ]
+      Ui.enabledActions model
+        [ onWithDropdownDimensions "focus" address Focus
+        , onBlur address Blur
+        , onKeysWithDimensions address [ (27, Close)
+                                       , (13, Toggle)
+                                       ]
+        ]
   in
     node "ui-color-picker" ([ classList [ ("dropdown-open", model.open)
                                         , ("disabled", model.disabled)

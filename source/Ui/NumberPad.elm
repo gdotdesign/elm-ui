@@ -98,35 +98,34 @@ render address viewModel model =
       text (model.prefix ++ value ++ model.affix)
 
     back =
-      if model.disabled || model.readonly then []
-      else [onClick address Delete]
+      Ui.enabledActions model [onClick address Delete]
 
     actions =
-      if model.disabled || model.readonly then []
-      else [ onKeys address [ (8, Delete)
-                            , (46, Delete)
-                            , (48, Pressed 0)
-                            , (49, Pressed 1)
-                            , (50, Pressed 2)
-                            , (51, Pressed 3)
-                            , (52, Pressed 4)
-                            , (53, Pressed 5)
-                            , (54, Pressed 6)
-                            , (55, Pressed 7)
-                            , (56, Pressed 8)
-                            , (57, Pressed 9)
-                            , (96, Pressed 0)
-                            , (97, Pressed 1)
-                            , (98, Pressed 2)
-                            , (99, Pressed 3)
-                            , (100, Pressed 4)
-                            , (101, Pressed 5)
-                            , (102, Pressed 6)
-                            , (103, Pressed 7)
-                            , (104, Pressed 8)
-                            , (105, Pressed 9)
-                            ]
-            ]
+      Ui.enabledActions model
+        [ onKeys address [ (8, Delete)
+                         , (46, Delete)
+                         , (48, Pressed 0)
+                         , (49, Pressed 1)
+                         , (50, Pressed 2)
+                         , (51, Pressed 3)
+                         , (52, Pressed 4)
+                         , (53, Pressed 5)
+                         , (54, Pressed 6)
+                         , (55, Pressed 7)
+                         , (56, Pressed 8)
+                         , (57, Pressed 9)
+                         , (96, Pressed 0)
+                         , (97, Pressed 1)
+                         , (98, Pressed 2)
+                         , (99, Pressed 3)
+                         , (100, Pressed 4)
+                         , (101, Pressed 5)
+                         , (102, Pressed 6)
+                         , (103, Pressed 7)
+                         , (104, Pressed 8)
+                         , (105, Pressed 9)
+                         ]
+        ]
   in
     node "ui-number-pad"
       ((Ui.tabIndex model) ++ actions ++
@@ -153,9 +152,7 @@ setValue value model =
 renderButton : Signal.Address Action -> Int -> Model -> Html.Html
 renderButton address number model =
   let
-    click =
-      if model.disabled || model.readonly then []
-      else [onClick address (Pressed number)]
+    click = Ui.enabledActions model [onClick address (Pressed number)]
   in
     node
       "ui-number-pad-button"

@@ -108,15 +108,17 @@ render address model =
   let
     position =
       (toString (clamp 0 100 model.value)) ++ "%"
+
     actions =
-      if model.disabled || model.readonly then []
-      else [ onWithDimensions "mousedown" True address Lift
-           , onKeys address [ (40, Increment)
-                            , (38, Decrement)
-                            , (37, Increment)
-                            , (39, Decrement)
-                            ]
-           ]
+      Ui.enabledActions model
+        [ onWithDimensions "mousedown" True address Lift
+        , onKeys address [ (40, Increment)
+                         , (38, Decrement)
+                         , (37, Increment)
+                         , (39, Decrement)
+                         ]
+        ]
+
     element =
       node "ui-slider"
         ([ classList [ ("disabled", model.disabled)

@@ -21,6 +21,8 @@ import Native.Browser
 import String
 import List
 
+import Ui
+
 {-| Representation of a textarea:
   - **placeholder** - The text to display when there is no value
   - **value** - The value
@@ -88,10 +90,10 @@ render address model =
       , spellcheck False ] ++ actions
 
     actions =
-      if model.disabled || model.readonly then []
-      else [ onStop "select" address Nothing
-           , onInput address Input
-           ]
+      Ui.enabledActions model
+        [ onStop "select" address Nothing
+        , onInput address Input
+        ]
 
     attributes =
       if model.enterAllowed then

@@ -23,16 +23,16 @@ type alias Model =
 rowOptions : Model
 rowOptions =
   { align = "stretch"
-  , compact = False
   , direction = "row"
+  , compact = False
   }
 
 -- Options for column
 columnOptions : Model
 columnOptions =
   { align = "stretch"
-  , compact = False
   , direction = "column"
+  , compact = False
   }
 
 {-| Renders a container. -}

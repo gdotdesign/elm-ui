@@ -206,6 +206,7 @@ ui-fab {
   right: 30px;
   font-size: 32px;
   box-shadow: 0 1px 1px mix($primary, $input, 5%) inset, 0 5px 10px -5px rgba(#000, 0.8);
+  z-index: map-get($z-index, fab);
 
   &:active {
     background: linear-gradient(dampen(dampen-inverse($primary, 15%), 5%), dampen-inverse($primary, 15%));

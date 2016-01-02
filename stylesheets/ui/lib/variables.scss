@@ -23,4 +23,4 @@ $focus-shadow: 0 0 0 1px $focus inset, 0 0 4px rgba($focus, 0.5), 0 0 4px rgba($
 $focus-shadow-readonly: 0 0 0 1px $focus-readonly inset, 0 0 4px rgba($focus-readonly, 0.5), 0 0 4px rgba($focus-readonly, 0.5) inset;
 $focus-shadow-idle: 0 0 0 1px transparent inset, 0 0 4px transparent, 0 0 4px transparent inset;
 
-$z-index: (dropdown: 1000, modal: 100);
+$z-index: (dropdown: 1000, modal: 100, fab: 90);

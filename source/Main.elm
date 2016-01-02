@@ -99,11 +99,11 @@ init =
     , checkbox2 = Ui.Checkbox.init False
     , checkbox = Ui.Checkbox.init False
     , textarea = Ui.Textarea.init "Test"
-    , modal = Ui.Modal.init "Test Modal"
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
     , slider = Ui.Slider.init 50
     , menu = Ui.DropdownMenu.init
+    , modal = Ui.Modal.init
     , clicked = False
     }
 
@@ -151,7 +151,8 @@ view address model =
     Ui.App.view (forwardTo address App) model.app
       [ Ui.Modal.view
         (forwardTo address Modal)
-        { content =
+        { title = "Test Modal"
+        , content =
           [ node "p" [] [text "This is a modal window."]
           , node "p" [] [text "Lorem ipsum dolor sit amet, consectetur
                                adipiscing elit. Pellentesque ornare odio sed

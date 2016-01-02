@@ -229,7 +229,7 @@ onKeys address mappings =
         Just handler -> Signal.message address handler
         _ -> Signal.message nothingMailbox.address Nothing
   in
-    onWithOptions "keydown" preventDefaultOptions (simpleMappingsDecoder mappingsDict) message
+    onWithOptions "keydown" stopOptions (simpleMappingsDecoder mappingsDict) message
 
 {-| An event listener that will run the given actions on the associated keys. -}
 onKeysWithDimensions : Signal.Address a -> List (Int, (DropdownDimensions -> a)) -> Html.Attribute

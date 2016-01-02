@@ -10,9 +10,9 @@ module Ui.InplaceInput
 @docs view
 -}
 import Html exposing (node, textarea, div, text, button)
+import Html.Extra exposing (onEnter, onKeys)
 import Html.Attributes exposing (value)
 import Html.Events exposing (onClick)
-import Html.Extra exposing (onEnter)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
@@ -112,7 +112,10 @@ form address model =
     Ui.Container.view { align = "stretch"
                       , direction = "column"
                       , compact = False
-                      } [onEnter model.ctrlSave address Save]
+                      }
+                      [ onEnter model.ctrlSave address Save
+                      , onKeys address [(27, Close)]
+                      ]
       [ Ui.Textarea.view (forwardTo address Textarea) model.textarea
       , Ui.Container.view { align = "stretch"
                           , direction = "row"

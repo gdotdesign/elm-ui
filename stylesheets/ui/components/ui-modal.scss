@@ -1,15 +1,13 @@
 ui-modal {
+  @include flex-center;
+
   z-index: map-get($z-index, modal);
   transform: translate3d(0, 0, 0);
   position: fixed;
   bottom: 0;
   right: 0;
   left: 0;
-  top:0;
-
-  justify-content: center;
-  align-items: center;
-  display: flex;
+  top: 0;
 
   transition: opacity 320ms, transform 320ms, visibility 1ms 320ms;
   pointer-events: none;

@@ -1,0 +1,25 @@
+ui-input-group {
+  display: flex;
+
+  ui-input-group-label {
+    border-radius: $border-radius 0 0 $border-radius;
+    background: $secondary;
+    font-weight: 600;
+    padding: 0 15px;
+
+    align-items: center;
+    flex: 0 0 auto;
+    display: flex;
+
+    + * {
+      flex: 1;
+    }
+  }
+
+  input:not([type]),
+  input[type=text],
+  input[type=email],
+  input[type=password] {
+    border-radius: 0 $border-radius $border-radius 0;
+  }
+}

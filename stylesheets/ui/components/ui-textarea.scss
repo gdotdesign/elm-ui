@@ -33,8 +33,8 @@ ui-textarea {
     > * { pointer-events: none; }
 
     ui-textarea-background {
-      background: $disabled;
       border-color: $disabled;
+      background: $disabled;
     }
   }
 
@@ -42,7 +42,7 @@ ui-textarea {
     position: absolute;
     bottom: -24px;
     height: 24px;
-    content: "";
+    content: '';
     z-index: 2;
     right: 0;
     left: 0;

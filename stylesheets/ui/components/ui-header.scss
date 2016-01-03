@@ -1,0 +1,19 @@
+ui-header {
+  display: flex;
+  flex: 0 0 auto;
+  color: readable($primary);
+  background: linear-gradient($primary, dampen-inverse($primary, 5%));
+  text-shadow: 0 1px dampen-inverse($primary, 20%);
+  border-bottom: 1px solid dampen-inverse($primary, 20%);
+  border-top: 1px solid dapmen($primary, 10%);
+  height: 60px;
+
+  ui-header-title:first-child {
+    padding-left: 20px;
+  }
+
+  ui-icon {
+    width: 60px;
+    font-size: 32px;
+  }
+}

@@ -1,0 +1,21 @@
+ui-pager {
+  display: block;
+  overflow: hidden;
+  position: relative;
+
+  ui-page {
+    transform: translate3d(0, 0, 0);
+    position: absolute;
+    display: flex;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    top: 0;
+
+    > * { flex: 1; }
+
+    &.animating {
+      transition: left 500ms cubic-bezier(0.77, 0, 0.175, 1);
+    }
+  }
+}

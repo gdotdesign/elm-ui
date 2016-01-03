@@ -1,0 +1,24 @@
+ui-fab {
+  @include flex-center;
+
+  box-shadow: 0 1px 1px mix($primary, $input, 5%) inset,
+              0 5px 10px -5px rgba(#000, 0.8);
+  background: linear-gradient(dampen($primary, 5%), $primary);
+  color: readable($primary);
+  border-radius: 50%;
+
+  text-shadow: 0 1px 0 dampen-inverse($primary, 15%);
+  font-size: 32px;
+
+  z-index: map-get($z-index, fab);
+  position: absolute;
+  bottom: 30px;
+  height: 60px;
+  width: 60px;
+  right: 30px;
+
+  &:active {
+    background: linear-gradient(dampen(dampen-inverse($primary, 15%), 5%),
+                                dampen-inverse($primary, 15%));
+  }
+}

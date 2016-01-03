@@ -20,3 +20,9 @@
   align-items: center;
   text-align: center;
 }
+
+@mixin flex-center {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}

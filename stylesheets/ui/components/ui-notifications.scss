@@ -31,9 +31,9 @@
 ui-notifications {
   z-index: map-get($z-index, notifications);
   transform: translate3d(0, 0, 0);
-  //flex-direction: column-reverse;
+  flex-direction: column-reverse;
   position: fixed;
-  //display: flex;
+  display: flex;
   right: 40px;
   top: 20px;
 
@@ -41,6 +41,7 @@ ui-notifications {
     display: block;
     overflow: visible;
     margin-bottom: 10px;
+    max-height: 100px;
 
     div {
       border-radius: $border-radius;
@@ -51,7 +52,7 @@ ui-notifications {
 
     &.ui-notification-show {
       animation-name: ui-notification-show;
-      animation-fill-mode: both;
+      //animation-fill-mode: both;
     }
 
     &.ui-notification-hide {

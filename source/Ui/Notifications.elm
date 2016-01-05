@@ -2,6 +2,8 @@ module Ui.Notifications where
 
 import Html.Attributes exposing (classList, style)
 import Html exposing (node, text)
+import Json.Encode
+import VirtualDom
 
 import Effects
 import Task
@@ -35,7 +37,7 @@ init timeout duration =
 view: Signal.Address Action -> Model -> Html.Html
 view address model =
   node "ui-notifications" []
-    (List.map (renderNotification address) model.notifications)
+    (List.map (renderNotification address) (List.reverse model.notifications))
 
 update: Action -> Model -> (Model, Effects.Effects Action)
 update action model =
@@ -63,6 +65,7 @@ renderNotification address model =
   node "ui-notification"
     [ classList [(model.class, True)]
     , style [ ("animation-duration", (toString model.duration) ++ "ms") ]
+    , VirtualDom.property "key" (Json.Encode.int model.id)
     ]
     [ node "div" [] [text model.text] ]
 
@@ -85,8 +88,8 @@ hide id model =
   let
     updatedNotis = List.map updatedNoti model.notifications
     effect =
-      if updatedNotis /= model.notifications then asEffect model.duration (Remove id)
-      else asEffect 10 (Hide id)
+      if updatedNotis /= model.notifications then asEffect (model.duration + 100) (Remove id)
+      else asEffect 100 (Hide id)
     updatedNoti item =
       let
         index = List.Extra.elemIndex item model.notifications

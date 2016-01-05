@@ -49,7 +49,7 @@
     "laszlopandy/elm-console" : "1.0.3 <= v < 2.0.0",
     "mgold/elm-date-format": "1.0.3 <= v < 2.0.0",
     "evancz/elm-markdown": "2.0.0 <= v < 3.0.0",
-    "evancz/virtual-dom": "2.1.1 <= v < 3.0.0",
+    "evancz/virtual-dom": "2.1.0 <= v < 3.0.0",
     "evancz/elm-effects": "2.0.0 <= v < 3.0.0",
     "evancz/start-app": "2.0.0 <= v < 3.0.0",
     "Dandandan/Easing": "2.0.1 <= v < 3.0.0",

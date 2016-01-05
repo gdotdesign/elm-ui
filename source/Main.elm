@@ -13,7 +13,7 @@ import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
 import Debug exposing (log)
 
-import Ui.Notifications
+import Ui.NotificationCenter
 import Ui.DropdownMenu
 import Ui.InplaceInput
 import Ui.NumberRange
@@ -42,7 +42,7 @@ type Action
   | ColorPanel Ui.ColorPanel.Action
   | DatePicker Ui.DatePicker.Action
   | NumberPad Ui.NumberPad.Action
-  | Notis Ui.Notifications.Action
+  | Notis Ui.NotificationCenter.Action
   | Checkbox2 Ui.Checkbox.Action
   | Checkbox3 Ui.Checkbox.Action
   | TextArea Ui.Textarea.Action
@@ -66,7 +66,7 @@ type Action
 
 type alias Model =
   { app : Ui.App.Model
-  , notifications : Ui.Notifications.Model
+  , notifications : Ui.NotificationCenter.Model
   , datePicker : Ui.DatePicker.Model
   , inplaceInput : Ui.InplaceInput.Model
   , colorPicker : Ui.ColorPicker.Model
@@ -92,7 +92,7 @@ init =
     datePickerOptions = Ui.DatePicker.init Ext.Date.now
   in
     { app = Ui.App.init "Elm-UI Kitchen Sink"
-    , notifications = Ui.Notifications.init 1500 1000
+    , notifications = Ui.NotificationCenter.init 4000 320
     , datePicker = { datePickerOptions | format = "%Y %B %e." }
     , chooser = Ui.Chooser.init data "Select a country..." ""
     , inplaceInput = Ui.InplaceInput.init "Test Value"
@@ -154,7 +154,7 @@ view address model =
       }
   in
     Ui.App.view (forwardTo address App) model.app
-      [ Ui.Notifications.view (forwardTo address Notis) model.notifications
+      [ Ui.NotificationCenter.view (forwardTo address Notis) model.notifications
       , Ui.Modal.view
         (forwardTo address Modal)
         { title = "Test Modal"
@@ -244,9 +244,9 @@ view address model =
                                                    , disabled = True }
               ]
             ]
-          , componentHeader "Notifications"
+          , componentHeader "NotificationCenter"
           , tableRow ( Ui.IconButton.primary
-                        "Show Notifications"
+                        "Show Notification"
                         "alert-circled"
                         "right"
                         address
@@ -477,12 +477,12 @@ update' action model =
   case action of
     Notis act ->
       let
-        (notis, effect) = Ui.Notifications.update act model.notifications
+        (notis, effect) = Ui.NotificationCenter.update act model.notifications
       in
         ({ model | notifications = notis }, Effects.map Notis effect)
     ShowNotification ->
       let
-        (notis, effect) = Ui.Notifications.add "Test Notification" model.notifications
+        (notis, effect) = Ui.NotificationCenter.notify (text "Test Notification") model.notifications
       in
         ({ model | notifications = notis }, Effects.map Notis effect)
     _ ->

@@ -28,36 +28,43 @@
   }
 }
 
-ui-notifications {
+ui-notification-center {
   z-index: map-get($z-index, notifications);
   transform: translate3d(0, 0, 0);
-  flex-direction: column-reverse;
   position: fixed;
-  display: flex;
-  right: 40px;
+  right: 30px;
   top: 20px;
 
   ui-notification {
-    display: block;
-    overflow: visible;
+    animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+    animation-fill-mode: both;
     margin-bottom: 10px;
     max-height: 100px;
+    overflow: visible;
+    display: block;
+
+    &:hover {
+      cursor: pointer;
+
+      div {
+        background: rgba(0,0,0,0.65);
+      }
+    }
 
     div {
       border-radius: $border-radius;
       background: rgba(0,0,0,0.8);
-      padding: 20px;
+      padding-bottom: 16px;
+      padding: 14px 24px;
       color: #FFF;
     }
 
     &.ui-notification-show {
       animation-name: ui-notification-show;
-      //animation-fill-mode: both;
     }
 
     &.ui-notification-hide {
       animation-name: ui-notification-hide;
-      animation-fill-mode: both;
     }
   }
 }

@@ -22,8 +22,8 @@ type alias Model =
   }
 
 type Action
-  = Hide
-  | Remove
+  = Hide Int
+  | Remove Int
 
 init : Float -> Float -> Model
 init timeout duration =
@@ -39,21 +39,20 @@ view address model =
 
 update: Action -> Model -> (Model, Effects.Effects Action)
 update action model =
-  case action of
-    Hide ->
-      ({ model | notifications = hideFirst model.notifications }
-       , asEffect model.duration Remove)
-    Remove ->
-      ({ model | notifications = remove model.notifications }
+  case log "a" action of
+    Hide id ->
+      hide id model
+    Remove id ->
+      ({ model | notifications = remove id model.notifications }
        , Effects.none)
 
 add : String -> Model -> (Model, Effects.Effects Action)
 add text model =
   let
     noti = initNotification model text
-    updatedModel = { model | notifications = noti :: model.notifications }
+    updatedModel = { model | notifications = model.notifications ++ [noti] }
   in
-    (updatedModel, asEffect model.timeout Hide)
+    (updatedModel, asEffect model.timeout (Hide noti.id))
 
 asEffect timeout action =
   Task.andThen (Task.sleep timeout) (\_ -> Task.succeed action)
@@ -81,26 +80,24 @@ initNotification model text =
     , duration = model.duration
     }
 
-hideFirst: List Notification -> List Notification
-hideFirst notifications =
+hide: Int -> Model -> (Model, Effects.Effects Action)
+hide id model =
   let
-    first = List.head notifications
-    id =
-      Maybe.map (\item ->  if item.class == "ui-notification-hide" then -1 else item.id) first
-        |> Maybe.withDefault -1
+    updatedNotis = List.map updatedNoti model.notifications
+    effect =
+      if updatedNotis /= model.notifications then asEffect model.duration (Remove id)
+      else asEffect 10 (Hide id)
     updatedNoti item =
-      if item.id == id then
-        { item | class = "ui-notification-hide" }
-      else item
+      let
+        index = List.Extra.elemIndex item model.notifications
+                |> Maybe.withDefault -1
+      in
+        if item.id == id && index == 0 then
+          { item | class = "ui-notification-hide" }
+        else item
   in
-    List.map updatedNoti notifications
+    ({ model | notifications = updatedNotis }, effect)
 
-remove : List Notification -> List Notification
-remove notifications =
-  let
-    first = List.head notifications
-    id =
-      Maybe.map (\item ->  if item.class == "ui-notification-show" then -1 else item.id) first
-        |> Maybe.withDefault -1
-  in
-    List.filter (\item -> item.id /= id) notifications
+remove : Int -> List Notification -> List Notification
+remove id notifications =
+  List.filter (\item -> item.id /= id) notifications

@@ -1,14 +1,10 @@
 @keyframes ui-notification-show {
   0% {
     transform: translateX(100%) translateX(50px);
-    margin-bottom: 0;
-    max-height: 0;
   }
 
   100% {
     transform: translateX(0);
-    margin-bottom: 10px;
-    max-height: 100px;
   }
 }
 
@@ -55,12 +51,12 @@ ui-notifications {
 
     &.ui-notification-show {
       animation-name: ui-notification-show;
-      animation-fill-mode: backwards;
+      animation-fill-mode: both;
     }
 
     &.ui-notification-hide {
       animation-name: ui-notification-hide;
-      animation-fill-mode: forwards;
+      animation-fill-mode: both;
     }
   }
 }

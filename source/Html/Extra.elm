@@ -168,8 +168,8 @@ onWithDimensions event preventDefault address action =
 onTransitionEnd : Signal.Address a -> a -> Html.Attribute
 onTransitionEnd address action =
   on "transitionend"
-     Json.value
-     (\_ -> Signal.message address action)
+    Json.value
+    (\_ -> Signal.message address action)
 
 {-| An event listener that will prevent default acitons. -}
 onPreventDefault : String -> Signal.Address a -> a -> Html.Attribute

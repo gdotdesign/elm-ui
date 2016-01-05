@@ -13,6 +13,7 @@ import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
 import Debug exposing (log)
 
+import Ui.Notifications
 import Ui.DropdownMenu
 import Ui.InplaceInput
 import Ui.NumberRange
@@ -41,6 +42,7 @@ type Action
   | ColorPanel Ui.ColorPanel.Action
   | DatePicker Ui.DatePicker.Action
   | NumberPad Ui.NumberPad.Action
+  | Notis Ui.Notifications.Action
   | Checkbox2 Ui.Checkbox.Action
   | Checkbox3 Ui.Checkbox.Action
   | TextArea Ui.Textarea.Action
@@ -53,6 +55,7 @@ type Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
   | MouseIsDown Bool
+  | ShowNotification
   | EscIsDown Bool
   | Open String
   | CloseMenu
@@ -63,6 +66,7 @@ type Action
 
 type alias Model =
   { app : Ui.App.Model
+  , notifications : Ui.Notifications.Model
   , datePicker : Ui.DatePicker.Model
   , inplaceInput : Ui.InplaceInput.Model
   , colorPicker : Ui.ColorPicker.Model
@@ -88,6 +92,7 @@ init =
     datePickerOptions = Ui.DatePicker.init Ext.Date.now
   in
     { app = Ui.App.init "Elm-UI Kitchen Sink"
+    , notifications = Ui.Notifications.init 1500 1000
     , datePicker = { datePickerOptions | format = "%Y %B %e." }
     , chooser = Ui.Chooser.init data "Select a country..." ""
     , inplaceInput = Ui.InplaceInput.init "Test Value"
@@ -149,7 +154,8 @@ view address model =
       }
   in
     Ui.App.view (forwardTo address App) model.app
-      [ Ui.Modal.view
+      [ Ui.Notifications.view (forwardTo address Notis) model.notifications
+      , Ui.Modal.view
         (forwardTo address Modal)
         { title = "Test Modal"
         , content =
@@ -238,6 +244,15 @@ view address model =
                                                    , disabled = True }
               ]
             ]
+          , componentHeader "Notifications"
+          , tableRow ( Ui.IconButton.primary
+                        "Show Notifications"
+                        "alert-circled"
+                        "right"
+                        address
+                        ShowNotification)
+                     (text "")
+                     (text "")
           , componentHeader "Modal"
           , tableRow ( Ui.IconButton.primary
                         "Open Modal" "android-open" "right" address OpenModal)
@@ -454,13 +469,25 @@ update action model =
     Alert ->
       { model | clicked = True }
 
-    Nothing ->
+    _ ->
       model
 
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
-  update action model
-    |> fxNone
+  case action of
+    Notis act ->
+      let
+        (notis, effect) = Ui.Notifications.update act model.notifications
+      in
+        ({ model | notifications = notis }, Effects.map Notis effect)
+    ShowNotification ->
+      let
+        (notis, effect) = Ui.Notifications.add "Test Notification" model.notifications
+      in
+        ({ model | notifications = notis }, Effects.map Notis effect)
+    _ ->
+      update action model
+        |> fxNone
 
 app =
   StartApp.start { init = (init, Effects.none)

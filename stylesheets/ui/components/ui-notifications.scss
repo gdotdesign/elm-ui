@@ -1,0 +1,66 @@
+@keyframes ui-notification-show {
+  0% {
+    transform: translateX(100%) translateX(50px);
+    margin-bottom: 0;
+    max-height: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    margin-bottom: 10px;
+    max-height: 100px;
+  }
+}
+
+@keyframes ui-notification-hide {
+  0% {
+    transform: translateX(0);
+    margin-bottom: 10px;
+    max-height: 100px;
+  }
+
+  50% {
+    transform: translateX(100%) translateX(50px);
+    margin-bottom: 10px;
+    max-height: 100px;
+  }
+
+  100% {
+    transform: translateX(100%) translateX(50px);
+    margin-bottom: 0;
+    max-height: 0;
+  }
+}
+
+ui-notifications {
+  z-index: map-get($z-index, notifications);
+  transform: translate3d(0, 0, 0);
+  //flex-direction: column-reverse;
+  position: fixed;
+  //display: flex;
+  right: 40px;
+  top: 20px;
+
+  ui-notification {
+    display: block;
+    overflow: visible;
+    margin-bottom: 10px;
+
+    div {
+      border-radius: $border-radius;
+      background: rgba(0,0,0,0.8);
+      padding: 20px;
+      color: #FFF;
+    }
+
+    &.ui-notification-show {
+      animation-name: ui-notification-show;
+      animation-fill-mode: backwards;
+    }
+
+    &.ui-notification-hide {
+      animation-name: ui-notification-hide;
+      animation-fill-mode: forwards;
+    }
+  }
+}

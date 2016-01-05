@@ -164,11 +164,18 @@ autoHide id model =
     updatedNotifications =
       List.map updatedNotification model.notifications
 
-    effect =
+    isMember =
+      List.map .id model.notifications
+      |> List.member id
+
+    hideEffect =
       if updatedNotifications /= model.notifications then
         asEffect (model.duration + 100) (Remove id)
       else
         asEffect 100 (AutoHide id)
+
+    effect =
+      if isMember then hideEffect else Effects.none
 
     updatedNotification item =
       let

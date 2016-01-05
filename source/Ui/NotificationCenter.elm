@@ -37,7 +37,8 @@ type Action
   | Remove Int
   | Hide Int
 
-{-| Initializes a notification center with the given timeout and duration
+{-| Initializes a notification center with the given timeout and duration (in
+milliseconds).
 
     NotificationCenter.init timeout duration
 -}
@@ -64,7 +65,7 @@ update action model =
     Hide id ->
       hide id model
 
-{-| Adds a notification with the given content.
+{-| Adds a notification with the given html content.
 
     NotificationCenter.notify (text "Hello") model
 -}

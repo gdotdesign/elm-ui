@@ -7,7 +7,7 @@ An opinionated UI library for the web in Elm, following the **Elm Architecture**
 
 [![Build Status](https://travis-ci.org/gdotdesign/elm-ui.svg?branch=master)](https://travis-ci.org/gdotdesign/elm-ui)
 
-![Test Status](https://saucelabs.com/browser-matrix/elmui.svg)
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/elmui.svg)](https://saucelabs.com/u/elmui)
 
 ## Implemented Componets
 All components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).
@@ -26,6 +26,8 @@ Interactive components so far:
 - [x] Ui.Image - An image that fades when loaded
 - [x] Ui.InplaceInput - An input that can be edited in place (display and form view with a save button)
 - [x] Ui.Input - Basic input component
+- [x] Ui.Modal - A base for modal dialogs
+- [x] Ui.NotificationCenter - A component for displaying messages to the user
 - [x] Ui.NumberPad - An interface for providing number values (like a calculator or lock screen)
 - [x] Ui.NumberRange - An interface for maniuplating a number value by dragging
 - [x] Ui.Pager - A pager component
@@ -33,7 +35,6 @@ Interactive components so far:
 - [x] Ui.Textarea - An automatically growing textarea
 - [ ] Ui.Tabs - A tab component
 - [ ] Ui.Upload - A file upload component
-- [ ] Ui.Modal - A base for modal dialogs
 - [ ] Ui.ButtonGroup - A component for selecting a value via buttons
 - [ ] Ui.Rating - A rating component
 - [ ] Ui.MaskedInput - An input component where the value is masked by a pattern
@@ -91,7 +92,7 @@ dist/
 ```
 
 ## Documentation
-Currently the only documentation is the Elm documentation that you can generate with the `elm-make --docs=documentation.json` and then opening it with the **preview** feature in [http://package.elm-lang.org/help/docs-preview](http://package.elm-lang.org/help/docs-preview).
+Currently the only documentation is the Elm documentation that you can generate with the `npm run elm-docs` and then opening the `documentation.json` with the **preview** feature in [http://package.elm-lang.org/help/docs-preview](http://package.elm-lang.org/help/docs-preview).
 
 ## Contributing
 Any contributions are welcome, you should keep in mind the following when submitting a new **component**:
@@ -108,3 +109,4 @@ Any contributions are welcome, you should keep in mind the following when submit
     * **interactive with effects** - Same as interactive but the `update` should return `(model, effect)`
   * If the component is focusable the neccessary keyboard interface should be implemented
   * One or more examples should be added the kitchensink to show usage.
+  * Tests should be added for the most used configuration and states

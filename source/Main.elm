@@ -56,6 +56,7 @@ type Action
   | Modal Ui.Modal.Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
+  | RatingsChanged Int
   | MouseIsDown Bool
   | ShowNotification
   | AppAction String
@@ -497,12 +498,18 @@ update' action model =
       in
         ({ model | notifications = notis }, Effects.map Notis effect)
     ShowNotification ->
-      let
-        (notis, effect) = Ui.NotificationCenter.notify (text "Test Notification") model.notifications
-      in
-        ({ model | notifications = notis }, Effects.map Notis effect)
+      notify "Test Notification" model
+    RatingsChanged value ->
+      notify ("Ratings changed to: " ++ (toString value)) model
     _ ->
       (update action model, Effects.none)
+
+notify : String -> Model -> (Model, Effects.Effects Action)
+notify message model =
+  let
+    (notis, effect) = Ui.NotificationCenter.notify (text message) model.notifications
+  in
+    ({ model | notifications = notis }, Effects.map Notis effect)
 
 app =
   let
@@ -515,6 +522,7 @@ app =
                               , Signal.map MouseIsDown Mouse.isDown
                               , Signal.map EscIsDown (Keyboard.isDown 27)
                               , Signal.map AppAction initial.app.mailbox.signal
+                              , Signal.map RatingsChanged initial.ratings.signal
                               ]
                    }
 

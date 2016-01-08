@@ -31,7 +31,8 @@ import Ui
   - **size** - The number of starts to display
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Float
+  { mailbox : Signal.Mailbox Int
+  , signal : Signal Int
   , hoverValue : Float
   , disabled : Bool
   , readonly : Bool
@@ -55,13 +56,17 @@ value.
 -}
 init : Int -> Float -> Model
 init size value =
-  { mailbox = Signal.mailbox value
-  , hoverValue = value
-  , disabled = False
-  , readonly = False
-  , value = value
-  , size = size
-  }
+  let
+    mailbox = Signal.mailbox 0
+  in
+    { signal = mailbox.signal
+    , hoverValue = value
+    , mailbox = mailbox
+    , disabled = False
+    , readonly = False
+    , value = value
+    , size = size
+    }
 
 {-| Updates a ratings component. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -94,7 +99,10 @@ setValue value model =
               , hoverValue = value }
 
     effect =
-      Ext.Signal.sendAsEffect model.mailbox.address value Tasks
+      Ext.Signal.sendAsEffect
+        model.mailbox.address
+        (round (value * (toFloat model.size)))
+        Tasks
   in
     (updatedModel, effect)
 

@@ -27,6 +27,7 @@ import Ui.Calendar
 import Ui.Checkbox
 import Ui.Textarea
 import Ui.Chooser
+import Ui.Ratings
 import Ui.Button
 import Ui.Slider
 import Ui.Modal
@@ -49,6 +50,7 @@ type Action
   | Calendar Ui.Calendar.Action
   | Checkbox Ui.Checkbox.Action
   | Chooser Ui.Chooser.Action
+  | Ratings Ui.Ratings.Action
   | Slider Ui.Slider.Action
   | Image Ui.Image.Action
   | Modal Ui.Modal.Action
@@ -79,6 +81,7 @@ type alias Model =
   , textarea : Ui.Textarea.Model
   , calendar : Ui.Calendar.Model
   , menu : Ui.DropdownMenu.Model
+  , ratings : Ui.Ratings.Model
   , chooser : Ui.Chooser.Model
   , slider : Ui.Slider.Model
   , modal : Ui.Modal.Model
@@ -106,6 +109,7 @@ init =
     , textarea = Ui.Textarea.init "Test"
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
+    , ratings = Ui.Ratings.init 5 0.5
     , slider = Ui.Slider.init 50
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
@@ -143,7 +147,7 @@ view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker, numberRange, slider
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
-    , numberPad } = model
+    , numberPad, ratings } = model
 
     clicked =
       if model.clicked then [node "clicked" [] [text ""]] else []
@@ -244,6 +248,12 @@ view address model =
                                                    , disabled = True }
               ]
             ]
+          , componentHeader "Ratings"
+          , tableRow (Ui.Ratings.view (forwardTo address Ratings) ratings)
+                     (Ui.Ratings.view (forwardTo address Ratings)
+                       { ratings | readonly = True })
+                     (Ui.Ratings.view (forwardTo address Ratings)
+                       { ratings | disabled = True })
           , componentHeader "NotificationCenter"
           , tableRow ( Ui.IconButton.primary
                         "Show Notification"
@@ -475,6 +485,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    Ratings act ->
+      let
+        (ratings, effect) = Ui.Ratings.update act model.ratings
+      in
+        ({ model | ratings = ratings }, Effects.map Ratings effect)
     Notis act ->
       let
         (notis, effect) = Ui.NotificationCenter.update act model.notifications

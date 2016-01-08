@@ -1,0 +1,44 @@
+ui-ratings {
+  display: inline-block;
+  height: 36px;
+
+  ui-ratings-star {
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    width: 36px;
+
+    &:before {
+      font-family: Ionicons;
+      font-size: 36px;
+    }
+
+    &.ui-ratings-full:before {
+      content: '\f2fc'
+    }
+
+    &.ui-ratings-empty:before {
+      content: '\f3ae'
+    }
+  }
+
+  &:not(.readonly):not(.disabled) {
+    &:focus, &:hover {
+      cursor: pointer;
+      outline: none;
+      color: $focus;
+    }
+  }
+
+  &.readonly:focus {
+    outline: none;
+    color: $focus-readonly;
+  }
+
+  &.disabled {
+    @extend %disabled;
+    color: $disabled;
+    opacity: 1;
+  }
+}

@@ -34,6 +34,7 @@
     "Ui.NumberRange",
     "Ui.NotificationCenter",
     "Ui.Pager",
+    "Ui.Ratings",
     "Ui.Slider",
     "Ui.Textarea",
     "Ui.Charts.Bar",

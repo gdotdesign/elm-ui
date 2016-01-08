@@ -33,10 +33,10 @@ Interactive components so far:
 - [x] Ui.Pager - A pager component
 - [x] Ui.Slider - A slider component
 - [x] Ui.Textarea - An automatically growing textarea
+- [x] Ui.Rating - A rating component
 - [ ] Ui.Tabs - A tab component
 - [ ] Ui.Upload - A file upload component
 - [ ] Ui.ButtonGroup - A component for selecting a value via buttons
-- [ ] Ui.Rating - A rating component
 - [ ] Ui.MaskedInput - An input component where the value is masked by a pattern
 - [ ] Ui.CheckboxGroup - A component for selecting a value via checkboxes
 

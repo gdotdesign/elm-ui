@@ -389,10 +389,6 @@ view address model =
         ]
       ]
 
-fxNone : Model -> (Model, Effects.Effects Action)
-fxNone model =
-  (model, Effects.none)
-
 update : Action -> Model -> Model
 update action model =
   case action of
@@ -491,8 +487,7 @@ update' action model =
       in
         ({ model | notifications = notis }, Effects.map Notis effect)
     _ ->
-      update action model
-        |> fxNone
+      (update action model, Effects.none)
 
 app =
   let

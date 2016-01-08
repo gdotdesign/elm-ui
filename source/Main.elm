@@ -58,6 +58,7 @@ type Action
   | MousePosition (Int, Int)
   | MouseIsDown Bool
   | ShowNotification
+  | AppAction String
   | EscIsDown Bool
   | Open String
   | CloseMenu
@@ -437,12 +438,6 @@ update action model =
       { model | modal = Ui.Modal.update act model.modal                      }
     Image act ->
       { model | image = Ui.Image.update act model.image                      }
-    App act ->
-      case act of
-        Ui.App.Scrolled ->
-          { model | menu = Ui.DropdownMenu.close model.menu }
-        _ ->
-          { model | app = Ui.App.update act model.app                        }
 
     MouseIsDown value ->
       { model
@@ -459,6 +454,11 @@ update action model =
         , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel
         , slider = Ui.Slider.handleMove x y model.slider
         }
+
+    AppAction act ->
+      case act of
+        "scroll" -> { model | menu = Ui.DropdownMenu.close model.menu }
+        _ -> model
 
     CloseMenu ->
       { model | menu = Ui.DropdownMenu.close model.menu }
@@ -490,6 +490,11 @@ update' action model =
         (ratings, effect) = Ui.Ratings.update act model.ratings
       in
         ({ model | ratings = ratings }, Effects.map Ratings effect)
+    App act ->
+      let
+        (app, effect) = Ui.App.update act model.app
+      in
+        ({ model | app = app }, Effects.map App effect)
     Notis act ->
       let
         (notis, effect) = Ui.NotificationCenter.update act model.notifications
@@ -505,14 +510,18 @@ update' action model =
         |> fxNone
 
 app =
-  StartApp.start { init = (init, Effects.none)
-                 , view = view
-                 , update = update'
-                 , inputs = [ Signal.map MousePosition Mouse.position
-                            , Signal.map MouseIsDown Mouse.isDown
-                            , Signal.map EscIsDown (Keyboard.isDown 27)
-                            ]
-                 }
+  let
+    initial = init
+  in
+    StartApp.start { init = (initial, Effects.none)
+                   , view = view
+                   , update = update'
+                   , inputs = [ Signal.map MousePosition Mouse.position
+                              , Signal.map MouseIsDown Mouse.isDown
+                              , Signal.map EscIsDown (Keyboard.isDown 27)
+                              , Signal.map AppAction initial.app.mailbox.signal
+                              ]
+                   }
 
 main =
   app.html

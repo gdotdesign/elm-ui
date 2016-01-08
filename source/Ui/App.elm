@@ -12,6 +12,9 @@ module Ui.App (Model, Action(..), init, update, view) where
 # View
 @docs view
 -}
+import Ext.Signal
+import Effects
+
 import Html.Attributes exposing (name, content, style)
 import Html.Extra exposing (onScroll)
 import Html exposing (node, text)
@@ -21,8 +24,9 @@ import Ui
 
 {-| Representation of an application. -}
 type alias Model =
-  { title: String
-  , loaded: Bool
+  { title : String
+  , loaded : Bool
+  , mailbox : Signal.Mailbox String
   }
 
 {-| Actions an application can make:
@@ -32,6 +36,7 @@ type alias Model =
 type Action
   = Scrolled
   | Loaded
+  | Tasks ()
 
 {-| Initializes an application.
 
@@ -41,17 +46,22 @@ init : String -> Model
 init title =
   { loaded = False
   , title = title
+  , mailbox = Signal.mailbox ""
   }
 
 {-| Updates an application. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     Loaded ->
-      { model | loaded = True }
+      ({ model | loaded = True }
+       , Ext.Signal.sendAsEffect model.mailbox.address "load" Tasks)
 
     Scrolled ->
-      model
+      (model, Ext.Signal.sendAsEffect model.mailbox.address "scroll" Tasks)
+
+    Tasks _ ->
+      (model, Effects.none)
 
 {-| Renders an application.
 

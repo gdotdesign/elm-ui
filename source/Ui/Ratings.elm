@@ -11,6 +11,7 @@ module Ui.Ratings (Model, Action(..), init, update, view, setValue) where
 # Functions
 @docs setValue
 -}
+import Ext.Signal
 import Effects
 import Signal
 import Array
@@ -45,6 +46,7 @@ type Action
   | Increment
   | Decrement
   | Click Int
+  | Tasks ()
 
 {-| Initializes a ratings component with the given number of stars and initial
 value.
@@ -75,6 +77,8 @@ update action model =
       setValue (clamp 0 1 (model.value - (1 / (toFloat model.size)))) model
     Click index ->
       setValue (calculateValue index model) model
+    Tasks _ ->
+      (model, Effects.none)
 
 {-| Renders a ratings component. -}
 view : Signal.Address Action -> Model -> Html.Html
@@ -84,8 +88,15 @@ view address model =
 {-| Sets the value of a ratings component. -}
 setValue : Float -> Model -> (Model, Effects.Effects Action)
 setValue value model =
-  ({ model | value = value
-           , hoverValue = value }, Effects.none)
+  let
+    updatedModel =
+      { model | value = value
+              , hoverValue = value }
+
+    effect =
+      Ext.Signal.sendAsEffect model.mailbox.address value Tasks
+  in
+    (updatedModel, effect)
 
 -- Calculates the value for the given index
 calculateValue : Int -> Model -> Float

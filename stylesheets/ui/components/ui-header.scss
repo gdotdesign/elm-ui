@@ -1,6 +1,7 @@
 ui-header {
   display: flex;
   flex: 0 0 auto;
+  align-items: center;
   color: readable($primary);
   background: linear-gradient($primary, dampen-inverse($primary, 5%));
   text-shadow: 0 1px dampen-inverse($primary, 20%);
@@ -8,11 +9,11 @@ ui-header {
   border-top: 1px solid dapmen($primary, 10%);
   height: 60px;
 
-  ui-header-title:first-child {
+  > ui-header-title:first-child {
     padding-left: 20px;
   }
 
-  ui-icon {
+  > ui-icon {
     width: 60px;
     font-size: 32px;
   }

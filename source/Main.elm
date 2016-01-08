@@ -89,7 +89,7 @@ type alias Model =
 init : Model
 init =
   let
-    datePickerOptions = Ui.DatePicker.init Ext.Date.now
+    datePickerOptions = Ui.DatePicker.init (Ext.Date.now ())
   in
     { app = Ui.App.init "Elm-UI Kitchen Sink"
     , notifications = Ui.NotificationCenter.init 4000 320

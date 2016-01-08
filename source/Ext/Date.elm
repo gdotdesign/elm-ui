@@ -21,8 +21,8 @@ import Array
 import Date
 
 {-| Returns the current date. -}
-now : Date.Date
-now =
+now : a -> Date.Date
+now _ =
   Native.DateTime.now Nothing
 
 {-| Creates a date from the given year, month and day.

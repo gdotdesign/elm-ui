@@ -1,4 +1,5 @@
-module Ui.Ratings (Model, Action(..), init, update, view, setValue) where
+module Ui.Ratings
+  (Model, Action(..), init, update, view, setValue, valueAsStars) where
 
 {-| A simple star rating component.
 
@@ -9,7 +10,7 @@ module Ui.Ratings (Model, Action(..), init, update, view, setValue) where
 @docs view
 
 # Functions
-@docs setValue
+@docs setValue, valueAsStars
 -}
 import Ext.Signal
 import Effects
@@ -25,15 +26,17 @@ import Html.Lazy
 import Ui
 
 {-| Representation of a ratings component.
+  - **clearable** - Whether or not the component is clearable
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
   - **value** - The current value of the component (0..1)
   - **size** - The number of starts to display
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Int
-  , signal : Signal Int
+  { mailbox : Signal.Mailbox Float
+  , signal : Signal Float
   , hoverValue : Float
+  , clearable : Bool
   , disabled : Bool
   , readonly : Bool
   , value : Float
@@ -59,9 +62,10 @@ init size value =
   let
     mailbox = Signal.mailbox 0
   in
-    { signal = mailbox.signal
+    { signal = Signal.dropRepeats mailbox.signal
     , hoverValue = value
     , mailbox = mailbox
+    , clearable = False
     , disabled = False
     , readonly = False
     , value = value
@@ -101,15 +105,26 @@ setValue value model =
     effect =
       Ext.Signal.sendAsEffect
         model.mailbox.address
-        (round (value * (toFloat model.size)))
+        value
         Tasks
   in
     (updatedModel, effect)
 
+{-| Returns the value of a ratings component as number of stars. -}
+valueAsStars : Float -> Model -> Int
+valueAsStars value model =
+  round (value * (toFloat model.size))
+
 -- Calculates the value for the given index
 calculateValue : Int -> Model -> Float
 calculateValue index model =
-  clamp 0 1 ((toFloat index) / (toFloat model.size))
+  let
+    value =
+      clamp 0 1 ((toFloat index) / (toFloat model.size))
+
+    currentIndex = valueAsStars model.value model
+  in
+    if currentIndex == index && model.clearable then 0 else value
 
 -- Render internal
 render : Signal.Address Action -> Model -> Html.Html

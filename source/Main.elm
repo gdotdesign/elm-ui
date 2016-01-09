@@ -56,7 +56,7 @@ type Action
   | Modal Ui.Modal.Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
-  | RatingsChanged Int
+  | RatingsChanged Float
   | MouseIsDown Bool
   | ShowNotification
   | AppAction String
@@ -111,7 +111,7 @@ init =
     , textarea = Ui.Textarea.init "Test"
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
-    , ratings = Ui.Ratings.init 5 0.5
+    , ratings = Ui.Ratings.init 5 0.4
     , slider = Ui.Slider.init 50
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
@@ -500,7 +500,7 @@ update' action model =
     ShowNotification ->
       notify "Test Notification" model
     RatingsChanged value ->
-      notify ("Ratings changed to: " ++ (toString value)) model
+      notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings))) model
     _ ->
       (update action model, Effects.none)
 

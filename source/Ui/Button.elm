@@ -35,7 +35,12 @@ import Html.Lazy
 
 import Ui
 
-{-| Representation of a button. -}
+{-| Representation of a button:
+  - **disabled** - Whether or not the button is disabled
+  - **kind** - The type of the button
+  - **size** - The size of the button
+  - **text** - The text of the button
+-}
 type alias Model =
   { disabled: Bool
   , kind: String

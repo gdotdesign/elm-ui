@@ -548,7 +548,7 @@ app =
                    , inputs = [ Signal.map MousePosition Mouse.position
                               , Signal.map MouseIsDown Mouse.isDown
                               , Signal.map EscIsDown (Keyboard.isDown 27)
-                              , Signal.map AppAction initial.app.mailbox.signal
+                              , Signal.map AppAction initial.app.signal
                               , Signal.map RatingsChanged initial.ratings.signal
                               , Signal.map DatePicker initial.datePicker.signal
                               , Signal.map CalendarChanged initial.calendar.valueSignal

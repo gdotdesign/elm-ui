@@ -1,10 +1,10 @@
-module Ui.App (Model, Action(..), init, update, view) where
+module Ui.App (Model, Action, init, update, view) where
 
 {-| Base frame for a web/mobile application:
-  - Loads the stylesheet
-  - Sets up a scroll handler
+  - Provides a signal for **load** and **scroll** events
   - Sets the viewport to be mobile friendly
   - Sets the title of the application
+  - Loads the stylesheet
 
 # Model
 @docs Model, Action, update, init
@@ -22,32 +22,39 @@ import Html.Lazy
 
 import Ui
 
-{-| Representation of an application. -}
+{-| Representation of an application:
+  - **loaded** - Whether or not the applications stylesheet is loaded
+  - **signal** - The signal of the mailbox for events (scroll / load)
+  - **title** - The title of the application (and the window)
+  - **mailbox** - The mailbox of the application
+-}
 type alias Model =
-  { title : String
+  { mailbox : Signal.Mailbox String
+  , signal : Signal String
+  , title : String
   , loaded : Bool
-  , mailbox : Signal.Mailbox String
   }
 
-{-| Actions an application can make:
-  - **Scrolled** - Dispatched when something inside the application has scrolled
-  - **Loaded** - Dispatched when the stylesheet is loaded
--}
+{-| Actions an application can make. -}
 type Action
   = Scrolled
   | Loaded
   | Tasks ()
 
-{-| Initializes an application.
+{-| Initializes an application with the given title.
 
     App.init "My Application"
 -}
 init : String -> Model
 init title =
-  { loaded = False
-  , title = title
-  , mailbox = Signal.mailbox ""
-  }
+  let
+    mailbox = Signal.mailbox ""
+  in
+    { signal = mailbox.signal
+    , mailbox = mailbox
+    , loaded = False
+    , title = title
+    }
 
 {-| Updates an application. -}
 update : Action -> Model -> (Model, Effects.Effects Action)

@@ -1,5 +1,5 @@
 module Ui.Ratings
-  (Model, Action(..), init, update, view, setValue, valueAsStars) where
+  (Model, Action, init, update, view, setValue, valueAsStars) where
 
 {-| A simple star rating component.
 
@@ -12,6 +12,7 @@ module Ui.Ratings
 # Functions
 @docs setValue, valueAsStars
 -}
+import Ext.Number exposing (roundTo)
 import Ext.Signal
 import Effects
 import Signal
@@ -24,6 +25,8 @@ import Html exposing (node)
 import Html.Lazy
 
 import Ui
+
+import Debug exposing (log)
 
 {-| Representation of a ratings component.
   - **clearable** - Whether or not the component is clearable
@@ -60,7 +63,7 @@ value.
 init : Int -> Float -> Model
 init size value =
   let
-    mailbox = Signal.mailbox 0
+    mailbox = Signal.mailbox value
   in
     { signal = Signal.dropRepeats mailbox.signal
     , hoverValue = value
@@ -86,7 +89,12 @@ update action model =
       setValue (clamp 0 1 (model.value + (1 / (toFloat model.size)))) model
 
     Decrement ->
-      setValue (clamp 0 1 (model.value - (1 / (toFloat model.size)))) model
+      let
+        oneStarValue = 1 / (toFloat model.size)
+        min = if model.clearable then 0 else oneStarValue
+        a = log "min" min
+      in
+        setValue (clamp oneStarValue 1 (model.value - oneStarValue)) model
 
     Click index ->
       setValue (calculateValue index model) model
@@ -101,8 +109,11 @@ view address model =
 
 {-| Sets the value of a ratings component. -}
 setValue : Float -> Model -> (Model, Effects.Effects Action)
-setValue value model =
+setValue value' model =
   let
+    value =
+      roundTo 2 value'
+
     updatedModel =
       { model | value = value
               , hoverValue = value }
@@ -127,7 +138,8 @@ calculateValue index model =
     value =
       clamp 0 1 ((toFloat index) / (toFloat model.size))
 
-    currentIndex = valueAsStars model.value model
+    currentIndex =
+      valueAsStars model.value model
   in
     if currentIndex == index && model.clearable then 0 else value
 

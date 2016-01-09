@@ -1,4 +1,5 @@
 import Signal exposing (forwardTo)
+import Date.Format
 import Ext.Date
 import StartApp
 import Keyboard
@@ -7,6 +8,7 @@ import Mouse
 import Color
 import Task
 import Date
+import Time
 
 import Html.Attributes exposing (style, classList, colspan, href)
 import Html.Events exposing (onClick)
@@ -56,6 +58,7 @@ type Action
   | Modal Ui.Modal.Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
+  | CalendarChanged Time.Time
   | RatingsChanged Float
   | MouseIsDown Bool
   | ShowNotification
@@ -409,8 +412,6 @@ update action model =
       { model | numberRange = Ui.NumberRange.update act model.numberRange    }
     ColorPicker act ->
       { model | colorPicker = Ui.ColorPicker.update act model.colorPicker    }
-    DatePicker act ->
-      { model | datePicker = Ui.DatePicker.update act model.datePicker       }
     ColorPanel act ->
       { model | colorPanel = Ui.ColorPanel.update act model.colorPanel       }
     NumberPad act ->
@@ -423,8 +424,6 @@ update action model =
       { model | checkbox = Ui.Checkbox.update act model.checkbox             }
     TextArea act ->
       { model | textarea = Ui.Textarea.update act model.textarea             }
-    Calendar act ->
-      { model | calendar = Ui.Calendar.update act model.calendar             }
     Chooser act ->
       { model | chooser = Ui.Chooser.update act model.chooser                }
     DropdownMenu act ->
@@ -482,6 +481,16 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    DatePicker act ->
+      let
+        (datePicker, effect) = Ui.DatePicker.update act model.datePicker
+      in
+        ({ model | datePicker = datePicker }, Effects.map DatePicker effect)
+    Calendar act ->
+      let
+        (calendar, effect) = Ui.Calendar.update act model.calendar
+      in
+        ({ model | calendar = calendar}, Effects.map Calendar effect)
     Ratings act ->
       let
         (ratings, effect) = Ui.Ratings.update act model.ratings
@@ -499,6 +508,8 @@ update' action model =
         ({ model | notifications = notis }, Effects.map Notis effect)
     ShowNotification ->
       notify "Test Notification" model
+    CalendarChanged time ->
+      notify ("Calendar changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
     RatingsChanged value ->
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings))) model
     _ ->
@@ -523,6 +534,8 @@ app =
                               , Signal.map EscIsDown (Keyboard.isDown 27)
                               , Signal.map AppAction initial.app.mailbox.signal
                               , Signal.map RatingsChanged initial.ratings.signal
+                              , Signal.map DatePicker initial.datePicker.signal
+                              , Signal.map CalendarChanged initial.calendar.signal
                               ]
                    }
 

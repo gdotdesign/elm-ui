@@ -19,9 +19,11 @@ import Html exposing (node, div, text)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
+import Effects
 import Dict
 
 import Date.Format exposing (format)
+import Time
 import Date
 
 import Ui.Helpers.Dropdown as Dropdown
@@ -39,6 +41,7 @@ import Ui
 type alias Model =
   { calendar : Calendar.Model
   , dropdownPosition : String
+  , signal : Signal Action
   , closeOnSelect : Bool
   , format : String
   , disabled : Bool
@@ -61,6 +64,7 @@ type Action
   | Close Html.Extra.DropdownDimensions
   | Toggle Html.Extra.DropdownDimensions
   | Calendar Calendar.Action
+  | Select Time.Time
   | Blur
 
 {-| Initializes a date picker with the given values.
@@ -69,18 +73,33 @@ type Action
 -}
 init : Date.Date -> Model
 init date =
-  { calendar = Calendar.init date
-  , dropdownPosition = "bottom"
-  , closeOnSelect = False
-  , format = "%Y-%m-%d"
-  , disabled = False
-  , readonly = False
-  , open = False
-  }
+  let
+    calendar = Calendar.init date
+  in
+    { calendar = calendar
+    , signal = Signal.map Select calendar.signal
+    , dropdownPosition = "bottom"
+    , closeOnSelect = False
+    , format = "%Y-%m-%d"
+    , disabled = False
+    , readonly = False
+    , open = False
+    }
 
 {-| Updates a date picker. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
+  case action of
+    Calendar act ->
+      let
+        (calendar, effect) = Calendar.update act model.calendar
+      in
+        ({ model | calendar = calendar }, Effects.map Calendar effect)
+    _ ->
+      (update' action model, Effects.none)
+
+update' : Action -> Model -> Model
+update' action model =
   case action of
     Focus dimensions ->
       Dropdown.openWithDimensions dimensions model
@@ -102,18 +121,13 @@ update action model =
       { model | calendar = Calendar.nextDay model.calendar }
         |> Dropdown.openWithDimensions dimensions
 
-    Calendar act ->
-      let
-        updatedModel =
-          { model | calendar = Calendar.update act model.calendar }
-      in
-        case act of
-          Calendar.Select date ->
-            if model.closeOnSelect then
-              Dropdown.close updatedModel
-            else
-              updatedModel
-          _ -> updatedModel
+    Select date ->
+      if model.closeOnSelect then
+        Dropdown.close model
+      else
+        model
+
+    _ -> model
 
 {-| Renders a date picker. -}
 view : Signal.Address Action -> Model -> Html.Html

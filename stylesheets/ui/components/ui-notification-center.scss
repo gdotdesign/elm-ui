@@ -35,6 +35,10 @@ ui-notification-center {
   right: 30px;
   top: 20px;
 
+  flex-direction: column;
+  align-items: flex-end;
+  display: flex;
+
   ui-notification {
     animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
     animation-fill-mode: both;

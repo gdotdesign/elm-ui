@@ -18,10 +18,14 @@ import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)
 import Html exposing (node, text)
 import Html.Lazy
-import List
 
 import Date.Format exposing (format)
+import Time exposing (Time)
+import Ext.Signal
 import Ext.Date
+import Effects
+import Signal
+import List
 import Date
 
 import Ui.Container
@@ -35,7 +39,9 @@ import Ui
   - **value** - The current selected date
 -}
 type alias Model =
-  { selectable : Bool
+  { mailbox : Signal.Mailbox Time
+  , signal : Signal Time
+  , selectable : Bool
   , value : Date.Date
   , date : Date.Date
   , disabled : Bool
@@ -51,6 +57,7 @@ type Action
   = NextMonth
   | PreviousMonth
   | Select Date.Date
+  | Tasks ()
 
 {-| Initializes a calendar with the given values.
 
@@ -58,25 +65,34 @@ type Action
 -}
 init : Date.Date -> Model
 init date =
-  { selectable = True
-  , disabled = False
-  , readonly = False
-  , value = date
-  , date = date
-  }
+  let
+    mailbox = Signal.mailbox 0
+  in
+    { signal = Signal.dropRepeats mailbox.signal
+    , mailbox = mailbox
+    , selectable = True
+    , disabled = False
+    , readonly = False
+    , value = date
+    , date = date
+    }
 
 {-| Updates a calendar. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     NextMonth ->
-      { model | date = Ext.Date.nextMonth model.date }
+      ({ model | date = Ext.Date.nextMonth model.date }, Effects.none)
 
     PreviousMonth ->
-      { model | date = Ext.Date.previousMonth model.date }
+      ({ model | date = Ext.Date.previousMonth model.date }, Effects.none)
 
     Select date ->
-      { model | value = date }
+      ({ model | value = date }
+       , Ext.Signal.sendAsEffect model.mailbox.address (Date.toTime date) Tasks)
+
+    Tasks _ ->
+      (model, Effects.none)
 
 {-| Renders a calendar. -}
 view : Signal.Address Action -> Model -> Html.Html

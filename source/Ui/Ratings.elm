@@ -78,14 +78,19 @@ update action model =
   case action of
     MouseEnter index ->
       ({ model | hoverValue = calculateValue index model }, Effects.none)
+
     MouseLeave ->
       ({ model | hoverValue = model.value }, Effects.none)
+
     Increment ->
       setValue (clamp 0 1 (model.value + (1 / (toFloat model.size)))) model
+
     Decrement ->
       setValue (clamp 0 1 (model.value - (1 / (toFloat model.size)))) model
+
     Click index ->
       setValue (calculateValue index model) model
+
     Tasks _ ->
       (model, Effects.none)
 

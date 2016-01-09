@@ -19,7 +19,8 @@ import Html exposing (node, div, text)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
-import Ext.Color
+import Ext.Color exposing (Hsv)
+import Effects
 import Color
 import Dict
 
@@ -37,6 +38,7 @@ import Ui
 type alias Model =
   { colorPanel : ColorPanel.Model
   , dropdownPosition : String
+  , valueSignal : Signal Hsv
   , disabled : Bool
   , readonly : Bool
   , open : Bool
@@ -48,6 +50,7 @@ type Action
   | Close Html.Extra.DropdownDimensions
   | Toggle Html.Extra.DropdownDimensions
   | ColorPanel ColorPanel.Action
+  | ColorChanged Hsv
   | Blur
 
 {-| Initializes a color picker with the given color.
@@ -56,16 +59,32 @@ type Action
 -}
 init : Color.Color -> Model
 init color =
-  { colorPanel = ColorPanel.init color
-  , dropdownPosition = "bottom"
-  , disabled = False
-  , readonly = False
-  , open = False
-  }
+  let
+    colorPanel = ColorPanel.init color
+  in
+    { dropdownPosition = "bottom"
+    , valueSignal = colorPanel.valueSignal
+    , colorPanel = colorPanel
+    , disabled = False
+    , readonly = False
+    , open = False
+    }
 
 {-| Updates a color picker. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
+  case action of
+    ColorPanel act ->
+      let
+        (colorPanel, effect) = ColorPanel.update act model.colorPanel
+      in
+        ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
+
+    _ ->
+      (update' action model, Effects.none)
+
+update' : Action -> Model -> Model
+update' action model =
   case action of
     Focus dimensions ->
       Dropdown.openWithDimensions dimensions model
@@ -79,8 +98,9 @@ update action model =
     Toggle dimensions ->
       Dropdown.toggleWithDimensions dimensions model
 
-    ColorPanel act ->
-      { model | colorPanel = ColorPanel.update act model.colorPanel }
+    _ ->
+      model
+
 
 {-| Renders a color picker. -}
 view : Signal.Address Action -> Model -> Html.Html
@@ -88,9 +108,12 @@ view address model =
   Html.Lazy.lazy2 render address model
 
 {-| Updates a color picker by coordinates. -}
-handleMove : Int -> Int -> Model -> Model
+handleMove : Int -> Int -> Model -> (Model, Effects.Effects Action)
 handleMove x y model =
-  { model | colorPanel = ColorPanel.handleMove x y model.colorPanel }
+  let
+    (colorPanel, effect) = ColorPanel.handleMove x y model.colorPanel
+  in
+    ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
 
 {-| Updates a color picker, stopping the drags if the mouse isnt pressed. -}
 handleClick : Bool-> Model -> Model

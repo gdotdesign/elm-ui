@@ -410,10 +410,6 @@ update action model =
       { model | inplaceInput = Ui.InplaceInput.update act model.inplaceInput }
     NumberRange act ->
       { model | numberRange = Ui.NumberRange.update act model.numberRange    }
-    ColorPicker act ->
-      { model | colorPicker = Ui.ColorPicker.update act model.colorPicker    }
-    ColorPanel act ->
-      { model | colorPanel = Ui.ColorPanel.update act model.colorPanel       }
     NumberPad act ->
       { model | numberPad = Ui.NumberPad.update act model.numberPad          }
     Checkbox2 act ->
@@ -442,13 +438,6 @@ update action model =
         , colorPicker = Ui.ColorPicker.handleClick value model.colorPicker
         , slider = Ui.Slider.handleClick value model.slider
         , menu = Ui.DropdownMenu.handleClick value model.menu
-        }
-    MousePosition (x,y) ->
-      { model
-        | numberRange = Ui.NumberRange.handleMove x y model.numberRange
-        , colorPicker = Ui.ColorPicker.handleMove x y model.colorPicker
-        , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel
-        , slider = Ui.Slider.handleMove x y model.slider
         }
 
     AppAction act ->
@@ -481,6 +470,16 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    ColorPicker act ->
+      let
+        (colorPicker, effect) = Ui.ColorPicker.update act model.colorPicker
+      in
+        ({ model | colorPicker = colorPicker }, Effects.map ColorPicker effect)
+    ColorPanel act ->
+      let
+        (colorPanel, effect) = Ui.ColorPanel.update act model.colorPanel
+      in
+        ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
     DatePicker act ->
       let
         (datePicker, effect) = Ui.DatePicker.update act model.datePicker
@@ -506,6 +505,23 @@ update' action model =
         (notis, effect) = Ui.NotificationCenter.update act model.notifications
       in
         ({ model | notifications = notis }, Effects.map Notis effect)
+
+    MousePosition (x,y) ->
+      let
+        (colorPicker, colorPickerEffect) =
+          Ui.ColorPicker.handleMove x y model.colorPicker
+        (colorPanel, colorPanelEffect) =
+          Ui.ColorPanel.handleMove x y model.colorPanel
+      in
+        ({ model
+          | numberRange = Ui.NumberRange.handleMove x y model.numberRange
+          , colorPicker = colorPicker
+          , colorPanel = colorPanel
+          , slider = Ui.Slider.handleMove x y model.slider
+          }, Effects.batch [ Effects.map ColorPanel colorPanelEffect
+                           , Effects.map ColorPicker colorPickerEffect
+                           ])
+
     ShowNotification ->
       notify "Test Notification" model
     CalendarChanged time ->

@@ -16,9 +16,12 @@ module Ui.ColorPanel
 import Html.Attributes exposing (style, classList)
 import Html.Extra exposing (onWithDimensions)
 import Html exposing (node, div, text)
+import Html.Lazy
+
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
-import Html.Lazy
+import Ext.Signal
+import Effects
 
 import Ui.Helpers.Drag as Drag
 import Ui
@@ -32,7 +35,9 @@ import Ui
   - **disabled** - Whether the color panel is disabled
 -}
 type alias Model =
-  { alphaDrag : Drag.Model
+  { mailbox : Signal.Mailbox Hsv
+  , valueSignal : Signal Hsv
+  , alphaDrag : Drag.Model
   , hueDrag : Drag.Model
   , drag : Drag.Model
   , disabled : Bool
@@ -45,6 +50,7 @@ type Action
   = LiftAlpha (Html.Extra.PositionAndDimension)
   | LiftRect (Html.Extra.PositionAndDimension)
   | LiftHue (Html.Extra.PositionAndDimension)
+  | Tasks ()
 
 {-| Initializes a color panel with the given Elm color.
 
@@ -52,16 +58,22 @@ type Action
 -}
 init : Color -> Model
 init color =
-  { value = Ext.Color.toHsv color
-  , alphaDrag = Drag.init
-  , hueDrag = Drag.init
-  , drag = Drag.init
-  , disabled = False
-  , readonly = False
-  }
+  let
+    hsv = Ext.Color.toHsv color
+    mailbox = Signal.mailbox hsv
+  in
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , alphaDrag = Drag.init
+    , hueDrag = Drag.init
+    , drag = Drag.init
+    , disabled = False
+    , readonly = False
+    , mailbox = mailbox
+    , value = hsv
+    }
 
 {-| Updates a color panel. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     LiftRect {dimensions, position} ->
@@ -75,6 +87,9 @@ update action model =
     LiftHue {dimensions, position} ->
       { model | hueDrag = Drag.lift dimensions position model.hueDrag }
         |> handleMove (round position.pageX) (round position.pageY)
+
+    Tasks _ ->
+      (model, Effects.none)
 
 {-| Renders a color panel. -}
 view : Signal.Address Action -> Model -> Html.Html
@@ -134,7 +149,7 @@ render address model =
       ]
 
 {-| Updates a color panel color by coordinates. -}
-handleMove : Int -> Int -> Model -> Model
+handleMove : Int -> Int -> Model -> (Model, Effects.Effects Action)
 handleMove x y model =
   let
     color =
@@ -147,7 +162,8 @@ handleMove x y model =
       else
         model.value
   in
-    { model | value = color }
+    ({ model | value = color }
+     , Ext.Signal.sendAsEffect model.mailbox.address color Tasks)
 
 {-| Updates a color panel, stopping the drags if the mouse isnt pressed. -}
 handleClick : Bool -> Model -> Model

@@ -19,6 +19,7 @@ import Html exposing (node, div, text)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
+import Ext.Signal
 import Effects
 import Dict
 
@@ -39,7 +40,9 @@ import Ui
   - **open** - Whether or not the dropdown is open
 -}
 type alias Model =
-  { calendar : Calendar.Model
+  { mailbox : Signal.Mailbox Time.Time
+  , valueSignal : Signal Time.Time
+  , calendar : Calendar.Model
   , dropdownPosition : String
   , signal : Signal Action
   , closeOnSelect : Bool
@@ -65,6 +68,7 @@ type Action
   | Toggle Html.Extra.DropdownDimensions
   | Calendar Calendar.Action
   | Select Time.Time
+  | Tasks ()
   | Blur
 
 {-| Initializes a date picker with the given values.
@@ -75,12 +79,15 @@ init : Date.Date -> Model
 init date =
   let
     calendar = Calendar.init date
+    mailbox = Signal.mailbox 0
   in
-    { calendar = calendar
-    , signal = Signal.map Select calendar.signal
+    { signal = Signal.map Select calendar.valueSignal
+    , valueSignal = mailbox.signal
     , dropdownPosition = "bottom"
     , closeOnSelect = False
+    , calendar = calendar
     , format = "%Y-%m-%d"
+    , mailbox = mailbox
     , disabled = False
     , readonly = False
     , open = False
@@ -95,6 +102,17 @@ update action model =
         (calendar, effect) = Calendar.update act model.calendar
       in
         ({ model | calendar = calendar }, Effects.map Calendar effect)
+
+    Select time ->
+      let
+        updatedModel =
+          if model.closeOnSelect then
+            Dropdown.close model
+          else
+            model
+      in
+        (updatedModel, Ext.Signal.sendAsEffect model.mailbox.address time Tasks)
+
     _ ->
       (update' action model, Effects.none)
 
@@ -120,12 +138,6 @@ update' action model =
     Increment dimensions ->
       { model | calendar = Calendar.nextDay model.calendar }
         |> Dropdown.openWithDimensions dimensions
-
-    Select date ->
-      if model.closeOnSelect then
-        Dropdown.close model
-      else
-        model
 
     _ -> model
 

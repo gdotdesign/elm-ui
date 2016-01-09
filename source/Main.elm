@@ -535,7 +535,7 @@ app =
                               , Signal.map AppAction initial.app.mailbox.signal
                               , Signal.map RatingsChanged initial.ratings.signal
                               , Signal.map DatePicker initial.datePicker.signal
-                              , Signal.map CalendarChanged initial.calendar.signal
+                              , Signal.map CalendarChanged initial.calendar.valueSignal
                               ]
                    }
 

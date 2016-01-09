@@ -40,7 +40,7 @@ import Ui
 -}
 type alias Model =
   { mailbox : Signal.Mailbox Time
-  , signal : Signal Time
+  , valueSignal : Signal Time
   , selectable : Bool
   , value : Date.Date
   , date : Date.Date
@@ -68,7 +68,7 @@ init date =
   let
     mailbox = Signal.mailbox 0
   in
-    { signal = Signal.dropRepeats mailbox.signal
+    { valueSignal = Signal.dropRepeats mailbox.signal
     , mailbox = mailbox
     , selectable = True
     , disabled = False

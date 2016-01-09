@@ -1,7 +1,7 @@
 module Ui.Checkbox
-  (Model, Action(..), init, update, setValue, view, toggleView, radioView) where
+  (Model, Action, init, update, setValue, view, toggleView, radioView) where
 
-{-| Checkbox component.
+{-| Checkbox component with three different views.
 
 # Model
 @docs Model, Action, init, update
@@ -17,37 +17,62 @@ import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node)
 import Html.Lazy
+
+import Ext.Signal
+import Effects
 import Dict
 
 import Ui
 
-{-| Representation of a checkbox. -}
+{-| Representation of a checkbox:
+  - **disabled** - Whether or not the checkbox is disabled
+  - **readonly** - Whether or not the checkbox is readonly
+  - **value** - Whether or not the checkbox is checked
+  - **valueSignal** - The checkboxes value as a signal
+  - **mailbox** - The mailbox of the checkbox
+-}
 type alias Model =
-  { disabled : Bool
+  { mailbox : Signal.Mailbox Bool
+  , valueSignal : Signal Bool
+  , disabled : Bool
   , readonly : Bool
   , value : Bool
   }
 
-{-| Actions that a checkbox can make:
-  - **Toggle** - Changes the value to the opposite
--}
+{-| Actions that a checkbox can make. -}
 type Action
-  = Toggle
+  = Tasks ()
+  | Toggle
 
-{-| Initiaizes a checkbox with the given value. -}
+{-| Initiaizes a checkbox with the given value.
+
+    Checkbox.init False
+-}
 init : Bool -> Model
 init value =
-  { disabled = False
-  , readonly = False
-  , value = value
-  }
+  let
+    mailbox = Signal.mailbox value
+  in
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , mailbox = mailbox
+    , disabled = False
+    , readonly = False
+    , value = value
+    }
 
 {-| Updates a checkbox. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     Toggle ->
-      { model | value = not model.value }
+      let
+        value = not model.value
+      in
+        ({ model | value = value }
+         , Ext.Signal.sendAsEffect model.mailbox.address value Tasks)
+
+    Tasks _ ->
+      (model, Effects.none)
 
 {-| Sets the value of a checkbox to the given one. -}
 setValue : Bool -> Model -> Model

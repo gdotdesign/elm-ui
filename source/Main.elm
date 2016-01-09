@@ -58,8 +58,6 @@ type Action
   | Modal Ui.Modal.Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
-  | CalendarChanged Time.Time
-  | RatingsChanged Float
   | MouseIsDown Bool
   | ShowNotification
   | AppAction String
@@ -70,6 +68,11 @@ type Action
   | OpenModal
   | Nothing
   | Alert
+  | CalendarChanged Time.Time
+  | Checkbox2Changed Bool
+  | Checkbox3Changed Bool
+  | CheckboxChanged Bool
+  | RatingsChanged Float
 
 type alias Model =
   { app : Ui.App.Model
@@ -412,12 +415,6 @@ update action model =
       { model | numberRange = Ui.NumberRange.update act model.numberRange    }
     NumberPad act ->
       { model | numberPad = Ui.NumberPad.update act model.numberPad          }
-    Checkbox2 act ->
-      { model | checkbox2 = Ui.Checkbox.update act model.checkbox2           }
-    Checkbox3 act ->
-      { model | checkbox3 = Ui.Checkbox.update act model.checkbox3           }
-    Checkbox act ->
-      { model | checkbox = Ui.Checkbox.update act model.checkbox             }
     TextArea act ->
       { model | textarea = Ui.Textarea.update act model.textarea             }
     Chooser act ->
@@ -470,6 +467,21 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    Checkbox2 act ->
+      let
+        (checkbox2, effect) = Ui.Checkbox.update act model.checkbox2
+      in
+        ({ model | checkbox2 = checkbox2 }, Effects.map Checkbox2 effect)
+    Checkbox3 act ->
+      let
+        (checkbox3, effect) = Ui.Checkbox.update act model.checkbox3
+      in
+        ({ model | checkbox3 = checkbox3 }, Effects.map Checkbox3 effect)
+    Checkbox act ->
+      let
+        (checkbox, effect) = Ui.Checkbox.update act model.checkbox
+      in
+        ({ model | checkbox = checkbox }, Effects.map Checkbox effect)
     ColorPicker act ->
       let
         (colorPicker, effect) = Ui.ColorPicker.update act model.colorPicker
@@ -522,6 +534,12 @@ update' action model =
                            , Effects.map ColorPicker colorPickerEffect
                            ])
 
+    CheckboxChanged value ->
+      notify ("Checkbox changed to: " ++ (toString value)) model
+    Checkbox2Changed value ->
+      notify ("Toggle changed to: " ++ (toString value)) model
+    Checkbox3Changed value ->
+      notify ("Radio changed to: " ++ (toString value)) model
     ShowNotification ->
       notify "Test Notification" model
     CalendarChanged time ->
@@ -552,6 +570,9 @@ app =
                               , Signal.map RatingsChanged initial.ratings.signal
                               , Signal.map DatePicker initial.datePicker.signal
                               , Signal.map CalendarChanged initial.calendar.valueSignal
+                              , Signal.map CheckboxChanged initial.checkbox.valueSignal
+                              , Signal.map Checkbox2Changed initial.checkbox2.valueSignal
+                              , Signal.map Checkbox3Changed initial.checkbox3.valueSignal
                               ]
                    }
 

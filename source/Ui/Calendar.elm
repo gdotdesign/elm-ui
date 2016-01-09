@@ -37,8 +37,8 @@ import Ui
   - **date** - The month in which this date is will be displayed
   - **readonly** - Whether or not the calendar is interactive
   - **disabled** - Whether or not the calendar is disabled
+  - **valueSignal** - The calendars value as a signal
   - **mailbox** - The mailbox of the calendar
-  - **valueSignal** - A signal for the value
   - **value** - The current selected date
 -}
 type alias Model =

@@ -15,7 +15,8 @@ double clicking on the component.
 # Functions
 @docs focus, handleClick, handleMove, setValue, increment, decrement
 -}
-import Html.Extra exposing (onWithDimensions, onKeys, onInput, onEnterPreventDefault)
+import Html.Extra exposing (onWithDimensions, onKeys, onInput,
+                            onEnterPreventDefault, onStop)
 import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onFocus, onBlur)
 import Html exposing (node, input)
@@ -24,6 +25,8 @@ import Html.Lazy
 import Ext.Number exposing (toFixed)
 import Json.Decode as Json
 import Native.Browser
+import Ext.Signal
+import Effects
 import Result
 import String
 import Dict
@@ -32,87 +35,121 @@ import Ui.Helpers.Drag as Drag
 import Ui
 
 {-| Representation of a number range:
-  - **value** - The current value
   - **step** - The step to increment / decrement by (per pixel, or per keyboard action)
   - **affix** - The affix string to display (for example px, %, em, s)
+  - **disabled** - Whether or not the number range is disabled
+  - **readonly** - Whether or not the number range is readonly
+  - **valueSignal** - The number ranges value as a signal
+  - **round** - The decimals to round the value
   - **min** - The minimum allowed value
   - **max** - The maximum allowed value
-  - **round** - The decimals to round the value
-  - **disabled** - Whether or not the component is disabled
-  - **readonly** - Whether or not the component is readonly
+  - **value** - The current value
+  - **editing** (internal) - Whether or not the number range is in edit mode
+  - **startValue** (internal) - The value when the dragging starts
+  - **focusNext** (internal) - Whether or not to focus the input
+  - **focus** (internal) - Whether or not the input is focused
+  - **inputValue** (internal) - The inputs value when editing
+  - **mailbox** (internal) - The number ranges mailbox
+  - **drag** (internal) - The drag model
 -}
 type alias Model =
-  { drag : Drag.Model
-  , startValue : Float
+  { mailbox : Signal.Mailbox Float
+  , valueSignal : Signal Float
   , inputValue : String
+  , startValue : Float
+  , drag : Drag.Model
+  , focusNext : Bool
+  , disabled : Bool
+  , readonly : Bool
+  , editing : Bool
+  , focused : Bool
+  , affix : String
   , value : Float
   , step : Float
-  , affix : String
   , min : Float
   , max : Float
   , round : Int
-  , focusNext : Bool
-  , focused : Bool
-  , editing : Bool
-  , disabled : Bool
-  , readonly : Bool
   }
 
 {-| Actions that a number range can make. -}
 type Action
   = Lift (Html.Extra.PositionAndDimension)
-  | DoubleClick (Html.Extra.PositionAndDimension)
-  | Focus
-  | Blur
   | Input String
   | Increment
   | Decrement
+  | Tasks ()
+  | Focus
+  | Edit
+  | Blur
   | Save
 
-{-| Initializes a number range by the given value. -}
+{-| Initializes a number range by the given value.
+
+    NumberRange.init 0
+-}
 init : Float -> Model
 init value =
-  { drag = Drag.init
-  , startValue = value
-  , inputValue = ""
-  , value = value
-  , step = 1
-  , affix = "px"
-  , min = -(1/0)
-  , max = (1/0)
-  , round = 0
-  , focusNext = False
-  , focused = False
-  , editing = False
-  , disabled = False
-  , readonly = False
-  }
+  let
+    mailbox = Signal.mailbox value
+  in
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , startValue = value
+    , focusNext = False
+    , mailbox = mailbox
+    , drag = Drag.init
+    , disabled = False
+    , readonly = False
+    , focused = False
+    , editing = False
+    , inputValue = ""
+    , value = value
+    , affix = "px"
+    , min = -(1/0) -- Minus Infinity
+    , max = (1/0) -- Plus Infinity
+    , round = 0
+    , step = 1
+    }
 
 {-| Updates a number range. -}
-update: Action -> Model -> Model
+update: Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     Increment ->
       increment model
+
     Decrement ->
       decrement model
+
     Save ->
       endEdit model
+
     Input value ->
-      { model | inputValue = value }
+      ({ model | inputValue = value }, Effects.none)
+
     Focus ->
-      { model | focusNext = False, focused = True }
+      ({ model | focusNext = False, focused = True }, Effects.none)
+
     Blur ->
       { model | focused = False }
         |> endEdit
-    DoubleClick {dimensions, position} ->
-      { model | editing = True
-              , inputValue = toFixed model.round model.value }
-        |> focus
+
+    Edit ->
+      ({ model | editing = True
+               , inputValue = toFixed model.round model.value }
+        |> focus, Effects.none)
+
     Lift {dimensions, position} ->
-      { model | drag = Drag.lift dimensions position model.drag
-              , startValue = model.value }
-        |> focus
+      ({ model | drag = Drag.lift dimensions position model.drag
+               , startValue = model.value }
+        |> focus, Effects.none)
+
+    Tasks _ ->
+      (model, Effects.none)
+
+-- Sends the value to the signal
+sendValue : Model -> (Model, Effects.Effects Action)
+sendValue model =
+  (model, Ext.Signal.sendAsEffect model.mailbox.address model.value Tasks)
 
 {-| Renders a number range. -}
 view: Signal.Address Action -> Model -> Html.Html
@@ -131,11 +168,12 @@ render address model =
         ]
       else
         [ onWithDimensions "mousedown" False address Lift
-        , onWithDimensions "dblclick" True address DoubleClick
+        , onStop "dblclick" address Edit
         , onKeys address [ (40, Decrement)
                          , (38, Increment)
                          , (37, Decrement)
                          , (39, Increment)
+                         , (13, Edit)
                          ]
         ]
     attributes =
@@ -171,7 +209,7 @@ focus model =
     False -> { model | focusNext = True }
 
 {-| Updates a number range value by coordinates. -}
-handleMove : Int -> Int -> Model -> Model
+handleMove : Int -> Int -> Model -> (Model, Effects.Effects Action)
 handleMove x y model =
   let
     diff = (Drag.diff x y model.drag).left
@@ -179,7 +217,7 @@ handleMove x y model =
     if model.drag.dragging then
       setValue (model.startValue - (-diff * model.step)) model
     else
-      model
+      (model, Effects.none)
 
 {-| Updates a number range, stopping the drag if the mouse isnt pressed. -}
 handleClick : Bool -> Model -> Model
@@ -187,24 +225,27 @@ handleClick value model =
   { model | drag = Drag.handleClick value model.drag }
 
 {-| Sets the value of a number range. -}
-setValue : Float -> Model -> Model
+setValue : Float -> Model -> (Model, Effects.Effects Action)
 setValue value model =
   { model | value = clamp model.min model.max value }
+  |> sendValue
 
 {-| Increments a number ranges value by it's defined step. -}
-increment : Model -> Model
+increment : Model -> (Model, Effects.Effects Action)
 increment model =
   setValue (model.value + model.step) model
 
 {-| Decrements a number ranges value by it's defined step. -}
-decrement : Model -> Model
+decrement : Model -> (Model, Effects.Effects Action)
 decrement model =
   setValue (model.value - model.step) model
 
 -- Exits a number range from its editing mode.
-endEdit : Model -> Model
+endEdit : Model -> (Model, Effects.Effects Action)
 endEdit model =
   case model.editing of
-    False -> model
-    True -> { model | value = Result.withDefault 0 (String.toFloat model.inputValue)
-            , editing = False }
+    False ->
+      (model, Effects.none)
+    True ->
+      { model | editing = False }
+      |> setValue (Result.withDefault 0 (String.toFloat model.inputValue))

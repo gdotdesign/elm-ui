@@ -442,8 +442,6 @@ view address model =
 update : Action -> Model -> Model
 update action model =
   case action of
-    NumberRange act ->
-      { model | numberRange = Ui.NumberRange.update act model.numberRange    }
     TextArea act ->
       { model | textarea = Ui.Textarea.update act model.textarea             }
     DropdownMenu act ->
@@ -566,6 +564,11 @@ update' action model =
         (notis, effect) = Ui.NotificationCenter.update act model.notifications
       in
         ({ model | notifications = notis }, Effects.map Notis effect)
+    NumberRange act ->
+      let
+        (numberRange, effect) = Ui.NumberRange.update act model.numberRange
+      in
+        ({ model | numberRange = numberRange}, Effects.map NumberRange effect)
 
     MousePosition (x,y) ->
       let
@@ -573,14 +576,17 @@ update' action model =
           Ui.ColorPicker.handleMove x y model.colorPicker
         (colorPanel, colorPanelEffect) =
           Ui.ColorPanel.handleMove x y model.colorPanel
+        (numberRange, numberRangeEffect) =
+          Ui.NumberRange.handleMove x y model.numberRange
       in
         ({ model
-          | numberRange = Ui.NumberRange.handleMove x y model.numberRange
+          | numberRange = numberRange
           , colorPicker = colorPicker
           , colorPanel = colorPanel
           , slider = Ui.Slider.handleMove x y model.slider
           }, Effects.batch [ Effects.map ColorPanel colorPanelEffect
                            , Effects.map ColorPicker colorPickerEffect
+                           , Effects.map NumberRange numberRangeEffect
                            ])
 
     InplaceInputChanged value ->

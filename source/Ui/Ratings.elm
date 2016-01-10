@@ -92,7 +92,6 @@ update action model =
       let
         oneStarValue = 1 / (toFloat model.size)
         min = if model.clearable then 0 else oneStarValue
-        a = log "min" min
       in
         setValue (clamp oneStarValue 1 (model.value - oneStarValue)) model
 

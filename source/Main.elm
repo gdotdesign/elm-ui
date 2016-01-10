@@ -547,7 +547,7 @@ update' action model =
                            ])
 
     InplaceInputChanged value ->
-      notify ("InplaceInput changed to: " ++ value) model
+      notify ("Inplace input changed to: " ++ value) model
     CheckboxChanged value ->
       notify ("Checkbox changed to: " ++ (toString value)) model
     Checkbox2Changed value ->

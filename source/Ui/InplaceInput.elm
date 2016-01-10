@@ -8,9 +8,8 @@ module Ui.InplaceInput (Model, Action, init, update, view) where
 # View
 @docs view
 -}
-import Html exposing (node, textarea, div, text, button)
 import Html.Extra exposing (onEnter, onKeys)
-import Html.Attributes exposing (value)
+import Html exposing (node, div, text)
 import Html.Events exposing (onClick)
 import Html.Lazy
 

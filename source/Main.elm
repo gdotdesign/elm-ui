@@ -1,5 +1,7 @@
 import Signal exposing (forwardTo)
+import Maybe.Extra
 import Date.Format
+import List.Extra
 import Ext.Date
 import StartApp
 import Keyboard
@@ -9,6 +11,7 @@ import Color
 import Task
 import Date
 import Time
+import Set
 
 import Html.Attributes exposing (style, classList, colspan, href)
 import Html.Events exposing (onClick)
@@ -68,6 +71,8 @@ type Action
   | OpenModal
   | Nothing
   | Alert
+  | ChooserChanged (Set.Set String)
+  | DatePickerChanged Time.Time
   | CalendarChanged Time.Time
   | Checkbox2Changed Bool
   | Checkbox3Changed Bool
@@ -417,8 +422,6 @@ update action model =
       { model | numberPad = Ui.NumberPad.update act model.numberPad          }
     TextArea act ->
       { model | textarea = Ui.Textarea.update act model.textarea             }
-    Chooser act ->
-      { model | chooser = Ui.Chooser.update act model.chooser                }
     DropdownMenu act ->
       { model | menu = Ui.DropdownMenu.update act model.menu                 }
     Slider act ->
@@ -467,6 +470,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    Chooser act ->
+      let
+        (chooser, effect) = Ui.Chooser.update act model.chooser
+      in
+        ({ model | chooser = chooser }, Effects.map Chooser effect)
     Checkbox2 act ->
       let
         (checkbox2, effect) = Ui.Checkbox.update act model.checkbox2
@@ -542,8 +550,20 @@ update' action model =
       notify ("Radio changed to: " ++ (toString value)) model
     ShowNotification ->
       notify "Test Notification" model
+    ChooserChanged set ->
+      let
+        selected =
+          Ui.Chooser.getFirstSelected model.chooser
+          |> Maybe.map (\value -> List.Extra.find (\item -> item.value == value) data)
+          |> Maybe.Extra.join
+          |> Maybe.map .label
+          |> Maybe.withDefault ""
+      in
+        notify ("Chooser changed to: " ++ selected) model
     CalendarChanged time ->
       notify ("Calendar changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
+    DatePickerChanged time ->
+      notify ("Date picker changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
     RatingsChanged value ->
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings))) model
     _ ->
@@ -569,10 +589,12 @@ app =
                               , Signal.map AppAction initial.app.signal
                               , Signal.map RatingsChanged initial.ratings.signal
                               , Signal.map DatePicker initial.datePicker.signal
+                              , Signal.map DatePickerChanged initial.datePicker.valueSignal
                               , Signal.map CalendarChanged initial.calendar.valueSignal
                               , Signal.map CheckboxChanged initial.checkbox.valueSignal
                               , Signal.map Checkbox2Changed initial.checkbox2.valueSignal
                               , Signal.map Checkbox3Changed initial.checkbox3.valueSignal
+                              , Signal.map ChooserChanged initial.chooser.valueSignal
                               ]
                    }
 

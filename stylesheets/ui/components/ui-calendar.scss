@@ -9,7 +9,6 @@ ui-calendar {
   ui-container {
     border-bottom: $border;
     border-bottom-style: dashed;
-    margin-bottom: 5px;
     height: 45px;
 
     padding: 5px;
@@ -45,7 +44,10 @@ ui-calendar {
 
   // Day names
   ui-calendar-header {
+    border-bottom: $border;
+    border-bottom-style: dashed;
     justify-content: space-around;
+    margin-bottom: 5px;
     display: flex;
     width: 300px;
 

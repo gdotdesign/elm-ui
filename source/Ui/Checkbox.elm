@@ -1,5 +1,5 @@
 module Ui.Checkbox
-  (Model, Action, init, update, setValue, view, toggleView, radioView) where
+  (Model, Action(..), init, update, setValue, view, toggleView, radioView) where
 
 {-| Checkbox component with three different views.
 

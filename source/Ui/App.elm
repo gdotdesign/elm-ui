@@ -1,4 +1,4 @@
-module Ui.App (Model, Action, init, update, view) where
+module Ui.App (Model, Action(..), init, update, view) where
 
 {-| Base frame for a web/mobile application:
   - Provides a signal for **load** and **scroll** events

@@ -1,5 +1,5 @@
 module Ui.Calendar
-  ( Model, Action, init, update, view, setValue, nextDay
+  ( Model, Action(..), init, update, view, setValue, nextDay
   , previousDay ) where
 
 {-| This is a calendar component where the user can:

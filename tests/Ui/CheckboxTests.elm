@@ -12,7 +12,7 @@ updateValue : Test
 updateValue =
   let
     initial = Ui.Checkbox.init False
-    expected = Ui.Checkbox.init True
+    (changed, effect) = Ui.Checkbox.update Ui.Checkbox.Toggle initial
   in
     test "Toggle should toggle value"
-      (assertEqual (Ui.Checkbox.update Ui.Checkbox.Toggle initial) expected)
+      (assertEqual changed.value True)

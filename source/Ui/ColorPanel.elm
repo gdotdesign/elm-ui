@@ -28,8 +28,8 @@ import Ui
 
 {-| Representation of a color panel:
   - **valueSignal** - The color panels value as a signal
-  - **readonly** - Whether the color panel is editable
-  - **disabled** - Whether the color panel is disabled
+  - **readonly** - Whether or not the color panel is editable
+  - **disabled** - Whether or not the color panel is disabled
   - **value** - The current vlaue
   - **drag** (internal) - The drag model of the value / saturation rectangle
   - **alphaDrag** (internal) - The drag model of the alpha slider

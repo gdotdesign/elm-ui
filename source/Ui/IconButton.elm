@@ -27,7 +27,14 @@ import Html.Lazy
 import Ui.Button exposing (attributes)
 import Ui
 
-{-| Representation of an icon button. -}
+{-| Representation of an icon button:
+  - **disabled** - Whether or not the icon button is disabled
+  - **glyph** - The glyph to use form IonIcons
+  - **side** - The side to display the icon
+  - **kind** - The type of the icon button
+  - **size** - The size of the icon button
+  - **text** - The text of the icon button
+-}
 type alias Model =
   { disabled : Bool
   , glyph : String

@@ -1,7 +1,7 @@
 module Ui.DropdownMenu
   (Model, Action, init, update, view, item, handleClick, close) where
 
-{-| Dropdown menu that is allways visible on the screen.
+{-| Dropdown menu that is always visible on the screen.
 
 # Model
 @docs Model, Action, init, update
@@ -12,19 +12,29 @@ module Ui.DropdownMenu
 # Functions
 @docs handleClick, close
 -}
+import Html.Extra exposing ( onStopNothing, WindowDimensions
+                           , windowDimensionsDecoder)
 import Html.Attributes exposing (style, classList)
 import Html.Events exposing (onWithOptions)
-import Html.Extra exposing (onStopNothing, WindowDimensions, windowDimensionsDecoder)
 import Html exposing (node)
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json
 
-{-| Represents a dropdown menu. -}
+{-| Represents a dropdown menu:
+  - **favoredSides** - The sides to open the dropdown when there is space
+    - **horizontal** - Either "left" or "right"
+    - **vertical** - Either "top" or "bottom"
+  - **offsetX** - The x-axis offset for the dropdown
+  - **offsetY** - The y-axis offset for the dropdown
+  - **open** - Whether or not the dropdown is open
+  - **left** (internal) - The left position of the dropdown
+  - **top** (internal) - The top position of the dropdown
+-}
 type alias Model =
-  { top : Float
-  , left : Float
-  , open : Bool
-  , offsetX : Float
+  { offsetX : Float
   , offsetY : Float
+  , left : Float
+  , top : Float
+  , open : Bool
   , favoredSides : { horizontal : String
                    , vertical : String
                    }
@@ -37,11 +47,11 @@ type Action
 {-| Initializes a dropdown. -}
 init : Model
 init =
-  { top = 0
-  , left = 0
-  , open = False
+  { open = False
   , offsetX = 0
   , offsetY = 5
+  , left = 0
+  , top = 0
   , favoredSides = { horizontal = "left"
                    , vertical = "bottom"
                    }

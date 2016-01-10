@@ -1,14 +1,11 @@
 ui-inplace-input {
+  // Textarea is in the background
   ui-textarea {
     z-index: 0;
   }
 
+  // Mimic textarea white space
   > div {
     white-space: pre-wrap;
-  }
-
-  button {
-    position: relative;
-    z-index: 1;
   }
 }

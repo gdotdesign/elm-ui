@@ -67,7 +67,7 @@ init value =
     , disabled = False
     , readonly = False
     , required = True
-    , ctrlSave = False
+    , ctrlSave = True
     , value = value
     , open = False
     }

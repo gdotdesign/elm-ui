@@ -45,10 +45,8 @@ type alias Item =
 
 {-| Representation of a chooser component:
   - **deselectable** - True if the component can have no selected value false if not
-  - **intended** - (Internal) The currently intended value (for keyboard selection)
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
   - **data** - List of items to select from and display in the dropdown
-  - **dropdownPosition** (Internal) - Where the dropdown is positioned
   - **multiple** - Whether or not the user can select multiple items
   - **placeholder** - The text to display when no item is selected
   - **searchable** - Whether or not a user can filter the items
@@ -57,9 +55,11 @@ type alias Item =
   - **selected** - A *Set* of values of selected items
   - **valueSignal** - The choosers value as a signal
   - **open** - Whether or not the dropdown is open
-  - **value** - (Internal) The value of the input
   - **render** - Function to render the items
-  - **mailbox** - The mailbox of the chooser
+  - **intended** (internal) - The currently intended value (for keyboard selection)
+  - **dropdownPosition** (internal) - Where the dropdown is positioned
+  - **mailbox** (internal) - The mailbox of the chooser
+  - **value** (internal) - The value of the input
 -}
 type alias Model =
   { mailbox : Signal.Mailbox (Set String)

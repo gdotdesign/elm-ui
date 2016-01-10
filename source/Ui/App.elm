@@ -23,10 +23,10 @@ import Html.Lazy
 import Ui
 
 {-| Representation of an application:
-  - **loaded** - Whether or not the applications stylesheet is loaded
   - **signal** - The signal of the mailbox for events (scroll / load)
   - **title** - The title of the application (and the window)
-  - **mailbox** - The mailbox of the application
+  - **loaded** (internal) - Whether or not the applications stylesheet is loaded
+  - **mailbox** (internal) - The mailbox of the application
 -}
 type alias Model =
   { mailbox : Signal.Mailbox String

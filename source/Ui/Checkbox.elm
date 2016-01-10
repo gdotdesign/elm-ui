@@ -29,7 +29,7 @@ import Ui
   - **readonly** - Whether or not the checkbox is readonly
   - **value** - Whether or not the checkbox is checked
   - **valueSignal** - The checkboxes value as a signal
-  - **mailbox** - The mailbox of the checkbox
+  - **mailbox** (internal) - The mailbox of the checkbox
 -}
 type alias Model =
   { mailbox : Signal.Mailbox Bool

@@ -27,12 +27,14 @@ import Ui.Helpers.Drag as Drag
 import Ui
 
 {-| Representation of a color panel:
+  - **valueSignal** - The color panels value as a signal
+  - **readonly** - Whether the color panel is editable
+  - **disabled** - Whether the color panel is disabled
+  - **value** - The current vlaue
   - **drag** (internal) - The drag model of the value / saturation rectangle
   - **alphaDrag** (internal) - The drag model of the alpha slider
   - **hueDrag** (internal) - The drag model of the hue slider
-  - **value** - The current vlaue
-  - **readonly** - Whether the color panel is editable
-  - **disabled** - Whether the color panel is disabled
+  - **mailbox** (internal) - The mailbox of the color panel
 -}
 type alias Model =
   { mailbox : Signal.Mailbox Hsv
@@ -165,7 +167,7 @@ handleMove x y model =
     ({ model | value = color }
      , Ext.Signal.sendAsEffect model.mailbox.address color Tasks)
 
-{-| Updates a color panel, stopping the drags if the mouse isnt pressed. -}
+{-| Updates a color panel, stopping the drags if the mouse isn't pressed. -}
 handleClick : Bool -> Model -> Model
 handleClick value model =
   { model | alphaDrag = Drag.handleClick value model.alphaDrag

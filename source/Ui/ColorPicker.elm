@@ -29,11 +29,12 @@ import Ui.ColorPanel as ColorPanel
 import Ui
 
 {-| Representation of a color picker:
-  - **colorPanel** (internal) - The model of a color panel
-  - **disabled** - Whether or not the color picker is disabled
-  - **open** - Whether or not the color picker is open
   - **readonly** - Whether or not the color picker is readonly
+  - **disabled** - Whether or not the color picker is disabled
+  - **valueSignal** - The color pickers value as a signal
+  - **open** - Whether or not the color picker is open
   - **dropdownPosition** (Internal) - Where the dropdown is positioned
+  - **colorPanel** (internal) - The model of a color panel
 -}
 type alias Model =
   { colorPanel : ColorPanel.Model
@@ -46,9 +47,9 @@ type alias Model =
 
 {-| Actions that a color picker can make. -}
 type Action
-  = Focus Html.Extra.DropdownDimensions
+  = Toggle Html.Extra.DropdownDimensions
+  | Focus Html.Extra.DropdownDimensions
   | Close Html.Extra.DropdownDimensions
-  | Toggle Html.Extra.DropdownDimensions
   | ColorPanel ColorPanel.Action
   | ColorChanged Hsv
   | Blur
@@ -62,8 +63,8 @@ init color =
   let
     colorPanel = ColorPanel.init color
   in
-    { dropdownPosition = "bottom"
-    , valueSignal = colorPanel.valueSignal
+    { valueSignal = colorPanel.valueSignal
+    , dropdownPosition = "bottom"
     , colorPanel = colorPanel
     , disabled = False
     , readonly = False
@@ -83,6 +84,7 @@ update action model =
     _ ->
       (update' action model, Effects.none)
 
+-- Effectless update
 update' : Action -> Model -> Model
 update' action model =
   case action of
@@ -100,7 +102,6 @@ update' action model =
 
     _ ->
       model
-
 
 {-| Renders a color picker. -}
 view : Signal.Address Action -> Model -> Html.Html

@@ -34,12 +34,12 @@ import Ui
 
 {-| Representation of a calendar component:
   - **selectable** - Whether or not the user can select a date by clicking
-  - **date** - The month in which this date is will be displayed
   - **readonly** - Whether or not the calendar is interactive
   - **disabled** - Whether or not the calendar is disabled
   - **valueSignal** - The calendars value as a signal
-  - **mailbox** - The mailbox of the calendar
   - **value** - The current selected date
+  - **date** (internal) - The month in which this date is will be displayed
+  - **mailbox** (internal) - The mailbox of the calendar
 -}
 type alias Model =
   { mailbox : Signal.Mailbox Time

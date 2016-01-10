@@ -1,5 +1,4 @@
-module Ui.DatePicker
-  (Model, Action, init, update, view, setValue) where
+module Ui.DatePicker (Model, Action, init, update, view, setValue) where
 
 {-| Date picker input component.
 
@@ -32,12 +31,16 @@ import Ui.Calendar as Calendar
 import Ui
 
 {-| Representation of a date picker component:
-  - **calendar** - The model of a calendar
-  - **format** - The format of the date to render in the input
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
-  - **disabled** - Whether or not the chooser is disabled
-  - **readonly** - Whether or not the dropdown is readonly
+  - **format** - The format of the date to render in the input
+  - **readonly** - Whether or not the date picker is readonly
+  - **disabled** - Whether or not the date picker is disabled
+  - **valueSignal** - The date pickers value as a signal
   - **open** - Whether or not the dropdown is open
+  - **signal** - The date pickers signal
+  - **dropdownPosition** (internal) - The dropdowns position
+  - **mailbox** (internal) - The date pickers mailbox
+  - **calendar** (internal) - The model of a calendar
 -}
 type alias Model =
   { mailbox : Signal.Mailbox Time.Time
@@ -52,20 +55,13 @@ type alias Model =
   , open : Bool
   }
 
-{-| Actions that a date picker can make:
-  - **Focus** - Opens the dropdown
-  - **Close** - Closes the dropdown
-  - **Toggle** - Toggles the dropdown
-  - **Decrement** - Selects the previous day
-  - **Increment** - Selects the next day
-  - **Calendar** - Calendar actions
--}
+{-| Actions that a date picker can make. -}
 type Action
-  = Focus Html.Extra.DropdownDimensions
-  | Increment Html.Extra.DropdownDimensions
+  = Increment Html.Extra.DropdownDimensions
   | Decrement Html.Extra.DropdownDimensions
-  | Close Html.Extra.DropdownDimensions
   | Toggle Html.Extra.DropdownDimensions
+  | Focus Html.Extra.DropdownDimensions
+  | Close Html.Extra.DropdownDimensions
   | Calendar Calendar.Action
   | Select Time.Time
   | Tasks ()
@@ -116,6 +112,7 @@ update action model =
     _ ->
       (update' action model, Effects.none)
 
+-- Effectless updates
 update' : Action -> Model -> Model
 update' action model =
   case action of

@@ -50,7 +50,7 @@ type alias Item =
   - **multiple** - Whether or not the user can select multiple items
   - **placeholder** - The text to display when no item is selected
   - **searchable** - Whether or not a user can filter the items
-  - **readonly** - Whether or not the dropdown is readonly
+  - **readonly** - Whether or not the chooser is readonly
   - **disabled** - Whether or not the chooser is disabled
   - **selected** - A *Set* of values of selected items
   - **valueSignal** - The choosers value as a signal

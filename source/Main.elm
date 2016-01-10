@@ -35,6 +35,7 @@ import Ui.Chooser
 import Ui.Ratings
 import Ui.Button
 import Ui.Slider
+import Ui.Pager
 import Ui.Modal
 import Ui.Image
 import Ui.App
@@ -59,6 +60,7 @@ type Action
   | Slider Ui.Slider.Action
   | Image Ui.Image.Action
   | Modal Ui.Modal.Action
+  | Pager Ui.Pager.Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
   | MouseIsDown Bool
@@ -71,6 +73,8 @@ type Action
   | OpenModal
   | Nothing
   | Alert
+  | PreviousPage
+  | NextPage
   | ChooserChanged (Set.Set String)
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
@@ -100,6 +104,7 @@ type alias Model =
   , slider : Ui.Slider.Model
   , modal : Ui.Modal.Model
   , image : Ui.Image.Model
+  , pager : Ui.Pager.Model
   , clicked : Bool
   }
 
@@ -107,15 +112,17 @@ init : Model
 init =
   let
     datePickerOptions = Ui.DatePicker.init (Ext.Date.now ())
+    pager = Ui.Pager.init 0
   in
-    { app = Ui.App.init "Elm-UI Kitchen Sink"
-    , notifications = Ui.NotificationCenter.init 4000 320
+    { calendar = Ui.Calendar.init (Ext.Date.createDate 2015 5 1)
     , datePicker = { datePickerOptions | format = "%Y %B %e." }
     , chooser = Ui.Chooser.init data "Select a country..." ""
+    , pager = { pager | width = "100%", height = "200px" }
+    , notifications = Ui.NotificationCenter.init 4000 320
     , inplaceInput = Ui.InplaceInput.init "Test Value"
     , colorPicker = Ui.ColorPicker.init Color.yellow
     , colorPanel = Ui.ColorPanel.init Color.blue
-    , calendar = Ui.Calendar.init (Ext.Date.createDate 2015 5 1)
+    , app = Ui.App.init "Elm-UI Kitchen Sink"
     , numberRange = Ui.NumberRange.init 0
     , checkbox3 = Ui.Checkbox.init False
     , checkbox2 = Ui.Checkbox.init False
@@ -161,7 +168,7 @@ view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker, numberRange, slider
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
-    , numberPad, ratings } = model
+    , numberPad, ratings, pager } = model
 
     clicked =
       if model.clicked then [node "clicked" [] [text ""]] else []
@@ -401,6 +408,26 @@ view address model =
                      (Ui.NumberPad.view (forwardTo address NumberPad)
                        numberPadViewModel { numberPad | disabled = True })
 
+          , componentHeader "Pager"
+          , tr []
+            [ td [colspan 3]
+              [ Ui.Pager.view (forwardTo address Pager)
+                [ text "Page 1"
+                , text "Page 2"
+                , text "Page 3"
+                ]
+                pager
+              ]
+            ]
+          , tr []
+            [ td [colspan 3]
+              [ Ui.Container.row []
+                [ Ui.IconButton.primary "Previous Page" "chevron-left" "left" address PreviousPage
+                , Ui.spacer
+                , Ui.IconButton.primary "Next Page" "chevron-right" "right" address NextPage
+                ]
+              ]
+            ]
           , componentHeader "Image"
           , tr []
             [ td []
@@ -427,14 +454,16 @@ update action model =
       { model | modal = Ui.Modal.update act model.modal                      }
     Image act ->
       { model | image = Ui.Image.update act model.image                      }
+    Pager act ->
+      { model | pager = Ui.Pager.update act model.pager                      }
 
     MouseIsDown value ->
       { model
         | numberRange = Ui.NumberRange.handleClick value model.numberRange
-        , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
         , colorPicker = Ui.ColorPicker.handleClick value model.colorPicker
-        , slider = Ui.Slider.handleClick value model.slider
+        , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
         , menu = Ui.DropdownMenu.handleClick value model.menu
+        , slider = Ui.Slider.handleClick value model.slider
         }
 
     AppAction act ->
@@ -446,6 +475,11 @@ update action model =
       { model | menu = Ui.DropdownMenu.close model.menu }
     Open url ->
       Ui.open url model
+
+    NextPage ->
+      { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active + 1)) model.pager }
+    PreviousPage ->
+      { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active - 1)) model.pager }
 
     EscIsDown bool ->
       { model | menu = Ui.DropdownMenu.close model.menu

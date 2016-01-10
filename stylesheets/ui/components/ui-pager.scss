@@ -1,8 +1,9 @@
 ui-pager {
-  display: block;
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
+  display: block;
 
+  // Page
   ui-page {
     transform: translate3d(0, 0, 0);
     position: absolute;

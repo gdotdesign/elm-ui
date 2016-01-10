@@ -14,8 +14,8 @@ import Html exposing (node, img)
 import Html.Lazy
 
 {-| Representation of an image:
-  - **src** - The url for the image
   - **loaded** (internal) - Whether or not the image is loaded
+  - **src** - The url for the image
 -}
 type alias Model =
   { loaded : Bool

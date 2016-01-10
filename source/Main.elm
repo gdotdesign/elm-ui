@@ -73,6 +73,7 @@ type Action
   | Alert
   | ChooserChanged (Set.Set String)
   | DatePickerChanged Time.Time
+  | InplaceInputChanged String
   | CalendarChanged Time.Time
   | Checkbox2Changed Bool
   | Checkbox3Changed Bool
@@ -414,8 +415,6 @@ view address model =
 update : Action -> Model -> Model
 update action model =
   case action of
-    InplaceInput act ->
-      { model | inplaceInput = Ui.InplaceInput.update act model.inplaceInput }
     NumberRange act ->
       { model | numberRange = Ui.NumberRange.update act model.numberRange    }
     NumberPad act ->
@@ -470,6 +469,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    InplaceInput act ->
+      let
+        (inplaceInput, effect) = Ui.InplaceInput.update act model.inplaceInput
+      in
+        ({ model | inplaceInput = inplaceInput }, Effects.map InplaceInput effect)
     Chooser act ->
       let
         (chooser, effect) = Ui.Chooser.update act model.chooser
@@ -542,6 +546,8 @@ update' action model =
                            , Effects.map ColorPicker colorPickerEffect
                            ])
 
+    InplaceInputChanged value ->
+      notify ("InplaceInput changed to: " ++ value) model
     CheckboxChanged value ->
       notify ("Checkbox changed to: " ++ (toString value)) model
     Checkbox2Changed value ->
@@ -595,6 +601,7 @@ app =
                               , Signal.map Checkbox2Changed initial.checkbox2.valueSignal
                               , Signal.map Checkbox3Changed initial.checkbox3.valueSignal
                               , Signal.map ChooserChanged initial.chooser.valueSignal
+                              , Signal.map InplaceInputChanged initial.inplaceInput.valueSignal
                               ]
                    }
 

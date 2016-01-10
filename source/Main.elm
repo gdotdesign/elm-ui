@@ -417,8 +417,6 @@ update action model =
   case action of
     NumberRange act ->
       { model | numberRange = Ui.NumberRange.update act model.numberRange    }
-    NumberPad act ->
-      { model | numberPad = Ui.NumberPad.update act model.numberPad          }
     TextArea act ->
       { model | textarea = Ui.Textarea.update act model.textarea             }
     DropdownMenu act ->
@@ -469,6 +467,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    NumberPad act ->
+      let
+        (numberPad, effect) = Ui.NumberPad.update act model.numberPad
+      in
+        ({ model | numberPad = numberPad }, Effects.map NumberPad effect)
     InplaceInput act ->
       let
         (inplaceInput, effect) = Ui.InplaceInput.update act model.inplaceInput

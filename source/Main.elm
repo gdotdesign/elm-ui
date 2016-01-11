@@ -38,6 +38,7 @@ import Ui.Slider
 import Ui.Pager
 import Ui.Modal
 import Ui.Image
+import Ui.Input
 import Ui.App
 import Ui
 
@@ -59,6 +60,7 @@ type Action
   | Ratings Ui.Ratings.Action
   | Slider Ui.Slider.Action
   | Image Ui.Image.Action
+  | Input Ui.Input.Action
   | Modal Ui.Modal.Action
   | Pager Ui.Pager.Action
   | App Ui.App.Action
@@ -104,6 +106,7 @@ type alias Model =
   , slider : Ui.Slider.Model
   , modal : Ui.Modal.Model
   , image : Ui.Image.Model
+  , input : Ui.Input.Model
   , pager : Ui.Pager.Model
   , clicked : Bool
   }
@@ -112,6 +115,7 @@ init : Model
 init =
   let
     datePickerOptions = Ui.DatePicker.init (Ext.Date.now ())
+    input = Ui.Input.init ""
     pager = Ui.Pager.init 0
   in
     { calendar = Ui.Calendar.init (Ext.Date.createDate 2015 5 1)
@@ -119,6 +123,7 @@ init =
     , chooser = Ui.Chooser.init data "Select a country..." ""
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
+    , input = { input | placeholder = "Type here..." }
     , inplaceInput = Ui.InplaceInput.init "Test Value"
     , colorPicker = Ui.ColorPicker.init Color.yellow
     , colorPanel = Ui.ColorPanel.init Color.blue
@@ -168,7 +173,7 @@ view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker, numberRange, slider
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
-    , numberPad, ratings, pager } = model
+    , numberPad, ratings, pager, input } = model
 
     clicked =
       if model.clicked then [node "clicked" [] [text ""]] else []
@@ -384,6 +389,14 @@ view address model =
                      (Ui.Slider.view (forwardTo address Slider)
                        { slider | disabled = True })
 
+          , componentHeader "Input"
+          , tableRow (Ui.Input.view (forwardTo address Input)
+                       input)
+                     (Ui.Input.view (forwardTo address Input)
+                       { input | readonly = True })
+                     (Ui.Input.view (forwardTo address Input)
+                       { input | disabled = True })
+
           , componentHeader "Autogrow Textarea"
           , tableRow (Ui.Textarea.view (forwardTo address TextArea)
                        textarea)
@@ -443,13 +456,16 @@ update : Action -> Model -> Model
 update action model =
   case action of
     DropdownMenu act ->
-      { model | menu = Ui.DropdownMenu.update act model.menu                 }
+      { model | menu = Ui.DropdownMenu.update act model.menu }
+
     Modal act ->
-      { model | modal = Ui.Modal.update act model.modal                      }
+      { model | modal = Ui.Modal.update act model.modal }
+
     Image act ->
-      { model | image = Ui.Image.update act model.image                      }
+      { model | image = Ui.Image.update act model.image }
+
     Pager act ->
-      { model | pager = Ui.Pager.update act model.pager                      }
+      { model | pager = Ui.Pager.update act model.pager }
 
     MouseIsDown value ->
       { model
@@ -467,11 +483,13 @@ update action model =
 
     CloseMenu ->
       { model | menu = Ui.DropdownMenu.close model.menu }
+
     Open url ->
       Ui.open url model
 
     NextPage ->
       { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active + 1)) model.pager }
+
     PreviousPage ->
       { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active - 1)) model.pager }
 
@@ -495,6 +513,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    Input act ->
+      let
+        (input, effect) = Ui.Input.update act model.input
+      in
+        ({ model | input = input }, Effects.map Input effect)
     TextArea act ->
       let
         (textarea, effect) = Ui.Textarea.update act model.textarea

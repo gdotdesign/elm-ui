@@ -1,26 +1,7 @@
 module Ui.Slider
-  (Model, Action, init, update, view, handleMove, handleClick) where
+  (Model, Action, init, update, view, handleMove, handleClick, setValue) where
 
-{-| Slider component. In order to use it property you need to
-handle mouse events like so:
-
-    model = { slider: Ui.Slider.init 0 }
-
-    update act model =
-      case act of
-        MousePosition (x, y) ->
-          { model | slider = Ui.Slider.handleMove x y model.slider }
-        MouseIsDown value ->
-          { model | slider = Ui.Slider.handleClick value model.slider }
-        Slider act ->
-          { model | slider = Ui.Slider.update act model.slider }
-
-    StartApp.start { init = (model, Effects.none)
-                   , view = view
-                   , update = update
-                   , inputs = [Signal.map MousePosition Mouse.position,
-                               Signal.map MouseIsDown Mouse.isDown]
-                   }
+{-| Simple slider component.
 
 # Model
 @docs Model, Action, init, update
@@ -29,7 +10,7 @@ handle mouse events like so:
 @docs view
 
 # Functions
-@docs handleMove, handleClick
+@docs handleMove, handleClick, setValue
 -}
 import Html.Extra exposing (onWithDimensions, onKeys)
 import Html.Attributes exposing (style, classList)
@@ -37,29 +18,33 @@ import Html exposing (node)
 import Html.Lazy
 
 import Native.Browser
+import Ext.Signal
+import Effects
+import Signal
 import Dict
 
 import Ui.Helpers.Drag as Drag
 import Ui
 
 {-| Representation of a slider:
-  - **value** - The current value (0 - 100)
   - **startDistance** - The distance in pixels when the dragging can start
-  - **disabled** - Whether or not the slide is disabled
-  - **readonly** - Whether or not the slide is readonly
-  - **dragging** (internal) - Wheter or not the slider is currently dragging
-  - **top** (internal) - The top position of the handle
+  - **disabled** - Whether or not the slider is disabled
+  - **readonly** - Whether or not the slider is readonly
+  - **valueSignal** - The sliders value as a signal
+  - **value** - The current value (0 - 100)
   - **left** (internal) - The left position of the handle
-  - **dimensions** (internal) - The dimensions of the slider
-  - **mouseStartPosition** (internal) - The start position of the mouse
+  - **drag** (internal) - The drag for the slider
+  - **mailbox** (internal) - The sliders mailbox
 -}
 type alias Model =
-  { drag : Drag.Model
-  , left : Float
-  , value : Float
+  { mailbox : Signal.Mailbox Float
+  , valueSignal : Signal Float
   , startDistance : Float
+  , drag : Drag.Model
   , disabled : Bool
   , readonly : Bool
+  , value : Float
+  , left : Float
   }
 
 {-| Actions that a slider can make. -}
@@ -67,6 +52,7 @@ type Action
   = Lift (Html.Extra.PositionAndDimension)
   | Increment
   | Decrement
+  | Tasks ()
 
 {-| Initializes a slider with the given value.
 
@@ -74,16 +60,21 @@ type Action
 -}
 init : Float -> Model
 init value =
-  { drag = Drag.init
-  , left = 0
-  , value = value
-  , startDistance = 0
-  , disabled = False
-  , readonly = False
-  }
+  let
+    mailbox = Signal.mailbox value
+  in
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , mailbox = mailbox
+    , startDistance = 0
+    , drag = Drag.init
+    , disabled = False
+    , readonly = False
+    , value = value
+    , left = 0
+    }
 
 {-| Updates a slider. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     Decrement ->
@@ -96,6 +87,9 @@ update action model =
       { model | drag = Drag.lift dimensions position model.drag
               , left = position.pageX - dimensions.left }
         |> clampLeft
+
+    Tasks _ ->
+      (model, Effects.none)
 
 {-| Renders a slider. -}
 view : Signal.Address Action -> Model -> Html.Html
@@ -135,7 +129,7 @@ render address model =
       element
 
 {-| Updates a sliders value by coordinates. -}
-handleMove : Int -> Int -> Model -> Model
+handleMove : Int -> Int -> Model -> (Model, Effects.Effects Action)
 handleMove x y model =
   let
     dist = distance diff
@@ -152,7 +146,7 @@ handleMove x y model =
       { model | left = left }
         |> clampLeft
     else
-      model
+      (model, Effects.none)
 
 {-| Updates a slider, stopping the drag if the mouse isnt pressed. -}
 handleClick : Bool -> Model -> Model
@@ -160,34 +154,36 @@ handleClick value model =
   { model | drag = Drag.handleClick value model.drag }
 
 {-| Clamps left position of the handle to width of the slider. -}
-clampLeft : Model -> Model
+clampLeft : Model -> (Model, Effects.Effects Action)
 clampLeft model =
   { model | left = clamp 0 model.drag.dimensions.width model.left }
     |> updatePrecent
 
-{-| Clamps the value of the model. -}
-clampValue : Model -> Model
-clampValue model =
-  { model | value = clamp 0 100 model.value }
-
 {-| Updates the value to match the current position. -}
-updatePrecent : Model -> Model
+updatePrecent : Model -> (Model, Effects.Effects Action)
 updatePrecent model =
-  { model | value = model.left / model.drag.dimensions.width * 100 }
+  setValue (model.left / model.drag.dimensions.width * 100) model
 
 {-| Returns the length of a point from 0,0. -}
 distance : Drag.Point -> Float
 distance diff =
   sqrt diff.top^2 + diff.left^2
 
-{-| Increments the model by 1 percent. -}
-increment : Model -> Model
+{-| Increments the slider by 1 percent. -}
+increment : Model -> (Model, Effects.Effects Action)
 increment model =
-  { model | value = model.value + 1 }
-    |> clampValue
+  setValue (model.value + 1) model
 
-{-| Decrements the model by 1 percent. -}
-decrement : Model -> Model
+{-| Decrements the slider by 1 percent. -}
+decrement : Model -> (Model, Effects.Effects Action)
 decrement model =
-  { model | value = model.value - 1 }
-    |> clampValue
+  setValue (model.value - 1) model
+
+{-| Sets the value of the slider. -}
+setValue : Float -> Model -> (Model, Effects.Effects Action)
+setValue value model =
+  let
+    clampedValue = clamp 0 100 value
+  in
+    ( { model | value = clampedValue }
+    , Ext.Signal.sendAsEffect model.mailbox.address clampedValue Tasks)

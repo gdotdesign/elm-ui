@@ -446,8 +446,6 @@ update action model =
       { model | textarea = Ui.Textarea.update act model.textarea             }
     DropdownMenu act ->
       { model | menu = Ui.DropdownMenu.update act model.menu                 }
-    Slider act ->
-      { model | slider = Ui.Slider.update act model.slider                   }
     Modal act ->
       { model | modal = Ui.Modal.update act model.modal                      }
     Image act ->
@@ -569,6 +567,11 @@ update' action model =
         (numberRange, effect) = Ui.NumberRange.update act model.numberRange
       in
         ({ model | numberRange = numberRange}, Effects.map NumberRange effect)
+    Slider act ->
+      let
+        (slider, effect) = Ui.Slider.update act model.slider
+      in
+        ({ model | slider = slider }, Effects.map Slider effect)
 
     MousePosition (x,y) ->
       let
@@ -578,15 +581,18 @@ update' action model =
           Ui.ColorPanel.handleMove x y model.colorPanel
         (numberRange, numberRangeEffect) =
           Ui.NumberRange.handleMove x y model.numberRange
+        (slider, sliderEffect) =
+          Ui.Slider.handleMove x y model.slider
       in
         ({ model
           | numberRange = numberRange
           , colorPicker = colorPicker
           , colorPanel = colorPanel
-          , slider = Ui.Slider.handleMove x y model.slider
+          , slider = slider
           }, Effects.batch [ Effects.map ColorPanel colorPanelEffect
                            , Effects.map ColorPicker colorPickerEffect
                            , Effects.map NumberRange numberRangeEffect
+                           , Effects.map Slider sliderEffect
                            ])
 
     InplaceInputChanged value ->
@@ -627,25 +633,32 @@ notify message model =
 
 app =
   let
-    initial = init
+    initial =
+      init
+
+    inputs =
+      -- Lifecycle
+      [ Signal.map EscIsDown (Keyboard.isDown 27)
+      , Signal.map MousePosition Mouse.position
+      , Signal.map MouseIsDown Mouse.isDown
+      -- Components
+      , Signal.map DatePicker initial.datePicker.signal
+      , Signal.map AppAction initial.app.signal
+      -- Changes
+      , Signal.map InplaceInputChanged initial.inplaceInput.valueSignal
+      , Signal.map DatePickerChanged initial.datePicker.valueSignal
+      , Signal.map Checkbox2Changed initial.checkbox2.valueSignal
+      , Signal.map Checkbox3Changed initial.checkbox3.valueSignal
+      , Signal.map CalendarChanged initial.calendar.valueSignal
+      , Signal.map CheckboxChanged initial.checkbox.valueSignal
+      , Signal.map RatingsChanged initial.ratings.valueSignal
+      , Signal.map ChooserChanged initial.chooser.valueSignal
+      ]
   in
     StartApp.start { init = (initial, Effects.none)
                    , view = view
                    , update = update'
-                   , inputs = [ Signal.map MousePosition Mouse.position
-                              , Signal.map MouseIsDown Mouse.isDown
-                              , Signal.map EscIsDown (Keyboard.isDown 27)
-                              , Signal.map AppAction initial.app.signal
-                              , Signal.map RatingsChanged initial.ratings.signal
-                              , Signal.map DatePicker initial.datePicker.signal
-                              , Signal.map DatePickerChanged initial.datePicker.valueSignal
-                              , Signal.map CalendarChanged initial.calendar.valueSignal
-                              , Signal.map CheckboxChanged initial.checkbox.valueSignal
-                              , Signal.map Checkbox2Changed initial.checkbox2.valueSignal
-                              , Signal.map Checkbox3Changed initial.checkbox3.valueSignal
-                              , Signal.map ChooserChanged initial.chooser.valueSignal
-                              , Signal.map InplaceInputChanged initial.inplaceInput.valueSignal
-                              ]
+                   , inputs = inputs
                    }
 
 main =

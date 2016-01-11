@@ -8,10 +8,6 @@ ui-slider {
   display: flex;
   height: 36px;
 
-  &:not(.readonly):not(.disabled) {
-    cursor: pointer;
-  }
-
   * {
     pointer-events: none;
   }
@@ -50,6 +46,11 @@ ui-slider {
     bottom: 3px;
     top: 3px;
     left: 0;
+  }
+
+  // Normal State
+  &:not(.readonly):not(.disabled) {
+    cursor: pointer;
   }
 
   // Focused state

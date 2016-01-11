@@ -442,8 +442,6 @@ view address model =
 update : Action -> Model -> Model
 update action model =
   case action of
-    TextArea act ->
-      { model | textarea = Ui.Textarea.update act model.textarea             }
     DropdownMenu act ->
       { model | menu = Ui.DropdownMenu.update act model.menu                 }
     Modal act ->
@@ -497,6 +495,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    TextArea act ->
+      let
+        (textarea, effect) = Ui.Textarea.update act model.textarea
+      in
+        ({ model | textarea = textarea }, Effects.map TextArea effect)
     NumberPad act ->
       let
         (numberPad, effect) = Ui.NumberPad.update act model.numberPad

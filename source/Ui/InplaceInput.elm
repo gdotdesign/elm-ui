@@ -76,6 +76,12 @@ init value =
 update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
+    Textarea act ->
+      let
+        (textarea, effect) = Ui.Textarea.update act model.textarea
+      in
+        ({ model | textarea = textarea }, Effects.map Textarea effect)
+
     Save ->
       if (isEmpty model) && model.required then
         (model, Effects.none)
@@ -93,9 +99,6 @@ update action model =
 update' : Action -> Model -> Model
 update' action model =
   case action of
-    Textarea act ->
-      { model | textarea = Ui.Textarea.update act model.textarea }
-
     Edit ->
       if model.disabled then
         model

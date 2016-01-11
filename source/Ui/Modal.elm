@@ -20,10 +20,10 @@ import Html.Lazy
 import Ui
 
 {-| Representation of a modal window:
-  - **backdrop** - Whether or not to show a backdrop
-  - **open** - Whether or not the modal is open
   - **closeable** - Whether or not the modal is closeable by clicking on the
     backdrop or the close button.
+  - **backdrop** - Whether or not to show a backdrop
+  - **open** - Whether or not the modal is open
 -}
 type alias Model =
   { closeable : Bool

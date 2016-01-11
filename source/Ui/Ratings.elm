@@ -1,4 +1,5 @@
-module Ui.Ratings (Model, Action(..), init, update, view, setValue) where
+module Ui.Ratings
+  (Model, Action, init, update, view, setValue, valueAsStars) where
 
 {-| A simple star rating component.
 
@@ -9,8 +10,10 @@ module Ui.Ratings (Model, Action(..), init, update, view, setValue) where
 @docs view
 
 # Functions
-@docs setValue
+@docs setValue, valueAsStars
 -}
+import Ext.Number exposing (roundTo)
+import Ext.Signal
 import Effects
 import Signal
 import Array
@@ -23,15 +26,23 @@ import Html.Lazy
 
 import Ui
 
+import Debug exposing (log)
+
 {-| Representation of a ratings component.
+  - **clearable** - Whether or not the component is clearable
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
   - **value** - The current value of the component (0..1)
+  - **valueSignal** - The componens value as a signal
   - **size** - The number of starts to display
+  - **hoverValue** (internal) - The transient value of the component
+  - **mailbox** (internal) - The mailbox of the component
 -}
 type alias Model =
   { mailbox : Signal.Mailbox Float
+  , valueSignal : Signal Float
   , hoverValue : Float
+  , clearable : Bool
   , disabled : Bool
   , readonly : Bool
   , value : Float
@@ -45,6 +56,7 @@ type Action
   | Increment
   | Decrement
   | Click Int
+  | Tasks ()
 
 {-| Initializes a ratings component with the given number of stars and initial
 value.
@@ -53,13 +65,18 @@ value.
 -}
 init : Int -> Float -> Model
 init size value =
-  { mailbox = Signal.mailbox value
-  , hoverValue = value
-  , disabled = False
-  , readonly = False
-  , value = value
-  , size = size
-  }
+  let
+    mailbox = Signal.mailbox value
+  in
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , hoverValue = value
+    , mailbox = mailbox
+    , clearable = False
+    , disabled = False
+    , readonly = False
+    , value = value
+    , size = size
+    }
 
 {-| Updates a ratings component. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -67,14 +84,25 @@ update action model =
   case action of
     MouseEnter index ->
       ({ model | hoverValue = calculateValue index model }, Effects.none)
+
     MouseLeave ->
       ({ model | hoverValue = model.value }, Effects.none)
+
     Increment ->
       setValue (clamp 0 1 (model.value + (1 / (toFloat model.size)))) model
+
     Decrement ->
-      setValue (clamp 0 1 (model.value - (1 / (toFloat model.size)))) model
+      let
+        oneStarValue = 1 / (toFloat model.size)
+        min = if model.clearable then 0 else oneStarValue
+      in
+        setValue (clamp oneStarValue 1 (model.value - oneStarValue)) model
+
     Click index ->
       setValue (calculateValue index model) model
+
+    Tasks _ ->
+      (model, Effects.none)
 
 {-| Renders a ratings component. -}
 view : Signal.Address Action -> Model -> Html.Html
@@ -83,14 +111,39 @@ view address model =
 
 {-| Sets the value of a ratings component. -}
 setValue : Float -> Model -> (Model, Effects.Effects Action)
-setValue value model =
-  ({ model | value = value
-           , hoverValue = value }, Effects.none)
+setValue value' model =
+  let
+    value =
+      roundTo 2 value'
+
+    updatedModel =
+      { model | value = value
+              , hoverValue = value }
+
+    effect =
+      Ext.Signal.sendAsEffect
+        model.mailbox.address
+        value
+        Tasks
+  in
+    (updatedModel, effect)
+
+{-| Returns the value of a ratings component as number of stars. -}
+valueAsStars : Float -> Model -> Int
+valueAsStars value model =
+  round (value * (toFloat model.size))
 
 -- Calculates the value for the given index
 calculateValue : Int -> Model -> Float
 calculateValue index model =
-  clamp 0 1 ((toFloat index) / (toFloat model.size))
+  let
+    value =
+      clamp 0 1 ((toFloat index) / (toFloat model.size))
+
+    currentIndex =
+      valueAsStars model.value model
+  in
+    if currentIndex == index && model.clearable then 0 else value
 
 -- Render internal
 render : Signal.Address Action -> Model -> Html.Html

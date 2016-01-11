@@ -18,19 +18,19 @@ import Html exposing (node)
 import Html.Lazy
 import List.Extra
 
-{-| Representation of a pager.
+{-| Representation of a pager:
   - **left** (internal) - Pages at the left side
   - **center** (internal) - Pages at the center
   - **active** (internal) - The active page
-  - **width** - The width of the pager
   - **height** - The height of the pager
+  - **width** - The width of the pager
 -}
 type alias Model =
-  { left : List Int
-  , center : List Int
-  , active : Int
-  , width : String
+  { center : List Int
+  , left : List Int
   , height : String
+  , width : String
+  , active : Int
   }
 
 {-| Actions that a pager can take. -}
@@ -41,11 +41,11 @@ type Action
 {-| Initailizes a pager with the given page as active. -}
 init : Int -> Model
 init active =
-  { left = []
-  , center = []
-  , active = active
+  { height = "100vh"
   , width = "100vw"
-  , height = "100vh"
+  , active = active
+  , center = []
+  , left = []
   }
 
 {-| Updates a pager. -}
@@ -54,6 +54,7 @@ update action model =
   case action of
     End page ->
       { model | left = [] }
+
     Active page ->
       { model | center = [], active = page }
 
@@ -98,12 +99,18 @@ render address pages model =
 
 {-| Selects the page with the given index.
 
-    {- Selects the first page. -}
-    select 0 pager
+    select 0 pager -- Selects the first page
 -}
 select : Int -> Model -> Model
 select page model =
-  if model.left == [] && model.center == [] then
-    { model | left = [model.active], center = [page] }
-  else
-    model
+  let
+    canAnimate =
+      model.left == [] && model.center == []
+
+    isSamePage =
+      model.active == page
+  in
+    if canAnimate && not isSamePage then
+      { model | left = [model.active], center = [page] }
+    else
+      model

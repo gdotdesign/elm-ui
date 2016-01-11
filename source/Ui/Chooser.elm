@@ -1,5 +1,5 @@
 module Ui.Chooser
-  (Model, Item, Action(..), init, update, close, toggleItem,
+  (Model, Item, Action, init, update, close, toggleItem,
    getFirstSelected, view, updateData, selectFirst, select) where
 
 {-| This is a component for selecting a single / multiple items
@@ -24,6 +24,8 @@ import Html.Lazy
 
 import Set exposing (Set)
 import Native.Browser
+import Ext.Signal
+import Effects
 import String
 import Regex
 import List
@@ -42,23 +44,27 @@ type alias Item =
   }
 
 {-| Representation of a chooser component:
-  - **placeholder** - The text to display when no item is selected
-  - **selected** - A *Set* of values of selected items
-  - **searchable** - Whether or not a user can filter the items
+  - **deselectable** - True if the component can have no selected value false if not
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
   - **data** - List of items to select from and display in the dropdown
   - **multiple** - Whether or not the user can select multiple items
-  - **deselectable** - True if the component can have no selected value false if not
+  - **placeholder** - The text to display when no item is selected
+  - **searchable** - Whether or not a user can filter the items
+  - **readonly** - Whether or not the chooser is readonly
   - **disabled** - Whether or not the chooser is disabled
-  - **render** - Function to render the items
-  - **value** - (Internal) The value of the input
-  - **intended** - (Internal) The currently intended value (for keyboard selection)
+  - **selected** - A *Set* of values of selected items
+  - **valueSignal** - The choosers value as a signal
   - **open** - Whether or not the dropdown is open
-  - **readonly** - Whether or not the dropdown is readonly
-  - **dropdownPosition** (Internal) - Where the dropdown is positioned
+  - **render** - Function to render the items
+  - **intended** (internal) - The currently intended value (for keyboard selection)
+  - **dropdownPosition** (internal) - Where the dropdown is positioned
+  - **mailbox** (internal) - The mailbox of the chooser
+  - **value** (internal) - The value of the input
 -}
 type alias Model =
-  { dropdownPosition : String
+  { mailbox : Signal.Mailbox (Set String)
+  , valueSignal : Signal (Set String)
+  , dropdownPosition : String
   , render : Item -> Html
   , selected : Set String
   , placeholder : String
@@ -74,15 +80,7 @@ type alias Model =
   , open : Bool
   }
 
-{-| Actions that a chooser can make:
-  - **Filter** - Filters the list of choises
-  - **Focus** - Opens the dropdown
-  - **Close** - Closes the dropdown
-  - **Select** - Selects the given value
-  - **Next** - Intends the next item for selection
-  - **Prev** - Intends the previous item for selection
-  - **Enter** - Selects the currently intended selection
--}
+{-| Actions that a chooser can make. -}
 type Action
   = Focus Html.Extra.DropdownDimensions
   | Close Html.Extra.DropdownDimensions
@@ -91,6 +89,7 @@ type Action
   | Prev Html.Extra.DropdownDimensions
   | Filter String
   | Select String
+  | Tasks ()
   | Blur
 
 {-| Initializes a chooser with the given values.
@@ -101,14 +100,17 @@ init : List Item -> String -> String -> Model
 init data placeholder value =
   let
     selected = if value == "" then Set.empty else Set.singleton value
+    mailbox = Signal.mailbox selected
   in
-    { render = (\item -> span [] [text item.label])
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , render = (\item -> span [] [text item.label])
     , dropdownPosition = "bottom"
     , placeholder = placeholder
     , closeOnSelect = False
     , deselectable = False
     , selected = selected
     , searchable = False
+    , mailbox = mailbox
     , multiple = False
     , disabled = False
     , readonly = False
@@ -120,45 +122,53 @@ init data placeholder value =
       |> intendFirst
 
 {-| Updates a chooser. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
-  let
-    model' =
-      case action of
-        Filter value ->
-          setValue value model
-           |> intendFirst
+  case action of
+    Enter dimensions ->
+      let
+        (updatedModel, effect) = toggleItem model.intended model
+      in
+        (Dropdown.toggleWithDimensions dimensions updatedModel, effect)
 
-        Focus dimensions ->
-          Dropdown.openWithDimensions dimensions model
-           |> intendFirst
+    Select value ->
+      toggleItemAndClose value model
 
-        Close _ ->
-          close model
+    _ ->
+      (update' action model, Effects.none)
 
-        Blur ->
-          close model
+-- Non effects updates
+update' : Action -> Model -> Model
+update' action model =
+  case action of
+    Filter value ->
+      setValue value model
+       |> intendFirst
 
-        Enter dimensions ->
-          toggleItem model.intended model
-            |> Dropdown.toggleWithDimensions dimensions
+    Focus dimensions ->
+      Dropdown.openWithDimensions dimensions model
+       |> intendFirst
 
-        Next dimensions ->
-          { model | intended = Intendable.next
-                                model.intended
-                                (availableItems model) }
-            |> Dropdown.openWithDimensions dimensions
+    Close _ ->
+      close model
 
-        Prev dimensions ->
-          { model | intended = Intendable.previous
-                                model.intended
-                                (availableItems model) }
-            |> Dropdown.openWithDimensions dimensions
+    Blur ->
+      close model
 
-        Select value ->
-          toggleItemAndClose value model
-  in
-    model'
+    Next dimensions ->
+      { model | intended = Intendable.next
+                            model.intended
+                            (availableItems model) }
+        |> Dropdown.openWithDimensions dimensions
+
+    Prev dimensions ->
+      { model | intended = Intendable.previous
+                            model.intended
+                            (availableItems model) }
+        |> Dropdown.openWithDimensions dimensions
+
+    _ ->
+      model
 
 {-| Renders a chooser. -}
 view : Signal.Address Action -> Model -> Html.Html
@@ -206,18 +216,19 @@ render address model =
                 ] ++ actions) []] ++ dropdown)
 
 {-| Selects the given value of chooser. -}
-select : String -> Model -> Model
+select : String -> Model -> (Model, Effects.Effects Action)
 select value model =
   { model | selected = Set.singleton value }
+  |> sendValue
 
 {-| Closes the dropdown of a chooser. -}
 close : Model -> Model
 close model =
   Dropdown.close model
-    |> setValue ""
+  |> setValue ""
 
 {-| Selects or deselects the item with the given value. -}
-toggleItem : String -> Model -> Model
+toggleItem : String -> Model -> (Model, Effects.Effects Action)
 toggleItem value model =
   if model.multiple then
     toggleMultipleItem value model
@@ -235,23 +246,33 @@ updateData data model =
   { model | data = data }
 
 {-| Selects the first item if available. -}
-selectFirst : Model -> Model
+selectFirst : Model -> (Model, Effects.Effects Action)
 selectFirst model =
   case List.head model.data of
-    Just item -> { model | selected = Set.singleton item.value }
-    _ -> model
+    Just item ->
+      { model | selected = Set.singleton item.value }
+      |> sendValue
+    _ ->
+      (model, Effects.none)
 
 -- ========================= PRIVATE =========================
 
+-- Sends the current value of the model to the signal
+sendValue : Model -> (Model, Effects.Effects Action)
+sendValue model =
+  (model, Ext.Signal.sendAsEffect model.mailbox.address model.selected Tasks)
+
 {- Select or deslect a single item with the given value and closes
 the dropdown if needed. -}
-toggleItemAndClose : String -> Model -> Model
+toggleItemAndClose : String -> Model -> (Model, Effects.Effects Action)
 toggleItemAndClose value model =
-  toggleItem value model
-    |> closeIfShouldClose
+  let
+    (model, effect) = toggleItem value model
+  in
+    (closeIfShouldClose model, effect)
 
 -- Toggle item if multiple is True.
-toggleMultipleItem : String -> Model -> Model
+toggleMultipleItem : String -> Model -> (Model, Effects.Effects Action)
 toggleMultipleItem value model =
   let
     updated_set =
@@ -264,14 +285,19 @@ toggleMultipleItem value model =
         Set.insert value model.selected
   in
    {model | selected = updated_set }
+   |> sendValue
 
 -- Toggle item if multiple is False.
-toggleSingleItem : String -> Model -> Model
+toggleSingleItem : String -> Model -> (Model, Effects.Effects Action)
 toggleSingleItem value model =
-  if (Set.member value model.selected) && model.deselectable then
-    { model | selected = Set.empty }
-  else
-    { model | selected = Set.singleton value }
+  let
+    updatedModel =
+      if (Set.member value model.selected) && model.deselectable then
+        { model | selected = Set.empty }
+      else
+        { model | selected = Set.singleton value }
+  in
+    sendValue updatedModel
 
 -- Intends the first item if it is available.
 intendFirst : Model -> Model

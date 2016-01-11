@@ -2,8 +2,9 @@ module Ui.Calendar
   ( Model, Action(..), init, update, view, setValue, nextDay
   , previousDay ) where
 
-{-| This is a calendar component where the user
-can select a date by clicking on it.
+{-| This is a calendar component where the user can:
+  - Select a date by clicking on it
+  - Change the month with arrows
 
 # Model
 @docs Model, Action, init, update
@@ -16,41 +17,46 @@ can select a date by clicking on it.
 -}
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)
-import Html exposing (node, text)
+import Html exposing (node, text, span)
 import Html.Lazy
-import List
 
 import Date.Format exposing (format)
+import Time exposing (Time)
+import Ext.Signal
 import Ext.Date
+import Effects
+import Signal
+import List
 import Date
 
 import Ui.Container
 import Ui
 
 {-| Representation of a calendar component:
-  - **selectable** - Whether the user can select a date by clicking
-  - **date** - The month in which this date is will be displayed
-  - **readonly** - Whether the calendar is interactive
-  - **disabled** - Whether the calendar is disabled
+  - **selectable** - Whether or not the user can select a date by clicking
+  - **readonly** - Whether or not the calendar is interactive
+  - **disabled** - Whether or not the calendar is disabled
+  - **valueSignal** - The calendars value as a signal
   - **value** - The current selected date
+  - **date** (internal) - The month in which this date is will be displayed
+  - **mailbox** (internal) - The mailbox of the calendar
 -}
 type alias Model =
-  { selectable : Bool
+  { mailbox : Signal.Mailbox Time
+  , valueSignal : Signal Time
+  , selectable : Bool
   , value : Date.Date
   , date : Date.Date
   , disabled : Bool
   , readonly : Bool
   }
 
-{-| Actions that a calendar can make:
-  - **PreviousMonth** - Steps the calendar to show previous month
-  - **NextMonth** - Steps the calendar to show next month
-  - **Select Date.Date** - Selects a date
--}
+{-| Actions that a calendar can make. -}
 type Action
-  = NextMonth
+  = Select Date.Date
   | PreviousMonth
-  | Select Date.Date
+  | NextMonth
+  | Tasks ()
 
 {-| Initializes a calendar with the given values.
 
@@ -58,25 +64,34 @@ type Action
 -}
 init : Date.Date -> Model
 init date =
-  { selectable = True
-  , disabled = False
-  , readonly = False
-  , value = date
-  , date = date
-  }
+  let
+    mailbox = Signal.mailbox 0
+  in
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , mailbox = mailbox
+    , selectable = True
+    , disabled = False
+    , readonly = False
+    , value = date
+    , date = date
+    }
 
 {-| Updates a calendar. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     NextMonth ->
-      { model | date = Ext.Date.nextMonth model.date }
+      ({ model | date = Ext.Date.nextMonth model.date }, Effects.none)
 
     PreviousMonth ->
-      { model | date = Ext.Date.previousMonth model.date }
+      ({ model | date = Ext.Date.previousMonth model.date }, Effects.none)
 
     Select date ->
-      { model | value = date }
+      ({ model | value = date }
+       , Ext.Signal.sendAsEffect model.mailbox.address (Date.toTime date) Tasks)
+
+    Tasks _ ->
+      (model, Effects.none)
 
 {-| Renders a calendar. -}
 view : Signal.Address Action -> Model -> Html.Html
@@ -135,10 +150,12 @@ render address model =
                                   ]
                        ]
       [ container
+      , node "ui-calendar-header" []
+        (List.map (\item -> span [] [text item]) dayNames)
       , node "ui-calendar-table" [] cells
       ]
 
-{-| Sets the value of a calendar -}
+{-| Sets the value of a calendar. -}
 setValue : Date.Date -> Model -> Model
 setValue date model =
   { model | value = date }
@@ -175,6 +192,11 @@ paddingLeft date =
     Date.Fri -> 4
     Date.Sat -> 5
     Date.Sun -> 6
+
+-- Short names of days
+dayNames : List String
+dayNames =
+  ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 -- Renders a single cell
 renderCell : Signal.Address Action -> Date.Date -> Model -> Html.Html

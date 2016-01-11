@@ -12,8 +12,7 @@ updateLoaded : Test
 updateLoaded =
   let
     initial = Ui.App.init "Test"
-    expected =
-      { loaded = True, title = "Test" }
+    (changed, effect) = Ui.App.update Ui.App.Loaded initial
   in
     test "Loaded should set loaded value"
-      (assertEqual (Ui.App.update Ui.App.Loaded initial) expected)
+      (assertEqual changed.loaded True)

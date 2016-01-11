@@ -1,5 +1,4 @@
-module Ui.DatePicker
-  (Model, Action, init, update, view, setValue) where
+module Ui.DatePicker (Model, Action, init, update, view, setValue) where
 
 {-| Date picker input component.
 
@@ -19,9 +18,12 @@ import Html exposing (node, div, text)
 import Html.Lazy
 
 import Signal exposing (forwardTo)
+import Ext.Signal
+import Effects
 import Dict
 
 import Date.Format exposing (format)
+import Time
 import Date
 
 import Ui.Helpers.Dropdown as Dropdown
@@ -29,16 +31,23 @@ import Ui.Calendar as Calendar
 import Ui
 
 {-| Representation of a date picker component:
-  - **calendar** - The model of a calendar
-  - **format** - The format of the date to render in the input
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
-  - **disabled** - Whether or not the chooser is disabled
-  - **readonly** - Whether or not the dropdown is readonly
+  - **format** - The format of the date to render in the input
+  - **readonly** - Whether or not the date picker is readonly
+  - **disabled** - Whether or not the date picker is disabled
+  - **valueSignal** - The date pickers value as a signal
   - **open** - Whether or not the dropdown is open
+  - **signal** - The date pickers signal
+  - **dropdownPosition** (internal) - The dropdowns position
+  - **mailbox** (internal) - The date pickers mailbox
+  - **calendar** (internal) - The model of a calendar
 -}
 type alias Model =
-  { calendar : Calendar.Model
+  { mailbox : Signal.Mailbox Time.Time
+  , valueSignal : Signal Time.Time
+  , calendar : Calendar.Model
   , dropdownPosition : String
+  , signal : Signal Action
   , closeOnSelect : Bool
   , format : String
   , disabled : Bool
@@ -46,21 +55,16 @@ type alias Model =
   , open : Bool
   }
 
-{-| Actions that a date picker can make:
-  - **Focus** - Opens the dropdown
-  - **Close** - Closes the dropdown
-  - **Toggle** - Toggles the dropdown
-  - **Decrement** - Selects the previous day
-  - **Increment** - Selects the next day
-  - **Calendar** - Calendar actions
--}
+{-| Actions that a date picker can make. -}
 type Action
-  = Focus Html.Extra.DropdownDimensions
-  | Increment Html.Extra.DropdownDimensions
+  = Increment Html.Extra.DropdownDimensions
   | Decrement Html.Extra.DropdownDimensions
-  | Close Html.Extra.DropdownDimensions
   | Toggle Html.Extra.DropdownDimensions
+  | Focus Html.Extra.DropdownDimensions
+  | Close Html.Extra.DropdownDimensions
   | Calendar Calendar.Action
+  | Select Time.Time
+  | Tasks ()
   | Blur
 
 {-| Initializes a date picker with the given values.
@@ -69,18 +73,48 @@ type Action
 -}
 init : Date.Date -> Model
 init date =
-  { calendar = Calendar.init date
-  , dropdownPosition = "bottom"
-  , closeOnSelect = False
-  , format = "%Y-%m-%d"
-  , disabled = False
-  , readonly = False
-  , open = False
-  }
+  let
+    calendar = Calendar.init date
+    mailbox = Signal.mailbox 0
+  in
+    { signal = Signal.map Select calendar.valueSignal
+    , valueSignal = mailbox.signal
+    , dropdownPosition = "bottom"
+    , closeOnSelect = False
+    , calendar = calendar
+    , format = "%Y-%m-%d"
+    , mailbox = mailbox
+    , disabled = False
+    , readonly = False
+    , open = False
+    }
 
 {-| Updates a date picker. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
+  case action of
+    Calendar act ->
+      let
+        (calendar, effect) = Calendar.update act model.calendar
+      in
+        ({ model | calendar = calendar }, Effects.map Calendar effect)
+
+    Select time ->
+      let
+        updatedModel =
+          if model.closeOnSelect then
+            Dropdown.close model
+          else
+            model
+      in
+        (updatedModel, Ext.Signal.sendAsEffect model.mailbox.address time Tasks)
+
+    _ ->
+      (update' action model, Effects.none)
+
+-- Effectless updates
+update' : Action -> Model -> Model
+update' action model =
   case action of
     Focus dimensions ->
       Dropdown.openWithDimensions dimensions model
@@ -102,18 +136,7 @@ update action model =
       { model | calendar = Calendar.nextDay model.calendar }
         |> Dropdown.openWithDimensions dimensions
 
-    Calendar act ->
-      let
-        updatedModel =
-          { model | calendar = Calendar.update act model.calendar }
-      in
-        case act of
-          Calendar.Select date ->
-            if model.closeOnSelect then
-              Dropdown.close updatedModel
-            else
-              updatedModel
-          _ -> updatedModel
+    _ -> model
 
 {-| Renders a date picker. -}
 view : Signal.Address Action -> Model -> Html.Html

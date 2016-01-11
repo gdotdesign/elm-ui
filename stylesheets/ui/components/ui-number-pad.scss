@@ -1,21 +1,21 @@
 ui-number-pad {
-  display: flex;
   flex-direction: column;
   min-height: 300px;
+  display: flex;
 
+  // Input like box to show the value
   ui-number-pad-value {
     @extend %focused-idle;
-
     @include colors($input);
     @include border;
 
-    display: flex;
-    padding: 10px 15px;
     margin-bottom: 10px;
+    padding: 10px 15px;
+    display: flex;
 
     span {
-      font-size: 24px;
       font-weight: 600;
+      font-size: 24px;
       flex: 1;
     }
 
@@ -24,44 +24,47 @@ ui-number-pad {
     }
   }
 
+  // Buttons
   ui-number-pad-buttons {
-    display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
+    flex-wrap: wrap;
+    display: flex;
     flex: 1;
 
+    // Button
     ui-number-pad-button {
+      @include colors($secondary);
+
+      border-radius: $border-radius;
       width: calc((100% - 20px) / 3);
       margin-bottom: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      background: $secondary;
-      color: readable($secondary);
-      border-radius: $border-radius;
-
-      font-size: 20px;
-      font-weight: 600;
-
       position: relative;
       transition: 200ms;
+      font-weight: 600;
+      font-size: 20px;
       cursor: pointer;
 
+      justify-content: center;
+      align-items: center;
+      display: flex;
+
       &:hover {
-        background: dampen($secondary, 7%);
+        @include colors(dampen($secondary, 7%));
       }
 
+      // Last row no margin
       &:nth-child(n+10) {
         margin-bottom: 0;
       }
 
+      // Don't show empty buttons (bottom left / bottom right)
       &:empty {
         background: transparent;
         pointer-events: none;
         cursor: auto;
       }
 
+      // Position children
       > * {
         position: absolute;
         bottom: 0;
@@ -69,19 +72,19 @@ ui-number-pad {
         left: 0;
         top: 0;
 
-        display: flex;
         justify-content: center;
         align-items: center;
+        display: flex;
       }
 
       &:active {
-        color: readable($primary);
-        background: $primary;
+        @include colors($primary);
         transition: 50ms;
       }
     }
   }
 
+  // Disabled state
   &.disabled {
     @extend %disabled;
 
@@ -90,11 +93,12 @@ ui-number-pad {
     }
 
     ui-number-pad-value {
-      background: $disabled;
       border-color: $disabled;
+      background: $disabled;
     }
   }
 
+  // Readnoly state
   &.readonly {
     ui-number-pad-button, ui-icon {
       pointer-events: none;
@@ -109,6 +113,7 @@ ui-number-pad {
     }
   }
 
+  // Normal state
   &:not(.readonly):not(.disabled):focus {
     outline: none;
 

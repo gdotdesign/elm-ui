@@ -214,7 +214,7 @@ onEnter control address handler =
       decoder = if control then controlKey else enterIf
     in
       onWithOptions
-        "keydown"
+        "keyup"
         stopOptions
         decoder
         (\code -> Signal.message address handler)
@@ -246,7 +246,7 @@ onKeysWithDimensions address mappings =
 {-| An event listener that runs on input. -}
 onInput : Signal.Address a -> (String -> a) -> Html.Attribute
 onInput address handler =
-    on "input" targetValue (\str -> Signal.message address (handler str))
+  on "input" targetValue (\str -> Signal.message address (handler str))
 
 {-| A load event listener .-}
 onLoad : Signal.Address a -> a -> Html.Attribute

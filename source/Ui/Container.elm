@@ -22,16 +22,16 @@ type alias Model =
 -- Options for row
 rowOptions : Model
 rowOptions =
-  { align = "stretch"
-  , direction = "row"
+  { direction = "row"
+  , align = "stretch"
   , compact = False
   }
 
 -- Options for column
 columnOptions : Model
 columnOptions =
-  { align = "stretch"
-  , direction = "column"
+  { direction = "column"
+  , align = "stretch"
   , compact = False
   }
 
@@ -64,7 +64,7 @@ render model attributes children =
 classes : Model -> Html.Attribute
 classes model =
   classList [
-    ("align-" ++ model.align, True),
     ("direction-" ++ model.direction, True),
+    ("align-" ++ model.align, True),
     ("compact", model.compact)
   ]

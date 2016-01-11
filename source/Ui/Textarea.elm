@@ -1,7 +1,7 @@
 module Ui.Textarea (Model, Action, init, update, view, setValue, focus) where
 
-{-| Autogrow textarea, using a mirror object to render the contents the same way,
-thus creating an automatically growing textarea.
+{-| Autogrow textarea, using a mirror object to render the contents the same
+way, thus creating an automatically growing textarea.
 
 # Model
 @docs Model, Action, init, update
@@ -12,36 +12,46 @@ thus creating an automatically growing textarea.
 # Functions
 @docs setValue, focus
 -}
-import Html.Attributes exposing (value, spellcheck, placeholder, classList, readonly, disabled)
+import Html.Attributes exposing (value, spellcheck, placeholder, classList,
+                                 readonly, disabled)
 import Html.Extra exposing (onEnterPreventDefault, onInput, onStop)
 import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onFocus)
 import Html.Lazy
+
 import Native.Browser
+import Ext.Signal
+import Effects
+import Signal
 import String
 import List
 
 import Ui
 
 {-| Representation of a textarea:
-  - **placeholder** - The text to display when there is no value
-  - **value** - The value
   - **enterAllowed** - Whether or not to allow new lines when pressing enter
-  - **disabled** - Whether or not the component is disabled
-  - **readonly** - Whether or not the component is readonly
+  - **placeholder** - The text to display when there is no value
+  - **disabled** - Whether or not the textarea is disabled
+  - **readonly** - Whether or not the textarea is readonly
+  - **valueSingal** - The textareas value as a signal
+  - **value** - The value
+  - **mailbox** - (internal) The mailbox of the textarea
 -}
 type alias Model =
-  { placeholder : String
-  , value : String
+  { mailbox : Signal.Mailbox String
+  , valueSignal : Signal String
+  , placeholder : String
   , enterAllowed : Bool
   , focusNext : Bool
   , disabled : Bool
   , readonly : Bool
+  , value : String
   }
 
 {-| Actions a textrea can make. -}
 type Action
   = Input String
+  | Tasks ()
   | Nothing
   | Focus
 
@@ -51,26 +61,31 @@ type Action
 -}
 init : String -> Model
 init value =
-  { placeholder = ""
-  , value = value
-  , enterAllowed = True
-  , focusNext = False
-  , disabled = False
-  , readonly = False
-  }
+  let
+    mailbox = Signal.mailbox value
+  in
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , enterAllowed = True
+    , mailbox = mailbox
+    , focusNext = False
+    , placeholder = ""
+    , disabled = False
+    , readonly = False
+    , value = value
+    }
 
 {-| Updates a textrea. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     Input value ->
       setValue value model
 
     Focus ->
-      { model | focusNext = False }
+      ({ model | focusNext = False }, Effects.none)
 
     _ ->
-      model
+      (model, Effects.none)
 
 {-| Renders a textarea. -}
 view : Signal.Address Action -> Model -> Html.Html
@@ -116,9 +131,10 @@ render address model =
       ]
 
 {-| Sets the value of the given textarea. -}
-setValue : String -> Model -> Model
+setValue : String -> Model -> (Model, Effects.Effects Action)
 setValue value model =
-  { model | value = value }
+  ( { model | value = value }
+  , Ext.Signal.sendAsEffect model.mailbox.address value Tasks)
 
 {-| Focuses the textarea. -}
 focus : Model -> Model

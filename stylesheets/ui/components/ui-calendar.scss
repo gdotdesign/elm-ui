@@ -9,7 +9,6 @@ ui-calendar {
   ui-container {
     border-bottom: $border;
     border-bottom-style: dashed;
-    margin-bottom: 5px;
     height: 45px;
 
     padding: 5px;
@@ -40,9 +39,26 @@ ui-calendar {
     justify-content: space-around;
     flex-wrap: wrap;
     display: flex;
-
-    margin: 0 -5px;
     width: 300px;
+  }
+
+  // Day names
+  ui-calendar-header {
+    border-bottom: $border;
+    border-bottom-style: dashed;
+    justify-content: space-around;
+    margin-bottom: 5px;
+    display: flex;
+    width: 300px;
+
+    span {
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      margin: 5px 0;
+      opacity: 0.7;
+      width: 34px;
+    }
   }
 
   // Table Cell

@@ -2,6 +2,7 @@ ui-ratings {
   display: inline-block;
   height: 36px;
 
+  // Individual star
   ui-ratings-star {
     justify-content: center;
     display: inline-flex;
@@ -14,15 +15,18 @@ ui-ratings {
       font-size: 36px;
     }
 
+    // Full star glyph
     &.ui-ratings-full:before {
-      content: '\f2fc'
+      content: '\f2fc';
     }
 
+    // Empty star glyph
     &.ui-ratings-empty:before {
-      content: '\f3ae'
+      content: '\f3ae';
     }
   }
 
+  // Normal state
   &:not(.readonly):not(.disabled) {
     &:focus, &:hover {
       cursor: pointer;
@@ -31,11 +35,13 @@ ui-ratings {
     }
   }
 
+  // Readonly state
   &.readonly:focus {
-    outline: none;
     color: $focus-readonly;
+    outline: none;
   }
 
+  // Disabled state
   &.disabled {
     @extend %disabled;
     color: $disabled;

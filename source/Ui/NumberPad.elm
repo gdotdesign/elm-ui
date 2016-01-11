@@ -19,40 +19,48 @@ import Html exposing (node, text)
 import Html.Lazy
 
 import Number.Format exposing (prettyInt)
+import Ext.Signal
+import Effects
+import Signal
 import String
 import Dict
 
 import Ui
 
 {-| Representation of a number pad.
-  - **value** - The current value
+  - **readonly** - Whether or not the number pad is interactive
+  - **disabled** - Whether or not the number pad is disabled
   - **maximumDigits** - The maximum length of the value
   - **format** - Wheter or not to format the value
   - **prefix** - The prefix to use
+  - **value** - The current value
   - **affix** - The affix to use
 -}
 type alias Model =
-  { value: Int
+  { mailbox : Signal.Mailbox Int
+  , valueSignal : Signal Int
   , maximumDigits : Int
-  , format : Bool
-  , prefix : String
-  , affix : String
   , disabled : Bool
   , readonly : Bool
+  , prefix : String
+  , affix : String
+  , format : Bool
+  , value: Int
   }
 
 {-| Represents elements for the view:
-  - **bottomLeft** - What to display in the bottom left button
   - **bottomRight** - What to display in the bottom right button
+  - **bottomLeft** - What to display in the bottom left button
 -}
 type alias ViewModel =
-  { bottomLeft : Html.Html
-  , bottomRight : Html.Html
+  { bottomRight : Html.Html
+  , bottomLeft : Html.Html
   }
 
 {-| Actions that a number pad can make. -}
 type Action
   = Pressed Int
+  | Tasks ()
   | Delete
 
 {-| Initializes a number pad with the given value.
@@ -61,23 +69,39 @@ type Action
 -}
 init : Int -> Model
 init value =
-  { value = value
-  , maximumDigits = 10
-  , format = False
-  , prefix = ""
-  , affix = ""
-  , disabled = False
-  , readonly = False
-  }
+  let
+    mailbox = Signal.mailbox value
+  in
+    { valueSignal = Signal.dropRepeats mailbox.signal
+    , maximumDigits = 10
+    , mailbox = mailbox
+    , disabled = False
+    , readonly = False
+    , format = True
+    , value = value
+    , prefix = ""
+    , affix = ""
+    }
 
 {-| Updates a number pad. -}
-update : Action -> Model -> Model
+update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     Pressed number ->
       addDigit number model
+      |> sendValue
+
     Delete ->
       deleteDigit model
+      |> sendValue
+
+    Tasks _ ->
+      (model, Effects.none)
+
+-- Sends the value to the signal
+sendValue : Model -> (Model, Effects.Effects Action)
+sendValue model =
+  (model, Ext.Signal.sendAsEffect model.mailbox.address model.value Tasks)
 
 {-| Renders a number pad. -}
 view : Signal.Address Action -> ViewModel -> Model -> Html.Html
@@ -144,9 +168,10 @@ render address viewModel model =
       ]
 
 {-| Sets the value of a number pad. -}
-setValue : Int -> Model -> Model
+setValue : Int -> Model -> (Model, Effects.Effects Action)
 setValue value model =
   { model | value = clampValue value model }
+  |> sendValue
 
 {- Renders a digit button. -}
 renderButton : Signal.Address Action -> Int -> Model -> Html.Html

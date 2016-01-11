@@ -1,4 +1,7 @@
 import Signal exposing (forwardTo)
+import Maybe.Extra
+import Date.Format
+import List.Extra
 import Ext.Date
 import StartApp
 import Keyboard
@@ -7,6 +10,8 @@ import Mouse
 import Color
 import Task
 import Date
+import Time
+import Set
 
 import Html.Attributes exposing (style, classList, colspan, href)
 import Html.Events exposing (onClick)
@@ -30,8 +35,10 @@ import Ui.Chooser
 import Ui.Ratings
 import Ui.Button
 import Ui.Slider
+import Ui.Pager
 import Ui.Modal
 import Ui.Image
+import Ui.Input
 import Ui.App
 import Ui
 
@@ -53,11 +60,14 @@ type Action
   | Ratings Ui.Ratings.Action
   | Slider Ui.Slider.Action
   | Image Ui.Image.Action
+  | Input Ui.Input.Action
   | Modal Ui.Modal.Action
+  | Pager Ui.Pager.Action
   | App Ui.App.Action
   | MousePosition (Int, Int)
   | MouseIsDown Bool
   | ShowNotification
+  | AppAction String
   | EscIsDown Bool
   | Open String
   | CloseMenu
@@ -65,6 +75,16 @@ type Action
   | OpenModal
   | Nothing
   | Alert
+  | PreviousPage
+  | NextPage
+  | ChooserChanged (Set.Set String)
+  | DatePickerChanged Time.Time
+  | InplaceInputChanged String
+  | CalendarChanged Time.Time
+  | Checkbox2Changed Bool
+  | Checkbox3Changed Bool
+  | CheckboxChanged Bool
+  | RatingsChanged Float
 
 type alias Model =
   { app : Ui.App.Model
@@ -86,6 +106,8 @@ type alias Model =
   , slider : Ui.Slider.Model
   , modal : Ui.Modal.Model
   , image : Ui.Image.Model
+  , input : Ui.Input.Model
+  , pager : Ui.Pager.Model
   , clicked : Bool
   }
 
@@ -93,15 +115,19 @@ init : Model
 init =
   let
     datePickerOptions = Ui.DatePicker.init (Ext.Date.now ())
+    input = Ui.Input.init ""
+    pager = Ui.Pager.init 0
   in
-    { app = Ui.App.init "Elm-UI Kitchen Sink"
-    , notifications = Ui.NotificationCenter.init 4000 320
+    { calendar = Ui.Calendar.init (Ext.Date.createDate 2015 5 1)
     , datePicker = { datePickerOptions | format = "%Y %B %e." }
     , chooser = Ui.Chooser.init data "Select a country..." ""
+    , pager = { pager | width = "100%", height = "200px" }
+    , notifications = Ui.NotificationCenter.init 4000 320
+    , input = { input | placeholder = "Type here..." }
     , inplaceInput = Ui.InplaceInput.init "Test Value"
     , colorPicker = Ui.ColorPicker.init Color.yellow
     , colorPanel = Ui.ColorPanel.init Color.blue
-    , calendar = Ui.Calendar.init (Ext.Date.createDate 2015 5 1)
+    , app = Ui.App.init "Elm-UI Kitchen Sink"
     , numberRange = Ui.NumberRange.init 0
     , checkbox3 = Ui.Checkbox.init False
     , checkbox2 = Ui.Checkbox.init False
@@ -109,7 +135,7 @@ init =
     , textarea = Ui.Textarea.init "Test"
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
-    , ratings = Ui.Ratings.init 5 0.5
+    , ratings = Ui.Ratings.init 5 0.4
     , slider = Ui.Slider.init 50
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
@@ -147,7 +173,7 @@ view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker, numberRange, slider
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
-    , numberPad, ratings } = model
+    , numberPad, ratings, pager, input } = model
 
     clicked =
       if model.clicked then [node "clicked" [] [text ""]] else []
@@ -363,6 +389,14 @@ view address model =
                      (Ui.Slider.view (forwardTo address Slider)
                        { slider | disabled = True })
 
+          , componentHeader "Input"
+          , tableRow (Ui.Input.view (forwardTo address Input)
+                       input)
+                     (Ui.Input.view (forwardTo address Input)
+                       { input | readonly = True })
+                     (Ui.Input.view (forwardTo address Input)
+                       { input | disabled = True })
+
           , componentHeader "Autogrow Textarea"
           , tableRow (Ui.Textarea.view (forwardTo address TextArea)
                        textarea)
@@ -387,6 +421,26 @@ view address model =
                      (Ui.NumberPad.view (forwardTo address NumberPad)
                        numberPadViewModel { numberPad | disabled = True })
 
+          , componentHeader "Pager"
+          , tr []
+            [ td [colspan 3]
+              [ Ui.Pager.view (forwardTo address Pager)
+                [ text "Page 1"
+                , text "Page 2"
+                , text "Page 3"
+                ]
+                pager
+              ]
+            ]
+          , tr []
+            [ td [colspan 3]
+              [ Ui.Container.row []
+                [ Ui.IconButton.primary "Previous Page" "chevron-left" "left" address PreviousPage
+                , Ui.spacer
+                , Ui.IconButton.primary "Next Page" "chevron-right" "right" address NextPage
+                ]
+              ]
+            ]
           , componentHeader "Image"
           , tr []
             [ td []
@@ -398,72 +452,46 @@ view address model =
         ]
       ]
 
-fxNone : Model -> (Model, Effects.Effects Action)
-fxNone model =
-  (model, Effects.none)
-
 update : Action -> Model -> Model
 update action model =
   case action of
-    InplaceInput act ->
-      { model | inplaceInput = Ui.InplaceInput.update act model.inplaceInput }
-    NumberRange act ->
-      { model | numberRange = Ui.NumberRange.update act model.numberRange    }
-    ColorPicker act ->
-      { model | colorPicker = Ui.ColorPicker.update act model.colorPicker    }
-    DatePicker act ->
-      { model | datePicker = Ui.DatePicker.update act model.datePicker       }
-    ColorPanel act ->
-      { model | colorPanel = Ui.ColorPanel.update act model.colorPanel       }
-    NumberPad act ->
-      { model | numberPad = Ui.NumberPad.update act model.numberPad          }
-    Checkbox2 act ->
-      { model | checkbox2 = Ui.Checkbox.update act model.checkbox2           }
-    Checkbox3 act ->
-      { model | checkbox3 = Ui.Checkbox.update act model.checkbox3           }
-    Checkbox act ->
-      { model | checkbox = Ui.Checkbox.update act model.checkbox             }
-    TextArea act ->
-      { model | textarea = Ui.Textarea.update act model.textarea             }
-    Calendar act ->
-      { model | calendar = Ui.Calendar.update act model.calendar             }
-    Chooser act ->
-      { model | chooser = Ui.Chooser.update act model.chooser                }
     DropdownMenu act ->
-      { model | menu = Ui.DropdownMenu.update act model.menu                 }
-    Slider act ->
-      { model | slider = Ui.Slider.update act model.slider                   }
+      { model | menu = Ui.DropdownMenu.update act model.menu }
+
     Modal act ->
-      { model | modal = Ui.Modal.update act model.modal                      }
+      { model | modal = Ui.Modal.update act model.modal }
+
     Image act ->
-      { model | image = Ui.Image.update act model.image                      }
-    App act ->
-      case act of
-        Ui.App.Scrolled ->
-          { model | menu = Ui.DropdownMenu.close model.menu }
-        _ ->
-          { model | app = Ui.App.update act model.app                        }
+      { model | image = Ui.Image.update act model.image }
+
+    Pager act ->
+      { model | pager = Ui.Pager.update act model.pager }
 
     MouseIsDown value ->
       { model
         | numberRange = Ui.NumberRange.handleClick value model.numberRange
-        , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
         , colorPicker = Ui.ColorPicker.handleClick value model.colorPicker
-        , slider = Ui.Slider.handleClick value model.slider
+        , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
         , menu = Ui.DropdownMenu.handleClick value model.menu
+        , slider = Ui.Slider.handleClick value model.slider
         }
-    MousePosition (x,y) ->
-      { model
-        | numberRange = Ui.NumberRange.handleMove x y model.numberRange
-        , colorPicker = Ui.ColorPicker.handleMove x y model.colorPicker
-        , colorPanel = Ui.ColorPanel.handleMove x y model.colorPanel
-        , slider = Ui.Slider.handleMove x y model.slider
-        }
+
+    AppAction act ->
+      case act of
+        "scroll" -> { model | menu = Ui.DropdownMenu.close model.menu }
+        _ -> model
 
     CloseMenu ->
       { model | menu = Ui.DropdownMenu.close model.menu }
+
     Open url ->
       Ui.open url model
+
+    NextPage ->
+      { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active + 1)) model.pager }
+
+    PreviousPage ->
+      { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active - 1)) model.pager }
 
     EscIsDown bool ->
       { model | menu = Ui.DropdownMenu.close model.menu
@@ -485,34 +513,179 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    Input act ->
+      let
+        (input, effect) = Ui.Input.update act model.input
+      in
+        ({ model | input = input }, Effects.map Input effect)
+    TextArea act ->
+      let
+        (textarea, effect) = Ui.Textarea.update act model.textarea
+      in
+        ({ model | textarea = textarea }, Effects.map TextArea effect)
+    NumberPad act ->
+      let
+        (numberPad, effect) = Ui.NumberPad.update act model.numberPad
+      in
+        ({ model | numberPad = numberPad }, Effects.map NumberPad effect)
+    InplaceInput act ->
+      let
+        (inplaceInput, effect) = Ui.InplaceInput.update act model.inplaceInput
+      in
+        ({ model | inplaceInput = inplaceInput }, Effects.map InplaceInput effect)
+    Chooser act ->
+      let
+        (chooser, effect) = Ui.Chooser.update act model.chooser
+      in
+        ({ model | chooser = chooser }, Effects.map Chooser effect)
+    Checkbox2 act ->
+      let
+        (checkbox2, effect) = Ui.Checkbox.update act model.checkbox2
+      in
+        ({ model | checkbox2 = checkbox2 }, Effects.map Checkbox2 effect)
+    Checkbox3 act ->
+      let
+        (checkbox3, effect) = Ui.Checkbox.update act model.checkbox3
+      in
+        ({ model | checkbox3 = checkbox3 }, Effects.map Checkbox3 effect)
+    Checkbox act ->
+      let
+        (checkbox, effect) = Ui.Checkbox.update act model.checkbox
+      in
+        ({ model | checkbox = checkbox }, Effects.map Checkbox effect)
+    ColorPicker act ->
+      let
+        (colorPicker, effect) = Ui.ColorPicker.update act model.colorPicker
+      in
+        ({ model | colorPicker = colorPicker }, Effects.map ColorPicker effect)
+    ColorPanel act ->
+      let
+        (colorPanel, effect) = Ui.ColorPanel.update act model.colorPanel
+      in
+        ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
+    DatePicker act ->
+      let
+        (datePicker, effect) = Ui.DatePicker.update act model.datePicker
+      in
+        ({ model | datePicker = datePicker }, Effects.map DatePicker effect)
+    Calendar act ->
+      let
+        (calendar, effect) = Ui.Calendar.update act model.calendar
+      in
+        ({ model | calendar = calendar}, Effects.map Calendar effect)
     Ratings act ->
       let
         (ratings, effect) = Ui.Ratings.update act model.ratings
       in
         ({ model | ratings = ratings }, Effects.map Ratings effect)
+    App act ->
+      let
+        (app, effect) = Ui.App.update act model.app
+      in
+        ({ model | app = app }, Effects.map App effect)
     Notis act ->
       let
         (notis, effect) = Ui.NotificationCenter.update act model.notifications
       in
         ({ model | notifications = notis }, Effects.map Notis effect)
-    ShowNotification ->
+    NumberRange act ->
       let
-        (notis, effect) = Ui.NotificationCenter.notify (text "Test Notification") model.notifications
+        (numberRange, effect) = Ui.NumberRange.update act model.numberRange
       in
-        ({ model | notifications = notis }, Effects.map Notis effect)
+        ({ model | numberRange = numberRange}, Effects.map NumberRange effect)
+    Slider act ->
+      let
+        (slider, effect) = Ui.Slider.update act model.slider
+      in
+        ({ model | slider = slider }, Effects.map Slider effect)
+
+    MousePosition (x,y) ->
+      let
+        (colorPicker, colorPickerEffect) =
+          Ui.ColorPicker.handleMove x y model.colorPicker
+        (colorPanel, colorPanelEffect) =
+          Ui.ColorPanel.handleMove x y model.colorPanel
+        (numberRange, numberRangeEffect) =
+          Ui.NumberRange.handleMove x y model.numberRange
+        (slider, sliderEffect) =
+          Ui.Slider.handleMove x y model.slider
+      in
+        ({ model
+          | numberRange = numberRange
+          , colorPicker = colorPicker
+          , colorPanel = colorPanel
+          , slider = slider
+          }, Effects.batch [ Effects.map ColorPanel colorPanelEffect
+                           , Effects.map ColorPicker colorPickerEffect
+                           , Effects.map NumberRange numberRangeEffect
+                           , Effects.map Slider sliderEffect
+                           ])
+
+    InplaceInputChanged value ->
+      notify ("Inplace input changed to: " ++ value) model
+    CheckboxChanged value ->
+      notify ("Checkbox changed to: " ++ (toString value)) model
+    Checkbox2Changed value ->
+      notify ("Toggle changed to: " ++ (toString value)) model
+    Checkbox3Changed value ->
+      notify ("Radio changed to: " ++ (toString value)) model
+    ShowNotification ->
+      notify "Test Notification" model
+    ChooserChanged set ->
+      let
+        selected =
+          Ui.Chooser.getFirstSelected model.chooser
+          |> Maybe.map (\value -> List.Extra.find (\item -> item.value == value) data)
+          |> Maybe.Extra.join
+          |> Maybe.map .label
+          |> Maybe.withDefault ""
+      in
+        notify ("Chooser changed to: " ++ selected) model
+    CalendarChanged time ->
+      notify ("Calendar changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
+    DatePickerChanged time ->
+      notify ("Date picker changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
+    RatingsChanged value ->
+      notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings))) model
     _ ->
-      update action model
-        |> fxNone
+      (update action model, Effects.none)
+
+notify : String -> Model -> (Model, Effects.Effects Action)
+notify message model =
+  let
+    (notis, effect) = Ui.NotificationCenter.notify (text message) model.notifications
+  in
+    ({ model | notifications = notis }, Effects.map Notis effect)
 
 app =
-  StartApp.start { init = (init, Effects.none)
-                 , view = view
-                 , update = update'
-                 , inputs = [ Signal.map MousePosition Mouse.position
-                            , Signal.map MouseIsDown Mouse.isDown
-                            , Signal.map EscIsDown (Keyboard.isDown 27)
-                            ]
-                 }
+  let
+    initial =
+      init
+
+    inputs =
+      -- Lifecycle
+      [ Signal.map EscIsDown (Keyboard.isDown 27)
+      , Signal.map MousePosition Mouse.position
+      , Signal.map MouseIsDown Mouse.isDown
+      -- Components
+      , Signal.map DatePicker initial.datePicker.signal
+      , Signal.map AppAction initial.app.signal
+      -- Changes
+      , Signal.map InplaceInputChanged initial.inplaceInput.valueSignal
+      , Signal.map DatePickerChanged initial.datePicker.valueSignal
+      , Signal.map Checkbox2Changed initial.checkbox2.valueSignal
+      , Signal.map Checkbox3Changed initial.checkbox3.valueSignal
+      , Signal.map CalendarChanged initial.calendar.valueSignal
+      , Signal.map CheckboxChanged initial.checkbox.valueSignal
+      , Signal.map RatingsChanged initial.ratings.valueSignal
+      , Signal.map ChooserChanged initial.chooser.valueSignal
+      ]
+  in
+    StartApp.start { init = (initial, Effects.none)
+                   , view = view
+                   , update = update'
+                   , inputs = inputs
+                   }
 
 main =
   app.html

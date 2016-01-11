@@ -35,6 +35,10 @@ ui-notification-center {
   right: 30px;
   top: 20px;
 
+  flex-direction: column;
+  align-items: flex-end;
+  display: flex;
+
   ui-notification {
     animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
     animation-fill-mode: both;
@@ -47,13 +51,13 @@ ui-notification-center {
       cursor: pointer;
 
       div {
-        background: rgba(0,0,0,0.65);
+        background: rgba(#000, 0.65);
       }
     }
 
     div {
       border-radius: $border-radius;
-      background: rgba(0,0,0,0.8);
+      background: rgba(#000, 0.8);
       padding-bottom: 16px;
       padding: 14px 24px;
       color: #FFF;

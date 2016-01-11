@@ -1,5 +1,4 @@
-module Ui.NotificationCenter
-  (Model, Action(..), init, update, view, notify) where
+module Ui.NotificationCenter (Model, Action, init, update, view, notify) where
 
 {-| Notification center for displaying messages to the user.
 
@@ -24,7 +23,11 @@ import Effects
 import Vendor
 import Task
 
-{-| Representation of a notification center. -}
+{-| Representation of a notification center:
+  - **timeout** - The timeout of the notification before it's hidden
+  - **notifications** - The list of notifications that is displayed
+  - **duration** - The duration of the notifications animation
+-}
 type alias Model =
   { notifications : List Notification
   , duration : Float
@@ -60,8 +63,10 @@ update action model =
   case action of
     AutoHide id ->
       autoHide id model
+
     Remove id ->
       remove id model
+
     Hide id ->
       hide id model
 

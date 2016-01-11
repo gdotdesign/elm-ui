@@ -1,3 +1,13 @@
+ui-input {
+  display: inline-block;
+
+  &.disabled input {
+    @extend %disabled;
+    @include colors($disabled);
+    border-color: $disabled;
+  }
+}
+
 input:not([type]),
 input[type=text],
 input[type=email],
@@ -17,8 +27,12 @@ input[type=password] {
     line-height: 22px;
   }
 
-  &[readonly]:focus, &:focus {
+  &:focus {
     @extend %focused;
+  }
+
+  &[readonly]:focus {
+    @extend %focused-readonly;
   }
 
   &[readonly] {

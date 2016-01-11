@@ -1,5 +1,4 @@
-module Ui.Image
-  (Model, Action, init, update, view) where
+module Ui.Image (Model, Action, init, update, view) where
 
 {-| Image component that fades when loaded.
 
@@ -14,16 +13,23 @@ import Html.Extra exposing (onLoad)
 import Html exposing (node, img)
 import Html.Lazy
 
-{-| Representation of an image. -}
+{-| Representation of an image:
+  - **loaded** (internal) - Whether or not the image is loaded
+  - **src** - The url for the image
+-}
 type alias Model =
   { loaded : Bool
   , src : String
   }
 
 {-| Actions that an image can make. -}
-type Action = Loaded
+type Action
+  = Loaded
 
-{-| Initializes an image from an URL. -}
+{-| Initializes an image from an URL.
+
+    Image.init "http://some.url/image.png"
+-}
 init : String -> Model
 init url =
   { loaded = False

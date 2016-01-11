@@ -13,6 +13,26 @@ ui-modal-wrapper {
   width: 500px;
 }
 
+ui-pager {
+  ui-page {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
+    &:nth-child(1) {
+      @include colors($primary);
+    }
+
+    &:nth-child(2) {
+      @include colors($warning);
+    }
+
+    &:nth-child(3) {
+      @include colors($danger);
+    }
+  }
+}
+
 kitchen-sink {
   display: block;
   margin: 0 auto;

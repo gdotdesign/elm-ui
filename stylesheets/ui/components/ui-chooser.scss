@@ -80,6 +80,7 @@ ui-chooser {
     }
   }
 
+  // Readonly State
   &.readonly {
     input:not([type]):focus {
       @extend %focused-readonly;

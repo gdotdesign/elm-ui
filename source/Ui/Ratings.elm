@@ -33,11 +33,14 @@ import Debug exposing (log)
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
   - **value** - The current value of the component (0..1)
+  - **valueSignal** - The componens value as a signal
   - **size** - The number of starts to display
+  - **hoverValue** (internal) - The transient value of the component
+  - **mailbox** (internal) - The mailbox of the component
 -}
 type alias Model =
   { mailbox : Signal.Mailbox Float
-  , signal : Signal Float
+  , valueSignal : Signal Float
   , hoverValue : Float
   , clearable : Bool
   , disabled : Bool
@@ -65,7 +68,7 @@ init size value =
   let
     mailbox = Signal.mailbox value
   in
-    { signal = Signal.dropRepeats mailbox.signal
+    { valueSignal = Signal.dropRepeats mailbox.signal
     , hoverValue = value
     , mailbox = mailbox
     , clearable = False

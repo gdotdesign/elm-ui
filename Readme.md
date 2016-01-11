@@ -1,4 +1,4 @@
-:warning: This library is still under development use it in production at your own risk.
+:warning: This library is still under development use it in production at your own risk. :warning: 
 
 ------------------------
 
@@ -10,20 +10,19 @@ An opinionated UI library for the web in Elm, following the **Elm Architecture**
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/elmui.svg)](https://saucelabs.com/u/elmui)
 
 ## Implemented Componets
-All components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).
+All of the components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).
 
 Interactive components so far:
 - [x] Ui.App - The base for a web or mobile application
-- [x] Ui.Button - Basic button component with sizes
+- [x] Ui.Button - Basic button component with different sizes and styles
 - [x] Ui.Calendar - A calendar component (orignially for the date picker)
 - [x] Ui.Checkbox - Basic checkobx with three variations (checkbox, toggle, radio)
 - [x] Ui.Chooser - A searchable, customizable select box with lots of features
 - [x] Ui.ColorPanel - An interface for manipulating a **hue**, **saturation** and **value** properties of a color
 - [x] Ui.ColorPicker - An input for selecting a color with a color panel
-- [x] Ui.Container - A flexbox container for layouts
 - [x] Ui.DatePicker - A date picker component using a calendar
-- [x] Ui.IconButton - A button with an icon on the left or right side
 - [x] Ui.Image - An image that fades when loaded
+- [x] Ui.DropdownMenu - A dropdown menu that is always visible on the screen
 - [x] Ui.InplaceInput - An input that can be edited in place (display and form view with a save button)
 - [x] Ui.Input - Basic input component
 - [x] Ui.Modal - A base for modal dialogs
@@ -33,14 +32,11 @@ Interactive components so far:
 - [x] Ui.Pager - A pager component
 - [x] Ui.Slider - A slider component
 - [x] Ui.Textarea - An automatically growing textarea
-- [x] Ui.Rating - A rating component
-- [ ] Ui.Tabs - A tab component
-- [ ] Ui.Upload - A file upload component
-- [ ] Ui.ButtonGroup - A component for selecting a value via buttons
-- [ ] Ui.MaskedInput - An input component where the value is masked by a pattern
-- [ ] Ui.CheckboxGroup - A component for selecting a value via checkboxes
+- [x] Ui.Ratings - A ratings component
 
 Static components so far:
+- [x] Ui.Container - A flexbox container for layouts
+- [x] Ui.IconButton - A button with an icon on the left or right side
 - [x] Ui.icon - Icons from Ionicons
 - [x] Ui.title - Title
 - [x] Ui.subTitle - Subtitle
@@ -50,6 +46,14 @@ Static components so far:
 - [x] Ui.headerTitle - A title for a mobile header
 - [x] Ui.fab - Floating action button
 
+Planned components:
+- [ ] Ui.Tabs - A tab component
+- [ ] Ui.Upload - A file upload component
+- [ ] Ui.ButtonGroup - A component for selecting a value via buttons
+- [ ] Ui.MaskedInput - An input component where the value is masked by a pattern
+- [ ] Ui.CheckboxGroup - A component for selecting a value via checkboxes
+
+
 ## Getting Started
 For now, you will need to **clone** or **download** this repository into a directory for server reasons:
   * It uses **Native Modules** because of this its not included int the **Elm packages repository**
@@ -58,7 +62,7 @@ For now, you will need to **clone** or **download** this repository into a direc
   * It uses **Gulp** to build the final files
 
 #### Prerequisites
-* A working version of Node
+* A working version of Node at least (v4)
 
 ### Installing dependencies
 You will need to install both **Elm** and **Node** dependencies:

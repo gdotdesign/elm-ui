@@ -88,6 +88,7 @@ type Action
 
 type alias Model =
   { app : Ui.App.Model
+  , mailbox : Signal.Mailbox Action
   , notifications : Ui.NotificationCenter.Model
   , datePicker : Ui.DatePicker.Model
   , inplaceInput : Ui.InplaceInput.Model
@@ -117,6 +118,8 @@ init =
     datePickerOptions = Ui.DatePicker.init (Ext.Date.now ())
     input = Ui.Input.init ""
     pager = Ui.Pager.init 0
+    address = mailbox.address
+    mailbox = Signal.mailbox Nothing
   in
     { calendar = Ui.Calendar.init (Ext.Date.createDate 2015 5 1)
     , datePicker = { datePickerOptions | format = "%Y %B %e." }
@@ -129,9 +132,9 @@ init =
     , colorPanel = Ui.ColorPanel.init Color.blue
     , app = Ui.App.init "Elm-UI Kitchen Sink"
     , numberRange = Ui.NumberRange.init 0
-    , checkbox3 = Ui.Checkbox.init False
-    , checkbox2 = Ui.Checkbox.init False
-    , checkbox = Ui.Checkbox.init False
+    , checkbox3 = Ui.Checkbox.init False (forwardTo address Checkbox3Changed)
+    , checkbox2 = Ui.Checkbox.init False (forwardTo address Checkbox2Changed)
+    , checkbox = Ui.Checkbox.init False (forwardTo address CheckboxChanged)
     , textarea = Ui.Textarea.init "Test"
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
@@ -139,6 +142,7 @@ init =
     , slider = Ui.Slider.init 50
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
+    , mailbox = mailbox
     , clicked = False
     }
 
@@ -673,12 +677,11 @@ app =
       -- Changes
       , Signal.map InplaceInputChanged initial.inplaceInput.valueSignal
       , Signal.map DatePickerChanged initial.datePicker.valueSignal
-      , Signal.map Checkbox2Changed initial.checkbox2.valueSignal
-      , Signal.map Checkbox3Changed initial.checkbox3.valueSignal
       , Signal.map CalendarChanged initial.calendar.valueSignal
-      , Signal.map CheckboxChanged initial.checkbox.valueSignal
       , Signal.map RatingsChanged initial.ratings.valueSignal
       , Signal.map ChooserChanged initial.chooser.valueSignal
+      -- Mailbox
+      , initial.mailbox.signal
       ]
   in
     StartApp.start { init = (initial, Effects.none)

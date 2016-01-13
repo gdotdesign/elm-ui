@@ -25,15 +25,13 @@ import Dict
 import Ui
 
 {-| Representation of a checkbox:
+  - **adddress** - The address to send the changes in the value
   - **disabled** - Whether or not the checkbox is disabled
   - **readonly** - Whether or not the checkbox is readonly
   - **value** - Whether or not the checkbox is checked
-  - **valueSignal** - The checkboxes value as a signal
-  - **mailbox** (internal) - The mailbox of the checkbox
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Bool
-  , valueSignal : Signal Bool
+  { address : Signal.Address Bool
   , disabled : Bool
   , readonly : Bool
   , value : Bool
@@ -48,17 +46,13 @@ type Action
 
     Checkbox.init False
 -}
-init : Bool -> Model
-init value =
-  let
-    mailbox = Signal.mailbox value
-  in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , mailbox = mailbox
-    , disabled = False
-    , readonly = False
-    , value = value
-    }
+init : Bool -> Signal.Address Bool -> Model
+init value address =
+  { address = address
+  , disabled = False
+  , readonly = False
+  , value = value
+  }
 
 {-| Updates a checkbox. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -69,7 +63,7 @@ update action model =
         value = not model.value
       in
         ({ model | value = value }
-         , Ext.Signal.sendAsEffect model.mailbox.address value Tasks)
+         , Ext.Signal.sendAsEffect model.address value Tasks)
 
     Tasks _ ->
       (model, Effects.none)

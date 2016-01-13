@@ -125,7 +125,6 @@ init =
   in
     { calendar = Ui.Calendar.init (Ext.Date.createDate 2015 5 1)
     , datePicker = { datePickerOptions | format = "%Y %B %e." }
-    , chooser = Ui.Chooser.init data "Select a country..." ""
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
     , input = { input | placeholder = "Type here..." }
@@ -145,6 +144,10 @@ init =
     , modal = Ui.Modal.init
     , mailbox = mailbox
     , clicked = False
+    , chooser = Ui.Chooser.init
+        (forwardTo address ChooserChanged)
+        data
+        "Select a country..." ""
     , app = Ui.App.init
         (forwardTo address Loaded)
         (forwardTo address Scrolled)
@@ -681,7 +684,6 @@ app =
       , Signal.map DatePickerChanged initial.datePicker.valueSignal
       , Signal.map CalendarChanged initial.calendar.valueSignal
       , Signal.map RatingsChanged initial.ratings.valueSignal
-      , Signal.map ChooserChanged initial.chooser.valueSignal
       -- Mailbox
       , initial.mailbox.signal
       ]

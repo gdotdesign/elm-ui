@@ -50,20 +50,18 @@ type alias Item =
   - **multiple** - Whether or not the user can select multiple items
   - **placeholder** - The text to display when no item is selected
   - **searchable** - Whether or not a user can filter the items
+  - **adddress** - The address to send changes in value to
   - **readonly** - Whether or not the chooser is readonly
   - **disabled** - Whether or not the chooser is disabled
   - **selected** - A *Set* of values of selected items
-  - **valueSignal** - The choosers value as a signal
   - **open** - Whether or not the dropdown is open
   - **render** - Function to render the items
   - **intended** (internal) - The currently intended value (for keyboard selection)
   - **dropdownPosition** (internal) - Where the dropdown is positioned
-  - **mailbox** (internal) - The mailbox of the chooser
   - **value** (internal) - The value of the input
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox (Set String)
-  , valueSignal : Signal (Set String)
+  { address : Signal.Address (Set String)
   , dropdownPosition : String
   , render : Item -> Html
   , selected : Set String
@@ -96,21 +94,19 @@ type Action
 
     Chooser.init items placeholder selectedValue
 -}
-init : List Item -> String -> String -> Model
-init data placeholder value =
+init : Signal.Address (Set String) -> List Item -> String -> String -> Model
+init address data placeholder value =
   let
     selected = if value == "" then Set.empty else Set.singleton value
-    mailbox = Signal.mailbox selected
   in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , render = (\item -> span [] [text item.label])
+    { render = (\item -> span [] [text item.label])
     , dropdownPosition = "bottom"
     , placeholder = placeholder
     , closeOnSelect = False
     , deselectable = False
     , selected = selected
     , searchable = False
-    , mailbox = mailbox
+    , address = address
     , multiple = False
     , disabled = False
     , readonly = False
@@ -260,7 +256,7 @@ selectFirst model =
 -- Sends the current value of the model to the signal
 sendValue : Model -> (Model, Effects.Effects Action)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.mailbox.address model.selected Tasks)
+  (model, Ext.Signal.sendAsEffect model.address model.selected Tasks)
 
 {- Select or deslect a single item with the given value and closes
 the dropdown if needed. -}

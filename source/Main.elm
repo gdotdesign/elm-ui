@@ -85,6 +85,8 @@ type Action
   | Checkbox3Changed Bool
   | CheckboxChanged Bool
   | RatingsChanged Float
+  | Scrolled Bool
+  | Loaded Bool
 
 type alias Model =
   { app : Ui.App.Model
@@ -130,7 +132,6 @@ init =
     , inplaceInput = Ui.InplaceInput.init "Test Value"
     , colorPicker = Ui.ColorPicker.init Color.yellow
     , colorPanel = Ui.ColorPanel.init Color.blue
-    , app = Ui.App.init "Elm-UI Kitchen Sink"
     , numberRange = Ui.NumberRange.init 0
     , checkbox3 = Ui.Checkbox.init False (forwardTo address Checkbox3Changed)
     , checkbox2 = Ui.Checkbox.init False (forwardTo address Checkbox2Changed)
@@ -144,6 +145,10 @@ init =
     , modal = Ui.Modal.init
     , mailbox = mailbox
     , clicked = False
+    , app = Ui.App.init
+        (forwardTo address Loaded)
+        (forwardTo address Scrolled)
+        "Elm-UI Kitchen Sink"
     }
 
 data : List Ui.Chooser.Item
@@ -480,10 +485,8 @@ update action model =
         , slider = Ui.Slider.handleClick value model.slider
         }
 
-    AppAction act ->
-      case act of
-        "scroll" -> { model | menu = Ui.DropdownMenu.close model.menu }
-        _ -> model
+    Scrolled _ ->
+      { model | menu = Ui.DropdownMenu.close model.menu }
 
     CloseMenu ->
       { model | menu = Ui.DropdownMenu.close model.menu }
@@ -673,7 +676,6 @@ app =
       , Signal.map MouseIsDown Mouse.isDown
       -- Components
       , Signal.map DatePicker initial.datePicker.signal
-      , Signal.map AppAction initial.app.signal
       -- Changes
       , Signal.map InplaceInputChanged initial.inplaceInput.valueSignal
       , Signal.map DatePickerChanged initial.datePicker.valueSignal

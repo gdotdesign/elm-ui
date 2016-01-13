@@ -25,7 +25,7 @@ import Dict
 import Ui
 
 {-| Representation of a checkbox:
-  - **adddress** - The address to send the changes in the value
+  - **adddress** - The address to send the changes in the value to
   - **disabled** - Whether or not the checkbox is disabled
   - **readonly** - Whether or not the checkbox is readonly
   - **value** - Whether or not the checkbox is checked
@@ -44,7 +44,7 @@ type Action
 
 {-| Initiaizes a checkbox with the given value.
 
-    Checkbox.init False
+    Checkbox.init False (forwardTo address CheckboxChanged)
 -}
 init : Bool -> Signal.Address Bool -> Model
 init value address =

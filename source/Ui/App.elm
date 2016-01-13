@@ -23,14 +23,14 @@ import Html.Lazy
 import Ui
 
 {-| Representation of an application:
-  - **signal** - The signal of the mailbox for events (scroll / load)
+  - **loadedAddress** - The address to send messages when the application is loaded
+  - **scrolledAddress** - The address to send messages when something is scrolled
+  - **loaded** (internal) - Whether or not the application is loaded
   - **title** - The title of the application (and the window)
-  - **loaded** (internal) - Whether or not the applications stylesheet is loaded
-  - **mailbox** (internal) - The mailbox of the application
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox String
-  , signal : Signal String
+  { scrolledAddress : Signal.Address Bool
+  , loadedAddress : Signal.Address Bool
   , title : String
   , loaded : Bool
   }
@@ -43,18 +43,15 @@ type Action
 
 {-| Initializes an application with the given title.
 
-    App.init "My Application"
+    App.init (forwardTo address Loaded) (forwardTo address Scrolled) "My Application"
 -}
-init : String -> Model
-init title =
-  let
-    mailbox = Signal.mailbox ""
-  in
-    { signal = mailbox.signal
-    , mailbox = mailbox
-    , loaded = False
-    , title = title
-    }
+init : Signal.Address Bool -> Signal.Address Bool -> String -> Model
+init loadedAddress scrolledAddress title =
+  { scrolledAddress = scrolledAddress
+  , loadedAddress = loadedAddress
+  , loaded = False
+  , title = title
+  }
 
 {-| Updates an application. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -62,10 +59,10 @@ update action model =
   case action of
     Loaded ->
       ({ model | loaded = True }
-       , Ext.Signal.sendAsEffect model.mailbox.address "load" Tasks)
+       , Ext.Signal.sendAsEffect model.loadedAddress True Tasks)
 
     Scrolled ->
-      (model, Ext.Signal.sendAsEffect model.mailbox.address "scroll" Tasks)
+      (model, Ext.Signal.sendAsEffect model.scrolledAddress True Tasks)
 
     Tasks _ ->
       (model, Effects.none)

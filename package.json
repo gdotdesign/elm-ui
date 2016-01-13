@@ -32,6 +32,7 @@
     "gulp": "3.9.0",
     "intern": "3.0.6",
     "selenium-standalone": "4.8.0",
+    "underscore": "",
     "uglify-js": "",
     "clean-css": "",
     "dotenv": "1.2.0",

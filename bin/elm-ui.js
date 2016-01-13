@@ -41,10 +41,32 @@ exports.serve = function(options){
 renderCSS = function(file){
   return function(callback) {
     sass.render({
+      includePaths: [path.resolve(__dirname, '../stylesheets/ui')],
       file: file,
     }, function(err, result) {
       if(err){
-        callback(err.formatted, null)
+        var err2 = err.formatted.replace(/\n/g,"\\A")
+                                .replace(/"/g, '\\"')
+        var css = `
+        body::before {
+          content: "${err2}";
+          white-space: pre;
+          display: block;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          font-size: 20px;
+          background: crimson;
+          color: white;
+          font-family: sans;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          bottom: 0;
+        }
+        `
+        callback(null, css)
       } else {
         autoprefixer
           .process(result.css)
@@ -58,12 +80,12 @@ renderCSS = function(file){
 
 renderElm = function(file) {
   return function(callback) {
-    var cmd = `${elmExecutable} '${file}' --output test.js`;
+    var cmd = `${elmExecutable} '${file}' --output test.js --yes`;
     exec(cmd, function(error, stdout, stderr) {
       if (stderr) {
         err = stderr.replace(/\n/g,"\\n")
                     .replace(/"/g, '\\"')
-        callback(null, `document.write("${err}")`);
+        callback(null, `document.write("<pre style='padding: 20px'>${err}</pre>")`);
       } else {
         callback(null, fs.readFileSync('test.js', 'utf-8'))
         fs.unlink('test.js')

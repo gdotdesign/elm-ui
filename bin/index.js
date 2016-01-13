@@ -24,7 +24,7 @@ var defaultEmlPackage = {
   "license": "BSD3",
   "native-modules": true,
   "source-directories": [
-      "."
+      "source"
   ],
   "exposed-modules": [],
   "dependencies": {
@@ -49,7 +49,7 @@ var fixElmPackage = function(){
   cwdPackage = JSON.parse(fs.readFileSync(elmPackage, 'utf-8'))
   ownPackage = JSON.parse(fs.readFileSync(ownElmPackage, 'utf-8'))
 
-  cwdPackage["source-directories"] = [".", path.resolve(__dirname, "../source")]
+  cwdPackage["source-directories"] = ["source", path.resolve(__dirname, "../source")]
   cwdPackage.dependencies = ownPackage.dependencies
 
   fs.writeFileSync(elmPackage, JSON.stringify(cwdPackage, null, "  "))

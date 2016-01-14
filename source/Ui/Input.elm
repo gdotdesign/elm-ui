@@ -25,16 +25,14 @@ import String
 
 {-| Representation of an input:
   - **placeholder** - The text to display when there is no value
-  - **valueSignal** - The value of the input as a signal
+  - **valueAddress** - The address to send the changes in value
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
   - **kind** - The type of the input
   - **value** - The value
-  - **mailbox** (internal) - The mailbox of the input
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox String
-  , valueSignal : Signal String
+  { valueAddress : Signal.Address String
   , placeholder : String
   , disabled : Bool
   , readonly : Bool
@@ -51,19 +49,15 @@ type Action
 
     Ui.Input.init "value"
 -}
-init : String -> Model
-init value =
-  let
-    mailbox = Signal.mailbox ""
-  in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , mailbox = mailbox
-    , placeholder = ""
-    , disabled = False
-    , readonly = False
-    , value = value
-    , kind = "text"
-    }
+init : Signal.Address String -> String -> Model
+init valueAddress value =
+  { valueAddress = valueAddress
+  , placeholder = ""
+  , disabled = False
+  , readonly = False
+  , value = value
+  , kind = "text"
+  }
 
 {-| Updates an input. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -102,4 +96,4 @@ render address model =
 setValue : String -> Model -> (Model, Effects.Effects Action)
 setValue value model =
   ( { model | value = value }
-  , Ext.Signal.sendAsEffect model.mailbox.address value Tasks)
+  , Ext.Signal.sendAsEffect model.valueAddress value Tasks)

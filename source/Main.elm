@@ -123,11 +123,12 @@ init =
         (forwardTo address DatePicker)
         (forwardTo address DatePickerChanged)
         (Ext.Date.now ())
-    input = Ui.Input.init ""
+    input = Ui.Input.init stringMailbox.address ""
     pager = Ui.Pager.init 0
     address = mailbox.address
     mailbox = Signal.mailbox Nothing
     colorMailbox = Signal.mailbox (Ext.Color.toHsv Color.yellow)
+    stringMailbox = Signal.mailbox ""
   in
     { calendar = Ui.Calendar.init
         (forwardTo address CalendarChanged)

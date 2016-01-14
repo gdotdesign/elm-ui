@@ -1,10 +1,10 @@
 module Ui.NumberPad
-  (Model, Action, init, update, ViewModel, view, setValue) where
+  (Model, Action, init, initWithAddress, update, ViewModel, view, setValue) where
 
 {-| Number pad component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs ViewModel, view
@@ -38,7 +38,7 @@ import Ui
   - **affix** - The affix to use
 -}
 type alias Model =
-  { valueAddress : Signal.Address Int
+  { valueAddress : Maybe (Signal.Address Int)
   , maximumDigits : Int
   , disabled : Bool
   , readonly : Bool
@@ -65,11 +65,11 @@ type Action
 
 {-| Initializes a number pad with the given value.
 
-    Ui.NumberPad.init 0
+    NumberPad.init 0
 -}
-init : Signal.Address Int -> Int -> Model
-init valueAddress value =
-  { valueAddress = valueAddress
+init : Int -> Model
+init value =
+  { valueAddress = Nothing
   , maximumDigits = 10
   , disabled = False
   , readonly = False
@@ -78,6 +78,17 @@ init valueAddress value =
   , prefix = ""
   , affix = ""
   }
+
+{-| Initializes a number pad with the given value.
+
+    NumberPad.init (forwardTo address NumberPadChanged) 0
+-}
+initWithAddress : Signal.Address Int -> Int -> Model
+initWithAddress valueAddress value =
+  let
+    model = init value
+  in
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a number pad. -}
 update : Action -> Model -> (Model, Effects.Effects Action)

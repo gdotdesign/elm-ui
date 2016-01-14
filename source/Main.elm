@@ -2,7 +2,6 @@ import Signal exposing (forwardTo)
 import Maybe.Extra
 import Date.Format
 import List.Extra
-import Ext.Color
 import Ext.Date
 import StartApp
 import Keyboard
@@ -121,47 +120,42 @@ init =
     datePickerOptions =
       Ui.DatePicker.init
         (forwardTo address DatePicker)
-        (forwardTo address DatePickerChanged)
         (Ext.Date.now ())
-    input = Ui.Input.init stringMailbox.address ""
+    input = Ui.Input.init ""
     pager = Ui.Pager.init 0
     address = mailbox.address
     mailbox = Signal.mailbox Nothing
-    colorMailbox = Signal.mailbox (Ext.Color.toHsv Color.yellow)
-    stringMailbox = Signal.mailbox ""
-    intMailbox = Signal.mailbox 0
-    floatMailbox = Signal.mailbox 0
   in
-    { calendar = Ui.Calendar.init
+    { calendar = Ui.Calendar.initWithAddress
         (forwardTo address CalendarChanged)
         (Ext.Date.createDate 2015 5 1)
     , datePicker = { datePickerOptions | format = "%Y %B %e." }
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
     , input = { input | placeholder = "Type here..." }
-    , inplaceInput = Ui.InplaceInput.init
+    , inplaceInput = Ui.InplaceInput.initWithAddress
         (forwardTo address InplaceInputChanged)
         "Test Value"
-    , colorPicker = Ui.ColorPicker.init colorMailbox.address Color.yellow
-    , colorPanel = Ui.ColorPanel.init colorMailbox.address Color.blue
-    , numberRange = Ui.NumberRange.init floatMailbox.address 0
-    , checkbox3 = Ui.Checkbox.init False (forwardTo address Checkbox3Changed)
-    , checkbox2 = Ui.Checkbox.init False (forwardTo address Checkbox2Changed)
-    , checkbox = Ui.Checkbox.init False (forwardTo address CheckboxChanged)
+    , colorPicker = Ui.ColorPicker.init Color.yellow
+    , colorPanel = Ui.ColorPanel.init Color.blue
+    , numberRange = Ui.NumberRange.init 0
+    , checkbox3 = Ui.Checkbox.initWithAddress False (forwardTo address Checkbox3Changed)
+    , checkbox2 = Ui.Checkbox.initWithAddress False (forwardTo address Checkbox2Changed)
+    , checkbox = Ui.Checkbox.initWithAddress False (forwardTo address CheckboxChanged)
     , textarea = Ui.Textarea.init "Test"
-    , numberPad = Ui.NumberPad.init intMailbox.address 0
+    , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
-    , ratings = Ui.Ratings.init (forwardTo address RatingsChanged) 5 0.4
-    , slider = Ui.Slider.init floatMailbox.address 50
+    , ratings = Ui.Ratings.initWithAddress (forwardTo address RatingsChanged) 5 0.4
+    , slider = Ui.Slider.init 50
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
     , mailbox = mailbox
     , clicked = False
-    , chooser = Ui.Chooser.init
+    , chooser = Ui.Chooser.initWithAddress
         (forwardTo address ChooserChanged)
         data
         "Select a country..." ""
-    , app = Ui.App.init
+    , app = Ui.App.initWithAddress
         (forwardTo address Loaded)
         (forwardTo address Scrolled)
         "Elm-UI Kitchen Sink"

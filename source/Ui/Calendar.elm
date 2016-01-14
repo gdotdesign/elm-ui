@@ -1,5 +1,5 @@
 module Ui.Calendar
-  ( Model, Action(..), init, update, view, setValue, nextDay
+  ( Model, Action(..), init, initWithAddress, update, view, setValue, nextDay
   , previousDay ) where
 
 {-| This is a calendar component where the user can:
@@ -7,7 +7,7 @@ module Ui.Calendar
   - Change the month with arrows
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -41,7 +41,7 @@ import Ui
   - **date** (internal) - The month in which this date is will be displayed
 -}
 type alias Model =
-  { valueAddress : Signal.Address Time
+  { valueAddress : Maybe (Signal.Address Time)
   , selectable : Bool
   , value : Date.Date
   , date : Date.Date
@@ -56,13 +56,27 @@ type Action
   | NextMonth
   | Tasks ()
 
-{-| Initializes a calendar with the given values.
+{-| Initializes a calendar with the given value.
 
     Calendar.init date
 -}
-init : Signal.Address Time -> Date.Date -> Model
-init valueAddress date =
-  { valueAddress = valueAddress
+init : Date.Date -> Model
+init date =
+  { valueAddress = Nothing
+  , selectable = True
+  , disabled = False
+  , readonly = False
+  , value = date
+  , date = date
+  }
+
+{-| Initializes a calendar with the given value and value address.
+
+    Calendar.init (forwardTo address CalendarChanged) date
+-}
+initWithAddress : Signal.Address Time -> Date.Date -> Model
+initWithAddress valueAddress date =
+  { valueAddress = Just valueAddress
   , selectable = True
   , disabled = False
   , readonly = False
@@ -81,8 +95,11 @@ update action model =
       ({ model | date = Ext.Date.previousMonth model.date }, Effects.none)
 
     Select date ->
-      ({ model | value = date }
-       , Ext.Signal.sendAsEffect model.valueAddress (Date.toTime date) Tasks)
+      if Ext.Date.isSameDate model.value date then
+        (model, Effects.none)
+      else
+        ({ model | value = date }
+         , Ext.Signal.sendAsEffect model.valueAddress (Date.toTime date) Tasks)
 
     Tasks _ ->
       (model, Effects.none)

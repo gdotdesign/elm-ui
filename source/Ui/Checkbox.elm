@@ -1,10 +1,11 @@
 module Ui.Checkbox
-  (Model, Action(..), init, update, setValue, view, toggleView, radioView) where
+  ( Model, Action(..), init, initWithAddress, update, setValue, view, toggleView
+  , radioView) where
 
 {-| Checkbox component with three different views.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # Views
 @docs view, toggleView, radioView
@@ -31,7 +32,7 @@ import Ui
   - **value** - Whether or not the checkbox is checked
 -}
 type alias Model =
-  { valueAddress : Signal.Address Bool
+  { valueAddress : Maybe (Signal.Address Bool)
   , disabled : Bool
   , readonly : Bool
   , value : Bool
@@ -44,11 +45,24 @@ type Action
 
 {-| Initiaizes a checkbox with the given value.
 
-    Checkbox.init False (forwardTo address CheckboxChanged)
+    Checkbox.init False
 -}
 init : Bool -> Signal.Address Bool -> Model
 init value valueAddress =
-  { valueAddress = valueAddress
+  { valueAddress = Nothing
+  , disabled = False
+  , readonly = False
+  , value = value
+  }
+
+
+{-| Initiaizes a checkbox with the given value and value signal.
+
+    Checkbox.init (forwardTo address CheckboxChanged) False
+-}
+initWithAddress : Bool -> Signal.Address Bool -> Model
+initWithAddress value valueAddress =
+  { valueAddress = Just valueAddress
   , disabled = False
   , readonly = False
   , value = value

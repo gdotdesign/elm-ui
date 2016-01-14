@@ -1,10 +1,11 @@
 module Ui.Slider
-  (Model, Action, init, update, view, handleMove, handleClick, setValue) where
+  ( Model, Action, init, initWithAddress, update, view, handleMove, handleClick
+  , setValue) where
 
 {-| Simple slider component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -36,7 +37,7 @@ import Ui
   - **drag** (internal) - The drag for the slider
 -}
 type alias Model =
-  { valueAddress : Signal.Address Float
+  { valueAddress : Maybe (Signal.Address Float)
   , startDistance : Float
   , drag : Drag.Model
   , disabled : Bool
@@ -54,11 +55,11 @@ type Action
 
 {-| Initializes a slider with the given value.
 
-    Ui.Slider.init 0.5
+    Slider.init 0.5
 -}
-init : Signal.Address Float -> Float -> Model
-init valueAddress value =
-  { valueAddress = valueAddress
+init : Float -> Model
+init value =
+  { valueAddress = Nothing
   , startDistance = 0
   , drag = Drag.init
   , disabled = False
@@ -66,6 +67,17 @@ init valueAddress value =
   , value = value
   , left = 0
   }
+
+{-| Initializes a slider with the given value.
+
+    Slider.init (forwardTo address SliderChanged) 0.5
+-}
+initWithAddress : Signal.Address Float -> Float -> Model
+initWithAddress valueAddress value =
+  let
+    model = init value
+  in
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a slider. -}
 update : Action -> Model -> (Model, Effects.Effects Action)

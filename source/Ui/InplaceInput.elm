@@ -1,9 +1,10 @@
-module Ui.InplaceInput (Model, Action, init, update, view) where
+module Ui.InplaceInput
+  (Model, Action, init, initWithAddress, update, view) where
 
 {-| Inplace editing textarea / input component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -36,7 +37,7 @@ import Ui
   - **textarea** (internal) - The state of the textarea
 -}
 type alias Model =
-  { valueAddress : Signal.Address String
+  { valueAddress : Maybe (Signal.Address String)
   , textarea : Ui.Textarea.Model
   , required : Bool
   , ctrlSave : Bool
@@ -55,10 +56,10 @@ type Action
   | Edit
 
 {-| Initializes an inplace input with the given value. -}
-init : Signal.Address String -> String -> Model
-init valueAddress value =
+init : String -> Model
+init value =
   { textarea = Ui.Textarea.init value
-  , valueAddress = valueAddress
+  , valueAddress = Nothing
   , disabled = False
   , readonly = False
   , required = True
@@ -66,6 +67,14 @@ init valueAddress value =
   , value = value
   , open = False
   }
+
+{-| Initializes an inplace input with the given value and value address. -}
+initWithAddress : Signal.Address String -> String -> Model
+initWithAddress valueAddress value =
+  let
+    model = init value
+  in
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates an inplace input. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -80,6 +89,8 @@ update action model =
     Save ->
       if (isEmpty model) && model.required then
         (model, Effects.none)
+      else if model.textarea.value == model.value then
+        (close model, Effects.none)
       else
         ( close { model | value = model.textarea.value }
         , Ext.Signal.sendAsEffect

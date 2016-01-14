@@ -1,11 +1,11 @@
 module Ui.ColorPanel
-  (Model, Action, init, update, view, handleMove, handleClick) where
+  (Model, Action, init, initWithAddress, update, view, handleMove, handleClick) where
 
 {-| Color panel component for selecting a colors **hue**, **saturation**,
 **value** and **alpha** components with draggable interfaces.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -35,7 +35,7 @@ import Ui
   - **hueDrag** (internal) - The drag model of the hue slider
 -}
 type alias Model =
-  { valueAddress : Signal.Address Hsv
+  { valueAddress : Maybe (Signal.Address Hsv)
   , alphaDrag : Drag.Model
   , hueDrag : Drag.Model
   , drag : Drag.Model
@@ -55,16 +55,27 @@ type Action
 
     ColorPanel.init Color.blue
 -}
-init : Signal.Address Hsv -> Color -> Model
-init valueAddress color =
+init : Color -> Model
+init color =
   { value = Ext.Color.toHsv color
-  , valueAddress = valueAddress
+  , valueAddress = Nothing
   , alphaDrag = Drag.init
   , hueDrag = Drag.init
   , drag = Drag.init
   , disabled = False
   , readonly = False
   }
+
+{-| Initializes a color panel with the given Elm color and value address.
+
+    ColorPanel.init (forwardTo address ColorPanelChanged) Color.blue
+-}
+initWithAddress : Signal.Address Hsv -> Color -> Model
+initWithAddress valueAddress color =
+  let
+    model = init color
+  in
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a color panel. -}
 update : Action -> Model -> (Model, Effects.Effects Action)

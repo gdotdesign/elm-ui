@@ -1,13 +1,13 @@
 module Ui.NumberRange
-  ( Model, Action, init, update, view, focus, handleClick, handleMove, setValue
-  , increment, decrement ) where
+  ( Model, Action, init, initWithAddress, update, view, focus, handleClick
+  , handleMove, setValue, increment, decrement ) where
 
 {-| This is a component allows the user to change a number value by
 dragging or by using the keyboard, also traditional editing is enabled by
 double clicking on the component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -52,7 +52,7 @@ import Ui
   - **drag** (internal) - The drag model
 -}
 type alias Model =
-  { valueAddress : Signal.Address Float
+  { valueAddress : Maybe (Signal.Address Float)
   , inputValue : String
   , startValue : Float
   , drag : Drag.Model
@@ -85,9 +85,9 @@ type Action
 
     NumberRange.init 0
 -}
-init : Signal.Address Float -> Float -> Model
-init valueAddress value =
-  { valueAddress = valueAddress
+init : Float -> Model
+init value =
+  { valueAddress = Nothing
   , startValue = value
   , focusNext = False
   , drag = Drag.init
@@ -103,6 +103,17 @@ init valueAddress value =
   , round = 0
   , step = 1
   }
+
+{-| Initializes a slider with the given value and value address.
+
+    NumberRange.init (forwardTo address SliderChanged) 0.5
+-}
+initWithAddress : Signal.Address Float -> Float -> Model
+initWithAddress valueAddress value =
+  let
+    model = init value
+  in
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a number range. -}
 update: Action -> Model -> (Model, Effects.Effects Action)

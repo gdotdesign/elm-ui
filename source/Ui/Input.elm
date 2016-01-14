@@ -1,10 +1,10 @@
 module Ui.Input
-  (Model, Action, init, update, view, setValue) where
+  (Model, Action, init, initWithAddress, update, view, setValue) where
 
 {-| Component for text based input.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -32,7 +32,7 @@ import String
   - **value** - The value
 -}
 type alias Model =
-  { valueAddress : Signal.Address String
+  { valueAddress : Maybe (Signal.Address String)
   , placeholder : String
   , disabled : Bool
   , readonly : Bool
@@ -47,17 +47,28 @@ type Action
 
 {-| Initializes an input.
 
-    Ui.Input.init "value"
+    Input.init "value"
 -}
-init : Signal.Address String -> String -> Model
-init valueAddress value =
-  { valueAddress = valueAddress
+init : String -> Model
+init value =
+  { valueAddress = Nothing
   , placeholder = ""
   , disabled = False
   , readonly = False
   , value = value
   , kind = "text"
   }
+
+{-| Initializes an input.
+
+    Input.init (forwardTo address InputChanged) "value"
+-}
+initWithAddress : Signal.Address String -> String -> Model
+initWithAddress valueAddress value =
+  let
+    model = init value
+  in
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates an input. -}
 update : Action -> Model -> (Model, Effects.Effects Action)

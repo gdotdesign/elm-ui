@@ -1,9 +1,10 @@
-module Ui.DatePicker (Model, Action, init, update, view, setValue) where
+module Ui.DatePicker
+  (Model, Action, init, initWithAddress, update, view, setValue) where
 
 {-| Date picker input component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -42,7 +43,7 @@ import Ui
   - **calendar** (internal) - The model of a calendar
 -}
 type alias Model =
-  { valueAddress : Signal.Address Time.Time
+  { valueAddress : Maybe (Signal.Address Time.Time)
   , address : Signal.Address Action
   , calendar : Calendar.Model
   , dropdownPosition : String
@@ -67,15 +68,35 @@ type Action
 
 {-| Initializes a date picker with the given values.
 
-    DatePicker.init date
+    DatePicker.init (forwardTo address DatePicker) date
 -}
-init : Signal.Address Action -> Signal.Address Time.Time -> Date.Date -> Model
-init address valueAddress date =
+init : Signal.Address Action -> Date.Date -> Model
+init address date =
   { address = address
-  , valueAddress = valueAddress
+  , valueAddress = Nothing
   , dropdownPosition = "bottom"
   , closeOnSelect = False
-  , calendar = Calendar.init (forwardTo address Select) date
+  , calendar = Calendar.init date
+  , format = "%Y-%m-%d"
+  , disabled = False
+  , readonly = False
+  , open = False
+  }
+
+{-| Initializes a date picker with the given values and value address.
+
+    DatePicker.init
+      (forwardTo address DatePicker)
+      (forwardTo address DatePickerChanged)
+      date
+-}
+initWithAddress : Signal.Address Time.Time -> Signal.Address Action -> Date.Date -> Model
+initWithAddress valueAddress address date =
+  { address = address
+  , valueAddress = Just valueAddress
+  , dropdownPosition = "bottom"
+  , closeOnSelect = False
+  , calendar = Calendar.initWithAddress (forwardTo address Select) date
   , format = "%Y-%m-%d"
   , disabled = False
   , readonly = False

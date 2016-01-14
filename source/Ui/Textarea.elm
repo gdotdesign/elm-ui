@@ -145,20 +145,8 @@ render address model =
 {-| Sets the value of the given textarea. -}
 setValue : String -> Model -> (Model, Effects.Effects Action)
 setValue value model =
-  let
-    updatedModel =
-      { model | value = value }
-
-    effect =
-      Maybe.map (sendValue value) model.valueAddress
-      |> Maybe.withDefault Effects.none
-  in
-    (updatedModel, effect)
-
--- Sends the models value to the given address
-sendValue : String -> Signal.Address String -> Effects.Effects Action
-sendValue value address =
-  Ext.Signal.sendAsEffect address value Tasks
+  ( { model | value = value }
+  , Ext.Signal.sendAsEffect model.valueAddress value Tasks)
 
 {-| Focuses the textarea. -}
 focus : Model -> Model

@@ -1,10 +1,11 @@
 module Ui.Ratings
-  (Model, Action, init, update, view, setValue, valueAsStars) where
+  ( Model, Action, init, initWithAddress, update, view, setValue
+  , valueAsStars) where
 
 {-| A simple star rating component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -38,7 +39,7 @@ import Debug exposing (log)
   - **hoverValue** (internal) - The transient value of the component
 -}
 type alias Model =
-  { valueAddress : Signal.Address Float
+  { valueAddress : Maybe (Signal.Address Float)
   , hoverValue : Float
   , clearable : Bool
   , disabled : Bool
@@ -59,11 +60,12 @@ type Action
 {-| Initializes a ratings component with the given number of stars and initial
 value.
 
-    Ratings.init 10 0.1 -- 1 out of 10 star rating
+    -- 1 out of 10 star rating
+    Ratings.init 10 0.1
 -}
-init : Signal.Address Float -> Int -> Float -> Model
-init valueAddress size value =
-  { valueAddress = valueAddress
+init : Int -> Float -> Model
+init size value =
+  { valueAddress = Nothing
   , hoverValue = value
   , clearable = False
   , disabled = False
@@ -71,6 +73,19 @@ init valueAddress size value =
   , value = value
   , size = size
   }
+
+{-| Initializes a ratings component with the given number of stars, initial
+value and value address.
+
+    -- 1 out of 10 star rating
+    Ratings.init (forwardTo adress RatingsChanged) 10 0.1
+-}
+initWithAddress : Signal.Address Float -> Int -> Float -> Model
+initWithAddress valueAddress size value =
+  let
+    model = init size value
+  in
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a ratings component. -}
 update : Action -> Model -> (Model, Effects.Effects Action)

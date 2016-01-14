@@ -1,13 +1,13 @@
-module Ui.App (Model, Action(..), init, update, view) where
+module Ui.App (Model, Action(..), init, initWithAddress, update, view) where
 
 {-| Base frame for a web/mobile application:
-  - Provides a signal for **load** and **scroll** events
+  - Provides singals for **load** and **scroll** events
   - Sets the viewport to be mobile friendly
   - Sets the title of the application
   - Loads the stylesheet
 
 # Model
-@docs Model, Action, update, init
+@docs Model, Action, update, init, initWithAddress
 
 # View
 @docs view
@@ -29,8 +29,8 @@ import Ui
   - **title** - The title of the application (and the window)
 -}
 type alias Model =
-  { scrolledAddress : Signal.Address Bool
-  , loadedAddress : Signal.Address Bool
+  { scrolledAddress : Maybe (Signal.Address Bool)
+  , loadedAddress : Maybe (Signal.Address Bool)
   , title : String
   , loaded : Bool
   }
@@ -43,12 +43,27 @@ type Action
 
 {-| Initializes an application with the given title.
 
-    App.init (forwardTo address Loaded) (forwardTo address Scrolled) "My Application"
+    App.init "My Application"
 -}
-init : Signal.Address Bool -> Signal.Address Bool -> String -> Model
-init loadedAddress scrolledAddress title =
-  { scrolledAddress = scrolledAddress
-  , loadedAddress = loadedAddress
+init : String -> Model
+init title =
+  { scrolledAddress = Nothing
+  , loadedAddress = Nothing
+  , loaded = False
+  , title = title
+  }
+
+{-| Initializes an application with the given title.
+
+    App.initinitWithSignals
+      (forwardTo address Loaded)
+      (forwardTo address Scrolled)
+      "My Application"
+-}
+initWithAddress : Signal.Address Bool -> Signal.Address Bool -> String -> Model
+initWithAddress loadedAddress scrolledAddress title =
+  { scrolledAddress = Just scrolledAddress
+  , loadedAddress = Just loadedAddress
   , loaded = False
   , title = title
   }

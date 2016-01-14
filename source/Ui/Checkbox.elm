@@ -60,8 +60,8 @@ init value =
 
     Checkbox.init (forwardTo address CheckboxChanged) False
 -}
-initWithAddress : Bool -> Signal.Address Bool -> Model
-initWithAddress value valueAddress =
+initWithAddress : Signal.Address Bool -> Bool -> Model
+initWithAddress valueAddress value =
   { valueAddress = Just valueAddress
   , disabled = False
   , readonly = False

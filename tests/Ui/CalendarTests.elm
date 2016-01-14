@@ -14,15 +14,10 @@ tests =
     , previousDay
     , nextDay
     ]
-
-mailbox : Signal.Mailbox Float
-mailbox =
-  Signal.mailbox 0
-
 nextDay : Test
 nextDay =
   let
-    initial = Ui.Calendar.init mailbox.address (Date.fromTime 1433030400000)
+    initial = Ui.Calendar.init (Date.fromTime 1433030400000)
     changed = Ui.Calendar.nextDay initial
     expected = Date.fromTime 1433116800000
   in
@@ -36,7 +31,7 @@ nextDay =
 previousDay : Test
 previousDay =
   let
-    initial = Ui.Calendar.init mailbox.address (Date.fromTime 1430438400000)
+    initial = Ui.Calendar.init (Date.fromTime 1430438400000)
     changed = Ui.Calendar.previousDay initial
     expected = Date.fromTime 1430352000000
   in
@@ -50,7 +45,7 @@ previousDay =
 updatePreviousMonth : Test
 updatePreviousMonth =
   let
-    initial = Ui.Calendar.init mailbox.address (Date.fromTime 1430438400000)
+    initial = Ui.Calendar.init (Date.fromTime 1430438400000)
     (changed, effect) = Ui.Calendar.update Ui.Calendar.PreviousMonth initial
     expected = Date.fromTime 1427846400000
   in
@@ -60,7 +55,7 @@ updatePreviousMonth =
 updateNextMonth : Test
 updateNextMonth =
   let
-    initial = Ui.Calendar.init mailbox.address (Date.fromTime 1430438400000)
+    initial = Ui.Calendar.init (Date.fromTime 1430438400000)
     (changed, effect) = Ui.Calendar.update Ui.Calendar.NextMonth initial
     expected = Date.fromTime 1433116800000
   in

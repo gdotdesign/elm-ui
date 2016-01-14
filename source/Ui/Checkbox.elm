@@ -47,8 +47,8 @@ type Action
 
     Checkbox.init False
 -}
-init : Bool -> Signal.Address Bool -> Model
-init value valueAddress =
+init : Bool -> Model
+init value =
   { valueAddress = Nothing
   , disabled = False
   , readonly = False

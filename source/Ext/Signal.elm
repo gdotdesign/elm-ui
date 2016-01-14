@@ -12,8 +12,12 @@ for a different address.
 
     Signal.sendAsEffect address value action
 -}
-sendAsEffect : Signal.Address a -> a -> (() -> b) -> Effects.Effects b
-sendAsEffect address value action =
-  Signal.send address value
-    |> Effects.task
-    |> Effects.map action
+sendAsEffect : Maybe (Signal.Address a) -> a -> (() -> b) -> Effects.Effects b
+sendAsEffect address' value action =
+  case address' of
+    Just address ->
+      Signal.send address value
+        |> Effects.task
+        |> Effects.map action
+    Nothing ->
+      Effects.none

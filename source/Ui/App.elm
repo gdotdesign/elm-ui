@@ -1,13 +1,13 @@
-module Ui.App (Model, Action(..), init, update, view) where
+module Ui.App (Model, Action(..), init, initWithAddress, update, view) where
 
 {-| Base frame for a web/mobile application:
-  - Provides a signal for **load** and **scroll** events
+  - Provides singals for **load** and **scroll** events
   - Sets the viewport to be mobile friendly
   - Sets the title of the application
   - Loads the stylesheet
 
 # Model
-@docs Model, Action, update, init
+@docs Model, Action, update, init, initWithAddress
 
 # View
 @docs view
@@ -23,14 +23,14 @@ import Html.Lazy
 import Ui
 
 {-| Representation of an application:
-  - **signal** - The signal of the mailbox for events (scroll / load)
+  - **loadedAddress** - The address to send messages when the application is loaded
+  - **scrolledAddress** - The address to send messages when something is scrolled
+  - **loaded** (internal) - Whether or not the application is loaded
   - **title** - The title of the application (and the window)
-  - **loaded** (internal) - Whether or not the applications stylesheet is loaded
-  - **mailbox** (internal) - The mailbox of the application
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox String
-  , signal : Signal String
+  { scrolledAddress : Maybe (Signal.Address Bool)
+  , loadedAddress : Maybe (Signal.Address Bool)
   , title : String
   , loaded : Bool
   }
@@ -47,14 +47,26 @@ type Action
 -}
 init : String -> Model
 init title =
-  let
-    mailbox = Signal.mailbox ""
-  in
-    { signal = mailbox.signal
-    , mailbox = mailbox
-    , loaded = False
-    , title = title
-    }
+  { scrolledAddress = Nothing
+  , loadedAddress = Nothing
+  , loaded = False
+  , title = title
+  }
+
+{-| Initializes an application with the given title.
+
+    App.initinitWithSignals
+      (forwardTo address Loaded)
+      (forwardTo address Scrolled)
+      "My Application"
+-}
+initWithAddress : Signal.Address Bool -> Signal.Address Bool -> String -> Model
+initWithAddress loadedAddress scrolledAddress title =
+  { scrolledAddress = Just scrolledAddress
+  , loadedAddress = Just loadedAddress
+  , loaded = False
+  , title = title
+  }
 
 {-| Updates an application. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -62,10 +74,10 @@ update action model =
   case action of
     Loaded ->
       ({ model | loaded = True }
-       , Ext.Signal.sendAsEffect model.mailbox.address "load" Tasks)
+       , Ext.Signal.sendAsEffect model.loadedAddress True Tasks)
 
     Scrolled ->
-      (model, Ext.Signal.sendAsEffect model.mailbox.address "scroll" Tasks)
+      (model, Ext.Signal.sendAsEffect model.scrolledAddress True Tasks)
 
     Tasks _ ->
       (model, Effects.none)

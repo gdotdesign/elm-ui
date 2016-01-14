@@ -55,6 +55,10 @@ ui-number-range {
 
   &:not(.readonly) input:read-only {
     cursor: move;
+
+    &:focus {
+      @extend %focused;
+    }
   }
 
   // Input

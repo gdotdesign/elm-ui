@@ -1,4 +1,4 @@
-:warning: This library is still under development use it in production at your own risk. :warning: 
+:warning: This library is still under development use it in production at your own risk. :warning:
 
 ------------------------
 
@@ -6,8 +6,6 @@
 An opinionated UI library for the web in Elm, following the **Elm Architecture**.
 
 [![Build Status](https://travis-ci.org/gdotdesign/elm-ui.svg?branch=master)](https://travis-ci.org/gdotdesign/elm-ui)
-
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/elmui.svg)](https://saucelabs.com/u/elmui)
 
 ## Implemented Componets
 All of the components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).

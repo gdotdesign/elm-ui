@@ -1,10 +1,10 @@
 module Ui.NumberPad
-  (Model, Action, init, update, ViewModel, view, setValue) where
+  (Model, Action, init, initWithAddress, update, ViewModel, view, setValue) where
 
 {-| Number pad component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs ViewModel, view
@@ -28,6 +28,7 @@ import Dict
 import Ui
 
 {-| Representation of a number pad.
+  - **valueAddress** - The address to send the changes in value
   - **readonly** - Whether or not the number pad is interactive
   - **disabled** - Whether or not the number pad is disabled
   - **maximumDigits** - The maximum length of the value
@@ -37,8 +38,7 @@ import Ui
   - **affix** - The affix to use
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Int
-  , valueSignal : Signal Int
+  { valueAddress : Maybe (Signal.Address Int)
   , maximumDigits : Int
   , disabled : Bool
   , readonly : Bool
@@ -65,23 +65,30 @@ type Action
 
 {-| Initializes a number pad with the given value.
 
-    Ui.NumberPad.init 0
+    NumberPad.init 0
 -}
 init : Int -> Model
 init value =
+  { valueAddress = Nothing
+  , maximumDigits = 10
+  , disabled = False
+  , readonly = False
+  , format = True
+  , value = value
+  , prefix = ""
+  , affix = ""
+  }
+
+{-| Initializes a number pad with the given value.
+
+    NumberPad.init (forwardTo address NumberPadChanged) 0
+-}
+initWithAddress : Signal.Address Int -> Int -> Model
+initWithAddress valueAddress value =
   let
-    mailbox = Signal.mailbox value
+    model = init value
   in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , maximumDigits = 10
-    , mailbox = mailbox
-    , disabled = False
-    , readonly = False
-    , format = True
-    , value = value
-    , prefix = ""
-    , affix = ""
-    }
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a number pad. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -101,7 +108,7 @@ update action model =
 -- Sends the value to the signal
 sendValue : Model -> (Model, Effects.Effects Action)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.mailbox.address model.value Tasks)
+  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
 
 {-| Renders a number pad. -}
 view : Signal.Address Action -> ViewModel -> Model -> Html.Html

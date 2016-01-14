@@ -1,12 +1,12 @@
 module Ui.Chooser
-  (Model, Item, Action, init, update, close, toggleItem,
+  (Model, Item, Action, init, initWithAddress, update, close, toggleItem,
    getFirstSelected, view, updateData, selectFirst, select) where
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
 
 # Model
-@docs Model, Item, Action, init, update
+@docs Model, Item, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -50,20 +50,18 @@ type alias Item =
   - **multiple** - Whether or not the user can select multiple items
   - **placeholder** - The text to display when no item is selected
   - **searchable** - Whether or not a user can filter the items
+  - **valueAddress** - The address to send changes in value to
   - **readonly** - Whether or not the chooser is readonly
   - **disabled** - Whether or not the chooser is disabled
   - **selected** - A *Set* of values of selected items
-  - **valueSignal** - The choosers value as a signal
   - **open** - Whether or not the dropdown is open
   - **render** - Function to render the items
   - **intended** (internal) - The currently intended value (for keyboard selection)
   - **dropdownPosition** (internal) - Where the dropdown is positioned
-  - **mailbox** (internal) - The mailbox of the chooser
   - **value** (internal) - The value of the input
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox (Set String)
-  , valueSignal : Signal (Set String)
+  { valueAddress : Maybe (Signal.Address (Set String))
   , dropdownPosition : String
   , render : Item -> Html
   , selected : Set String
@@ -100,17 +98,15 @@ init : List Item -> String -> String -> Model
 init data placeholder value =
   let
     selected = if value == "" then Set.empty else Set.singleton value
-    mailbox = Signal.mailbox selected
   in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , render = (\item -> span [] [text item.label])
+    { render = (\item -> span [] [text item.label])
     , dropdownPosition = "bottom"
     , placeholder = placeholder
+    , valueAddress = Nothing
     , closeOnSelect = False
     , deselectable = False
     , selected = selected
     , searchable = False
-    , mailbox = mailbox
     , multiple = False
     , disabled = False
     , readonly = False
@@ -120,6 +116,21 @@ init data placeholder value =
     , value = ""
     }
       |> intendFirst
+
+{-| Initializes a chooser with the given values and value address.
+
+    Chooser.init
+      (forwardTo address ChooserChanged)
+      items
+      placeholder
+      selectedValue
+-}
+initWithAddress : Signal.Address (Set String) -> List Item -> String -> String -> Model
+initWithAddress valueAddress data placeholder value =
+  let
+    model = init data placeholder value
+  in
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a chooser. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -260,7 +271,7 @@ selectFirst model =
 -- Sends the current value of the model to the signal
 sendValue : Model -> (Model, Effects.Effects Action)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.mailbox.address model.selected Tasks)
+  (model, Ext.Signal.sendAsEffect model.valueAddress model.selected Tasks)
 
 {- Select or deslect a single item with the given value and closes
 the dropdown if needed. -}

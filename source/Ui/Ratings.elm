@@ -1,10 +1,11 @@
 module Ui.Ratings
-  (Model, Action, init, update, view, setValue, valueAsStars) where
+  ( Model, Action, init, initWithAddress, update, view, setValue
+  , valueAsStars) where
 
 {-| A simple star rating component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -32,15 +33,13 @@ import Debug exposing (log)
   - **clearable** - Whether or not the component is clearable
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
+  - **valueAddress** - The address to send changes in value
   - **value** - The current value of the component (0..1)
-  - **valueSignal** - The componens value as a signal
   - **size** - The number of starts to display
   - **hoverValue** (internal) - The transient value of the component
-  - **mailbox** (internal) - The mailbox of the component
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Float
-  , valueSignal : Signal Float
+  { valueAddress : Maybe (Signal.Address Float)
   , hoverValue : Float
   , clearable : Bool
   , disabled : Bool
@@ -61,22 +60,32 @@ type Action
 {-| Initializes a ratings component with the given number of stars and initial
 value.
 
-    Ratings.init 10 0.1 -- 1 out of 10 star rating
+    -- 1 out of 10 star rating
+    Ratings.init 10 0.1
 -}
 init : Int -> Float -> Model
 init size value =
+  { valueAddress = Nothing
+  , hoverValue = value
+  , clearable = False
+  , disabled = False
+  , readonly = False
+  , value = value
+  , size = size
+  }
+
+{-| Initializes a ratings component with the given number of stars, initial
+value and value address.
+
+    -- 1 out of 10 star rating
+    Ratings.init (forwardTo adress RatingsChanged) 10 0.1
+-}
+initWithAddress : Signal.Address Float -> Int -> Float -> Model
+initWithAddress valueAddress size value =
   let
-    mailbox = Signal.mailbox value
+    model = init size value
   in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , hoverValue = value
-    , mailbox = mailbox
-    , clearable = False
-    , disabled = False
-    , readonly = False
-    , value = value
-    , size = size
-    }
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a ratings component. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -122,11 +131,14 @@ setValue value' model =
 
     effect =
       Ext.Signal.sendAsEffect
-        model.mailbox.address
+        model.valueAddress
         value
         Tasks
   in
-    (updatedModel, effect)
+    if updatedModel == model then
+      (model, Effects.none)
+    else
+      (updatedModel, effect)
 
 {-| Returns the value of a ratings component as number of stars. -}
 valueAsStars : Float -> Model -> Int

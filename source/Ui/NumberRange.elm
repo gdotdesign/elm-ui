@@ -1,13 +1,13 @@
 module Ui.NumberRange
-  ( Model, Action, init, update, view, focus, handleClick, handleMove, setValue
-  , increment, decrement ) where
+  ( Model, Action, init, initWithAddress, update, view, focus, handleClick
+  , handleMove, setValue, increment, decrement ) where
 
 {-| This is a component allows the user to change a number value by
 dragging or by using the keyboard, also traditional editing is enabled by
 double clicking on the component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -37,9 +37,9 @@ import Ui
 {-| Representation of a number range:
   - **step** - The step to increment / decrement by (per pixel, or per keyboard action)
   - **affix** - The affix string to display (for example px, %, em, s)
+  - **valueAddress** - The address to send the changes in value
   - **disabled** - Whether or not the number range is disabled
   - **readonly** - Whether or not the number range is readonly
-  - **valueSignal** - The number ranges value as a signal
   - **round** - The decimals to round the value
   - **min** - The minimum allowed value
   - **max** - The maximum allowed value
@@ -49,12 +49,10 @@ import Ui
   - **focusNext** (internal) - Whether or not to focus the input
   - **focus** (internal) - Whether or not the input is focused
   - **inputValue** (internal) - The inputs value when editing
-  - **mailbox** (internal) - The number ranges mailbox
   - **drag** (internal) - The drag model
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Float
-  , valueSignal : Signal Float
+  { valueAddress : Maybe (Signal.Address Float)
   , inputValue : String
   , startValue : Float
   , drag : Drag.Model
@@ -89,26 +87,33 @@ type Action
 -}
 init : Float -> Model
 init value =
+  { valueAddress = Nothing
+  , startValue = value
+  , focusNext = False
+  , drag = Drag.init
+  , disabled = False
+  , readonly = False
+  , focused = False
+  , editing = False
+  , inputValue = ""
+  , value = value
+  , affix = "px"
+  , min = -(1/0) -- Minus Infinity
+  , max = (1/0) -- Plus Infinity
+  , round = 0
+  , step = 1
+  }
+
+{-| Initializes a slider with the given value and value address.
+
+    NumberRange.init (forwardTo address SliderChanged) 0.5
+-}
+initWithAddress : Signal.Address Float -> Float -> Model
+initWithAddress valueAddress value =
   let
-    mailbox = Signal.mailbox value
+    model = init value
   in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , startValue = value
-    , focusNext = False
-    , mailbox = mailbox
-    , drag = Drag.init
-    , disabled = False
-    , readonly = False
-    , focused = False
-    , editing = False
-    , inputValue = ""
-    , value = value
-    , affix = "px"
-    , min = -(1/0) -- Minus Infinity
-    , max = (1/0) -- Plus Infinity
-    , round = 0
-    , step = 1
-    }
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a number range. -}
 update: Action -> Model -> (Model, Effects.Effects Action)
@@ -149,7 +154,7 @@ update action model =
 -- Sends the value to the signal
 sendValue : Model -> (Model, Effects.Effects Action)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.mailbox.address model.value Tasks)
+  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
 
 {-| Renders a number range. -}
 view: Signal.Address Action -> Model -> Html.Html

@@ -129,6 +129,8 @@ init =
     mailbox = Signal.mailbox Nothing
     colorMailbox = Signal.mailbox (Ext.Color.toHsv Color.yellow)
     stringMailbox = Signal.mailbox ""
+    intMailbox = Signal.mailbox 0
+    floatMailbox = Signal.mailbox 0
   in
     { calendar = Ui.Calendar.init
         (forwardTo address CalendarChanged)
@@ -142,15 +144,15 @@ init =
         "Test Value"
     , colorPicker = Ui.ColorPicker.init colorMailbox.address Color.yellow
     , colorPanel = Ui.ColorPanel.init colorMailbox.address Color.blue
-    , numberRange = Ui.NumberRange.init 0
+    , numberRange = Ui.NumberRange.init floatMailbox.address 0
     , checkbox3 = Ui.Checkbox.init False (forwardTo address Checkbox3Changed)
     , checkbox2 = Ui.Checkbox.init False (forwardTo address Checkbox2Changed)
     , checkbox = Ui.Checkbox.init False (forwardTo address CheckboxChanged)
     , textarea = Ui.Textarea.init "Test"
-    , numberPad = Ui.NumberPad.init 0
+    , numberPad = Ui.NumberPad.init intMailbox.address 0
     , image = Ui.Image.init imageUrl
     , ratings = Ui.Ratings.init (forwardTo address RatingsChanged) 5 0.4
-    , slider = Ui.Slider.init 50
+    , slider = Ui.Slider.init floatMailbox.address 50
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
     , mailbox = mailbox

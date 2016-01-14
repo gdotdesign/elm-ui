@@ -28,17 +28,15 @@ import Ui
 
 {-| Representation of a slider:
   - **startDistance** - The distance in pixels when the dragging can start
+  - **valueAddress** - The address to send the changes in value
   - **disabled** - Whether or not the slider is disabled
   - **readonly** - Whether or not the slider is readonly
-  - **valueSignal** - The sliders value as a signal
   - **value** - The current value (0 - 100)
   - **left** (internal) - The left position of the handle
   - **drag** (internal) - The drag for the slider
-  - **mailbox** (internal) - The sliders mailbox
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Float
-  , valueSignal : Signal Float
+  { valueAddress : Signal.Address Float
   , startDistance : Float
   , drag : Drag.Model
   , disabled : Bool
@@ -58,20 +56,16 @@ type Action
 
     Ui.Slider.init 0.5
 -}
-init : Float -> Model
-init value =
-  let
-    mailbox = Signal.mailbox value
-  in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , mailbox = mailbox
-    , startDistance = 0
-    , drag = Drag.init
-    , disabled = False
-    , readonly = False
-    , value = value
-    , left = 0
-    }
+init : Signal.Address Float -> Float -> Model
+init valueAddress value =
+  { valueAddress = valueAddress
+  , startDistance = 0
+  , drag = Drag.init
+  , disabled = False
+  , readonly = False
+  , value = value
+  , left = 0
+  }
 
 {-| Updates a slider. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -186,4 +180,4 @@ setValue value model =
     clampedValue = clamp 0 100 value
   in
     ( { model | value = clampedValue }
-    , Ext.Signal.sendAsEffect model.mailbox.address clampedValue Tasks)
+    , Ext.Signal.sendAsEffect model.valueAddress clampedValue Tasks)

@@ -28,6 +28,7 @@ import Dict
 import Ui
 
 {-| Representation of a number pad.
+  - **valueAddress** - The address to send the changes in value
   - **readonly** - Whether or not the number pad is interactive
   - **disabled** - Whether or not the number pad is disabled
   - **maximumDigits** - The maximum length of the value
@@ -37,8 +38,7 @@ import Ui
   - **affix** - The affix to use
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Int
-  , valueSignal : Signal Int
+  { valueAddress : Signal.Address Int
   , maximumDigits : Int
   , disabled : Bool
   , readonly : Bool
@@ -67,21 +67,17 @@ type Action
 
     Ui.NumberPad.init 0
 -}
-init : Int -> Model
-init value =
-  let
-    mailbox = Signal.mailbox value
-  in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , maximumDigits = 10
-    , mailbox = mailbox
-    , disabled = False
-    , readonly = False
-    , format = True
-    , value = value
-    , prefix = ""
-    , affix = ""
-    }
+init : Signal.Address Int -> Int -> Model
+init valueAddress value =
+  { valueAddress = valueAddress
+  , maximumDigits = 10
+  , disabled = False
+  , readonly = False
+  , format = True
+  , value = value
+  , prefix = ""
+  , affix = ""
+  }
 
 {-| Updates a number pad. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -101,7 +97,7 @@ update action model =
 -- Sends the value to the signal
 sendValue : Model -> (Model, Effects.Effects Action)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.mailbox.address model.value Tasks)
+  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
 
 {-| Renders a number pad. -}
 view : Signal.Address Action -> ViewModel -> Model -> Html.Html

@@ -14,7 +14,6 @@ tests =
     , previousDay
     , nextDay
     ]
-
 nextDay : Test
 nextDay =
   let

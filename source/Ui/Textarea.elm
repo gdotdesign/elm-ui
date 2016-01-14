@@ -1,10 +1,11 @@
-module Ui.Textarea (Model, Action, init, update, view, setValue, focus) where
+module Ui.Textarea
+  (Model, Action, init, initWithAddress, update, view, setValue, focus) where
 
 {-| Autogrow textarea, using a mirror object to render the contents the same
 way, thus creating an automatically growing textarea.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -31,15 +32,13 @@ import Ui
 {-| Representation of a textarea:
   - **enterAllowed** - Whether or not to allow new lines when pressing enter
   - **placeholder** - The text to display when there is no value
+  - **valueAddress** - The address to send the changes in value
   - **disabled** - Whether or not the textarea is disabled
   - **readonly** - Whether or not the textarea is readonly
-  - **valueSingal** - The textareas value as a signal
   - **value** - The value
-  - **mailbox** - (internal) The mailbox of the textarea
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox String
-  , valueSignal : Signal String
+  { valueAddress : Maybe (Signal.Address String)
   , placeholder : String
   , enterAllowed : Bool
   , focusNext : Bool
@@ -52,8 +51,9 @@ type alias Model =
 type Action
   = Input String
   | Tasks ()
-  | Nothing
+  | NoOp
   | Focus
+
 
 {-| Initializes a textraea with the given value.
 
@@ -61,18 +61,30 @@ type Action
 -}
 init : String -> Model
 init value =
-  let
-    mailbox = Signal.mailbox value
-  in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , enterAllowed = True
-    , mailbox = mailbox
-    , focusNext = False
-    , placeholder = ""
-    , disabled = False
-    , readonly = False
-    , value = value
-    }
+  { valueAddress = Nothing
+  , enterAllowed = True
+  , focusNext = False
+  , placeholder = ""
+  , disabled = False
+  , readonly = False
+  , value = value
+  }
+
+{-| Initializes a textraea with the given value and address to send the changes
+in value to.
+
+    Ui.Textrea.init (forwardTo address TextareaChanged) "value"
+-}
+initWithAddress : Signal.Address String -> String -> Model
+initWithAddress valueAddress value =
+  { valueAddress = Just valueAddress
+  , enterAllowed = True
+  , focusNext = False
+  , placeholder = ""
+  , disabled = False
+  , readonly = False
+  , value = value
+  }
 
 {-| Updates a textrea. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -106,7 +118,7 @@ render address model =
 
     actions =
       Ui.enabledActions model
-        [ onStop "select" address Nothing
+        [ onStop "select" address NoOp
         , onInput address Input
         ]
 
@@ -114,7 +126,7 @@ render address model =
       if model.enterAllowed then
         base
       else
-        base ++ [onEnterPreventDefault address Nothing]
+        base ++ [onEnterPreventDefault address NoOp]
 
     textarea' =
       if model.focusNext then
@@ -134,7 +146,7 @@ render address model =
 setValue : String -> Model -> (Model, Effects.Effects Action)
 setValue value model =
   ( { model | value = value }
-  , Ext.Signal.sendAsEffect model.mailbox.address value Tasks)
+  , Ext.Signal.sendAsEffect model.valueAddress value Tasks)
 
 {-| Focuses the textarea. -}
 focus : Model -> Model

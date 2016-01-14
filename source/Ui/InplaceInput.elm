@@ -1,9 +1,10 @@
-module Ui.InplaceInput (Model, Action, init, update, view) where
+module Ui.InplaceInput
+  (Model, Action, init, initWithAddress, update, view) where
 
 {-| Inplace editing textarea / input component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -29,16 +30,15 @@ import Ui
   - **required** - Whether or not to disable the component if the value is empty
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
+  - **valueAddress** - The address to send changes in value
   - **ctrlSave** - Whether or not to save on ctrl+enter
   - **value** - The value of the component
   - **open** (internal) - Whether or not the component is open
-  - **mailbox** (internal) - The mailbox of the textarea
   - **textarea** (internal) - The state of the textarea
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox String
+  { valueAddress : Maybe (Signal.Address String)
   , textarea : Ui.Textarea.Model
-  , valueSignal : Signal String
   , required : Bool
   , ctrlSave : Bool
   , disabled : Bool
@@ -58,19 +58,23 @@ type Action
 {-| Initializes an inplace input with the given value. -}
 init : String -> Model
 init value =
+  { textarea = Ui.Textarea.init value
+  , valueAddress = Nothing
+  , disabled = False
+  , readonly = False
+  , required = True
+  , ctrlSave = True
+  , value = value
+  , open = False
+  }
+
+{-| Initializes an inplace input with the given value and value address. -}
+initWithAddress : Signal.Address String -> String -> Model
+initWithAddress valueAddress value =
   let
-    mailbox = Signal.mailbox value
+    model = init value
   in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , textarea = Ui.Textarea.init value
-    , mailbox = mailbox
-    , disabled = False
-    , readonly = False
-    , required = True
-    , ctrlSave = True
-    , value = value
-    , open = False
-    }
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates an inplace input. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -85,10 +89,12 @@ update action model =
     Save ->
       if (isEmpty model) && model.required then
         (model, Effects.none)
+      else if model.textarea.value == model.value then
+        (close model, Effects.none)
       else
         ( close { model | value = model.textarea.value }
         , Ext.Signal.sendAsEffect
-            model.mailbox.address
+            model.valueAddress
             model.textarea.value
             Tasks )
 

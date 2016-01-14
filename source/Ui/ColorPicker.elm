@@ -1,10 +1,10 @@
 module Ui.ColorPicker
-  (Model, Action, init, update, view, handleMove, handleClick) where
+  (Model, Action, init, initWithAddress, update, view, handleMove, handleClick) where
 
 {-| Color picker input component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -39,7 +39,6 @@ import Ui
 type alias Model =
   { colorPanel : ColorPanel.Model
   , dropdownPosition : String
-  , valueSignal : Signal Hsv
   , disabled : Bool
   , readonly : Bool
   , open : Bool
@@ -60,16 +59,25 @@ type Action
 -}
 init : Color.Color -> Model
 init color =
-  let
-    colorPanel = ColorPanel.init color
-  in
-    { valueSignal = colorPanel.valueSignal
-    , dropdownPosition = "bottom"
-    , colorPanel = colorPanel
-    , disabled = False
-    , readonly = False
-    , open = False
-    }
+  { colorPanel = ColorPanel.init color
+  , dropdownPosition = "bottom"
+  , disabled = False
+  , readonly = False
+  , open = False
+  }
+
+{-| Initializes a color picker with the given color and value address.
+
+    ColorPicker.init (forwardTo address ColorPickerChanged) Color.yellow
+-}
+initWithAddress : Signal.Address Hsv -> Color.Color -> Model
+initWithAddress valueAddress color =
+  { colorPanel = ColorPanel.initWithAddress valueAddress color
+  , dropdownPosition = "bottom"
+  , disabled = False
+  , readonly = False
+  , open = False
+  }
 
 {-| Updates a color picker. -}
 update : Action -> Model -> (Model, Effects.Effects Action)

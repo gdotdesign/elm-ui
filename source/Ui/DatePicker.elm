@@ -1,9 +1,10 @@
-module Ui.DatePicker (Model, Action, init, update, view, setValue) where
+module Ui.DatePicker
+  (Model, Action, init, initWithAddress, update, view, setValue) where
 
 {-| Date picker input component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -32,22 +33,20 @@ import Ui
 
 {-| Representation of a date picker component:
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
+  - **valueAddress** - The address to send the change in value
   - **format** - The format of the date to render in the input
   - **readonly** - Whether or not the date picker is readonly
   - **disabled** - Whether or not the date picker is disabled
-  - **valueSignal** - The date pickers value as a signal
+  - **address** - The address to use for sub components
   - **open** - Whether or not the dropdown is open
-  - **signal** - The date pickers signal
   - **dropdownPosition** (internal) - The dropdowns position
-  - **mailbox** (internal) - The date pickers mailbox
   - **calendar** (internal) - The model of a calendar
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Time.Time
-  , valueSignal : Signal Time.Time
+  { valueAddress : Maybe (Signal.Address Time.Time)
+  , address : Signal.Address Action
   , calendar : Calendar.Model
   , dropdownPosition : String
-  , signal : Signal Action
   , closeOnSelect : Bool
   , format : String
   , disabled : Bool
@@ -69,25 +68,40 @@ type Action
 
 {-| Initializes a date picker with the given values.
 
-    DatePicker.init date
+    DatePicker.init (forwardTo address DatePicker) date
 -}
-init : Date.Date -> Model
-init date =
-  let
-    calendar = Calendar.init date
-    mailbox = Signal.mailbox 0
-  in
-    { signal = Signal.map Select calendar.valueSignal
-    , valueSignal = mailbox.signal
-    , dropdownPosition = "bottom"
-    , closeOnSelect = False
-    , calendar = calendar
-    , format = "%Y-%m-%d"
-    , mailbox = mailbox
-    , disabled = False
-    , readonly = False
-    , open = False
-    }
+init : Signal.Address Action -> Date.Date -> Model
+init address date =
+  { address = address
+  , valueAddress = Nothing
+  , dropdownPosition = "bottom"
+  , closeOnSelect = False
+  , calendar = Calendar.init date
+  , format = "%Y-%m-%d"
+  , disabled = False
+  , readonly = False
+  , open = False
+  }
+
+{-| Initializes a date picker with the given values and value address.
+
+    DatePicker.init
+      (forwardTo address DatePicker)
+      (forwardTo address DatePickerChanged)
+      date
+-}
+initWithAddress : Signal.Address Time.Time -> Signal.Address Action -> Date.Date -> Model
+initWithAddress valueAddress address date =
+  { address = address
+  , valueAddress = Just valueAddress
+  , dropdownPosition = "bottom"
+  , closeOnSelect = False
+  , calendar = Calendar.initWithAddress (forwardTo address Select) date
+  , format = "%Y-%m-%d"
+  , disabled = False
+  , readonly = False
+  , open = False
+  }
 
 {-| Updates a date picker. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -107,7 +121,7 @@ update action model =
           else
             model
       in
-        (updatedModel, Ext.Signal.sendAsEffect model.mailbox.address time Tasks)
+        (updatedModel, Ext.Signal.sendAsEffect model.valueAddress time Tasks)
 
     _ ->
       (update' action model, Effects.none)

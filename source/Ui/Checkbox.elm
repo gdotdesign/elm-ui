@@ -1,10 +1,11 @@
 module Ui.Checkbox
-  (Model, Action(..), init, update, setValue, view, toggleView, radioView) where
+  ( Model, Action(..), init, initWithAddress, update, setValue, view, toggleView
+  , radioView) where
 
 {-| Checkbox component with three different views.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # Views
 @docs view, toggleView, radioView
@@ -25,15 +26,13 @@ import Dict
 import Ui
 
 {-| Representation of a checkbox:
+  - **valueAddress** - The address to send the changes in the value to
   - **disabled** - Whether or not the checkbox is disabled
   - **readonly** - Whether or not the checkbox is readonly
   - **value** - Whether or not the checkbox is checked
-  - **valueSignal** - The checkboxes value as a signal
-  - **mailbox** (internal) - The mailbox of the checkbox
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Bool
-  , valueSignal : Signal Bool
+  { valueAddress : Maybe (Signal.Address Bool)
   , disabled : Bool
   , readonly : Bool
   , value : Bool
@@ -50,15 +49,24 @@ type Action
 -}
 init : Bool -> Model
 init value =
-  let
-    mailbox = Signal.mailbox value
-  in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , mailbox = mailbox
-    , disabled = False
-    , readonly = False
-    , value = value
-    }
+  { valueAddress = Nothing
+  , disabled = False
+  , readonly = False
+  , value = value
+  }
+
+
+{-| Initiaizes a checkbox with the given value and value signal.
+
+    Checkbox.init (forwardTo address CheckboxChanged) False
+-}
+initWithAddress : Bool -> Signal.Address Bool -> Model
+initWithAddress value valueAddress =
+  { valueAddress = Just valueAddress
+  , disabled = False
+  , readonly = False
+  , value = value
+  }
 
 {-| Updates a checkbox. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -69,7 +77,7 @@ update action model =
         value = not model.value
       in
         ({ model | value = value }
-         , Ext.Signal.sendAsEffect model.mailbox.address value Tasks)
+         , Ext.Signal.sendAsEffect model.valueAddress value Tasks)
 
     Tasks _ ->
       (model, Effects.none)

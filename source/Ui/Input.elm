@@ -1,10 +1,10 @@
 module Ui.Input
-  (Model, Action, init, update, view, setValue) where
+  (Model, Action, init, initWithAddress, update, view, setValue) where
 
 {-| Component for text based input.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -25,16 +25,14 @@ import String
 
 {-| Representation of an input:
   - **placeholder** - The text to display when there is no value
-  - **valueSignal** - The value of the input as a signal
+  - **valueAddress** - The address to send the changes in value
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
   - **kind** - The type of the input
   - **value** - The value
-  - **mailbox** (internal) - The mailbox of the input
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox String
-  , valueSignal : Signal String
+  { valueAddress : Maybe (Signal.Address String)
   , placeholder : String
   , disabled : Bool
   , readonly : Bool
@@ -49,21 +47,28 @@ type Action
 
 {-| Initializes an input.
 
-    Ui.Input.init "value"
+    Input.init "value"
 -}
 init : String -> Model
 init value =
+  { valueAddress = Nothing
+  , placeholder = ""
+  , disabled = False
+  , readonly = False
+  , value = value
+  , kind = "text"
+  }
+
+{-| Initializes an input.
+
+    Input.init (forwardTo address InputChanged) "value"
+-}
+initWithAddress : Signal.Address String -> String -> Model
+initWithAddress valueAddress value =
   let
-    mailbox = Signal.mailbox ""
+    model = init value
   in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , mailbox = mailbox
-    , placeholder = ""
-    , disabled = False
-    , readonly = False
-    , value = value
-    , kind = "text"
-    }
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates an input. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -102,4 +107,4 @@ render address model =
 setValue : String -> Model -> (Model, Effects.Effects Action)
 setValue value model =
   ( { model | value = value }
-  , Ext.Signal.sendAsEffect model.mailbox.address value Tasks)
+  , Ext.Signal.sendAsEffect model.valueAddress value Tasks)

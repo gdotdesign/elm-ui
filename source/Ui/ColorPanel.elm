@@ -1,11 +1,11 @@
 module Ui.ColorPanel
-  (Model, Action, init, update, view, handleMove, handleClick) where
+  (Model, Action, init, initWithAddress, update, view, handleMove, handleClick) where
 
 {-| Color panel component for selecting a colors **hue**, **saturation**,
 **value** and **alpha** components with draggable interfaces.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Action, init, initWithAddress, update
 
 # View
 @docs view
@@ -27,18 +27,15 @@ import Ui.Helpers.Drag as Drag
 import Ui
 
 {-| Representation of a color panel:
-  - **valueSignal** - The color panels value as a signal
   - **readonly** - Whether or not the color panel is editable
   - **disabled** - Whether or not the color panel is disabled
-  - **value** - The current vlaue
+  - **valueAddress** - The address to send changes in value
   - **drag** (internal) - The drag model of the value / saturation rectangle
   - **alphaDrag** (internal) - The drag model of the alpha slider
   - **hueDrag** (internal) - The drag model of the hue slider
-  - **mailbox** (internal) - The mailbox of the color panel
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Hsv
-  , valueSignal : Signal Hsv
+  { valueAddress : Maybe (Signal.Address Hsv)
   , alphaDrag : Drag.Model
   , hueDrag : Drag.Model
   , drag : Drag.Model
@@ -60,19 +57,25 @@ type Action
 -}
 init : Color -> Model
 init color =
+  { value = Ext.Color.toHsv color
+  , valueAddress = Nothing
+  , alphaDrag = Drag.init
+  , hueDrag = Drag.init
+  , drag = Drag.init
+  , disabled = False
+  , readonly = False
+  }
+
+{-| Initializes a color panel with the given Elm color and value address.
+
+    ColorPanel.init (forwardTo address ColorPanelChanged) Color.blue
+-}
+initWithAddress : Signal.Address Hsv -> Color -> Model
+initWithAddress valueAddress color =
   let
-    hsv = Ext.Color.toHsv color
-    mailbox = Signal.mailbox hsv
+    model = init color
   in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , alphaDrag = Drag.init
-    , hueDrag = Drag.init
-    , drag = Drag.init
-    , disabled = False
-    , readonly = False
-    , mailbox = mailbox
-    , value = hsv
-    }
+    { model | valueAddress = Just valueAddress }
 
 {-| Updates a color panel. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -165,7 +168,7 @@ handleMove x y model =
         model.value
   in
     ({ model | value = color }
-     , Ext.Signal.sendAsEffect model.mailbox.address color Tasks)
+     , Ext.Signal.sendAsEffect model.valueAddress color Tasks)
 
 {-| Updates a color panel, stopping the drags if the mouse isn't pressed. -}
 handleClick : Bool -> Model -> Model

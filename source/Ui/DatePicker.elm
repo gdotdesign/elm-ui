@@ -32,22 +32,20 @@ import Ui
 
 {-| Representation of a date picker component:
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
+  - **valueAddress** - The address to send the change in value
   - **format** - The format of the date to render in the input
   - **readonly** - Whether or not the date picker is readonly
   - **disabled** - Whether or not the date picker is disabled
-  - **valueSignal** - The date pickers value as a signal
+  - **address** - The address to use for sub components
   - **open** - Whether or not the dropdown is open
-  - **signal** - The date pickers signal
   - **dropdownPosition** (internal) - The dropdowns position
-  - **mailbox** (internal) - The date pickers mailbox
   - **calendar** (internal) - The model of a calendar
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Time.Time
-  , valueSignal : Signal Time.Time
+  { valueAddress : Signal.Address Time.Time
+  , address : Signal.Address Action
   , calendar : Calendar.Model
   , dropdownPosition : String
-  , signal : Signal Action
   , closeOnSelect : Bool
   , format : String
   , disabled : Bool
@@ -71,23 +69,18 @@ type Action
 
     DatePicker.init date
 -}
-init : Date.Date -> Model
-init date =
-  let
-    calendar = Calendar.init date
-    mailbox = Signal.mailbox 0
-  in
-    { signal = Signal.map Select calendar.valueSignal
-    , valueSignal = mailbox.signal
-    , dropdownPosition = "bottom"
-    , closeOnSelect = False
-    , calendar = calendar
-    , format = "%Y-%m-%d"
-    , mailbox = mailbox
-    , disabled = False
-    , readonly = False
-    , open = False
-    }
+init : Signal.Address Action -> Signal.Address Time.Time -> Date.Date -> Model
+init address valueAddress date =
+  { address = address
+  , valueAddress = valueAddress
+  , dropdownPosition = "bottom"
+  , closeOnSelect = False
+  , calendar = Calendar.init (forwardTo address Select) date
+  , format = "%Y-%m-%d"
+  , disabled = False
+  , readonly = False
+  , open = False
+  }
 
 {-| Updates a date picker. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -107,7 +100,7 @@ update action model =
           else
             model
       in
-        (updatedModel, Ext.Signal.sendAsEffect model.mailbox.address time Tasks)
+        (updatedModel, Ext.Signal.sendAsEffect model.valueAddress time Tasks)
 
     _ ->
       (update' action model, Effects.none)

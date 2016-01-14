@@ -34,16 +34,14 @@ import Ui
 
 {-| Representation of a calendar component:
   - **selectable** - Whether or not the user can select a date by clicking
+  - **valueAddress** - The address to send the changes in value
   - **readonly** - Whether or not the calendar is interactive
   - **disabled** - Whether or not the calendar is disabled
-  - **valueSignal** - The calendars value as a signal
   - **value** - The current selected date
   - **date** (internal) - The month in which this date is will be displayed
-  - **mailbox** (internal) - The mailbox of the calendar
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Time
-  , valueSignal : Signal Time
+  { valueAddress : Signal.Address Time
   , selectable : Bool
   , value : Date.Date
   , date : Date.Date
@@ -62,19 +60,15 @@ type Action
 
     Calendar.init date
 -}
-init : Date.Date -> Model
-init date =
-  let
-    mailbox = Signal.mailbox 0
-  in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , mailbox = mailbox
-    , selectable = True
-    , disabled = False
-    , readonly = False
-    , value = date
-    , date = date
-    }
+init : Signal.Address Time -> Date.Date -> Model
+init valueAddress date =
+  { valueAddress = valueAddress
+  , selectable = True
+  , disabled = False
+  , readonly = False
+  , value = date
+  , date = date
+  }
 
 {-| Updates a calendar. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -88,7 +82,7 @@ update action model =
 
     Select date ->
       ({ model | value = date }
-       , Ext.Signal.sendAsEffect model.mailbox.address (Date.toTime date) Tasks)
+       , Ext.Signal.sendAsEffect model.valueAddress (Date.toTime date) Tasks)
 
     Tasks _ ->
       (model, Effects.none)

@@ -2,6 +2,7 @@ import Signal exposing (forwardTo)
 import Maybe.Extra
 import Date.Format
 import List.Extra
+import Ext.Color
 import Ext.Date
 import StartApp
 import Keyboard
@@ -117,20 +118,29 @@ type alias Model =
 init : Model
 init =
   let
-    datePickerOptions = Ui.DatePicker.init (Ext.Date.now ())
+    datePickerOptions =
+      Ui.DatePicker.init
+        (forwardTo address DatePicker)
+        (forwardTo address DatePickerChanged)
+        (Ext.Date.now ())
     input = Ui.Input.init ""
     pager = Ui.Pager.init 0
     address = mailbox.address
     mailbox = Signal.mailbox Nothing
+    colorMailbox = Signal.mailbox (Ext.Color.toHsv Color.yellow)
   in
-    { calendar = Ui.Calendar.init (Ext.Date.createDate 2015 5 1)
+    { calendar = Ui.Calendar.init
+        (forwardTo address CalendarChanged)
+        (Ext.Date.createDate 2015 5 1)
     , datePicker = { datePickerOptions | format = "%Y %B %e." }
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
     , input = { input | placeholder = "Type here..." }
-    , inplaceInput = Ui.InplaceInput.init "Test Value"
-    , colorPicker = Ui.ColorPicker.init Color.yellow
-    , colorPanel = Ui.ColorPanel.init Color.blue
+    , inplaceInput = Ui.InplaceInput.init
+        (forwardTo address InplaceInputChanged)
+        "Test Value"
+    , colorPicker = Ui.ColorPicker.init colorMailbox.address Color.yellow
+    , colorPanel = Ui.ColorPanel.init colorMailbox.address Color.blue
     , numberRange = Ui.NumberRange.init 0
     , checkbox3 = Ui.Checkbox.init False (forwardTo address Checkbox3Changed)
     , checkbox2 = Ui.Checkbox.init False (forwardTo address Checkbox2Changed)
@@ -138,7 +148,7 @@ init =
     , textarea = Ui.Textarea.init "Test"
     , numberPad = Ui.NumberPad.init 0
     , image = Ui.Image.init imageUrl
-    , ratings = Ui.Ratings.init 5 0.4
+    , ratings = Ui.Ratings.init (forwardTo address RatingsChanged) 5 0.4
     , slider = Ui.Slider.init 50
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
@@ -677,13 +687,6 @@ app =
       [ Signal.map EscIsDown (Keyboard.isDown 27)
       , Signal.map MousePosition Mouse.position
       , Signal.map MouseIsDown Mouse.isDown
-      -- Components
-      , Signal.map DatePicker initial.datePicker.signal
-      -- Changes
-      , Signal.map InplaceInputChanged initial.inplaceInput.valueSignal
-      , Signal.map DatePickerChanged initial.datePicker.valueSignal
-      , Signal.map CalendarChanged initial.calendar.valueSignal
-      , Signal.map RatingsChanged initial.ratings.valueSignal
       -- Mailbox
       , initial.mailbox.signal
       ]

@@ -25,13 +25,13 @@ import Dict
 import Ui
 
 {-| Representation of a checkbox:
-  - **adddress** - The address to send the changes in the value to
+  - **valueAddress** - The address to send the changes in the value to
   - **disabled** - Whether or not the checkbox is disabled
   - **readonly** - Whether or not the checkbox is readonly
   - **value** - Whether or not the checkbox is checked
 -}
 type alias Model =
-  { address : Signal.Address Bool
+  { valueAddress : Signal.Address Bool
   , disabled : Bool
   , readonly : Bool
   , value : Bool
@@ -47,8 +47,8 @@ type Action
     Checkbox.init False (forwardTo address CheckboxChanged)
 -}
 init : Bool -> Signal.Address Bool -> Model
-init value address =
-  { address = address
+init value valueAddress =
+  { valueAddress = valueAddress
   , disabled = False
   , readonly = False
   , value = value
@@ -63,7 +63,7 @@ update action model =
         value = not model.value
       in
         ({ model | value = value }
-         , Ext.Signal.sendAsEffect model.address value Tasks)
+         , Ext.Signal.sendAsEffect model.valueAddress value Tasks)
 
     Tasks _ ->
       (model, Effects.none)

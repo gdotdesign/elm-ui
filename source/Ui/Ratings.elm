@@ -32,15 +32,13 @@ import Debug exposing (log)
   - **clearable** - Whether or not the component is clearable
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
+  - **valueAddress** - The address to send changes in value
   - **value** - The current value of the component (0..1)
-  - **valueSignal** - The componens value as a signal
   - **size** - The number of starts to display
   - **hoverValue** (internal) - The transient value of the component
-  - **mailbox** (internal) - The mailbox of the component
 -}
 type alias Model =
-  { mailbox : Signal.Mailbox Float
-  , valueSignal : Signal Float
+  { valueAddress : Signal.Address Float
   , hoverValue : Float
   , clearable : Bool
   , disabled : Bool
@@ -63,20 +61,16 @@ value.
 
     Ratings.init 10 0.1 -- 1 out of 10 star rating
 -}
-init : Int -> Float -> Model
-init size value =
-  let
-    mailbox = Signal.mailbox value
-  in
-    { valueSignal = Signal.dropRepeats mailbox.signal
-    , hoverValue = value
-    , mailbox = mailbox
-    , clearable = False
-    , disabled = False
-    , readonly = False
-    , value = value
-    , size = size
-    }
+init : Signal.Address Float -> Int -> Float -> Model
+init valueAddress size value =
+  { valueAddress = valueAddress
+  , hoverValue = value
+  , clearable = False
+  , disabled = False
+  , readonly = False
+  , value = value
+  , size = size
+  }
 
 {-| Updates a ratings component. -}
 update : Action -> Model -> (Model, Effects.Effects Action)
@@ -122,11 +116,14 @@ setValue value' model =
 
     effect =
       Ext.Signal.sendAsEffect
-        model.mailbox.address
+        model.valueAddress
         value
         Tasks
   in
-    (updatedModel, effect)
+    if updatedModel == model then
+      (model, Effects.none)
+    else
+      (updatedModel, effect)
 
 {-| Returns the value of a ratings component as number of stars. -}
 valueAsStars : Float -> Model -> Int

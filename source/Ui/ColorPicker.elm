@@ -39,7 +39,6 @@ import Ui
 type alias Model =
   { colorPanel : ColorPanel.Model
   , dropdownPosition : String
-  , valueSignal : Signal Hsv
   , disabled : Bool
   , readonly : Bool
   , open : Bool
@@ -58,18 +57,14 @@ type Action
 
     ColorPicker.init Color.yellow
 -}
-init : Color.Color -> Model
-init color =
-  let
-    colorPanel = ColorPanel.init color
-  in
-    { valueSignal = colorPanel.valueSignal
-    , dropdownPosition = "bottom"
-    , colorPanel = colorPanel
-    , disabled = False
-    , readonly = False
-    , open = False
-    }
+init : Signal.Address Hsv -> Color.Color -> Model
+init valueAddress color =
+  { colorPanel = ColorPanel.init valueAddress color
+  , dropdownPosition = "bottom"
+  , disabled = False
+  , readonly = False
+  , open = False
+  }
 
 {-| Updates a color picker. -}
 update : Action -> Model -> (Model, Effects.Effects Action)

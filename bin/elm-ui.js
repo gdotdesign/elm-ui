@@ -1,76 +1,107 @@
+var child_process = require('child_process');
 var autoprefixer = require('autoprefixer');
-var exec = require('child_process').exec;
 var uglifyJS = require("uglify-js");
 var cleanCSS = require('clean-css');
 var sass = require('node-sass');
+var _ = require('underscore');
 var async = require('async');
 var path = require('path');
 var fs = require('fs');
+var pty = require('pty.js');
+var ansi_up = require('ansi_up');
+
+var execSync = child_process.execSync;
+var exec = child_process.exec;
+
+var defaultEmlPackage = {
+  "version": "1.0.0",
+  "summary": "Elm-UI Project",
+  "repository": "https://github.com/user/project.git",
+  "license": "BSD3",
+  "native-modules": true,
+  "source-directories": [
+    "source"
+  ],
+  "exposed-modules": [],
+  "dependencies": {
+    "elm-lang/core": "3.0.0 <= v < 4.0.0"
+  },
+  "elm-version": "0.16.0 <= v < 0.17.0"
+}
 
 var elmExecutable =
   path.resolve(__dirname, '../node_modules/elm/binwrappers/elm-make');
 
-exports.serve = function(options){
-  var router = require('koa-router')();
-  var serve = require('koa-static');
-  var app = require('koa')();
+var elmPackageExecutable =
+  path.resolve(__dirname, '../node_modules/elm/binwrappers/elm-package');
 
-  router.get('/', function *(next) {
-    this.body = renderHtml('main.js')
-  })
+fixElmPackage = function(options) {
+  var cwd = options.cwd
+  var ownElmPackage = path.resolve(__dirname, '../elm-package.json')
+  var elmPackage = path.join(cwd, 'elm-package.json')
+  var elmUiConfig = path.join(cwd, 'elm-ui.json')
+  var ownPackage = JSON.parse(fs.readFileSync(ownElmPackage, 'utf-8'))
 
-  router.get('/main.js', function *(next) {
-    this.type = 'text/javascript';
-    this.body = yield renderElm(options.elm)
-  })
+  try {
+    cwdPackage = JSON.parse(fs.readFileSync(elmUiConfig, 'utf-8'))
+  } catch (e) {
+    cwdPackage = defaultEmlPackage
+  }
 
-  router.get('/main.css', function *(next) {
-    this.type = 'text/css';
-    this.body = yield renderCSS(options.css)
-  })
+  cwdPackage["source-directories"].push(path.resolve(__dirname, "../source"))
+  _.extend(cwdPackage.dependencies, ownPackage.dependencies)
 
-  app
-    .use(router.routes())
-    .use(serve(options.public));
-
-  app.listen(8001);
-
-  console.log("Listening on localhost:8001")
+  fs.writeFileSync(elmPackage, JSON.stringify(cwdPackage, null, "  "))
+  console.log('Installing elm packages...')
+  execSync(`${elmPackageExecutable} install --yes`)
 }
 
-renderCSS = function(file){
+renderCSS = function(file) {
   return function(callback) {
     sass.render({
       includePaths: [path.resolve(__dirname, '../stylesheets/ui')],
       file: file,
     }, function(err, result) {
-      if(err){
-        var err2 = err.formatted.replace(/\n/g,"\\A")
-                                .replace(/"/g, '\\"')
+      if (err) {
+        var err2 = err.formatted.replace(/\n/g, "\\A")
+          .replace(/"/g, '\\"')
         var css = `
         body::before {
+          background: white;
+          content: "You have errors in of your Sass file(s):";
+          position: fixed;
+          font-size: 24px;
+          color: #333;
+          top: 0;
+          left: 0;
+          right: 0;
+          font-weight: bold;
+          padding: 40px;
+          font-family: sans-serif;
+        }
+        body::after {
           content: "${err2}";
           white-space: pre;
           display: block;
           position: fixed;
-          top: 0;
+          top: 90px;
           left: 0;
           right: 0;
-          font-size: 20px;
-          background: crimson;
-          color: white;
-          font-family: sans;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          font-size: 16px;
+          background: white;
+          color: #333;
+          padding: 40px;
+          line-height: 25px;
+          font-family: monospace;
           bottom: 0;
+          padding-top: 0;
         }
         `
         callback(null, css)
       } else {
         autoprefixer
           .process(result.css)
-          .then(function(result2){
+          .then(function(result2) {
             callback(null, result2.css)
           })
       }
@@ -78,14 +109,50 @@ renderCSS = function(file){
   }
 }
 
+RE = function(file, callback){
+  var result = '';
+
+  var term = pty.spawn(elmExecutable, `${file} --output test.js --yes`.split(' '), {
+    name: 'xterm-color',
+    cols: 1000,
+    rows: 1000,
+  });
+
+  term.on('data', function(data) {
+    result += data;
+  });
+
+  term.on('close', function(){
+    if(result.match('Successfully generated test.js')){
+      callback(null,'')
+    } else {
+      callback(result,'')
+    }
+  })
+}
+
+var errorTemplate =
+  fs.readFileSync(path.resolve(__dirname, 'assets/error.html'), 'utf-8')
+  .replace(/\n/g,'')
+
+renderError = function(title,content){
+  return errorTemplate
+    .replace('TITLE', title)
+    .replace('ERROR', content)
+}
+
 renderElm = function(file) {
   return function(callback) {
-    var cmd = `${elmExecutable} '${file}' --output test.js --yes`;
-    exec(cmd, function(error, stdout, stderr) {
-      if (stderr) {
-        err = stderr.replace(/\n/g,"\\n")
-                    .replace(/"/g, '\\"')
-        callback(null, `document.write("<pre style='padding: 20px'>${err}</pre>")`);
+    RE(file, function(error,result) {
+      if (error) {
+        err = ansi_up.ansi_to_html(error)
+          .replace(/"/g, '\\"')
+          .replace(/[\n\r]{1,2}/g, "\n")
+          .split("\n")
+          .filter(function(line) { return !line.match(/^\[/) })
+          .join("\n")
+          .replace(/\n/g, "\\n")
+        callback(null, `document.write("${renderError('You have errors in of your Elm file(s):',err)}")`);
       } else {
         callback(null, fs.readFileSync('test.js', 'utf-8'))
         fs.unlink('test.js')
@@ -106,12 +173,16 @@ renderHtml = function(str) {
     </html>`
 }
 
-buildElm = function(source, dest){
-  return function(callback){
+buildElm = function(source, dest) {
+  return function(callback) {
     console.log('Building JS...')
-    renderElm(source)(function(err, contents){
-      if(err) { return callback(err, null) }
-      minified = uglifyJS.minify(contents, {fromString: true});
+    renderElm(source)(function(err, contents) {
+      if (err) {
+        return callback(err, null)
+      }
+      minified = uglifyJS.minify(contents, {
+        fromString: true
+      });
       fs.writeFileSync(dest, minified.code)
       callback(null, null);
     })
@@ -119,7 +190,7 @@ buildElm = function(source, dest){
 }
 
 buildHtml = function(str, dest) {
-  return function(callback){
+  return function(callback) {
     console.log('Building HTML...')
     var html = renderHtml(str)
     fs.writeFileSync(dest, html)
@@ -127,11 +198,13 @@ buildHtml = function(str, dest) {
   }
 }
 
-buildCSS = function(source, dest){
-  return function(callback){
+buildCSS = function(source, dest) {
+  return function(callback) {
     console.log('Building CSS...')
-    renderCSS(source)(function(err, contents){
-      if(err) { return callback(err, null) }
+    renderCSS(source)(function(err, contents) {
+      if (err) {
+        return callback(err, null)
+      }
       minified = new cleanCSS().minify(contents)
       fs.writeFileSync(dest, minified.styles)
       callback(null, null);
@@ -139,14 +212,50 @@ buildCSS = function(source, dest){
   }
 }
 
+exports.scaffold = function(options) {
+
+}
+
+exports.serve = function(options) {
+  var router = require('koa-router')();
+  var serve = require('koa-static');
+  var app = require('koa')();
+
+  router.get('/', function*(next) {
+    this.body = renderHtml('main.js')
+  })
+
+  router.get('/main.js', function*(next) {
+    fixElmPackage(options)
+    this.type = 'text/javascript';
+    this.body = yield renderElm(options.elm)
+  })
+
+  router.get('/main.css', function*(next) {
+    this.type = 'text/css';
+    this.body = yield renderCSS(options.css)
+  })
+
+  app
+    .use(router.routes())
+    .use(serve(options.public));
+
+  app.listen(8001);
+
+  console.log("Listening on localhost:8001")
+}
+
 exports.build = function(options) {
-  if (!fs.existsSync(options.dir)) { fs.mkdirSync(options.dir); }
+  fixElmPackage(options)
+  if (!fs.existsSync(options.dir)) {
+    fs.mkdirSync(options.dir);
+  }
   async.series([
     buildHtml('main.js', path.join(options.dir, 'index.html')),
     buildElm(options.elm, path.join(options.dir, 'main.js')),
     buildCSS(options.css, path.join(options.dir, 'main.css'))
-  ], function(err, results){
-    if(err){
+  ], function(err, results) {
+    if (err) {
       console.log('Build failed!')
       console.error(err)
     } else {
@@ -154,7 +263,3 @@ exports.build = function(options) {
     }
   })
 }
-
-exports.renderCSS = renderCSS
-exports.renderHtml = renderHtml
-exports.renderElm = renderElm

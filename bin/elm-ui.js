@@ -13,20 +13,22 @@ var ansi_up = require('ansi_up');
 var execSync = child_process.execSync;
 var exec = child_process.exec;
 
-var defaultEmlPackage = {
-  "version": "1.0.0",
-  "summary": "Elm-UI Project",
-  "repository": "https://github.com/user/project.git",
-  "license": "BSD3",
-  "native-modules": true,
-  "source-directories": [
-    "source"
-  ],
-  "exposed-modules": [],
-  "dependencies": {
-    "elm-lang/core": "3.0.0 <= v < 4.0.0"
-  },
-  "elm-version": "0.16.0 <= v < 0.17.0"
+var defaultEmlPackage = function(){
+  return {
+    "version": "1.0.0",
+    "summary": "Elm-UI Project",
+    "repository": "https://github.com/user/project.git",
+    "license": "BSD3",
+    "native-modules": true,
+    "source-directories": [
+      "source"
+    ],
+    "exposed-modules": [],
+    "dependencies": {
+      "elm-lang/core": "3.0.0 <= v < 4.0.0"
+    },
+    "elm-version": "0.16.0 <= v < 0.17.0"
+  }
 }
 
 var elmExecutable =
@@ -45,7 +47,7 @@ fixElmPackage = function(options) {
   try {
     cwdPackage = JSON.parse(fs.readFileSync(elmUiConfig, 'utf-8'))
   } catch (e) {
-    cwdPackage = defaultEmlPackage
+    cwdPackage = defaultEmlPackage()
   }
 
   cwdPackage["source-directories"].push(path.resolve(__dirname, "../source"))

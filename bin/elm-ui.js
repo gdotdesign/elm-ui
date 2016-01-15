@@ -273,12 +273,22 @@ exports.serve = function(options) {
   console.log("Listening on localhost:8001")
 }
 
+copyPublic = function(options){
+  return function(callback){
+    console.log('Copying public folder contents.')
+    var ncp = require('ncp').ncp;
+    ncp(path.resolve(options.cwd,'public'), path.resolve(options.dir))
+    callback(null,true)
+  }
+}
+
 exports.build = function(options) {
   fixElmPackage(options)
   if (!fs.existsSync(options.dir)) {
     fs.mkdirSync(options.dir);
   }
   async.series([
+    copyPublic(options),
     buildHtml('main.js', path.join(options.dir, 'index.html')),
     buildElm(options.elm, path.join(options.dir, 'main.js')),
     buildCSS(options.css, path.join(options.dir, 'main.css'))

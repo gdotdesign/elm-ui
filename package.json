@@ -42,7 +42,8 @@
     "dotenv": "1.2.0",
     "elm": "0.16.0",
     "async": "1.5.2",
-    "commander": ""
+    "commander": "",
+    "ncp": ""
   },
   "preferGlobal": true,
   "bin": {

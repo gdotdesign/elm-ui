@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "UI Libary in Elm",
   "scripts": {
-    "start": "node server.js",
-    "deploy": "gulp deploy",
+    "start": "bin/index.js server",
+    "deploy": "npm run build; gulp deploy",
     "build": "bin/index.js build",
     "test": "node tests.js",
     "elm-install": "elm-package install -y",

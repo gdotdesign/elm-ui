@@ -23,7 +23,7 @@ icon : String -> Bool -> List Html.Attribute -> Html.Html
 icon glyph clickable attributes =
   let
     classes =
-      classList [ ("ion-" ++ glypha, True)
+      classList [ ("ion-" ++ glyph, True)
                 , ("clickable", clickable)
                 ]
   in

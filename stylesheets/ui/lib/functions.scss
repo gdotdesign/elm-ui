@@ -1,3 +1,13 @@
+@function luma($c) {
+  $-local-red: red(rgba($c, 1.0));
+  $-local-green: green(rgba($c, 1.0));
+  $-local-blue: blue(rgba($c, 1.0));
+
+  @return (0.2126 * $-local-red  +
+           0.7152 * $-local-green +
+           0.0722 * $-local-blue) / 255;
+}
+
 @function dampen($c, $p) {
   @if(lightness($c) > 50%) {
     @return scale-color($c, $lightness: -$p);
@@ -15,9 +25,23 @@
 }
 
 @function readable($c) {
-  @if(lightness($c) > 50%) {
-    @return mix($c, #000, 40%);
+  $lighter: mix($c, #000, 40%);
+  $darker: mix($c, #FFF, 5%);
+
+  @return pick-visible-color($c, $lighter, $darker);
+}
+
+@function pick-visible-color($bg, $c1, $c2) {
+  $bg-luma: luma($bg);
+  $c1-luma: luma($c1);
+  $c2-luma: luma($c2);
+
+  $c1-diff: abs($bg-luma - $c1-luma);
+  $c2-diff: abs($bg-luma - $c2-luma);
+
+  @if $c1-diff > $c2-diff {
+    @return $c1;
   } @else {
-    @return mix($c, #FFF, 5%);
+    @return $c2;
   }
 }

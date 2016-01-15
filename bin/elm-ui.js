@@ -48,6 +48,9 @@ fixElmPackage = function(options) {
   var elmUiConfig = path.join(cwd, 'elm-ui.json')
   var ownPackage = JSON.parse(fs.readFileSync(ownElmPackage, 'utf-8'))
 
+
+  if(ownElmPackage == elmPackage) { return }
+
   try {
     cwdPackage = JSON.parse(fs.readFileSync(elmUiConfig, 'utf-8'))
   } catch (e) {

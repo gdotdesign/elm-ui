@@ -7,11 +7,15 @@ var _ = require('underscore');
 var async = require('async');
 var path = require('path');
 var fs = require('fs');
-var pty = require('pty.js');
 var ansi_up = require('ansi_up');
+var pty;
+try {
+  pty = require('pty.js');
+} catch (e) {
+}
 
 var execSync = child_process.execSync;
-var exec = child_process.exec;
+var spawn = child_process.spawn;
 
 var defaultEmlPackage = function(){
   return {
@@ -114,23 +118,43 @@ renderCSS = function(file) {
 RE = function(file, callback){
   var result = '';
 
-  var term = pty.spawn(elmExecutable, `${file} --output test.js --yes`.split(' '), {
-    name: 'xterm-color',
-    cols: 1000,
-    rows: 1000,
-  });
+  if(pty) {
+    var term = pty.spawn(elmExecutable, `${file} --output test.js --yes`.split(' '), {
+      name: 'xterm-color',
+      cols: 1000,
+      rows: 1000,
+    });
 
-  term.on('data', function(data) {
-    result += data;
-  });
+    term.on('data', function(data) {
+      result += data;
+    });
 
-  term.on('close', function(){
-    if(result.match('Successfully generated test.js')){
-      callback(null,'')
-    } else {
-      callback(result,'')
-    }
-  })
+    term.on('close', function(){
+      if(result.match('Successfully generated test.js')){
+        callback(null,'')
+      } else {
+        callback(result.replace(/[\n\r]{1,2}/g, "\n"),'')
+      }
+    })
+  } else {
+    var cmd = spawn(elmExecutable, `${file} --output test.js --yes`.split(' '))
+
+    cmd.stdout.on('data', (data) => {
+      result += data;
+    });
+
+    cmd.stderr.on('data', (data) => {
+      result += data;
+    });
+
+    cmd.on('close', (code) => {
+      if(result.match('Successfully generated test.js')){
+        callback(null,'')
+      } else {
+        callback(result.replace(/\n/g, "\n"),'')
+      }
+    });
+  }
 }
 
 var errorTemplate =
@@ -149,7 +173,6 @@ renderElm = function(file) {
       if (error) {
         err = ansi_up.ansi_to_html(error)
           .replace(/"/g, '\\"')
-          .replace(/[\n\r]{1,2}/g, "\n")
           .split("\n")
           .filter(function(line) { return !line.match(/^\[/) })
           .join("\n")

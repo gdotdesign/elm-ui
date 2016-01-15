@@ -22,6 +22,9 @@
   "bugs": {
     "url": "https://github.com/gdotdesign/elm-ui/issues"
   },
+  "optionalDependencies": {
+    "pty.js": "0.3.0"
+  },
   "dependencies": {
     "autoprefixer": "6.2.1",
     "koa-static": "1.5.2",
@@ -30,7 +33,6 @@
     "koa": "1.1.2",
     "gulp-gh-pages": "0.5.4",
     "gulp": "3.9.0",
-    "pty.js": "0.3.0",
     "intern": "3.0.6",
     "selenium-standalone": "4.8.0",
     "underscore": "",

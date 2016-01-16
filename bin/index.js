@@ -1,47 +1,40 @@
 #! /usr/bin/env node
 
-var exec = require('child_process').execSync;
+var exec = require('child_process').execSync
+var program = require('commander')
 var elmUi = require('./elm-ui')
 var path = require('path')
-var cwd = process.cwd()
 var fs = require('fs')
-
-var elmSource = path.join(cwd,'source','Main.elm')
-var cssSource = path.join(cwd,'stylesheets', 'main.scss')
-var publicDir = path.join(cwd,'public')
-
-var program = require('commander');
-
-var options = {
-  cwd: cwd,
-  dir: 'dist',
-  elm: elmSource,
-  css: cssSource,
-  public: publicDir
-}
 
 program
   .version('0.0.1')
 
 program
-  .command('init')
-  .description('Scaffolds a new Elm-UI project.')
-  .action(function(env, opts){
-    elmUi.scaffold(options)
+  .command('install')
+  .description('Installs Elm dependencies')
+  .action(function(env,opts){
+    elmUi.install()
+  })
+
+program
+  .command('new <dir>')
+  .description('Scaffolds a new Elm-UI project')
+  .action(function(dir){
+    elmUi.scaffold(dir)
   })
 
 program
   .command('server')
-  .description('Starts development server.')
+  .description('Starts development server')
   .action(function(env, opts){
-    elmUi.serve(options)
+    elmUi.serve()
   })
 
 program
   .command('build')
-  .description('Builds final files.')
+  .description('Builds final files')
   .action(function(env, opts){
-    elmUi.build(options)
+    elmUi.build()
   })
 
 program.parse(process.argv);

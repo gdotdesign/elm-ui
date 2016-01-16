@@ -51,19 +51,20 @@ Planned components:
 - [ ] Ui.MaskedInput - An input component where the value is masked by a pattern
 - [ ] Ui.CheckboxGroup - A component for selecting a value via checkboxes
 
-
 ## Getting Started
-For now, you will need to **clone** or **download** this repository into a directory for server reasons:
-  * It uses **Native Modules** because of this its not included int the **Elm packages repository**
-  * It uses **Sass** to render the stylesheets
-  * It uses **Koa** to provide a development environment
-  * It uses **Gulp** to build the final files
+* You will need a working version of Node at least (v4)
+* Install Elm-UI and the [Command Line Interface (CLI)](https://github.com/gdotdesign/elm-ui/wiki/Command-Line-Interface) with `npm install elm-ui -g`
+* Create a new project run `elm-ui new project-name`
+* Install Elm packages, in the project directory run `elm-ui install`
+* Start a development server on `http://localhost:8001` run `elm-ui server`
+* Build the final files with `elm-ui build` into **dist** director
 
-#### Prerequisites
-* A working version of Node at least (v4)
+## Documentation
+Currently the only documentation is the Elm documentation that you can generate with the `npm run elm-docs` and then opening the `documentation.json` with the **preview** feature in [http://package.elm-lang.org/help/docs-preview](http://package.elm-lang.org/help/docs-preview).
 
+## Hacking
 ### Installing dependencies
-You will need to install both **Elm** and **Node** dependencies:
+After cloning the repository you will need to install both **Elm** and **Node** dependencies:
   * To install the Node ones run `npm install` in the root of the directory
   * To install the Elm ones run `npm run elm-install` in the root of the directory
 
@@ -71,30 +72,17 @@ You will need to install both **Elm** and **Node** dependencies:
 You can start the development environment with the `npm start` command, this will start a server that listens on `http://localhost:8001`.
 
 ### The Main Module
-Your applications main file lives in `source/Main.elm`, this will be the file that is compiled and served as your application. This is probably where you want to set up your [StartApp](https://github.com/evancz/start-app). By default the **examples (kitchen sink)** of all components will be displayed (which are used for tests).
+The main module contains the **examples (kitchen sink)** of all components (which are used for tests).
 
 ### Styles
-The main file for your applications styles is the `stylesheets/main.scss`, it will include all of the styles neccessary for the components defined by this library. You can add your styles here or import from anywhere inside the `stylesheets` directory.
+The stylesheet directory contains the styles for the components.
 
 ### Building
-You can build your application with the `npm run build` command. This will:
+You can build the project with the `npm run build` command. This will:
  * Compile and uglify your the Elm files into the `dist/main.js`
  * Compile, autoprefix and uglify your the stylesheets into `dist/main.css`
  * Build the `dist/index.html`
  * Copy all of the static assets from the `public` folder into `dist`,
-
-You should end up with something like this:
-```
-dist/
- - index.html
- - main.css
- - main.js
- - static files
- ..
-```
-
-## Documentation
-Currently the only documentation is the Elm documentation that you can generate with the `npm run elm-docs` and then opening the `documentation.json` with the **preview** feature in [http://package.elm-lang.org/help/docs-preview](http://package.elm-lang.org/help/docs-preview).
 
 ## Contributing
 Any contributions are welcome, you should keep in mind the following when submitting a new **component**:

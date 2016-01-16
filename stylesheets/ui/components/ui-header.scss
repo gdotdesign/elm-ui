@@ -3,18 +3,41 @@ ui-header {
   flex: 0 0 auto;
   align-items: center;
   color: readable($primary);
-  background: linear-gradient($primary, dampen-inverse($primary, 5%));
-  text-shadow: 0 1px dampen-inverse($primary, 20%);
-  border-bottom: 1px solid dampen-inverse($primary, 20%);
-  border-top: 1px solid dapmen($primary, 10%);
+  background: linear-gradient($primary, mix($primary,#000,95%));
+  text-shadow: 0 1px rgba(#000, 0.2);
+  border-bottom: 1px solid rgba(#000, 0.2);
+  border-top: 1px solid rgba(#FFF,0.2);
+  z-index: 10;
+  position: relative;
   height: 60px;
+
+  &:before {
+    content: '';
+    height: 6px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -7px;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(rgba(#000, 0.2), rgba(#000,0));
+  }
 
   > ui-header-title:first-child {
     padding-left: 20px;
   }
 
+  > ui-header-title:last-child {
+    padding-right: 20px;
+  }
+
+  > ui-header-title {
+    flex: 1;
+  }
+
   > ui-icon {
     width: 60px;
     font-size: 32px;
+    flex: 0 0 auto;
   }
 }

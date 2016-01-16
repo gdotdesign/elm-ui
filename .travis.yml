@@ -3,8 +3,7 @@ install:
   - npm install
   - npm run elm-install
 node_js:
-  - "4.2"
-before_script:
-  - npm run build
+  - "4.2.4"
+  - "5.4"
 script:
   - npm test

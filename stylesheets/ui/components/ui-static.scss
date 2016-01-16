@@ -24,9 +24,12 @@ ui-text {
 ui-header-title {
   display: flex;
   align-items: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-size: 22px;
   font-weight: 600;
+
+  div {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 }

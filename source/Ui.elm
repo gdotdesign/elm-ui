@@ -86,7 +86,8 @@ header attributes children =
 {-| Renders a header title element. -}
 headerTitle : List Html.Attribute -> List Html.Html -> Html.Html
 headerTitle attributes children =
-  node "ui-header-title" attributes children
+  node "ui-header-title" attributes
+    [node "div" [] children]
 
 {-| Renders a floating action button. -}
 fab : String -> List Html.Attribute -> Html.Html

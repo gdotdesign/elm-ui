@@ -169,11 +169,28 @@ renderElm = function(file) {
   }
 }
 
-renderHtml = function() {
+readConfig = function(env){
+  var file = path.resolve(`config/${env}.json`)
+  var data;
+
+  try {
+    data = JSON.parse(fs.readFileSync(file, 'utf-8'))
+  } catch (e) {
+    console.log("Error reading environment configuration: " + e)
+    data = {}
+  }
+
+  return data;
+}
+
+renderHtml = function(options) {
   return `<html>
     <head>
     </head>
     <body style="overflow: hidden;margin:0;">
+      <script>
+        window.ENV = ${JSON.stringify(readConfig(options.env))}
+      </script>
       <script src='main.js' type='application/javascript'>
       </script>
       <script>Elm.fullscreen(Elm.Main);</script>
@@ -205,13 +222,13 @@ buildElm = function() {
   }
 }
 
-buildHtml = function() {
+buildHtml = function(options) {
   var destination = path.resolve('dist/index.html')
 
   return function(callback) {
     console.log('Building HTML...')
 
-    fs.writeFileSync(destination, renderHtml())
+    fs.writeFileSync(destination, renderHtml(options))
 
     callback(null, null);
   }
@@ -266,13 +283,13 @@ exports.scaffold = function(directory) {
   fs.writeFileSync(elmUiConfig, JSON.stringify(defaultEmlPackage(), null, "  "))
 }
 
-exports.serve = function() {
+exports.serve = function(options) {
   var router = require('koa-router')();
   var serve = require('koa-static');
   var app = require('koa')();
 
   router.get('/', function*(next) {
-    this.body = renderHtml()
+    this.body = renderHtml(options)
   })
 
   router.get('/main.js', function*(next) {
@@ -325,7 +342,7 @@ exports.install = function() {
     })
 }
 
-exports.build = function() {
+exports.build = function(options) {
   var destination = path.resolve('dist')
 
   // Ensure destination
@@ -336,9 +353,9 @@ exports.build = function() {
   // Build things with async
   async.series([
     copyPublic(),
-    buildHtml(path.join(destination, 'index.html')),
-    buildElm(path.join(destination, 'main.js')),
-    buildCSS(path.join(destination, 'main.css'))
+    buildHtml(options),
+    buildElm(),
+    buildCSS()
   ], function(err, results) {
     if (err) {
       console.error(err)

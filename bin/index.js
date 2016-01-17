@@ -6,8 +6,13 @@ var elmUi = require('./elm-ui')
 var path = require('path')
 var fs = require('fs')
 
+var options = function(){
+  return { env: program.env }
+}
+
 program
   .version('0.0.1')
+  .option('-e, --env [env]', 'Environment', 'development')
 
 program
   .command('install')
@@ -27,14 +32,14 @@ program
   .command('server')
   .description('Starts development server')
   .action(function(env, opts){
-    elmUi.serve()
+    elmUi.serve(options())
   })
 
 program
   .command('build')
   .description('Builds final files')
   .action(function(env, opts){
-    elmUi.build()
+    elmUi.build(options())
   })
 
-program.parse(process.argv);
+program.parse(process.argv)

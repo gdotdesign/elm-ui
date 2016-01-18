@@ -169,27 +169,27 @@ renderElm = function(file) {
   }
 }
 
-readConfig = function(env){
-  var file = path.resolve(`config/${env}.json`)
+readConfig = function(options){
+  var file = path.resolve(`config/${options.env}.json`)
   var data;
 
   try {
     data = JSON.parse(fs.readFileSync(file, 'utf-8'))
   } catch (e) {
-    console.log("Error reading environment configuration: " + e)
+    console.log("Error reading environment configuration:\n  > " + e)
     data = {}
   }
 
   return data;
 }
 
-renderHtml = function(options) {
+renderHtml = function(config) {
   return `<html>
     <head>
     </head>
     <body style="overflow: hidden;margin:0;">
       <script>
-        window.ENV = ${JSON.stringify(readConfig(options.env))}
+        window.ENV = ${JSON.stringify(config)}
       </script>
       <script src='main.js' type='application/javascript'>
       </script>
@@ -222,13 +222,13 @@ buildElm = function() {
   }
 }
 
-buildHtml = function(options) {
+buildHtml = function(config) {
   var destination = path.resolve('dist/index.html')
 
   return function(callback) {
     console.log('Building HTML...')
 
-    fs.writeFileSync(destination, renderHtml(options))
+    fs.writeFileSync(destination, renderHtml(config))
 
     callback(null, null);
   }
@@ -287,9 +287,10 @@ exports.serve = function(options) {
   var router = require('koa-router')();
   var serve = require('koa-static');
   var app = require('koa')();
+  var config = readConfig(options);
 
   router.get('/', function*(next) {
-    this.body = renderHtml(options)
+    this.body = renderHtml(config)
   })
 
   router.get('/main.js', function*(next) {
@@ -344,6 +345,7 @@ exports.install = function() {
 
 exports.build = function(options) {
   var destination = path.resolve('dist')
+  var config = readConfig(options);
 
   // Ensure destination
   if (!fs.existsSync(destination)) {
@@ -353,7 +355,7 @@ exports.build = function(options) {
   // Build things with async
   async.series([
     copyPublic(),
-    buildHtml(options),
+    buildHtml(config),
     buildElm(),
     buildCSS()
   ], function(err, results) {

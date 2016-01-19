@@ -280,6 +280,7 @@ exports.scaffold = function(directory) {
   if (fs.existsSync(elmUiConfig)) {
     return;
   }
+
   fs.writeFileSync(elmUiConfig, JSON.stringify(defaultEmlPackage(), null, "  "))
 }
 

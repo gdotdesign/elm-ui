@@ -143,11 +143,10 @@ init =
     , colorPanel = Ui.ColorPanel.init Color.blue
     , numberRange = Ui.NumberRange.init 0
     , buttonGroup = Ui.ButtonGroup.init
-        [{ label = "A", action = (ButtonClicked "A") },
-         { label = "B", action = (ButtonClicked "B") },
-         { label = "C", action = (ButtonClicked "C") },
-         { label = "D", action = (ButtonClicked "D") }]
-        "A"
+        [("A", (ButtonClicked "A")),
+         ("B", (ButtonClicked "B")),
+         ("C", (ButtonClicked "C")),
+         ("D", (ButtonClicked "D"))]
     , checkbox3 = Ui.Checkbox.initWithAddress (forwardTo address Checkbox3Changed) False
     , checkbox2 = Ui.Checkbox.initWithAddress (forwardTo address Checkbox2Changed) False
     , checkbox = Ui.Checkbox.initWithAddress (forwardTo address CheckboxChanged) False
@@ -201,7 +200,7 @@ view address model =
   let
     { chooser, colorPanel, datePicker, colorPicker, numberRange, slider
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
-    , numberPad, ratings, pager, input } = model
+    , numberPad, ratings, pager, input, buttonGroup } = model
 
     clicked =
       if model.clicked then [node "clicked" [] [text ""]] else []
@@ -303,9 +302,10 @@ view address model =
               ]
             ]
           , componentHeader "Button Group"
-          , tableRow (Ui.ButtonGroup.view address model.buttonGroup)
+          , tableRow (Ui.ButtonGroup.view address buttonGroup)
                      (text "")
-                     (text "")
+                     (Ui.ButtonGroup.view address
+                        { buttonGroup | disabled = True })
           , componentHeader "Ratings"
           , tableRow (Ui.Ratings.view (forwardTo address Ratings) ratings)
                      (Ui.Ratings.view (forwardTo address Ratings)

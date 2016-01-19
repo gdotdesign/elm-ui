@@ -3,8 +3,7 @@ Elm.Native.Browser.make = function(elm) {
   elm.Native = elm.Native || {};
   elm.Native.Browser = elm.Native.Browser || {};
   if (elm.Native.Browser.values) { return elm.Native.Browser.values; }
-
-  if(typeof HTMLElement === "function") {
+  if(window.HTMLElement) {
     var fallbackMenu = { getBoundingClientRect: function(){
         return { bottom: 0,
           height: 0,

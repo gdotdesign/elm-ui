@@ -57,3 +57,28 @@ body {
   font-size: 16px;
   margin: 0;
 }
+
+ui-breadcrumbs {
+  border-bottom: 1px solid rgba(#000, 0.075);
+  background: linear-gradient($secondary, dampen($secondary, 2%));
+	display: block;
+  padding: 15px;
+
+  ui-breadcrumb {
+    display: inline-block;
+
+    &:hover {
+      cursor: pointer;
+      color: $focus;
+    }
+
+    span {
+    	font-weight: 600;
+    }
+
+    + :not(ui-breadcrumb) {
+      margin: 0 7px;
+      opacity: 0.5;
+    }
+  }
+}

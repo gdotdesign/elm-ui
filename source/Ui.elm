@@ -1,20 +1,21 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
-   stylesheetLink, tabIndex, header, headerTitle, fab, text, open,
-   redirect, alert, enabledActions) where
+   stylesheetLink, tabIndex, header, headerTitle, fab, textBlock, open,
+   redirect, alert, enabledActions, breadcrumbs) where
 
 {-| UI Library for ELM!
 
 # Static Components
 @docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup, header
-@docs headerTitle, fab, text
+@docs headerTitle, fab, textBlock, breadcrumbs
 
 # Helper Functions
 @docs tabIndex, open, redirect, alert, enabledActions
 -}
 import Html.Attributes exposing (classList, tabindex, rel, href)
+import Html.Events exposing (onClick)
 import Html.Extra exposing (onLoad)
-import Html exposing (node)
+import Html exposing (node, text)
 
 import Native.Browser
 
@@ -96,9 +97,21 @@ fab glyph attributes =
     [ icon glyph False []]
 
 {-| Renders a text block. -}
-text : String -> Html.Html
-text value =
+textBlock : String -> Html.Html
+textBlock value =
   node "ui-text" [] [Html.text value]
+
+{-| Renders a breadcrumbs. -}
+breadcrumbs : Signal.Address a -> Html.Html -> List (String, a) -> Html.Html
+breadcrumbs address separator items =
+  let
+    renderItem (label, action) =
+      node "ui-breadcrumb" [onClick address action]
+        [node "span" [] [text label]]
+  in
+    node "ui-breadcrumbs" []
+      (List.map renderItem items
+      |> List.intersperse separator)
 
 {-| Opens a link. -}
 open : String -> a -> a

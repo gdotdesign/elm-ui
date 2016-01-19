@@ -82,6 +82,7 @@ type Action
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
   | CalendarChanged Time.Time
+  | BreadcrumbClicked String
   | Checkbox2Changed Bool
   | Checkbox3Changed Bool
   | CheckboxChanged Bool
@@ -238,17 +239,17 @@ view address model =
         model.modal
       , node "kitchen-sink" []
         [ Ui.title [] [text "Elm-UI Kitchen Sink"]
-        , Ui.text "An opinionated UI library for the web in Elm, following
-                   the Elm Architecture."
+        , Ui.textBlock "An opinionated UI library for the web in Elm, following
+                        the Elm Architecture."
         , node "p" []
           [ Ui.IconButton.primaryBig
               "Get Started at Github" "social-github" "right"
               address (Open "https://github.com/gdotdesign/elm-ui") ]
         , Ui.subTitle [] [text "Components"]
-        , Ui.text "The business logic for following components are
-                   implemented fully in Elm, with minimal Native
-                   bindings, following the Elm Architecture. Most
-                   components implement disabled and readonly states."
+        , Ui.textBlock "The business logic for following components are
+                        implemented fully in Elm, with minimal Native
+                        bindings, following the Elm Architecture. Most
+                        components implement disabled and readonly states."
         , table []
           [ tr [] [ td [] [text "Active"]
                   , td [] [text "Readonly"]
@@ -473,6 +474,16 @@ view address model =
                 ]
               ]
             ]
+
+          , componentHeader "Breadcrumbs"
+          , tr []
+            [ td [colspan 3]
+              [ Ui.breadcrumbs address (node "span" [] [text "/"])
+                [ ("First", BreadcrumbClicked "First")
+                , ("Second", BreadcrumbClicked "Second")
+                ]
+                ]
+            ]
           , componentHeader "Image"
           , tr []
             [ td []
@@ -652,6 +663,8 @@ update' action model =
                            ])
     ButtonClicked value ->
       notify ("Button clicked: " ++ value) model
+    BreadcrumbClicked value ->
+      notify ("Breadcrumb clicked:" ++ value) model
     InplaceInputChanged value ->
       notify ("Inplace input changed to: " ++ value) model
     CheckboxChanged value ->

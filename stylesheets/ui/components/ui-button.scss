@@ -26,16 +26,16 @@ ui-button {
       &.ui-button-#{$type} {
         @include colors($type-color);
 
-        &:focus:before {
-          border: 1px solid dampen($type-color, 20%);
-        }
+        &:focus, &:hover {
+          @include colors(dampen($type-color, 10%));
 
-        &:hover {
-          @include colors(dampen-inverse($type-color, 15%));
+          &:before {
+            border-color: dampen($type-color, 20%);
+          }
         }
 
         &:active {
-          @include colors(dampen($type-color, 5%));
+          @include colors(dampen-inverse($type-color, 25%));
         }
       }
     }
@@ -69,7 +69,8 @@ ui-button {
     outline: none;
 
     &:before {
-      border-radius: $border-radius;
+      border: 1px solid transparent;
+      border-radius: inherit;
       pointer-events: none;
       position: absolute;
       bottom: -2px;

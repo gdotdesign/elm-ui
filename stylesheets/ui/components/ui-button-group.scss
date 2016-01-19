@@ -1,0 +1,43 @@
+ui-button-group {
+  // Remove the border and border-radius of buttons
+  ui-button {
+    border-radius: 0;
+
+    &:focus:before {
+      border-right: 0;
+      border-left: 0;
+      right: 0;
+      left: 0;
+    }
+
+    // Add separator line
+    @each $type, $type-color in (
+        primary $primary,
+        success $success,
+        warning $warning,
+        danger $danger) {
+
+      + ui-button.ui-button-#{$type} {
+        border-left: 1px solid dampen-inverse($type-color, 20%);
+      }
+    }
+
+    + ui-button.ui-button-secondary {
+      border-left: 1px solid dampen($secondary, 10%);
+    }
+
+    + ui-button.disabled {
+      border-left: 1px solid dampen($disabled, 10%);
+    }
+  }
+
+  // Add border-radius to the left side
+  ui-button:first-child {
+    border-radius: $border-radius 0 0 $border-radius;
+  }
+
+  // Add border-radius to the right side
+  ui-button:last-child {
+    border-radius: 0 $border-radius $border-radius 0;
+  }
+}

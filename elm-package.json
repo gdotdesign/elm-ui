@@ -18,6 +18,7 @@
     "Ui",
     "Ui.App",
     "Ui.Button",
+    "Ui.ButtonGroup",
     "Ui.Calendar",
     "Ui.Checkbox",
     "Ui.Chooser",

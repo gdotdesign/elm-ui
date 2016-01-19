@@ -201,5 +201,5 @@ remove id model =
     updatedNotifications =
       List.filter (\item -> item.id /= id) model.notifications
   in
-    ({ model | notifications =  updatedNotifications }, Effects.none)
+    ({ model | notifications = updatedNotifications }, Effects.none)
 

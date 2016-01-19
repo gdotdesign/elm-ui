@@ -22,6 +22,7 @@ import Ui.NotificationCenter
 import Ui.DropdownMenu
 import Ui.InplaceInput
 import Ui.NumberRange
+import Ui.ButtonGroup
 import Ui.ColorPicker
 import Ui.DatePicker
 import Ui.ColorPanel
@@ -85,6 +86,7 @@ type Action
   | Checkbox3Changed Bool
   | CheckboxChanged Bool
   | RatingsChanged Float
+  | ButtonClicked String
   | Scrolled Bool
   | Loaded Bool
 
@@ -92,6 +94,7 @@ type alias Model =
   { app : Ui.App.Model
   , mailbox : Signal.Mailbox Action
   , notifications : Ui.NotificationCenter.Model
+  , buttonGroup :Ui.ButtonGroup.Model Action
   , datePicker : Ui.DatePicker.Model
   , inplaceInput : Ui.InplaceInput.Model
   , colorPicker : Ui.ColorPicker.Model
@@ -139,6 +142,12 @@ init =
     , colorPicker = Ui.ColorPicker.init Color.yellow
     , colorPanel = Ui.ColorPanel.init Color.blue
     , numberRange = Ui.NumberRange.init 0
+    , buttonGroup = Ui.ButtonGroup.init
+        [{ label = "A", action = (ButtonClicked "A") },
+         { label = "B", action = (ButtonClicked "B") },
+         { label = "C", action = (ButtonClicked "C") },
+         { label = "D", action = (ButtonClicked "D") }]
+        "A"
     , checkbox3 = Ui.Checkbox.initWithAddress (forwardTo address Checkbox3Changed) False
     , checkbox2 = Ui.Checkbox.initWithAddress (forwardTo address Checkbox2Changed) False
     , checkbox = Ui.Checkbox.initWithAddress (forwardTo address CheckboxChanged) False
@@ -293,6 +302,10 @@ view address model =
                                                    , disabled = True }
               ]
             ]
+          , componentHeader "Button Group"
+          , tableRow (Ui.ButtonGroup.view address model.buttonGroup)
+                     (text "")
+                     (text "")
           , componentHeader "Ratings"
           , tableRow (Ui.Ratings.view (forwardTo address Ratings) ratings)
                      (Ui.Ratings.view (forwardTo address Ratings)
@@ -637,7 +650,8 @@ update' action model =
                            , Effects.map NumberRange numberRangeEffect
                            , Effects.map Slider sliderEffect
                            ])
-
+    ButtonClicked value ->
+      notify ("Button clicked: " ++ value) model
     InplaceInputChanged value ->
       notify ("Inplace input changed to: " ++ value) model
     CheckboxChanged value ->

@@ -4,7 +4,8 @@
   "description": "UI Libary in Elm",
   "scripts": {
     "start": "bin/index.js server",
-    "deploy": "npm run build; gulp deploy",
+    "deploy": "gulp deploy",
+    "predeploy": "npm run build",
     "build": "bin/index.js build",
     "test": "node tests.js",
     "elm-install": "elm-package install -y",

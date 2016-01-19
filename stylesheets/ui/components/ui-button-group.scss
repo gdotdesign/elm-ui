@@ -1,0 +1,35 @@
+ui-button-group {
+  ui-button:not(:first-child):not(:last-child) {
+    border-radius: 0;
+
+    &:focus:before {
+      border-right: 0;
+      border-left: 0;
+      right: 0;
+      left: 0;
+    }
+
+  }
+
+  ui-button + ui-button {
+    border-left: 1px solid dampen-inverse($primary, 20%);
+  }
+
+  ui-button:first-child {
+    border-radius: $border-radius 0 0 $border-radius;
+
+    &:before {
+      border-right: 0;
+      right: 0;
+    }
+  }
+
+  ui-button:last-child {
+    border-radius: 0 $border-radius $border-radius 0;
+
+    &:before {
+      border-left: 0;
+      left: 0;
+    }
+  }
+}

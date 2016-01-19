@@ -169,11 +169,28 @@ renderElm = function(file) {
   }
 }
 
-renderHtml = function() {
+readConfig = function(options){
+  var file = path.resolve(`config/${options.env}.json`)
+  var data;
+
+  try {
+    data = JSON.parse(fs.readFileSync(file, 'utf-8'))
+  } catch (e) {
+    console.log("Error reading environment configuration:\n  > " + e)
+    data = {}
+  }
+
+  return data;
+}
+
+renderHtml = function(config) {
   return `<html>
     <head>
     </head>
     <body style="overflow: hidden;margin:0;">
+      <script>
+        window.ENV = ${JSON.stringify(config)}
+      </script>
       <script src='main.js' type='application/javascript'>
       </script>
       <script>Elm.fullscreen(Elm.Main);</script>
@@ -205,13 +222,13 @@ buildElm = function() {
   }
 }
 
-buildHtml = function() {
+buildHtml = function(config) {
   var destination = path.resolve('dist/index.html')
 
   return function(callback) {
     console.log('Building HTML...')
 
-    fs.writeFileSync(destination, renderHtml())
+    fs.writeFileSync(destination, renderHtml(config))
 
     callback(null, null);
   }
@@ -263,16 +280,18 @@ exports.scaffold = function(directory) {
   if (fs.existsSync(elmUiConfig)) {
     return;
   }
+
   fs.writeFileSync(elmUiConfig, JSON.stringify(defaultEmlPackage(), null, "  "))
 }
 
-exports.serve = function() {
+exports.serve = function(options) {
   var router = require('koa-router')();
   var serve = require('koa-static');
   var app = require('koa')();
+  var config = readConfig(options);
 
   router.get('/', function*(next) {
-    this.body = renderHtml()
+    this.body = renderHtml(config)
   })
 
   router.get('/main.js', function*(next) {
@@ -325,8 +344,9 @@ exports.install = function() {
     })
 }
 
-exports.build = function() {
+exports.build = function(options) {
   var destination = path.resolve('dist')
+  var config = readConfig(options);
 
   // Ensure destination
   if (!fs.existsSync(destination)) {
@@ -336,9 +356,9 @@ exports.build = function() {
   // Build things with async
   async.series([
     copyPublic(),
-    buildHtml(path.join(destination, 'index.html')),
-    buildElm(path.join(destination, 'main.js')),
-    buildCSS(path.join(destination, 'main.css'))
+    buildHtml(config),
+    buildElm(),
+    buildCSS()
   ], function(err, results) {
     if (err) {
       console.error(err)

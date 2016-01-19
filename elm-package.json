@@ -42,7 +42,8 @@
     "Ui.Helpers.Drag",
     "Ui.Helpers.Animation",
     "Ui.Helpers.Dropdown",
-    "Ui.Helpers.Intendable"
+    "Ui.Helpers.Intendable",
+    "Ui.Utils.Env"
   ],
   "dependencies": {
     "circuithub/elm-number-format": "1.0.2 <= v < 2.0.0",

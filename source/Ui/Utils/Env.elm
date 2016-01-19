@@ -1,4 +1,4 @@
-module Utils.Env where
+module Ui.Utils.Env where
 
 import Json.Decode as Json
 import Native.Env

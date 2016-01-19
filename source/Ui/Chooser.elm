@@ -139,8 +139,12 @@ update action model =
     Enter dimensions ->
       let
         (updatedModel, effect) = toggleItem model.intended model
+        fn = if model.closeOnSelect then
+              Dropdown.toggleWithDimensions
+             else
+              Dropdown.openWithDimensions
       in
-        (Dropdown.toggleWithDimensions dimensions updatedModel, effect)
+        (fn dimensions updatedModel, effect)
 
     Select value ->
       toggleItemAndClose value model
@@ -207,11 +211,12 @@ render address model =
         [ onInput address Filter
         , onWithDropdownDimensions "focus" address Focus
         , onBlur address Blur
-        , onKeysWithDimensions address [ (27, Close)
-                                       , (13, Enter)
-                                       , (40, Next)
-                                       , (38, Prev)
-                                       ]
+        , onKeysWithDimensions address
+          ([ (27, Close)
+           , (13, Enter)
+           , (40, Next)
+           , (38, Prev)
+           ] ++ (if (not model.searchable) then [(32, Enter)] else []))
         ]
   in
     node "ui-chooser" ([classList [ ("searchable", model.searchable)

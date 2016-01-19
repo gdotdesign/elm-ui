@@ -11,7 +11,7 @@ var options = function(){
 }
 
 program
-  .version('0.0.1')
+  .version('0.1.2')
   .option('-e, --env [env]', 'Environment', 'development')
 
 program

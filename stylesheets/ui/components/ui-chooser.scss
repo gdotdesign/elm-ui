@@ -91,6 +91,10 @@ ui-chooser {
     }
   }
 
+  input:focus {
+    @extend %focused;
+  }
+
   // Empty state
   ui-dropdown {
     &:empty:before {

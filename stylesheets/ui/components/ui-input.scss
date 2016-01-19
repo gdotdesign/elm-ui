@@ -6,6 +6,16 @@ ui-input {
     @include colors($disabled);
     border-color: $disabled;
   }
+
+  input {
+    &:focus {
+      @extend %focused;
+    }
+
+    &[readonly]:focus {
+      @extend %focused-readonly;
+    }
+  }
 }
 
 input:not([type]),
@@ -25,14 +35,6 @@ input[type=password] {
 
   &::-webkit-input-placeholder {
     line-height: 22px;
-  }
-
-  &:focus {
-    @extend %focused;
-  }
-
-  &[readonly]:focus {
-    @extend %focused-readonly;
   }
 
   &[readonly] {

@@ -47,10 +47,10 @@ import Showcase
 
 type Action
   = InplaceInput (Showcase.Action Ui.InplaceInput.Action)
+  | NumberRange (Showcase.Action Ui.NumberRange.Action)
+  | ColorPicker (Showcase.Action Ui.ColorPicker.Action)
   | DatePicker (Showcase.Action Ui.DatePicker.Action)
   | DropdownMenu Ui.DropdownMenu.Action
-  | NumberRange Ui.NumberRange.Action
-  | ColorPicker Ui.ColorPicker.Action
   | ColorPanel Ui.ColorPanel.Action
   | NumberPad Ui.NumberPad.Action
   | Notis Ui.NotificationCenter.Action
@@ -103,8 +103,8 @@ type alias Model =
     }
   , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Action
   , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Action
-  , colorPicker : Ui.ColorPicker.Model
-  , numberRange : Ui.NumberRange.Model
+  , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Action
+  , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Action
   , colorPanel : Ui.ColorPanel.Model
   , numberPad : Ui.NumberPad.Model
   , checkbox3 : Ui.Checkbox.Model
@@ -122,6 +122,9 @@ type alias Model =
   , pager : Ui.Pager.Model
   , clicked : Bool
   }
+
+handleMoveIdentity x y model = (model, Effects.none)
+handleClickIndetity pressed model = model
 
 init : Model
 init =
@@ -162,6 +165,8 @@ init =
           (forwardTo address DatePicker)
           Ui.DatePicker.view
           Ui.DatePicker.update
+          handleMoveIdentity
+          handleClickIndetity
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
     , input = { input | placeholder = "Type here..." }
@@ -171,9 +176,25 @@ init =
           (forwardTo address InplaceInput)
           Ui.InplaceInput.view
           Ui.InplaceInput.update
-    , colorPicker = Ui.ColorPicker.init Color.yellow
+          handleMoveIdentity
+          handleClickIndetity
+    , colorPicker =
+        Showcase.init
+          (\_ -> Ui.ColorPicker.init Color.yellow)
+          (forwardTo address ColorPicker)
+          Ui.ColorPicker.view
+          Ui.ColorPicker.update
+          Ui.ColorPicker.handleMove
+          Ui.ColorPicker.handleClick
     , colorPanel = Ui.ColorPanel.init Color.blue
-    , numberRange = Ui.NumberRange.init 0
+    , numberRange =
+        Showcase.init
+          (\_-> Ui.NumberRange.init 0)
+          (forwardTo address NumberRange)
+          Ui.NumberRange.view
+          Ui.NumberRange.update
+          Ui.NumberRange.handleMove
+          Ui.NumberRange.handleClick
     , buttonGroup = { enabled = buttonGroup
                     , disabled = { buttonGroup | disabled = True }
                     }
@@ -419,23 +440,13 @@ view address model =
                        { colorPanel | disabled = True })
 
           , componentHeader "Color Picker"
-          , tableRow (Ui.ColorPicker.view (forwardTo address ColorPicker)
-                       colorPicker)
-                     (Ui.ColorPicker.view (forwardTo address ColorPicker)
-                       { colorPicker | readonly = True })
-                     (Ui.ColorPicker.view (forwardTo address ColorPicker)
-                       { colorPicker | disabled = True })
+          , Showcase.view colorPicker
 
           , componentHeader "Date Picker"
           , Showcase.view datePicker
 
           , componentHeader "Number Range"
-          , tableRow (Ui.NumberRange.view (forwardTo address NumberRange)
-                       numberRange)
-                     (Ui.NumberRange.view (forwardTo address NumberRange)
-                       { numberRange | readonly = True })
-                     (Ui.NumberRange.view (forwardTo address NumberRange)
-                       { numberRange | disabled = True })
+          , Showcase.view numberRange
 
           , componentHeader "Slider"
           , tableRow (Ui.Slider.view (forwardTo address Slider)
@@ -530,8 +541,8 @@ update action model =
 
     MouseIsDown value ->
       { model
-        | numberRange = Ui.NumberRange.handleClick value model.numberRange
-        , colorPicker = Ui.ColorPicker.handleClick value model.colorPicker
+        | numberRange = Showcase.handleClick value model.numberRange
+        , colorPicker = Showcase.handleClick value model.colorPicker
         , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
         , menu = Ui.DropdownMenu.handleClick value model.menu
         , slider = Ui.Slider.handleClick value model.slider
@@ -616,7 +627,7 @@ update' action model =
         ({ model | checkbox = checkbox }, Effects.map Checkbox effect)
     ColorPicker act ->
       let
-        (colorPicker, effect) = Ui.ColorPicker.update act model.colorPicker
+        (colorPicker, effect) = Showcase.update act model.colorPicker
       in
         ({ model | colorPicker = colorPicker }, Effects.map ColorPicker effect)
     ColorPanel act ->
@@ -653,7 +664,7 @@ update' action model =
         ({ model | notifications = notis }, Effects.map Notis effect)
     NumberRange act ->
       let
-        (numberRange, effect) = Ui.NumberRange.update act model.numberRange
+        (numberRange, effect) = Showcase.update act model.numberRange
       in
         ({ model | numberRange = numberRange}, Effects.map NumberRange effect)
     Slider act ->
@@ -665,11 +676,11 @@ update' action model =
     MousePosition (x,y) ->
       let
         (colorPicker, colorPickerEffect) =
-          Ui.ColorPicker.handleMove x y model.colorPicker
+          Showcase.handleMove x y model.colorPicker
         (colorPanel, colorPanelEffect) =
           Ui.ColorPanel.handleMove x y model.colorPanel
         (numberRange, numberRangeEffect) =
-          Ui.NumberRange.handleMove x y model.numberRange
+          Showcase.handleMove x y model.numberRange
         (slider, sliderEffect) =
           Ui.Slider.handleMove x y model.slider
       in

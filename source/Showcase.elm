@@ -18,6 +18,8 @@ type alias Model a b =
   , readonlyAddress : Signal.Address b
   , render : Signal.Address b -> a -> Html.Html
   , update : b -> a -> (a, Effects.Effects b)
+  , handleMove : Int -> Int -> a -> (a, Effects.Effects b)
+  , handleClick : Bool -> a -> a
   }
 
 type Action a
@@ -25,7 +27,7 @@ type Action a
   | Disabled a
   | Readonly a
 
-init fn address render update =
+init fn address render update handleMove handleClick =
   let
     enabledAddress = forwardTo address Enabled
     disabledAddress = forwardTo address Disabled
@@ -43,7 +45,29 @@ init fn address render update =
     , readonlyAddress = readonlyAddress
     , render = render
     , update = update
+    , handleMove = handleMove
+    , handleClick = handleClick
     }
+
+handleMove x y model =
+  let
+    (enabled, enabledEffect) = model.handleMove x y model.enabled
+    (disabled, disabledEffect) = model.handleMove x y model.disabled
+    (readonly, readonlyEffect) = model.handleMove x y model.readonly
+    effect =
+      [ Effects.map Enabled enabledEffect
+      , Effects.map Disabled disabledEffect
+      , Effects.map Readonly readonlyEffect
+      ] |> Effects.batch
+  in
+    ({ model | enabled = enabled
+             , disabled = disabled
+             , readonly = readonly }, effect)
+
+handleClick pressed model =
+  { model | enabled = model.handleClick pressed model.enabled
+          , disabled = model.handleClick pressed model.disabled
+          , readonly = model.handleClick pressed model.readonly }
 
 update action model =
   case action of

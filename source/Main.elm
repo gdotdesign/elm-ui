@@ -95,9 +95,12 @@ type alias Model =
   { app : Ui.App.Model
   , mailbox : Signal.Mailbox Action
   , notifications : Ui.NotificationCenter.Model
-  , buttonGroup :Ui.ButtonGroup.Model Action
-  , datePicker : Ui.DatePicker.Model
-  , inplaceInput : Ui.InplaceInput.Model
+  , buttonGroup :
+    { enabled: Ui.ButtonGroup.Model Action
+    , disabled: Ui.ButtonGroup.Model Action
+    }
+  , datePicker : Component Ui.DatePicker.Model Ui.DatePicker.Action
+  , inplaceInput : Component Ui.InplaceInput.Model Ui.InplaceInput.Action
   , colorPicker : Ui.ColorPicker.Model
   , numberRange : Ui.NumberRange.Model
   , colorPanel : Ui.ColorPanel.Model
@@ -118,36 +121,66 @@ type alias Model =
   , clicked : Bool
   }
 
+type alias Component a b =
+  { disabled : a
+  , enabled : a
+  , readonly : a
+  , address : Signal.Address b
+  }
+
 init : Model
 init =
   let
     datePickerOptions =
-      Ui.DatePicker.init
+      Ui.DatePicker.initWithAddress
+        (forwardTo address DatePickerChanged)
         (forwardTo address DatePicker)
         (Ext.Date.now ())
+
     input = Ui.Input.init ""
+
     pager = Ui.Pager.init 0
+
     address = mailbox.address
+
     mailbox = Signal.mailbox Nothing
+
+    datePicker =
+      { datePickerOptions | format = "%Y %B %e." }
+
+    inplaceInput = Ui.InplaceInput.initWithAddress
+      (forwardTo address InplaceInputChanged)
+      "Test Value"
+
+    buttonGroup =
+      Ui.ButtonGroup.init [("A", (ButtonClicked "A")),
+                           ("B", (ButtonClicked "B")),
+                           ("C", (ButtonClicked "C")),
+                           ("D", (ButtonClicked "D"))]
+
   in
     { calendar = Ui.Calendar.initWithAddress
         (forwardTo address CalendarChanged)
         (Ext.Date.createDate 2015 5 1)
-    , datePicker = { datePickerOptions | format = "%Y %B %e." }
+    , datePicker = { enabled = datePicker
+                   , readonly = { datePicker | readonly = True }
+                   , disabled = { datePicker | disabled = True }
+                   , address = forwardTo address DatePicker
+                   }
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
     , input = { input | placeholder = "Type here..." }
-    , inplaceInput = Ui.InplaceInput.initWithAddress
-        (forwardTo address InplaceInputChanged)
-        "Test Value"
+    , inplaceInput = { enabled = inplaceInput
+                     , readonly = { inplaceInput | readonly = True }
+                     , disabled = { inplaceInput | disabled = True }
+                     , address = forwardTo address InplaceInput
+                     }
     , colorPicker = Ui.ColorPicker.init Color.yellow
     , colorPanel = Ui.ColorPanel.init Color.blue
     , numberRange = Ui.NumberRange.init 0
-    , buttonGroup = Ui.ButtonGroup.init
-        [("A", (ButtonClicked "A")),
-         ("B", (ButtonClicked "B")),
-         ("C", (ButtonClicked "C")),
-         ("D", (ButtonClicked "D"))]
+    , buttonGroup = { enabled = buttonGroup
+                    , disabled = { buttonGroup | disabled = True }
+                    }
     , checkbox3 = Ui.Checkbox.initWithAddress (forwardTo address Checkbox3Changed) False
     , checkbox2 = Ui.Checkbox.initWithAddress (forwardTo address Checkbox2Changed) False
     , checkbox = Ui.Checkbox.initWithAddress (forwardTo address CheckboxChanged) False
@@ -303,10 +336,9 @@ view address model =
               ]
             ]
           , componentHeader "Button Group"
-          , tableRow (Ui.ButtonGroup.view address buttonGroup)
+          , tableRow (Ui.ButtonGroup.view address buttonGroup.enabled)
                      (text "")
-                     (Ui.ButtonGroup.view address
-                        { buttonGroup | disabled = True })
+                     (Ui.ButtonGroup.view address buttonGroup.disabled)
           , componentHeader "Ratings"
           , tableRow (Ui.Ratings.view (forwardTo address Ratings) ratings)
                      (Ui.Ratings.view (forwardTo address Ratings)
@@ -399,12 +431,10 @@ view address model =
                        { colorPicker | disabled = True })
 
           , componentHeader "Date Picker"
-          , tableRow (Ui.DatePicker.view (forwardTo address DatePicker)
-                       datePicker)
-                     (Ui.DatePicker.view (forwardTo address DatePicker)
-                       { datePicker | readonly = True })
-                     (Ui.DatePicker.view (forwardTo address DatePicker)
-                       { datePicker | disabled = True })
+          , tableRow
+              (Ui.DatePicker.view datePicker.address datePicker.enabled)
+              (Ui.DatePicker.view datePicker.address datePicker.readonly)
+              (Ui.DatePicker.view datePicker.address datePicker.disabled)
 
           , componentHeader "Number Range"
           , tableRow (Ui.NumberRange.view (forwardTo address NumberRange)
@@ -439,12 +469,10 @@ view address model =
                        { textarea | disabled = True })
 
           , componentHeader "Inplace Input"
-          , tableRow (Ui.InplaceInput.view (forwardTo address InplaceInput)
-                       inplaceInput)
-                     (Ui.InplaceInput.view (forwardTo address InplaceInput)
-                       { inplaceInput | readonly = True })
-                     (Ui.InplaceInput.view (forwardTo address InplaceInput)
-                       { inplaceInput | disabled = True })
+          , tableRow
+              (Ui.InplaceInput.view inplaceInput.address inplaceInput.enabled)
+              (Ui.InplaceInput.view inplaceInput.address inplaceInput.readonly)
+              (Ui.InplaceInput.view inplaceInput.address inplaceInput.disabled)
 
           , componentHeader "Number Pad"
           , tableRow (Ui.NumberPad.view (forwardTo address NumberPad)
@@ -551,6 +579,33 @@ update action model =
     _ ->
       model
 
+updateComponent : Component a b
+                -> (a -> (a, Effects.Effects b))
+                -> (b -> c)
+                -> (Component a b, Effects.Effects c)
+updateComponent component fn action =
+  let
+    (enabled, enabledEffect) =
+      fn component.enabled
+
+    (readonly, readonlyEffect) =
+      fn component.readonly
+
+    (disabled, disabledEffect) =
+      fn component.disabled
+
+    updatedComponent =
+      { component | enabled = enabled
+                  , readonly = readonly
+                  , disabled = disabled }
+
+    effects =
+      [enabledEffect, readonlyEffect, disabledEffect]
+        |> List.map (Effects.map action)
+        |> Effects.batch
+  in
+    (updatedComponent, effects)
+
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
@@ -571,9 +626,13 @@ update' action model =
         ({ model | numberPad = numberPad }, Effects.map NumberPad effect)
     InplaceInput act ->
       let
-        (inplaceInput, effect) = Ui.InplaceInput.update act model.inplaceInput
+        (inplaceInput, effect) =
+          updateComponent
+            model.inplaceInput
+            (Ui.InplaceInput.update act)
+            InplaceInput
       in
-        ({ model | inplaceInput = inplaceInput }, Effects.map InplaceInput effect)
+        ({ model | inplaceInput = inplaceInput }, effect)
     Chooser act ->
       let
         (chooser, effect) = Ui.Chooser.update act model.chooser
@@ -606,9 +665,13 @@ update' action model =
         ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
     DatePicker act ->
       let
-        (datePicker, effect) = Ui.DatePicker.update act model.datePicker
+        (datePicker, effect) =
+          updateComponent
+            model.datePicker
+            (Ui.DatePicker.update act)
+            DatePicker
       in
-        ({ model | datePicker = datePicker }, Effects.map DatePicker effect)
+        ({ model | datePicker = datePicker }, effect)
     Calendar act ->
       let
         (calendar, effect) = Ui.Calendar.update act model.calendar

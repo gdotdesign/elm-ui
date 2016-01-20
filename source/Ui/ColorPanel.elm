@@ -167,8 +167,11 @@ handleMove x y model =
       else
         model.value
   in
-    ({ model | value = color }
-     , Ext.Signal.sendAsEffect model.valueAddress color Tasks)
+    if model.value == color then
+      (model, Effects.none)
+    else
+      ({ model | value = color }
+       , Ext.Signal.sendAsEffect model.valueAddress color Tasks)
 
 {-| Updates a color panel, stopping the drags if the mouse isn't pressed. -}
 handleClick : Bool -> Model -> Model

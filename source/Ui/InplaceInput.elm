@@ -22,8 +22,8 @@ import String
 import Native.Browser
 
 import Ui.Container
-import Ui.Button
 import Ui.Textarea
+import Ui.Button
 import Ui
 
 {-| Represents an inplace input:

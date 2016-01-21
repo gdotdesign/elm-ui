@@ -167,40 +167,66 @@ handleMove x y model =
       else
         model.value
   in
-    ({ model | value = color }
-     , Ext.Signal.sendAsEffect model.valueAddress color Tasks)
+    if model.value == color then
+      (model, Effects.none)
+    else
+      ({ model | value = color }
+       , Ext.Signal.sendAsEffect model.valueAddress color Tasks)
 
 {-| Updates a color panel, stopping the drags if the mouse isn't pressed. -}
 handleClick : Bool -> Model -> Model
 handleClick value model =
-  { model | alphaDrag = Drag.handleClick value model.alphaDrag
-          , hueDrag = Drag.handleClick value model.hueDrag
-          , drag = Drag.handleClick value model.drag }
+  let
+    alphaDrag = Drag.handleClick value model.alphaDrag
+    hueDrag = Drag.handleClick value model.hueDrag
+    drag = Drag.handleClick value model.drag
+  in
+    if model.alphaDrag == alphaDrag &&
+       model.hueDrag == hueDrag &&
+       model.drag == drag then
+      model
+    else
+      { model | alphaDrag = alphaDrag
+              , hueDrag = hueDrag
+              , drag = drag  }
 
 -- Handles the hue drag
 handleHue : Int -> Int -> Hsv -> Drag.Model -> Hsv
 handleHue x y color drag =
   let
     { top } = Drag.relativePercentPosition x y drag
+    hue = clamp 0 1 top
   in
-    { color | hue = clamp 0 1 top }
+    if color.hue == hue then
+      color
+    else
+      { color | hue = hue }
 
 -- Handles the value / saturation drag
 handleRect : Int -> Int -> Hsv -> Drag.Model -> Hsv
 handleRect x y color drag =
   let
     { top, left } = Drag.relativePercentPosition x y drag
+    saturation = clamp 0 1 left
+    value = 1 - (clamp 0 1 top)
   in
-    { color | saturation = clamp 0 1 left
-            , value = 1 - (clamp 0 1 top) }
+    if color.saturation == saturation &&
+       color.value == value then
+      color
+    else
+      { color | saturation = saturation, value = value }
 
 -- Handles the alpha drag
 handleAlpha : Int -> Int -> Hsv -> Drag.Model -> Hsv
 handleAlpha x y color drag =
   let
     { left } = Drag.relativePercentPosition x y drag
+    alpha = clamp 0 1 left
   in
-    { color | alpha = clamp 0 1 left }
+    if color.alpha == alpha then
+      color
+    else
+      { color | alpha = alpha }
 
 -- Renders a handle
 renderHandle : String -> String -> Html.Html

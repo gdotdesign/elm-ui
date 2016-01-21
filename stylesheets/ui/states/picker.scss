@@ -4,11 +4,17 @@
   @include colors($input);
   @include border;
 
+  transition: z-index 1ms 320ms;
   display: inline-block;
   position: relative;
   padding: 6px 9px;
   cursor: pointer;
   height: 36px;
+
+  &.dropdown-open {
+    transition: z-index 1ms;
+    z-index: 1;
+  }
 
   // Dropdown
   ui-dropdown {

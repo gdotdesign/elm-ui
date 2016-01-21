@@ -34,10 +34,15 @@ ui-dropdown {
 }
 
 // Open state
-.dropdown-open ui-dropdown {
-  transition: opacity 320ms, transform 320ms, visibility 1ms;
-  transform: translateY(0);
-  pointer-events: auto;
-  visibility: visible;
-  opacity: 1;
+.dropdown-open {
+  transition: z-index 1ms;
+  z-index: 1;
+
+  ui-dropdown {
+    transition: opacity 320ms, transform 320ms, visibility 1ms;
+    transform: translateY(0);
+    pointer-events: auto;
+    visibility: visible;
+    opacity: 1;
+  }
 }

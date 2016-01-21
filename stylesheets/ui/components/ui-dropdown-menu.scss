@@ -41,6 +41,7 @@ ui-dropdown-menu {
     padding: 7px;
 
     transition: opacity 150ms, transform 150ms, visibility 1ms 150ms;
+    z-index: map-get($z-index, dropdown);
     transform: translateY(10px);
     pointer-events: none;
     visibility: hidden;

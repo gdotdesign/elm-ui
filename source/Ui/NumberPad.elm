@@ -111,13 +111,13 @@ sendValue model =
   (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
 
 {-| Renders a number pad. -}
-view : Signal.Address Action -> ViewModel -> Model -> Html.Html
-view address viewModel model =
-  Html.Lazy.lazy3 render address viewModel model
+view : ViewModel -> Signal.Address Action -> Model -> Html.Html
+view viewModel address model =
+  Html.Lazy.lazy3 render viewModel address model
 
 -- Renders a number pad.
-render : Signal.Address Action -> ViewModel -> Model -> Html.Html
-render address viewModel model =
+render : ViewModel -> Signal.Address Action -> Model -> Html.Html
+render viewModel address model =
   let
     value =
       if model.format then prettyInt ',' model.value else toString model.value

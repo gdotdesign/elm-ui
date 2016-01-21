@@ -24,7 +24,6 @@ import Ext.Signal
 import Effects
 
 import Ui.Helpers.Drag as Drag
-import Ui.Utils.Env as Env
 import Ui
 
 {-| Representation of a color panel:
@@ -106,8 +105,6 @@ view address model =
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
-    debug = Env.log "Rendered Ui.ColorPanel..."
-
     background =
       "hsla(" ++ (toString (round (model.value.hue * 360))) ++ ", 100%, 50%, 1)"
 

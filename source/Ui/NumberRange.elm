@@ -32,7 +32,6 @@ import String
 import Dict
 
 import Ui.Helpers.Drag as Drag
-import Ui.Utils.Env as Env
 import Ui
 
 {-| Representation of a number range:
@@ -166,8 +165,6 @@ view address model =
 render: Signal.Address Action -> Model -> Html.Html
 render address model =
   let
-    debug = Env.log "Rendered Ui.NumberRange..."
-
     actions =
       if model.readonly || model.disabled then []
       else if model.editing then

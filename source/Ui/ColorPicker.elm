@@ -26,7 +26,6 @@ import Dict
 
 import Ui.Helpers.Dropdown as Dropdown
 import Ui.ColorPanel as ColorPanel
-import Ui.Utils.Env as Env
 import Ui
 
 
@@ -144,8 +143,6 @@ handleClick pressed model =
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
-    debug = Env.log "Rendered Ui.ColorPicker..."
-
     color =
       Ext.Color.toCSSRgba model.colorPanel.value
 

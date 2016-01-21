@@ -2,6 +2,7 @@ module Showcase where
 
 import Signal exposing (forwardTo)
 import Html exposing (tr, td)
+import Html.Lazy
 import Effects
 
 type alias Partial a =
@@ -16,7 +17,6 @@ type alias Model a b =
   , enabledAddress : Signal.Address b
   , disabledAddress : Signal.Address b
   , readonlyAddress : Signal.Address b
-  , render : Signal.Address b -> a -> Html.Html
   , update : b -> a -> (a, Effects.Effects b)
   , handleMove : Int -> Int -> a -> (a, Effects.Effects b)
   , handleClick : Bool -> a -> a
@@ -27,7 +27,7 @@ type Action a
   | Disabled a
   | Readonly a
 
-init fn address render update handleMove handleClick =
+init fn address update handleMove handleClick =
   let
     enabledAddress = forwardTo address Enabled
     disabledAddress = forwardTo address Disabled
@@ -43,7 +43,6 @@ init fn address render update handleMove handleClick =
     , enabledAddress = enabledAddress
     , disabledAddress = disabledAddress
     , readonlyAddress = readonlyAddress
-    , render = render
     , update = update
     , handleMove = handleMove
     , handleClick = handleClick
@@ -79,9 +78,12 @@ update action model =
     _ ->
       (model, Effects.none)
 
-view model =
+view renderFn model =
+  Html.Lazy.lazy2 render renderFn model
+
+render renderFn model =
   tr []
-    [ td [] [ model.render model.enabledAddress model.enabled  ]
-    , td [] [ model.render model.readonlyAddress model.readonly ]
-    , td [] [ model.render model.disabledAddress model.disabled ]
+    [ td [] [ renderFn model.enabledAddress model.enabled  ]
+    , td [] [ renderFn model.readonlyAddress model.readonly ]
+    , td [] [ renderFn model.disabledAddress model.disabled ]
     ]

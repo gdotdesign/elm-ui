@@ -32,6 +32,7 @@ import String
 import Dict
 
 import Ui.Helpers.Drag as Drag
+import Ui.Utils.Env as Env
 import Ui
 
 {-| Representation of a number range:
@@ -165,6 +166,8 @@ view address model =
 render: Signal.Address Action -> Model -> Html.Html
 render address model =
   let
+    debug = Env.log "Rendered Ui.NumberRange..."
+
     actions =
       if model.readonly || model.disabled then []
       else if model.editing then
@@ -227,7 +230,13 @@ handleMove x y model =
 {-| Updates a number range, stopping the drag if the mouse isnt pressed. -}
 handleClick : Bool -> Model -> Model
 handleClick value model =
-  { model | drag = Drag.handleClick value model.drag }
+  let
+    drag = Drag.handleClick value model.drag
+  in
+    if model.drag == drag then
+      model
+    else
+      { model | drag = drag }
 
 {-| Sets the value of a number range. -}
 setValue : Float -> Model -> (Model, Effects.Effects Action)

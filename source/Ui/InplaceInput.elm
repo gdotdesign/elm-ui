@@ -21,9 +21,10 @@ import String
 
 import Native.Browser
 
+import Ui.Utils.Env as Env
 import Ui.Container
-import Ui.Button
 import Ui.Textarea
+import Ui.Button
 import Ui
 
 {-| Represents an inplace input:
@@ -127,6 +128,8 @@ view address model =
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
+    debug = Env.log "Rendered Ui.InplaceInput..."
+
     content =
       if model.open && not (model.disabled || model.readonly) then
         form address model

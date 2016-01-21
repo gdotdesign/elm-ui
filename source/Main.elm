@@ -50,8 +50,8 @@ type Action
   | NumberRange (Showcase.Action Ui.NumberRange.Action)
   | ColorPicker (Showcase.Action Ui.ColorPicker.Action)
   | DatePicker (Showcase.Action Ui.DatePicker.Action)
+  | ColorPanel (Showcase.Action Ui.ColorPanel.Action)
   | DropdownMenu Ui.DropdownMenu.Action
-  | ColorPanel Ui.ColorPanel.Action
   | NumberPad Ui.NumberPad.Action
   | Notis Ui.NotificationCenter.Action
   | Checkbox2 Ui.Checkbox.Action
@@ -101,11 +101,11 @@ type alias Model =
     { enabled: Ui.ButtonGroup.Model Action
     , disabled: Ui.ButtonGroup.Model Action
     }
-  , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Action
   , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Action
   , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Action
   , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Action
-  , colorPanel : Ui.ColorPanel.Model
+  , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Action
+  , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Action
   , numberPad : Ui.NumberPad.Model
   , checkbox3 : Ui.Checkbox.Model
   , checkbox2 : Ui.Checkbox.Model
@@ -186,7 +186,14 @@ init =
           Ui.ColorPicker.update
           Ui.ColorPicker.handleMove
           Ui.ColorPicker.handleClick
-    , colorPanel = Ui.ColorPanel.init Color.blue
+    , colorPanel =
+        Showcase.init
+          (\_-> Ui.ColorPanel.init Color.blue)
+          (forwardTo address ColorPanel)
+          Ui.ColorPanel.view
+          Ui.ColorPanel.update
+          Ui.ColorPanel.handleMove
+          Ui.ColorPanel.handleClick
     , numberRange =
         Showcase.init
           (\_-> Ui.NumberRange.init 0)
@@ -432,12 +439,7 @@ view address model =
                        { chooser | disabled = True })
 
           , componentHeader "Color Panel"
-          , tableRow (Ui.ColorPanel.view (forwardTo address ColorPanel)
-                       colorPanel)
-                     (Ui.ColorPanel.view (forwardTo address ColorPanel)
-                       { colorPanel | readonly = True })
-                     (Ui.ColorPanel.view (forwardTo address ColorPanel)
-                       { colorPanel | disabled = True })
+          , Showcase.view colorPanel
 
           , componentHeader "Color Picker"
           , Showcase.view colorPicker
@@ -543,7 +545,7 @@ update action model =
       { model
         | numberRange = Showcase.handleClick value model.numberRange
         , colorPicker = Showcase.handleClick value model.colorPicker
-        , colorPanel = Ui.ColorPanel.handleClick value model.colorPanel
+        , colorPanel = Showcase.handleClick value model.colorPanel
         , menu = Ui.DropdownMenu.handleClick value model.menu
         , slider = Ui.Slider.handleClick value model.slider
         }
@@ -632,7 +634,7 @@ update' action model =
         ({ model | colorPicker = colorPicker }, Effects.map ColorPicker effect)
     ColorPanel act ->
       let
-        (colorPanel, effect) = Ui.ColorPanel.update act model.colorPanel
+        (colorPanel, effect) = Showcase.update act model.colorPanel
       in
         ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
 
@@ -678,7 +680,7 @@ update' action model =
         (colorPicker, colorPickerEffect) =
           Showcase.handleMove x y model.colorPicker
         (colorPanel, colorPanelEffect) =
-          Ui.ColorPanel.handleMove x y model.colorPanel
+          Showcase.handleMove x y model.colorPanel
         (numberRange, numberRangeEffect) =
           Showcase.handleMove x y model.numberRange
         (slider, sliderEffect) =

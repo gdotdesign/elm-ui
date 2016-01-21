@@ -29,6 +29,7 @@ import Date
 
 import Ui.Helpers.Dropdown as Dropdown
 import Ui.Calendar as Calendar
+import Ui.Utils.Env as Env
 import Ui
 
 {-| Representation of a date picker component:
@@ -161,6 +162,8 @@ view address model =
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
+    debug = Env.log "Renderd Ui.DatePicker..."
+
     actions =
       Ui.enabledActions model
         [ onWithDropdownDimensions "focus" address Focus

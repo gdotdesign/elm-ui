@@ -26,7 +26,9 @@ import Dict
 
 import Ui.Helpers.Dropdown as Dropdown
 import Ui.ColorPanel as ColorPanel
+import Ui.Utils.Env as Env
 import Ui
+
 
 {-| Representation of a color picker:
   - **readonly** - Whether or not the color picker is readonly
@@ -122,18 +124,31 @@ handleMove x y model =
   let
     (colorPanel, effect) = ColorPanel.handleMove x y model.colorPanel
   in
-    ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
+    if model.colorPanel == colorPanel then
+      (model, Effects.none)
+    else
+      ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
 
 {-| Updates a color picker, stopping the drags if the mouse isnt pressed. -}
 handleClick : Bool-> Model -> Model
 handleClick pressed model =
-  { model | colorPanel = ColorPanel.handleClick pressed model.colorPanel }
+  let
+    colorPanel = ColorPanel.handleClick pressed model.colorPanel
+  in
+    if model.colorPanel == colorPanel then
+      model
+    else
+      { model | colorPanel = colorPanel }
 
 -- Render internal.
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
-    color = Ext.Color.toCSSRgba model.colorPanel.value
+    debug = Env.log "Rendered Ui.ColorPicker..."
+
+    color =
+      Ext.Color.toCSSRgba model.colorPanel.value
+
     actions =
       Ui.enabledActions model
         [ onWithDropdownDimensions "focus" address Focus

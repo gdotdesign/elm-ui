@@ -24,6 +24,7 @@ import Ext.Signal
 import Effects
 
 import Ui.Helpers.Drag as Drag
+import Ui.Utils.Env as Env
 import Ui
 
 {-| Representation of a color panel:
@@ -105,6 +106,8 @@ view address model =
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
+    debug = Env.log "Rendered Ui.ColorPanel..."
+
     background =
       "hsla(" ++ (toString (round (model.value.hue * 360))) ++ ", 100%, 50%, 1)"
 
@@ -176,34 +179,57 @@ handleMove x y model =
 {-| Updates a color panel, stopping the drags if the mouse isn't pressed. -}
 handleClick : Bool -> Model -> Model
 handleClick value model =
-  { model | alphaDrag = Drag.handleClick value model.alphaDrag
-          , hueDrag = Drag.handleClick value model.hueDrag
-          , drag = Drag.handleClick value model.drag }
+  let
+    alphaDrag = Drag.handleClick value model.alphaDrag
+    hueDrag = Drag.handleClick value model.hueDrag
+    drag = Drag.handleClick value model.drag
+  in
+    if model.alphaDrag == alphaDrag &&
+       model.hueDrag == hueDrag &&
+       model.drag == drag then
+      model
+    else
+      { model | alphaDrag = alphaDrag
+              , hueDrag = hueDrag
+              , drag = drag  }
 
 -- Handles the hue drag
 handleHue : Int -> Int -> Hsv -> Drag.Model -> Hsv
 handleHue x y color drag =
   let
     { top } = Drag.relativePercentPosition x y drag
+    hue = clamp 0 1 top
   in
-    { color | hue = clamp 0 1 top }
+    if color.hue == hue then
+      color
+    else
+      { color | hue = hue }
 
 -- Handles the value / saturation drag
 handleRect : Int -> Int -> Hsv -> Drag.Model -> Hsv
 handleRect x y color drag =
   let
     { top, left } = Drag.relativePercentPosition x y drag
+    saturation = clamp 0 1 left
+    value = 1 - (clamp 0 1 top)
   in
-    { color | saturation = clamp 0 1 left
-            , value = 1 - (clamp 0 1 top) }
+    if color.saturation == saturation &&
+       color.value == value then
+      color
+    else
+      { color | saturation = saturation, value = value }
 
 -- Handles the alpha drag
 handleAlpha : Int -> Int -> Hsv -> Drag.Model -> Hsv
 handleAlpha x y color drag =
   let
     { left } = Drag.relativePercentPosition x y drag
+    alpha = clamp 0 1 left
   in
-    { color | alpha = clamp 0 1 left }
+    if color.alpha == alpha then
+      color
+    else
+      { color | alpha = alpha }
 
 -- Renders a handle
 renderHandle : String -> String -> Html.Html

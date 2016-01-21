@@ -1,4 +1,4 @@
-module Showcase where
+module Kitchensink.Showcase where
 
 import Signal exposing (forwardTo)
 import Html exposing (tr, td)

@@ -4,10 +4,8 @@ module Ui.Utils.Env where
 
 @docs get
 -}
-import Date.Format exposing (format)
 import Json.Decode as Json
 import Native.Env
-import Ext.Date
 import Debug
 
 {-| Gets the value of the given environment variable with a decoder and a

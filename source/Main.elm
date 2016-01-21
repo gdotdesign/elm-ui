@@ -45,7 +45,7 @@ import Ui.Input
 import Ui.App
 import Ui
 
-import Showcase
+import Kitchensink.Showcase as Showcase
 
 type Action
   = InplaceInput (Showcase.Action Ui.InplaceInput.Action)

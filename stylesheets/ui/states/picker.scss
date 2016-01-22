@@ -14,6 +14,13 @@
   &.dropdown-open {
     transition: z-index 1ms;
     z-index: 1;
+
+    // Fix opened state
+    ui-dropdown {
+      @media (max-width: 600px) {
+        transform: translateY(-50%) translateX(-50%);
+      }
+    }
   }
 
   // Dropdown
@@ -41,13 +48,6 @@
         left: 50%;
         top: 50%;
       }
-    }
-  }
-
-  // Fix opened state
-  &.dropdown-open ui-dropdown {
-    @media (max-width: 600px) {
-      transform: translateY(-50%) translateX(-50%);
     }
   }
 

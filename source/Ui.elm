@@ -12,7 +12,7 @@ module Ui
 # Helper Functions
 @docs tabIndex, open, redirect, alert, enabledActions
 -}
-import Html.Attributes exposing (classList, tabindex, rel, href)
+import Html.Attributes exposing (classList, tabindex, rel, href, class)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onLoad)
 import Html exposing (node, text)
@@ -102,12 +102,20 @@ textBlock value =
   node "ui-text" [] [Html.text value]
 
 {-| Renders a breadcrumbs. -}
-breadcrumbs : Signal.Address a -> Html.Html -> List (String, a) -> Html.Html
+breadcrumbs : Signal.Address a -> Html.Html -> List (String, Maybe a) -> Html.Html
 breadcrumbs address separator items =
   let
-    renderItem (label, action) =
-      node "ui-breadcrumb" [onClick address action]
-        [node "span" [] [text label]]
+    renderItem (label, action') =
+      let
+        attributes =
+          case action' of
+            Just action -> [ onClick address action
+                           , class "clickable"
+                           ]
+            Nothing -> []
+      in
+        node "ui-breadcrumb" attributes
+          [node "span" [] [text label]]
   in
     node "ui-breadcrumbs" []
       (List.map renderItem items

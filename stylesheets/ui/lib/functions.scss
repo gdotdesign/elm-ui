@@ -1,7 +1,7 @@
 @function luma($c) {
-  $-local-red: red(rgba($c, 1.0));
-  $-local-green: green(rgba($c, 1.0));
-  $-local-blue: blue(rgba($c, 1.0));
+  $-local-red: red(rgba($c, 1));
+  $-local-green: green(rgba($c, 1));
+  $-local-blue: blue(rgba($c, 1));
 
   @return (0.2126 * $-local-red  +
            0.7152 * $-local-green +

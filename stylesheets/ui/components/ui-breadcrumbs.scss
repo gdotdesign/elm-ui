@@ -1,0 +1,23 @@
+ui-breadcrumbs {
+  background: linear-gradient($secondary, dampen($secondary, 2%));
+  display: block;
+  padding: 15px;
+
+  ui-breadcrumb {
+    display: inline-block;
+
+    &.clickable:hover {
+      cursor: pointer;
+      color: $focus;
+    }
+
+    span {
+      font-weight: 600;
+    }
+
+    + :not(ui-breadcrumb) {
+      margin: 0 7px;
+      opacity: 0.5;
+    }
+  }
+}

@@ -3,10 +3,10 @@ ui-header {
   flex: 0 0 auto;
   align-items: center;
   color: readable($primary);
-  background: linear-gradient($primary, mix($primary,#000,95%));
+  background: linear-gradient($primary, mix($primary, #000, 95%));
   text-shadow: 0 1px rgba(#000, 0.2);
   border-bottom: 1px solid rgba(#000, 0.2);
-  border-top: 1px solid rgba(#FFF,0.2);
+  border-top: 1px solid rgba(#FFF, 0.2);
   z-index: 10;
   position: relative;
   height: 60px;
@@ -20,7 +20,7 @@ ui-header {
     bottom: -7px;
     pointer-events: none;
     z-index: 1;
-    background: linear-gradient(rgba(#000, 0.2), rgba(#000,0));
+    background: linear-gradient(rgba(#000, 0.2), rgba(#000, 0));
   }
 
   > ui-header-title:first-child {

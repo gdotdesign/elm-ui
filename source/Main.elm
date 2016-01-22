@@ -78,7 +78,7 @@ type Action
   | CloseMenu
   | CloseModal
   | OpenModal
-  | Nothing
+  | NoOp
   | Alert
   | PreviousPage
   | NextPage
@@ -158,7 +158,7 @@ init =
       , bottomRight = text ""
       }
 
-    mailbox = Signal.mailbox Nothing
+    mailbox = Signal.mailbox NoOp
 
     -- datePicker =
     --  { datePickerOptions | format = "%Y %B %e." }
@@ -206,7 +206,7 @@ init =
     , dropdownMenu =
       { address = forwardTo address DropdownMenu
       , content = Ui.IconButton.secondary
-                    "Open" "chevron-down" "right" address Nothing
+                    "Open" "chevron-down" "right" address NoOp
       , items =
         [ Ui.DropdownMenu.item
           [ onClick address CloseMenu ]
@@ -259,12 +259,12 @@ init =
                     ]
                   }
     , buttons = [ Ui.Button.primaryBig "Primary" address Alert
-                , Ui.Button.secondary "Secondary" address Nothing
-                , Ui.Button.success "Success" address Nothing
-                , Ui.Button.warning "Warning" address Nothing
-                , Ui.Button.dangerSmall "Danger" address Nothing
+                , Ui.Button.secondary "Secondary" address NoOp
+                , Ui.Button.success "Success" address NoOp
+                , Ui.Button.warning "Warning" address NoOp
+                , Ui.Button.dangerSmall "Danger" address NoOp
                 ]
-    , disabledIconButton = [ Ui.IconButton.view address Nothing
+    , disabledIconButton = [ Ui.IconButton.view address NoOp
                               { side = "left"
                               , text = "Disabled"
                               , kind = "success"
@@ -272,23 +272,23 @@ init =
                               , size = "medium"
                               , disabled = True }
                            ]
-    , disabledButton = [ Ui.Button.view address Nothing { text = "Disabled"
+    , disabledButton = [ Ui.Button.view address NoOp { text = "Disabled"
                                                         , kind = "danger"
                                                         , size = "medium"
                                                         , disabled = True }
                       ]
     , iconButtons = [ Ui.IconButton.primaryBig
-                        "Load" "android-download" "right" address Nothing
+                        "Load" "android-download" "right" address NoOp
                     , Ui.IconButton.primary
-                        "" "archive" "right" address Nothing
+                        "" "archive" "right" address NoOp
                     , Ui.IconButton.secondary
-                        "Send" "arrow-left-c" "left" address Nothing
+                        "Send" "arrow-left-c" "left" address NoOp
                     , Ui.IconButton.success
-                        "Success" "checkmark" "right" address Nothing
+                        "Success" "checkmark" "right" address NoOp
                     , Ui.IconButton.warning
-                        "Warning" "alert" "right" address Nothing
+                        "Warning" "alert" "right" address NoOp
                     , Ui.IconButton.dangerSmall
-                        "Danger" "close" "right" address Nothing
+                        "Danger" "close" "right" address NoOp
                     ]
     , datePicker =
         Showcase.init
@@ -561,10 +561,11 @@ view address model =
           , tr []
             [ td [colspan 3]
               [ Ui.breadcrumbs address (node "span" [] [text "/"])
-                [ ("First", BreadcrumbClicked "First")
-                , ("Second", BreadcrumbClicked "Second")
+                [ ("First", Just (BreadcrumbClicked "First"))
+                , ("Second", Just (BreadcrumbClicked "Second"))
+                , ("Third", Nothing)
                 ]
-                ]
+              ]
             ]
           , componentHeader "Image"
           , tr []

@@ -1,0 +1,23 @@
+ui-search-input {
+  @include colors($input);
+
+  background: transparent;
+  display: inline-block;
+  position: relative;
+  text-shadow: none;
+  margin-left: auto;
+  height: 36px;
+
+  ui-icon {
+    position: absolute;
+    font-size: 20px;
+    height: 36px;
+    width: 36px;
+    left: 0;
+    top: 0;
+  }
+
+  input[type=text] {
+    padding-left: 34px;
+  }
+}

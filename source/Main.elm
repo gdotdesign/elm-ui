@@ -455,6 +455,8 @@ tableRow active readonly disabled =
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
   let
+    emptyText = text ""
+
     { chooser, colorPanel, datePicker, colorPicker, numberRange, slider
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
     , numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons
@@ -463,7 +465,7 @@ view address model =
     , pagerAddress, pagerContents, searchInput } = model
 
     clicked =
-      if model.clicked then [node "clicked" [] [text ""]] else []
+      if model.clicked then [node "clicked" [] [emptyText]] else []
 
   in
     Ui.App.view (forwardTo address App) model.app
@@ -495,7 +497,7 @@ view address model =
             ]
           , componentHeader "Button Group"
           , tableRow (Ui.ButtonGroup.view address buttonGroup.enabled)
-                     (text "")
+                     (emptyText)
                      (Ui.ButtonGroup.view address buttonGroup.disabled)
 
           , componentHeader "Ratings"
@@ -503,13 +505,13 @@ view address model =
 
           , componentHeader "NotificationCenter"
           , tableRow (notificationButton)
-                     (text "")
-                     (text "")
+                     (emptyText)
+                     (emptyText)
 
           , componentHeader "Modal"
           , tableRow (modalButton)
-                     (text "")
-                     (text "")
+                     (emptyText)
+                     (emptyText)
 
           , componentHeader "Dropdown Menu"
           , tableRow ( Ui.DropdownMenu.view
@@ -517,8 +519,8 @@ view address model =
                        dropdownMenu.content
                        dropdownMenu.items
                        model.menu)
-                     (text "")
-                     (text "")
+                     (emptyText)
+                     (emptyText)
           , componentHeader "Calendar"
           , Showcase.view Ui.Calendar.view calendar
 

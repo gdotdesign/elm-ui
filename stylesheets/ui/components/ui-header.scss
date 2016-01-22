@@ -4,7 +4,6 @@ ui-header {
   align-items: center;
   color: readable($primary);
   background: linear-gradient($primary, mix($primary, #000, 95%));
-  text-shadow: 0 1px rgba(#000, 0.2);
   border-bottom: 1px solid rgba(#000, 0.2);
   border-top: 1px solid rgba(#FFF, 0.2);
   z-index: 10;
@@ -33,6 +32,10 @@ ui-header {
 
   > ui-header-title {
     flex: 1;
+  }
+
+  > ui-header-title, > ui-icon {
+    text-shadow: 0 1px rgba(#000, 0.2);
   }
 
   > ui-icon {

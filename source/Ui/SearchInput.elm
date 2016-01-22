@@ -23,6 +23,7 @@ type alias Model =
   , timestamp : Time
   , disabled : Bool
   , readonly : Bool
+  , value : String
   , timeout : Time
   }
 
@@ -41,6 +42,7 @@ init timeout =
     , timeout = timeout
     , disabled = False
     , readonly = False
+    , value = input.value
     , timestamp = 0
     }
 
@@ -56,13 +58,14 @@ update action model =
   case action of
     Update time ->
       let
-        effect =
-          if time == (model.timestamp + model.timeout) then
-            Ext.Signal.sendAsEffect model.valueAddress model.input.value Tasks
-          else
-            Effects.none
+        value = model.input.value
       in
-        (model, effect)
+        if time == (model.timestamp + model.timeout) &&
+          model.value /= value then
+          ({ model | value = value }
+          , Ext.Signal.sendAsEffect model.valueAddress value Tasks)
+        else
+          (model, Effects.none)
     Input act ->
       let
         justNow = Ext.Date.nowTime Nothing

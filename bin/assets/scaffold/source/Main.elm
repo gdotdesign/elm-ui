@@ -48,7 +48,7 @@ view address model =
   Ui.App.view (forwardTo address App) model.app
     [ Ui.Container.column []
       [ Ui.title [] [text "Elm-UI Counter"]
-      , Ui.text "This is an minimal project to get you started with Elm-UI!"
+      , Ui.textBlock "This is an minimal project to get you started with Elm-UI!"
       , div []
         [ span [] [text "Counter:"]
         , strong [] [text (toString model.counter)]

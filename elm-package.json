@@ -29,6 +29,7 @@
     "Ui.DropdownMenu",
     "Ui.IconButton",
     "Ui.Image",
+    "Ui.SearchInput",
     "Ui.InplaceInput",
     "Ui.Input",
     "Ui.Modal",

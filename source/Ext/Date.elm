@@ -3,7 +3,7 @@ module Ext.Date where
 {-| Utility functions for dates.
 
 # Create
-@docs now, createDate
+@docs now, nowTime, createDate
 
 # Querying
 @docs month, daysInMonth, datesInMonth
@@ -16,6 +16,7 @@ module Ext.Date where
 @docs isSameMonth, isSameDate
 -}
 
+import Time exposing (Time)
 import Native.DateTime
 import Array
 import Date
@@ -24,6 +25,11 @@ import Date
 now : a -> Date.Date
 now _ =
   Native.DateTime.now Nothing
+
+{-| Returns the current date as time. -}
+nowTime : a -> Time
+nowTime a =
+  Date.toTime (now a)
 
 {-| Creates a date from the given year, month and day.
 

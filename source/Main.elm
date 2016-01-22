@@ -23,6 +23,7 @@ import Debug exposing (log)
 import Ui.NotificationCenter
 import Ui.DropdownMenu
 import Ui.InplaceInput
+import Ui.SearchInput
 import Ui.NumberRange
 import Ui.ButtonGroup
 import Ui.ColorPicker
@@ -51,6 +52,7 @@ type Action
   = InplaceInput (Showcase.Action Ui.InplaceInput.Action)
   | NumberRange (Showcase.Action Ui.NumberRange.Action)
   | ColorPicker (Showcase.Action Ui.ColorPicker.Action)
+  | SearchInput (Showcase.Action Ui.SearchInput.Action)
   | DatePicker (Showcase.Action Ui.DatePicker.Action)
   | ColorPanel (Showcase.Action Ui.ColorPanel.Action)
   | DropdownMenu Ui.DropdownMenu.Action
@@ -86,6 +88,7 @@ type Action
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
   | CalendarChanged Time.Time
+  | SearchInputChanged String
   | BreadcrumbClicked String
   | Checkbox2Changed Bool
   | Checkbox3Changed Bool
@@ -118,6 +121,7 @@ type alias Model =
     { enabled: Ui.ButtonGroup.Model Action
     , disabled: Ui.ButtonGroup.Model Action
     }
+  , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Action
   , numberPadViewFn : Signal.Address Ui.NumberPad.Action -> Ui.NumberPad.Model -> Html.Html
   , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Action
   , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Action
@@ -182,6 +186,13 @@ init =
                 (Ext.Date.createDate 2015 5 1))
           (forwardTo address Calendar)
           Ui.Calendar.update
+          handleMoveIdentity
+          handleClickIndetity
+    , searchInput =
+        Showcase.init
+          (\_ -> Ui.SearchInput.initWithAddress (forwardTo address SearchInputChanged) 1000)
+          (forwardTo address SearchInput)
+          Ui.SearchInput.update
           handleMoveIdentity
           handleClickIndetity
     , numberPadViewFn = (Ui.NumberPad.view numberPadViewModel)
@@ -444,15 +455,17 @@ tableRow active readonly disabled =
 view : Signal.Address Action -> Model -> Html.Html
 view address model =
   let
+    emptyText = text ""
+
     { chooser, colorPanel, datePicker, colorPicker, numberRange, slider
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
     , numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons
     , disabledButton, disabledIconButton, modalView, infos, modalButton
     , dropdownMenu, pagerControls, notificationButton, numberPadViewFn
-    , pagerAddress, pagerContents } = model
+    , pagerAddress, pagerContents, searchInput } = model
 
     clicked =
-      if model.clicked then [node "clicked" [] [text ""]] else []
+      if model.clicked then [node "clicked" [] [emptyText]] else []
 
   in
     Ui.App.view (forwardTo address App) model.app
@@ -484,7 +497,7 @@ view address model =
             ]
           , componentHeader "Button Group"
           , tableRow (Ui.ButtonGroup.view address buttonGroup.enabled)
-                     (text "")
+                     (emptyText)
                      (Ui.ButtonGroup.view address buttonGroup.disabled)
 
           , componentHeader "Ratings"
@@ -492,13 +505,13 @@ view address model =
 
           , componentHeader "NotificationCenter"
           , tableRow (notificationButton)
-                     (text "")
-                     (text "")
+                     (emptyText)
+                     (emptyText)
 
           , componentHeader "Modal"
           , tableRow (modalButton)
-                     (text "")
-                     (text "")
+                     (emptyText)
+                     (emptyText)
 
           , componentHeader "Dropdown Menu"
           , tableRow ( Ui.DropdownMenu.view
@@ -506,8 +519,8 @@ view address model =
                        dropdownMenu.content
                        dropdownMenu.items
                        model.menu)
-                     (text "")
-                     (text "")
+                     (emptyText)
+                     (emptyText)
           , componentHeader "Calendar"
           , Showcase.view Ui.Calendar.view calendar
 
@@ -536,6 +549,9 @@ view address model =
 
           , componentHeader "Input"
           , Showcase.view Ui.Input.view input
+
+          , componentHeader "Search Input"
+          , Showcase.view Ui.SearchInput.view searchInput
 
           , componentHeader "Autogrow Textarea"
           , Showcase.view Ui.Textarea.view textarea
@@ -637,6 +653,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    SearchInput act ->
+      let
+        (searchInput, effect) = Showcase.update act model.searchInput
+      in
+        ({ model | searchInput = searchInput }, Effects.map SearchInput effect)
     Input act ->
       let
         (input, effect) = Showcase.update act model.input
@@ -760,6 +781,8 @@ update' action model =
       notify ("Toggle changed to: " ++ (toString value)) model
     Checkbox3Changed value ->
       notify ("Radio changed to: " ++ (toString value)) model
+    SearchInputChanged value ->
+      notify ("Search input changed to: " ++ (toString value)) model
     ShowNotification ->
       notify "Test Notification" model
     ChooserChanged set ->

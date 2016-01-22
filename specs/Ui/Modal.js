@@ -8,7 +8,7 @@ define([
 
     bdd.beforeEach(function() {
       button = helpers
-        .getElement(this.remote, 'tr:nth-child(7) ui-icon-button')
+        .getElement(this.remote, 'tr:nth-child(13) ui-icon-button')
     })
 
     bdd.it('clicking on button the modal should open', function() {

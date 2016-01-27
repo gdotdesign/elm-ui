@@ -1,50 +1,50 @@
-module Ui.Loader where
+module Ui.Loader
+  (Model, Action, init, update, view, overlayView, barView, start, finish) where
 
+{-| Loading component, it has a wait period before showing itself.
+
+# Model
+@docs Model, Action, init, update
+
+# View
+@docs view, overlayView, barView
+
+# Functions
+@docs start, finish
+-}
 import Effects
 import Task
 
-import Html.Attributes exposing (classList)
-import Html exposing (node)
+import Html.Attributes exposing (classList, class)
+import Html exposing (node, div)
+import Html.Lazy
 
-import Svg.Attributes exposing (x, y, width, height, transform, attributeType,
-                                attributeName, type', values, begin, dur,
-                                repeatCount)
-import Svg exposing (svg, rect, animateTransform)
-
-loader1 =
-  let
-    animateAttributes = [ attributeType "xml"
-                        , attributeName "transform"
-                        , type' "translate"
-                        , values "0 0; 0 20; 0 0"
-                        , dur "0.6s"
-                        , repeatCount "indefinite"
-                        ]
-  in
-    svg [width "24px", height "30px"]
-      [ rect [x "0", y "0", width "4", height "10", transform "translate(0 2.22222)"]
-        [ animateTransform ((begin "0") :: animateAttributes) [] ]
-      , rect [x "10", y "0", width "4", height "10", transform "translate(0 11.1111)"]
-        [ animateTransform ((begin "0.2s") :: animateAttributes) [] ]
-      , rect [x "20", y "0", width "4", height "10", transform "translate(0 15.5556)"]
-        [ animateTransform ((begin "0.4s") :: animateAttributes) [] ]
-      ]
-
+{-| Representation of a loader:
+  - **loading** - Whether or not the loading is started
+  - **shown** - Whether or not the loader is shown
+  - **timeout** - The waiting perid in milliseconds
+-}
 type alias Model =
-  { loading : Bool
+  { timeout : Float
+  , loading : Bool
   , shown : Bool
-  , timeout : Float
   }
 
+{-| Actions that a loader can make. -}
 type Action = Show
 
+{-| Initializes a loader with the given timeout.
+
+    Loader.init 200
+-}
 init : Float -> Model
 init timeout =
-  { loading = False
+  { timeout = timeout
+  , loading = False
   , shown = False
-  , timeout = timeout
   }
 
+{-| Updates a loader. -}
 update : Action -> Model -> Model
 update action model =
   case action of
@@ -54,28 +54,28 @@ update action model =
       else
         model
 
+{-| Renders a loader as an overlay. -}
 overlayView : Model -> Html.Html
 overlayView model =
-  view "overlay" [loader1] model
+  view "overlay" [loadingRects] model
 
+{-| Renders a loader as a bar. -}
 barView : Model -> Html.Html
 barView model =
   view "bar" [] model
 
+{-| Renders a loader. -}
 view : String -> List Html.Html -> Model -> Html.Html
 view kind content model =
-  node "ui-loader"
-    [ classList [ ("ui-loader-" ++ kind, True)
-                , ("loading", model.shown)
-                ]
-    ]
-    content
+  Html.Lazy.lazy3 render kind content model
 
+{-| Finishes the loading process. -}
 finish : Model -> Model
 finish model =
   { model | loading = False, shown = False }
 
-start :  Model -> (Model, Effects.Effects Action)
+{-| Starts the loading process. -}
+start : Model -> (Model, Effects.Effects Action)
 start model =
   let
     effect =
@@ -85,3 +85,23 @@ start model =
         |> Effects.task
   in
   ({ model | loading = True }, effect)
+
+
+-- Render internal
+render : String -> List Html.Html -> Model -> Html.Html
+render kind content model =
+  node "ui-loader"
+    [ classList [ ("ui-loader-" ++ kind, True)
+                , ("loading", model.shown)
+                ]
+    ]
+    content
+
+-- Renders loading rects
+loadingRects : Html.Html
+loadingRects =
+  div [ class "ui-loader-rects" ]
+    [ div [] []
+    , div [] []
+    , div [] []
+    ]

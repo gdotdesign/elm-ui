@@ -1,0 +1,88 @@
+// Animation for the bar
+@keyframes ui-loader-bar {
+  from {
+    background-position-x: 0;
+  }
+
+  to {
+    background-position-x: 200px;
+  }
+}
+
+// Animation for overlay...
+@keyframes ui-loader-rects {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(20px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+ui-loader {
+  visibility: hidden;
+  transition: 320ms;
+  display: block;
+  opacity: 0;
+
+  // Bar styles
+  &.ui-loader-bar {
+    background: linear-gradient(90deg, $primary, $primary 49.9999%, $focus 50%, $focus);
+    animation: ui-loader-bar 1s infinite linear;
+    background-size: 200px 5px;
+    height: 5px;
+  }
+
+  // Overlay styles
+  &.ui-loader-overlay {
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    display: flex;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+  }
+
+  // 3 rectangles
+  .ui-loader-rects {
+    transform: scale(1.5);
+    overflow: hidden;
+    height: 24px;
+    width: 24px;
+
+    $duration: 0.6s;
+
+    > div {
+      animation: ui-loader-rects $duration infinite;
+      display: inline-block;
+      background: $primary;
+      height: 10px;
+      width: 4px;
+
+      &:nth-child(2) {
+        animation-delay: $duration / 3;
+      }
+
+      &:nth-child(3) {
+        animation-delay: $duration / 2;
+      }
+
+      + div {
+        margin-left: 6px;
+      }
+    }
+  }
+
+  // Loading state
+  &.loading {
+    visibility: visible;
+    opacity: 1;
+  }
+}

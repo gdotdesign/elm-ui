@@ -36,6 +36,7 @@
     "Ui.NumberPad",
     "Ui.NumberRange",
     "Ui.NotificationCenter",
+    "Ui.Loader",
     "Ui.Pager",
     "Ui.Ratings",
     "Ui.Slider",

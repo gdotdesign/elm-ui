@@ -87,6 +87,8 @@ type Action
   | PreviousPage
   | NextPage
   | ChooserChanged (Set.Set String)
+  | NumberRangeChanged Float
+  | ColorPanelChanged Ext.Color.Hsv
   | ColorPickerChanged Ext.Color.Hsv
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
@@ -345,14 +347,20 @@ init =
           Ui.ColorPicker.handleClick
     , colorPanel =
         Showcase.init
-          (\_-> Ui.ColorPanel.init Color.blue)
+          (\_->
+            Ui.ColorPanel.initWithAddress
+            (forwardTo settledMailbox.address ColorPanelChanged)
+            Color.blue)
           (forwardTo address ColorPanel)
           Ui.ColorPanel.update
           Ui.ColorPanel.handleMove
           Ui.ColorPanel.handleClick
     , numberRange =
         Showcase.init
-          (\_-> Ui.NumberRange.init 0)
+          (\_->
+            Ui.NumberRange.initWithAddress
+            (forwardTo settledMailbox.address NumberRangeChanged)
+            0)
           (forwardTo address NumberRange)
           Ui.NumberRange.update
           Ui.NumberRange.handleMove
@@ -794,6 +802,10 @@ update' action model =
       notify ("Search input changed to: " ++ (toString value)) model
     ColorPickerChanged value ->
       notify ("Color picker changed to: " ++ (Ext.Color.toCSSRgba value)) model
+    NumberRangeChanged value ->
+       notify ("Number range changed to: " ++ (toString value)) model
+    ColorPanelChanged value ->
+      notify ("Color panel changed to: " ++ (Ext.Color.toCSSRgba value)) model
     ShowNotification ->
       notify "Test Notification" model
     ChooserChanged set ->

@@ -1,7 +1,9 @@
 import Signal exposing (forwardTo)
+import Signal.Time
 import Maybe.Extra
 import Date.Format
 import List.Extra
+import Ext.Color
 import Ext.Date
 import StartApp
 import Keyboard
@@ -85,6 +87,7 @@ type Action
   | PreviousPage
   | NextPage
   | ChooserChanged (Set.Set String)
+  | ColorPickerChanged Ext.Color.Hsv
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
   | CalendarChanged Time.Time
@@ -101,6 +104,7 @@ type Action
 type alias Model =
   { app : Ui.App.Model
   , mailbox : Signal.Mailbox Action
+  , settledMailbox : Signal.Mailbox Action
   , notifications : Ui.NotificationCenter.Model
   , dropdownMenu : { address : Signal.Address Ui.DropdownMenu.Action
                    , content : Html.Html
@@ -162,6 +166,7 @@ init =
       , bottomRight = text ""
       }
 
+    settledMailbox = Signal.mailbox NoOp
     mailbox = Signal.mailbox NoOp
 
     -- datePicker =
@@ -330,7 +335,10 @@ init =
           handleClickIndetity
     , colorPicker =
         Showcase.init
-          (\_ -> Ui.ColorPicker.init Color.yellow)
+          (\_ ->
+            Ui.ColorPicker.initWithAddress
+            (forwardTo settledMailbox.address ColorPickerChanged)
+            Color.yellow)
           (forwardTo address ColorPicker)
           Ui.ColorPicker.update
           Ui.ColorPicker.handleMove
@@ -404,6 +412,7 @@ init =
           Ui.Slider.handleClick
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
+    , settledMailbox = settledMailbox
     , mailbox = mailbox
     , clicked = False
     , chooser =
@@ -783,6 +792,8 @@ update' action model =
       notify ("Radio changed to: " ++ (toString value)) model
     SearchInputChanged value ->
       notify ("Search input changed to: " ++ (toString value)) model
+    ColorPickerChanged value ->
+      notify ("Color picker changed to: " ++ (Ext.Color.toCSSRgba value)) model
     ShowNotification ->
       notify "Test Notification" model
     ChooserChanged set ->
@@ -822,6 +833,7 @@ app =
       , Signal.map MousePosition Mouse.position
       , Signal.map MouseIsDown Mouse.isDown
       -- Mailbox
+      , Signal.Time.settledAfter 500 initial.settledMailbox.signal
       , initial.mailbox.signal
       ]
   in

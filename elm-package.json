@@ -49,6 +49,7 @@
   ],
   "dependencies": {
     "circuithub/elm-number-format": "1.0.2 <= v < 2.0.0",
+    "Apanatshka/elm-signal-extra": "5.7.0 <= v < 6.0.0",
     "circuithub/elm-maybe-extra": "1.5.1 <= v < 2.0.0",
     "circuithub/elm-json-extra": "2.2.0 <= v < 3.0.0",
     "circuithub/elm-list-extra": "3.7.1 <= v < 4.0.0",

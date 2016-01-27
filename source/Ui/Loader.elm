@@ -6,20 +6,42 @@ import Task
 import Html.Attributes exposing (classList)
 import Html exposing (node)
 
+import Svg.Attributes exposing (x, y, width, height, transform, attributeType,
+                                attributeName, type', values, begin, dur,
+                                repeatCount)
+import Svg exposing (svg, rect, animateTransform)
+
+loader1 =
+  let
+    animateAttributes = [ attributeType "xml"
+                        , attributeName "transform"
+                        , type' "translate"
+                        , values "0 0; 0 20; 0 0"
+                        , dur "0.6s"
+                        , repeatCount "indefinite"
+                        ]
+  in
+    svg [width "24px", height "30px"]
+      [ rect [x "0", y "0", width "4", height "10", transform "translate(0 2.22222)"]
+        [ animateTransform ((begin "0") :: animateAttributes) [] ]
+      , rect [x "10", y "0", width "4", height "10", transform "translate(0 11.1111)"]
+        [ animateTransform ((begin "0.2s") :: animateAttributes) [] ]
+      , rect [x "20", y "0", width "4", height "10", transform "translate(0 15.5556)"]
+        [ animateTransform ((begin "0.4s") :: animateAttributes) [] ]
+      ]
+
 type alias Model =
   { loading : Bool
   , shown : Bool
-  , kind : String
   , timeout : Float
   }
 
 type Action = Show
 
-init : Float -> String -> Model
-init timeout kind =
+init : Float -> Model
+init timeout =
   { loading = False
   , shown = False
-  , kind = kind
   , timeout = timeout
   }
 
@@ -32,14 +54,22 @@ update action model =
       else
         model
 
-view : Model -> Html.Html
-view model =
+overlayView : Model -> Html.Html
+overlayView model =
+  view "overlay" [loader1] model
+
+barView : Model -> Html.Html
+barView model =
+  view "bar" [] model
+
+view : String -> List Html.Html -> Model -> Html.Html
+view kind content model =
   node "ui-loader"
-    [ classList [ (model.kind, True)
+    [ classList [ ("ui-loader-" ++ kind, True)
                 , ("loading", model.shown)
                 ]
     ]
-    []
+    content
 
 finish : Model -> Model
 finish model =

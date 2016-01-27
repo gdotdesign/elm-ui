@@ -15,7 +15,7 @@ import Date
 import Time
 import Set
 
-import Html.Attributes exposing (style, classList, colspan, href)
+import Html.Attributes exposing (style, classList, class, colspan, href)
 import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
 import Html.Lazy
@@ -41,6 +41,7 @@ import Ui.Chooser
 import Ui.Ratings
 import Ui.Button
 import Ui.Slider
+import Ui.Loader
 import Ui.Pager
 import Ui.Modal
 import Ui.Image
@@ -140,13 +141,14 @@ type alias Model =
   , checkbox : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Action
   , textarea : Showcase.Model Ui.Textarea.Model Ui.Textarea.Action
   , calendar : Showcase.Model Ui.Calendar.Model Ui.Calendar.Action
-  , menu : Ui.DropdownMenu.Model
   , ratings : Showcase.Model Ui.Ratings.Model Ui.Ratings.Action
   , chooser : Showcase.Model Ui.Chooser.Model Ui.Chooser.Action
   , slider : Showcase.Model Ui.Slider.Model Ui.Slider.Action
+  , input : Showcase.Model Ui.Input.Model Ui.Input.Action
+  , menu : Ui.DropdownMenu.Model
+  , loader : Ui.Loader.Model
   , modal : Ui.Modal.Model
   , image : Ui.Image.Model
-  , input : Showcase.Model Ui.Input.Model Ui.Input.Action
   , pager : Ui.Pager.Model
   , clicked : Bool
   }
@@ -158,8 +160,8 @@ init : Model
 init =
   let
     input = Ui.Input.init ""
-
     pager = Ui.Pager.init 0
+    loader = Ui.Loader.init 0
 
     address = mailbox.address
 
@@ -420,6 +422,7 @@ init =
           Ui.Slider.handleClick
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
+    , loader = { loader | shown = True }
     , settledMailbox = settledMailbox
     , mailbox = mailbox
     , clicked = False
@@ -563,6 +566,13 @@ view address model =
 
           , componentHeader "Slider"
           , Showcase.view Ui.Slider.view slider
+
+          , componentHeader "Loader"
+          , tableRow
+              (Ui.Loader.barView model.loader)
+              (div [class "loader-container"]
+                [ Ui.Loader.overlayView model.loader ])
+              emptyText
 
           , componentHeader "Input"
           , Showcase.view Ui.Input.view input

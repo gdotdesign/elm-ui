@@ -9,14 +9,32 @@
 }
 
 ui-loader {
-  height: 5px;
-  display: block;
   visibility: hidden;
-  animation: loader 1s infinite linear;
-  background: linear-gradient(90deg, $primary, $primary 49.9999%, $focus 50%, $focus);
-  background-size: 200px 5px;
   transition: 320ms;
+  display: block;
   opacity: 0;
+
+  &.ui-loader-bar {
+    background: linear-gradient(90deg, $primary, $primary 49.9999%, $focus 50%, $focus);
+    animation: loader 1s infinite linear;
+    background-size: 200px 5px;
+    height: 5px;
+  }
+
+  &.ui-loader-overlay {
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    display: flex;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+
+    rect {
+      fill: $primary;
+    }
+  }
 
   &.loading {
     opacity: 1;

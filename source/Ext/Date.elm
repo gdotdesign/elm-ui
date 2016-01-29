@@ -14,6 +14,9 @@ module Ext.Date where
 
 # Testing
 @docs isSameMonth, isSameDate
+
+# Formatting
+@docs ago
 -}
 
 import Time exposing (Time)
@@ -129,3 +132,45 @@ isSameDate date other =
   (Date.year date) == (Date.year other)
   && (Date.day date) == (Date.day other)
   && (month date) == (month other)
+
+{-| Returns the date in relative format. -}
+ago : Date.Date -> Date.Date -> String
+ago date other =
+  let
+    seconds = ((Date.toTime other) - (Date.toTime date)) / 1000
+
+    year   = floor (seconds / 31536000)
+    month  = floor (seconds / 2592000)
+    day    = floor (seconds / 86400)
+    hour   = floor (seconds / 3600)
+    minute = floor (seconds / 60)
+
+    format number affix =
+      let
+        prefix = if affix == "hour" then "an" else "a"
+      in
+        if number < 2 then
+          prefix ++ " " ++ affix
+        else
+          (toString number) ++ " " ++ affix ++ "s"
+
+    value = if year >= 1 then
+              format year "year"
+            else if month >= 1 then
+              format month "month"
+            else if day >= 1 then
+              format day "day"
+            else if hour >= 1 then
+              format hour "hour"
+            else if minute >= 1 then
+              format minute "minute"
+            else
+              format (floor seconds) "second"
+  in
+    if minute > 0 then
+      if seconds > 0 then
+        value ++ " ago"
+      else
+        "in " ++ value
+    else
+      "just now"

@@ -46,6 +46,7 @@ import Ui.Pager
 import Ui.Modal
 import Ui.Image
 import Ui.Input
+import Ui.Time
 import Ui.App
 import Ui
 
@@ -85,6 +86,7 @@ type Action
   | OpenModal
   | NoOp
   | Alert
+  | Tick Time.Time
   | PreviousPage
   | NextPage
   | ChooserChanged (Set.Set String)
@@ -150,6 +152,8 @@ type alias Model =
   , modal : Ui.Modal.Model
   , image : Ui.Image.Model
   , pager : Ui.Pager.Model
+  , time2 : Ui.Time.Model
+  , time : Ui.Time.Model
   , clicked : Bool
   }
 
@@ -423,6 +427,8 @@ init =
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
     , loader = { loader | shown = True }
+    , time = Ui.Time.init (Ext.Date.createDate 2015 11 1)
+    , time2 = Ui.Time.init (Ext.Date.now ())
     , settledMailbox = settledMailbox
     , mailbox = mailbox
     , clicked = False
@@ -566,6 +572,12 @@ view address model =
 
           , componentHeader "Slider"
           , Showcase.view Ui.Slider.view slider
+
+          , componentHeader "Time"
+          , tableRow
+              (Ui.Time.view model.time)
+              (Ui.Time.view model.time2)
+              emptyText
 
           , componentHeader "Loader"
           , tableRow
@@ -857,6 +869,7 @@ app =
       -- Mailbox
       , Signal.Time.settledAfter 500 initial.settledMailbox.signal
       , initial.mailbox.signal
+      , Signal.map Tick (Time.every 10000)
       ]
   in
     StartApp.start { init = (initial, Effects.none)

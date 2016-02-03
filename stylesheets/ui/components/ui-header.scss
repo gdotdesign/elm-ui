@@ -1,7 +1,6 @@
 ui-header {
-  display: flex;
+  display: block;
   flex: 0 0 auto;
-  align-items: center;
   color: readable($primary);
   background: linear-gradient($primary, mix($primary, #000, 95%));
   border-bottom: 1px solid rgba(#000, 0.2);
@@ -9,6 +8,8 @@ ui-header {
   z-index: 10;
   position: relative;
   height: 60px;
+  padding: 0 20px;
+  line-height: 60px;
 
   &:before {
     content: '';
@@ -20,27 +21,5 @@ ui-header {
     pointer-events: none;
     z-index: 1;
     background: linear-gradient(rgba(#000, 0.2), rgba(#000, 0));
-  }
-
-  > ui-header-title:first-child {
-    padding-left: 20px;
-  }
-
-  > ui-header-title:last-child {
-    padding-right: 20px;
-  }
-
-  > ui-header-title {
-    flex: 1;
-  }
-
-  > ui-header-title, > ui-icon {
-    text-shadow: 0 1px rgba(#000, 0.2);
-  }
-
-  > ui-icon {
-    width: 60px;
-    font-size: 32px;
-    flex: 0 0 auto;
   }
 }

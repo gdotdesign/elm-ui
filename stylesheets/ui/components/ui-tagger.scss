@@ -1,0 +1,30 @@
+ui-tagger {
+  display: inline-block;
+
+  ui-input {
+    width: 100%;
+    padding: 5px;
+  }
+
+  ui-tagger-tags {
+    display: block;
+  }
+
+  ui-tagger-tag {
+    @include colors($secondary);
+    font-weight: 600;
+    margin: 5px;
+    line-height: 36px;
+    border-radius: $border-radius;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+
+    ui-icon {
+      margin-left: 10px;
+      vertical-align: middle;
+      font-size: 22px;
+    }
+  }
+}
+

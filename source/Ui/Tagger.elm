@@ -2,8 +2,11 @@ module Ui.Tagger where
 
 import Signal exposing (forwardTo)
 import Task exposing (Task)
+import Ext.Signal
 import Effects
+import String
 
+import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
 
@@ -11,9 +14,9 @@ import Ui.Input
 import Ui
 
 type alias Model item id err =
-  { removeAddress : Maybe (Signal.Address id)
+  { create : String -> List item -> Task err item
+  , remove : item -> Task err item
   , failAddress : Maybe (Signal.Address err)
-  , create : String -> List item -> Task Effects.Never (Result err item)
   , input : Ui.Input.Model
   , label : item -> String
   , items : List item
@@ -27,39 +30,41 @@ type Action item err
   = Input Ui.Input.Action
   | Created (Result err item)
   | Create
+  | Removed (Result err item)
+  | Remove item
   | Tasks ()
 
 init : List item
      -> (item -> String)
      -> (item -> id)
-     -> (String -> List item -> Task Effects.Never (Result err item))
+     -> (String -> List item -> Task err item)
+     -> (item -> Task err item)
      -> Model item id err
-init items label id create =
+init items label id create remove =
   { input = Ui.Input.init ""
-  , removeAddress = Nothing
   , failAddress = Nothing
   , removeable = True
   , disabled = False
   , readonly = False
   , create = create
+  , remove = remove
   , label = label
   , items = items
   , id = id
   }
 
-initWithAddress : Signal.Address id
-                -> Signal.Address err
+initWithAddress : Signal.Address err
                 -> List item
                 -> (item -> String)
                 -> (item -> id)
-                -> (String -> List item -> Task Effects.Never (Result err item))
+                -> (String -> List item -> Task err item)
+                -> (item -> Task err item)
                 -> Model item id err
-initWithAddress removeAddress failAddress items label id create =
+initWithAddress failAddress items label id create remove =
   let
-    model = init items label id create
+    model = init items label id create remove
   in
-    { model | removeAddress = Just removeAddress
-            , failAddress = Just failAddress }
+    { model | failAddress = Just failAddress }
 
 update : Action item err
        -> Model item id err
@@ -72,6 +77,21 @@ update action model =
       in
         ({ model | input = input }, Effects.map Input effect)
 
+    Create ->
+      let
+        value = String.trim model.input.value
+
+        effect =
+          if String.isEmpty value then
+            Effects.none
+          else
+            model.create model.input.value model.items
+            |> Task.toResult
+            |> Effects.task
+            |> Effects.map Created
+      in
+        (model, effect)
+
     Created (Ok item) ->
       let
         (input, inputEffect) = Ui.Input.setValue "" model.input
@@ -80,17 +100,27 @@ update action model =
                  , input = input }, Effects.map Input inputEffect)
 
     Created (Err err) ->
-      -- Send fail signal
-      (model, Effects.none)
+      (model, failMessageEffect err model)
 
-    Create ->
+    Remove item ->
       let
         effect =
-          model.create model.input.value model.items
+          model.remove item
+          |> Task.toResult
           |> Effects.task
-          |> Effects.map Created
+          |> Effects.map Removed
       in
         (model, effect)
+
+    Removed (Ok removedItem) ->
+      let
+        id = model.id removedItem
+        items = List.filter (\item -> (model.id item) /= id) model.items
+      in
+        ({ model | items = items }, Effects.none)
+
+    Removed (Err err) ->
+      (model, failMessageEffect err model)
 
     Tasks _ ->
       (model, Effects.none)
@@ -110,6 +140,10 @@ view address model =
         (List.map (renderItem address model) model.items)
       ]
 
+failMessageEffect : err -> Model item id err -> Effects.Effects (Action item err)
+failMessageEffect message model =
+  Ext.Signal.sendAsEffect model.failAddress message Tasks
+
 renderItem : Signal.Address (Action item err)
            -> Model item id err
            -> item
@@ -118,4 +152,8 @@ renderItem address model item =
   let
     label = model.label item
   in
-    node "ui-tagger-tag" [] [text label]
+    node "ui-tagger-tag" []
+      [ text label
+      , Ui.icon "android-close" True
+        [ onClick address (Remove item)]
+      ]

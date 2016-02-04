@@ -97,6 +97,7 @@ type Action
   | ColorPickerChanged Ext.Color.Hsv
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
+  | TaggerAddFailed String
   | CalendarChanged Time.Time
   | SearchInputChanged String
   | BreadcrumbClicked String
@@ -166,6 +167,26 @@ type alias Model =
 handleMoveIdentity x y model = (model, Effects.none)
 handleClickIndetity pressed model = model
 
+removeLabel : TaggerModel -> Task.Task String TaggerModel
+removeLabel item =
+  if item.id == 0 then
+    Task.fail "Can't remove this item..."
+  else
+    Task.succeed item
+
+createLabel : String -> List TaggerModel -> Task.Task String TaggerModel
+createLabel label items =
+  let
+    id =
+      List.map .id items
+      |> List.maximum
+      |> Maybe.withDefault -1
+  in
+    if label == "xxx" then
+      Task.fail "xxx is not a valid label..."
+    else
+      Task.succeed { label = label, id = id + 1 }
+
 init : Model
 init =
   let
@@ -209,15 +230,14 @@ init =
           handleClickIndetity
     , tagger =
         Showcase.init
-          (\_ -> Ui.Tagger.init [] .label .id
-            (\label items ->
-              if label == "xxx" then
-                Task.fail "xxx is not a valid label..."
-                |> Task.toResult
-              else
-                Task.succeed { label = label, id = -1 }
-                |> Task.toResult
-            )
+          (\_ ->
+            Ui.Tagger.initWithAddress
+              (forwardTo address TaggerAddFailed)
+              []
+              .label
+              .id
+              createLabel
+              removeLabel
           )
           (forwardTo address Tagger)
           Ui.Tagger.update
@@ -876,6 +896,8 @@ update' action model =
       notify ("Date picker changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
     RatingsChanged value ->
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
+    TaggerAddFailed err ->
+      notify err model
     _ ->
       (update action model, Effects.none)
 

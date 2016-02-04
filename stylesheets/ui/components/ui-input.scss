@@ -8,6 +8,8 @@ ui-input {
   }
 
   input {
+    width: 100%;
+
     &:focus {
       @extend %focused;
     }

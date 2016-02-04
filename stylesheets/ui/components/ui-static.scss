@@ -21,11 +21,21 @@ ui-text {
   margin-bottom: 20px;
 }
 
+ui-header-icon {
+  @extend ui-icon;
+
+  width: 32px;
+  font-size: 32px;
+  flex: 0 0 32px;
+}
+
 ui-header-title {
   display: flex;
+  flex: 1;
   align-items: center;
   font-size: 22px;
   font-weight: 600;
+  text-shadow: 0 1px rgba(#000, 0.2);
 
   div {
     text-overflow: ellipsis;

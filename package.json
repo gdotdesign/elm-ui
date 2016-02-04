@@ -44,7 +44,8 @@
     "elm": "0.16.0",
     "async": "1.5.2",
     "commander": "",
-    "ncp": ""
+    "ncp": "",
+    "browser-sync": ""
   },
   "preferGlobal": true,
   "bin": {

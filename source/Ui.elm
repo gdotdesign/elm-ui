@@ -1,13 +1,13 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup,
    stylesheetLink, tabIndex, header, headerTitle, fab, textBlock, open,
-   redirect, alert, enabledActions, breadcrumbs) where
+   redirect, alert, enabledActions, breadcrumbs, headerIcon) where
 
 {-| UI Library for ELM!
 
 # Static Components
 @docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup, header
-@docs headerTitle, fab, textBlock, breadcrumbs
+@docs headerTitle, headerIcon, fab, textBlock, breadcrumbs
 
 # Helper Functions
 @docs tabIndex, open, redirect, alert, enabledActions
@@ -22,13 +22,23 @@ import Native.Browser
 {-| An icon component from Ionicons. -}
 icon : String -> Bool -> List Html.Attribute -> Html.Html
 icon glyph clickable attributes =
+  node "ui-icon" (iconAttributes glyph clickable attributes) []
+
+-- Attributes for icons
+iconAttributes : String -> Bool -> List Html.Attribute -> List Html.Attribute
+iconAttributes glyph clickable attributes =
   let
     classes =
       classList [ ("ion-" ++ glyph, True)
                 , ("clickable", clickable)
                 ]
   in
-    node "ui-icon" ([classes] ++ attributes) []
+    classes :: attributes
+
+{-| An icon component for use in the header. -}
+headerIcon : String -> Bool -> List Html.Attribute -> Html.Html
+headerIcon glyph clickable attributes =
+  node "ui-header-icon" (iconAttributes glyph clickable attributes) []
 
 {-| Renders a title component. -}
 title : List Html.Attribute -> List Html.Html -> Html.Html

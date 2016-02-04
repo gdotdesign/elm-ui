@@ -32,6 +32,22 @@ program
   .command('server')
   .description('Starts development server')
   .action(function(env, opts){
+    // Create a Browsersync instance
+    var bs = require("browser-sync").create();
+
+    // Listen to change events on HTML and reload
+    bs.watch("source/**/*.elm").on("change", bs.reload);
+    bs.watch("stylesheets/**/*.scss", function (event, file) {
+      if (event === "change") {
+        bs.reload("*.css");
+      }
+    });
+
+    // Now init the Browsersync server
+    bs.init({
+      proxy: "localhost:8001",
+      open: false
+    });
     elmUi.serve(options())
   })
 

@@ -1,4 +1,6 @@
-module Ui.Container (Model, view, row, rowEnd, column) where
+module Ui.Container
+  ( Model, view, row, rowEnd, rowCenter, rowStart, column, columnStart
+  , columnEnd, columnCenter) where
 
 {-| Flexbox container component.
 
@@ -6,7 +8,13 @@ module Ui.Container (Model, view, row, rowEnd, column) where
 @docs Model
 
 # View
-@docs view, row, rowEnd, column
+@docs view
+
+# Row
+@docs row, rowStart, rowEnd, rowCenter
+
+# Column
+@docs column, columnStart, columnEnd, columnCenter
 -}
 import Html.Attributes exposing (classList, style)
 import Html exposing (node)
@@ -45,7 +53,17 @@ row : List Html.Attribute -> List Html.Html -> Html.Html
 row attributes children =
   Html.Lazy.lazy3 render rowOptions attributes children
 
-{-| Renders a container as a row with content aligned to the end. -}
+{-| Renders a container as a row with content aligned to start. -}
+rowStart : List Html.Attribute -> List Html.Html -> Html.Html
+rowStart attributes children =
+  Html.Lazy.lazy3 render { rowOptions | align = "start" } attributes children
+
+{-| Renders a container as a row with content aligned to center. -}
+rowCenter : List Html.Attribute -> List Html.Html -> Html.Html
+rowCenter attributes children =
+  Html.Lazy.lazy3 render { rowOptions | align = "center" } attributes children
+
+{-| Renders a container as a row with content aligned to end. -}
 rowEnd : List Html.Attribute -> List Html.Html -> Html.Html
 rowEnd attributes children =
   Html.Lazy.lazy3 render { rowOptions | align = "end" } attributes children
@@ -54,6 +72,21 @@ rowEnd attributes children =
 column : List Html.Attribute -> List Html.Html -> Html.Html
 column attributes children =
   Html.Lazy.lazy3 render columnOptions attributes children
+
+{-| Renders a container as a column with content aligned to start. -}
+columnStart : List Html.Attribute -> List Html.Html -> Html.Html
+columnStart attributes children =
+  Html.Lazy.lazy3 render { columnOptions | align = "start" } attributes children
+
+{-| Renders a container as a column with content aligned to center. -}
+columnCenter : List Html.Attribute -> List Html.Html -> Html.Html
+columnCenter attributes children =
+  Html.Lazy.lazy3 render { columnOptions | align = "center" } attributes children
+
+{-| Renders a container as a column with content aligned to end. -}
+columnEnd : List Html.Attribute -> List Html.Html -> Html.Html
+columnEnd attributes children =
+  Html.Lazy.lazy3 render { columnOptions | align = "end" } attributes children
 
 -- Render internal
 render : Model -> List Html.Attribute -> List Html.Html -> Html.Html

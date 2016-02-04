@@ -46,6 +46,7 @@ program
     // Now init the Browsersync server
     bs.init({
       proxy: "localhost:8001",
+      open: false
     });
     elmUi.serve(options())
   })

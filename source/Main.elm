@@ -187,10 +187,17 @@ createLabel label items =
     else
       Task.succeed { label = label, id = id + 1 }
 
+taggerData : List TaggerModel
+taggerData =
+  [ { label = "Pear", id = 2 }
+  , { label = "Apple", id = 1 }
+  , { label = "Orange", id = 0 }
+  ]
+
 init : Model
 init =
   let
-    input = Ui.Input.init ""
+    input = Ui.Input.init "" "Type here..."
     pager = Ui.Pager.init 0
     loader = Ui.Loader.init 0
 
@@ -233,7 +240,8 @@ init =
           (\_ ->
             Ui.Tagger.initWithAddress
               (forwardTo address TaggerAddFailed)
-              []
+              taggerData
+              "Add a tag..."
               .label
               .id
               createLabel
@@ -371,7 +379,7 @@ init =
     , notifications = Ui.NotificationCenter.init 4000 320
     , input =
         Showcase.init
-          (\_ -> { input | placeholder = "Type here..." })
+          (\_ -> input)
           (forwardTo address Input)
           Ui.Input.update
           handleMoveIdentity

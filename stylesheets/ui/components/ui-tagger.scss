@@ -1,13 +1,22 @@
 ui-tagger {
   display: inline-block;
 
-  ui-input {
-    width: 100%;
-    padding: 5px;
+  > ui-container {
+    margin-bottom: 5px;
+
+    ui-icon-button {
+      flex: 0 0 36px;
+      padding: 0;
+    }
+
+    ui-input {
+      flex: 1;
+    }
   }
 
   ui-tagger-tags {
     display: block;
+    margin: 0 -5px;
   }
 
   ui-tagger-tag {
@@ -25,6 +34,11 @@ ui-tagger {
       vertical-align: middle;
       font-size: 22px;
     }
+  }
+
+  &.disabled ui-tagger-tag {
+    @include colors($disabled);
+    @extend %disabled;
   }
 }
 

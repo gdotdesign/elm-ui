@@ -1,0 +1,49 @@
+ui-tagger {
+  display: inline-block;
+
+  // Form
+  > ui-container {
+    margin-bottom: 5px;
+
+    ui-icon-button {
+      flex: 0 0 36px;
+      padding: 0;
+    }
+
+    ui-input {
+      flex: 1;
+    }
+  }
+
+  // Tags container
+  ui-tagger-tags {
+    display: block;
+    margin: 0 -5px;
+  }
+
+  // Tag
+  ui-tagger-tag {
+    @include colors($secondary);
+
+    border-radius: $border-radius;
+    display: inline-flex;
+    align-items: center;
+    line-height: 36px;
+    font-weight: 600;
+    padding: 0 10px;
+    margin: 5px;
+
+    ui-icon {
+      vertical-align: middle;
+      margin-left: 10px;
+      font-size: 22px;
+    }
+  }
+
+  // Disabled state
+  &.disabled ui-tagger-tag {
+    @extend %disabled;
+    @include colors($disabled);
+  }
+}
+

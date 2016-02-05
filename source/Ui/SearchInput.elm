@@ -56,17 +56,14 @@ type Action
 -}
 init : Time -> Model
 init timeout =
-  let
-    input = Ui.Input.init ""
-  in
-    { input = { input | placeholder = "Search..." }
-    , valueAddress = Nothing
-    , timeout = timeout
-    , disabled = False
-    , readonly = False
-    , value = input.value
-    , timestamp = 0
-    }
+  { input = Ui.Input.init "" "Search..."
+  , valueAddress = Nothing
+  , timeout = timeout
+  , disabled = False
+  , readonly = False
+  , timestamp = 0
+  , value = ""
+  }
 
 {-| Initializes a search input with the given address and timeout.
 

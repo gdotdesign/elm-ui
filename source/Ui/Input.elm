@@ -49,10 +49,10 @@ type Action
 
     Input.init "value"
 -}
-init : String -> Model
-init value =
+init : String -> String -> Model
+init value placeholder =
   { valueAddress = Nothing
-  , placeholder = ""
+  , placeholder = placeholder
   , disabled = False
   , readonly = False
   , value = value
@@ -63,10 +63,10 @@ init value =
 
     Input.init (forwardTo address InputChanged) "value"
 -}
-initWithAddress : Signal.Address String -> String -> Model
-initWithAddress valueAddress value =
+initWithAddress : Signal.Address String -> String -> String -> Model
+initWithAddress valueAddress value placeholder =
   let
-    model = init value
+    model = init value placeholder
   in
     { model | valueAddress = Just valueAddress }
 

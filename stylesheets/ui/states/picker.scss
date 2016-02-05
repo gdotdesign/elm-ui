@@ -57,6 +57,8 @@
   }
 
   &.readonly {
+    cursor: default;
+
     &:focus {
       @extend %focused-readonly;
     }

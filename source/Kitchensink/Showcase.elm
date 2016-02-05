@@ -75,8 +75,18 @@ update action model =
         (enabled, effect) = model.update act model.enabled
       in
         ({ model | enabled = enabled }, Effects.map Enabled effect)
-    _ ->
-      (model, Effects.none)
+
+    Readonly act ->
+      let
+        (readonly, effect) = model.update act model.readonly
+      in
+        ({ model | readonly = readonly }, Effects.map Readonly effect)
+
+    Disabled act ->
+      let
+        (disabled, effect) = model.update act model.disabled
+      in
+        ({ model | disabled = disabled }, Effects.map Disabled effect)
 
 view renderFn model =
   Html.Lazy.lazy2 render renderFn model

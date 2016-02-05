@@ -40,6 +40,7 @@ import Ui.Textarea
 import Ui.Chooser
 import Ui.Ratings
 import Ui.Button
+import Ui.Tagger
 import Ui.Slider
 import Ui.Loader
 import Ui.Pager
@@ -70,8 +71,9 @@ type Action
   | Chooser (Showcase.Action Ui.Chooser.Action)
   | Ratings (Showcase.Action Ui.Ratings.Action)
   | Slider (Showcase.Action Ui.Slider.Action)
-  | Image Ui.Image.Action
+  | Tagger (Showcase.Action (Ui.Tagger.Action TaggerModel String))
   | Input (Showcase.Action Ui.Input.Action)
+  | Image Ui.Image.Action
   | Modal Ui.Modal.Action
   | Pager Ui.Pager.Action
   | App Ui.App.Action
@@ -95,6 +97,7 @@ type Action
   | ColorPickerChanged Ext.Color.Hsv
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
+  | TaggerAddFailed String
   | CalendarChanged Time.Time
   | SearchInputChanged String
   | BreadcrumbClicked String
@@ -105,6 +108,9 @@ type Action
   | ButtonClicked String
   | Scrolled Bool
   | Loaded Bool
+
+type alias TaggerModel =
+  { label : String, id : Int }
 
 type alias Model =
   { app : Ui.App.Model
@@ -133,6 +139,7 @@ type alias Model =
   , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Action
   , numberPadViewFn : Signal.Address Ui.NumberPad.Action -> Ui.NumberPad.Model -> Html.Html
   , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Action
+  , tagger : Showcase.Model (Ui.Tagger.Model TaggerModel Int String) (Ui.Tagger.Action TaggerModel String)
   , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Action
   , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Action
   , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Action
@@ -160,10 +167,37 @@ type alias Model =
 handleMoveIdentity x y model = (model, Effects.none)
 handleClickIndetity pressed model = model
 
+removeLabel : TaggerModel -> Task.Task String TaggerModel
+removeLabel item =
+  if item.id == 0 then
+    Task.fail "Can't remove this item..."
+  else
+    Task.succeed item
+
+createLabel : String -> List TaggerModel -> Task.Task String TaggerModel
+createLabel label items =
+  let
+    id =
+      List.map .id items
+      |> List.maximum
+      |> Maybe.withDefault -1
+  in
+    if label == "xxx" then
+      Task.fail "xxx is not a valid label..."
+    else
+      Task.succeed { label = label, id = id + 1 }
+
+taggerData : List TaggerModel
+taggerData =
+  [ { label = "Pear", id = 2 }
+  , { label = "Apple", id = 1 }
+  , { label = "Orange", id = 0 }
+  ]
+
 init : Model
 init =
   let
-    input = Ui.Input.init ""
+    input = Ui.Input.init "" "Type here..."
     pager = Ui.Pager.init 0
     loader = Ui.Loader.init 0
 
@@ -199,6 +233,22 @@ init =
                 (Ext.Date.createDate 2015 5 1))
           (forwardTo address Calendar)
           Ui.Calendar.update
+          handleMoveIdentity
+          handleClickIndetity
+    , tagger =
+        Showcase.init
+          (\_ ->
+            Ui.Tagger.initWithAddress
+              (forwardTo address TaggerAddFailed)
+              taggerData
+              "Add a tag..."
+              .label
+              .id
+              createLabel
+              removeLabel
+          )
+          (forwardTo address Tagger)
+          Ui.Tagger.update
           handleMoveIdentity
           handleClickIndetity
     , searchInput =
@@ -329,7 +379,7 @@ init =
     , notifications = Ui.NotificationCenter.init 4000 320
     , input =
         Showcase.init
-          (\_ -> { input | placeholder = "Type here..." })
+          (\_ -> input)
           (forwardTo address Input)
           Ui.Input.update
           handleMoveIdentity
@@ -488,7 +538,7 @@ view address model =
     , numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons
     , disabledButton, disabledIconButton, modalView, infos, modalButton
     , dropdownMenu, pagerControls, notificationButton, numberPadViewFn
-    , pagerAddress, pagerContents, searchInput } = model
+    , pagerAddress, pagerContents, searchInput, tagger } = model
 
     clicked =
       if model.clicked then [node "clicked" [] [emptyText]] else []
@@ -572,6 +622,9 @@ view address model =
 
           , componentHeader "Slider"
           , Showcase.view Ui.Slider.view slider
+
+          , componentHeader "Tagger"
+          , Showcase.view Ui.Tagger.view tagger
 
           , componentHeader "Time"
           , tableRow
@@ -692,6 +745,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    Tagger act ->
+      let
+        (tagger, effect) = Showcase.update act model.tagger
+      in
+        ({ model | tagger = tagger }, Effects.map Tagger effect)
     SearchInput act ->
       let
         (searchInput, effect) = Showcase.update act model.searchInput
@@ -846,6 +904,8 @@ update' action model =
       notify ("Date picker changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
     RatingsChanged value ->
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
+    TaggerAddFailed err ->
+      notify err model
     _ ->
       (update action model, Effects.none)
 

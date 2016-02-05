@@ -41,6 +41,7 @@
     "Ui.Ratings",
     "Ui.Slider",
     "Ui.Textarea",
+    "Ui.Tagger",
     "Ui.Charts.Bar",
     "Ui.Helpers.Drag",
     "Ui.Helpers.Animation",

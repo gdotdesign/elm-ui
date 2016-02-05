@@ -1,6 +1,7 @@
 ui-tagger {
   display: inline-block;
 
+  // Form
   > ui-container {
     margin-bottom: 5px;
 
@@ -14,31 +15,35 @@ ui-tagger {
     }
   }
 
+  // Tags container
   ui-tagger-tags {
     display: block;
     margin: 0 -5px;
   }
 
+  // Tag
   ui-tagger-tag {
     @include colors($secondary);
-    font-weight: 600;
-    margin: 5px;
-    line-height: 36px;
+
     border-radius: $border-radius;
-    padding: 0 10px;
     display: inline-flex;
     align-items: center;
+    line-height: 36px;
+    font-weight: 600;
+    padding: 0 10px;
+    margin: 5px;
 
     ui-icon {
-      margin-left: 10px;
       vertical-align: middle;
+      margin-left: 10px;
       font-size: 22px;
     }
   }
 
+  // Disabled state
   &.disabled ui-tagger-tag {
-    @include colors($disabled);
     @extend %disabled;
+    @include colors($disabled);
   }
 }
 

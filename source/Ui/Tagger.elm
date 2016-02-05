@@ -1,5 +1,13 @@
-module Ui.Tagger where
+module Ui.Tagger (Model, Action, init, initWithAddress, update, view) where
 
+{-| Component for managing (add / remove) tags
+
+# Model
+@docs Model, Action, init, initWithAddress, update
+
+# View
+@docs view
+-}
 import Signal exposing (forwardTo)
 import Task exposing (Task)
 import Ext.Signal
@@ -10,41 +18,59 @@ import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
+import Html.Lazy
 
 import Ui.IconButton
 import Ui.Container
 import Ui.Input
 import Ui
 
-type alias Model item id err =
-  { create : String -> List item -> Task err item
-  , remove : item -> Task err item
+{-| Representation of a tagger component:
+  - **failAddress** - The address to send failure messages to
+  - **label** - The function to generate label from a tag
+  - **removeable** - Whether or not a tag can be removed
+  - **disabled** - Whether or not the tagger is disabled
+  - **readonly** - Whether or not the tagger is readonly
+  - **id** - The function to get the id of a tag
+  - **remove** - The Task to remove a tag
+  - **create** - The Task to create a tag
+  - **tags** - The list of tags
+  - **input** (interal) - The model of the input field
+-}
+type alias Model tag id err =
+  { create : String -> List tag -> Task err tag
   , failAddress : Maybe (Signal.Address err)
+  , remove : tag -> Task err tag
   , input : Ui.Input.Model
-  , label : item -> String
-  , items : List item
+  , label : tag -> String
+  , tags : List tag
   , removeable : Bool
-  , id : item -> id
+  , id : tag -> id
   , disabled : Bool
   , readonly : Bool
   }
 
-type Action item err
-  = Input Ui.Input.Action
-  | Created (Result err item)
-  | Create
-  | Removed (Result err item)
-  | Remove item
+{-| Actions that a tagger can make. -}
+type Action tag err
+  = Created (Result err tag)
+  | Removed (Result err tag)
+  | Input Ui.Input.Action
+  | Remove tag
   | Tasks ()
+  | Create
 
-init : List item
+{-| Initializes a tagger.
+
+    Tagger.init [tag1, tag2] "Add a tag..." .label .id createTask removeTask
+-}
+init : List tag
      -> String
-     -> (item -> String)
-     -> (item -> id)
-     -> (String -> List item -> Task err item)
-     -> (item -> Task err item)
-     -> Model item id err
-init items placeholder label id create remove =
+     -> (tag -> String)
+     -> (tag -> id)
+     -> (String -> List tag -> Task err tag)
+     -> (tag -> Task err tag)
+     -> Model tag id err
+init tags placeholder label id create remove =
   { input = Ui.Input.init "" placeholder
   , failAddress = Nothing
   , removeable = True
@@ -53,27 +79,39 @@ init items placeholder label id create remove =
   , create = create
   , remove = remove
   , label = label
-  , items = items
+  , tags = tags
   , id = id
   }
 
+{-| Initializes a tagger with a faliure address.
+
+    Tagger.init
+      (forwardTo address TagActionFailed)
+      [tag1, tag2]
+      "Add a tag..."
+      .label
+      .id
+      createTask
+      removeTask
+-}
 initWithAddress : Signal.Address err
-                -> List item
+                -> List tag
                 -> String
-                -> (item -> String)
-                -> (item -> id)
-                -> (String -> List item -> Task err item)
-                -> (item -> Task err item)
-                -> Model item id err
-initWithAddress failAddress items placeholder label id create remove =
+                -> (tag -> String)
+                -> (tag -> id)
+                -> (String -> List tag -> Task err tag)
+                -> (tag -> Task err tag)
+                -> Model tag id err
+initWithAddress failAddress tags placeholder label id create remove =
   let
-    model = init items placeholder label id create remove
+    model = init tags placeholder label id create remove
   in
     { model | failAddress = Just failAddress }
 
-update : Action item err
-       -> Model item id err
-       -> (Model item id err, Effects.Effects (Action item err))
+{-| Updates a tagger. -}
+update : Action tag err
+       -> Model tag id err
+       -> (Model tag id err, Effects.Effects (Action tag err))
 update action model =
   case action of
     Input act ->
@@ -90,39 +128,39 @@ update action model =
           if String.isEmpty value then
             Effects.none
           else
-            model.create model.input.value model.items
+            model.create model.input.value model.tags
             |> Task.toResult
             |> Effects.task
             |> Effects.map Created
       in
         (model, effect)
 
-    Created (Ok item) ->
+    Created (Ok tag) ->
       let
         (input, inputEffect) = Ui.Input.setValue "" model.input
       in
-        ({ model | items = item :: model.items
+        ({ model | tags = tag :: model.tags
                  , input = input }, Effects.map Input inputEffect)
 
     Created (Err err) ->
       (model, failMessageEffect err model)
 
-    Remove item ->
+    Remove tag ->
       let
         effect =
-          model.remove item
+          model.remove tag
           |> Task.toResult
           |> Effects.task
           |> Effects.map Removed
       in
         (model, effect)
 
-    Removed (Ok removedItem) ->
+    Removed (Ok removedtag) ->
       let
-        id = model.id removedItem
-        items = List.filter (\item -> (model.id item) /= id) model.items
+        id = model.id removedtag
+        tags = List.filter (\tag -> (model.id tag) /= id) model.tags
       in
-        ({ model | items = items }, Effects.none)
+        ({ model | tags = tags }, Effects.none)
 
     Removed (Err err) ->
       (model, failMessageEffect err model)
@@ -130,8 +168,14 @@ update action model =
     Tasks _ ->
       (model, Effects.none)
 
-view: Signal.Address (Action item err) -> Model item id err -> Html.Html
+{-| Renders a tagger. -}
+view: Signal.Address (Action tag err) -> Model tag id err -> Html.Html
 view address model =
+  Html.Lazy.lazy2 render address model
+
+{-| Render internal. -}
+render: Signal.Address (Action tag err) -> Model tag id err -> Html.Html
+render address model =
   let
     input =
       model.input
@@ -150,45 +194,49 @@ view address model =
       }
 
     classes =
-      classList [ ("disabled", model.disabled)
-                , ("readonly", model.readonly)
+      classList [ ( "disabled", model.disabled )
+                , ( "readonly", model.readonly )
                 ]
 
     actions =
       Ui.enabledActions model
-        [ onKeys address [ (13, Create)
+        [ onKeys address [ ( 13, Create )
                          ]
         ]
   in
     node "ui-tagger" (classes :: actions)
-      [ Ui.Container.row []
+      [ Ui.Container.row
+        []
         [ Ui.Input.view (forwardTo address Input) updatedInput
         , Ui.IconButton.view address Create button
         ]
-      , node "ui-tagger-tags" []
-        (List.map (renderItem address model) model.items)
+      , node "ui-tagger-tags"
+        []
+        (List.map (rendertag address model) model.tags)
       ]
 
+{-| Returns a failure message as an Effect. -}
 failMessageEffect : err
-                  -> Model item id err
-                  -> Effects.Effects (Action item err)
+                  -> Model tag id err
+                  -> Effects.Effects (Action tag err)
 failMessageEffect message model =
   Ext.Signal.sendAsEffect model.failAddress message Tasks
 
-renderItem : Signal.Address (Action item err)
-           -> Model item id err
-           -> item
+{-| Renders a tag. -}
+rendertag : Signal.Address (Action tag err)
+           -> Model tag id err
+           -> tag
            -> Html.Html
-renderItem address model item =
+rendertag address model tag =
   let
     label =
-      model.label item
+      model.label tag
 
     icon =
       if (model.disabled || model.readonly) && model.removeable then
         text ""
       else
-        Ui.icon "android-close" True [ onClick address (Remove item)]
+        Ui.icon "android-close" True [ onClick address (Remove tag)]
   in
     node "ui-tagger-tag" []
       [ text label

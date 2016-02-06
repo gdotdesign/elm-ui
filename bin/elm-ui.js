@@ -285,10 +285,26 @@ exports.scaffold = function(directory) {
 }
 
 exports.serve = function(options) {
+  var bs = require("browser-sync").create();
   var router = require('koa-router')();
   var serve = require('koa-static');
-  var app = require('koa')();
   var config = readConfig(options);
+  var app = require('koa')();
+
+  bs.watch("source/**/*.elm").on("change", bs.reload);
+  bs.watch("stylesheets/**/*.scss", function (event, file) {
+    if (event === "change") { bs.reload("*.css"); }
+  });
+
+  bs.init({
+    proxy: "localhost:8001",
+    port: 8002,
+    ui: { port: 8003 },
+    logFileChanges: false,
+    reloadOnRestart: true,
+    notify: false,
+    open: false
+  });
 
   router.get('/', function*(next) {
     this.body = renderHtml(config)

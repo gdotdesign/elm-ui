@@ -6,6 +6,8 @@
 An opinionated UI library for the web in Elm, following the **Elm Architecture**.
 
 [![Build Status](https://travis-ci.org/gdotdesign/elm-ui.svg?branch=master)](https://travis-ci.org/gdotdesign/elm-ui)
+[![NPM Package](https://d25lcipzij17d.cloudfront.net/badge.svg?id=js&type=6&v=0.1.2&x2=0)](https://www.npmjs.com/package/elm-ui)
+[![Dependencies](https://david-dm.org/gdotdesign/elm-ui.svg)](https://david-dm.org/gdotdesign/elm-ui)
 
 ## Implemented Componets
 All of the components **business logic** is written completely in Elm (while using the minimum **Native** bindings possible).

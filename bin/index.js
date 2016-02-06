@@ -1,44 +1,51 @@
 #! /usr/bin/env node
 
-var exec = require('child_process').execSync
+var package_json = require('../package.json')
 var program = require('commander')
 var elmUi = require('./elm-ui')
-var path = require('path')
-var fs = require('fs')
 
-var options = function(){
-  return { env: program.env }
+var options = function() {
+  return {
+    env: program.env
+  }
 }
 
 program
-  .version('0.1.2')
-  .option('-e, --env [env]', 'Environment', 'development')
+  .version(package_json.version)
+  .option('-e, --env [env]', 'environment', 'development')
 
 program
   .command('install')
   .description('Installs Elm dependencies')
-  .action(function(env,opts){
+  .action(function(env, opts) {
     elmUi.install()
+  })
+
+program
+  .command('help')
+  .description('Output usage information')
+  .action(function(env, opts) {
+    program.outputHelp()
   })
 
 program
   .command('new <dir>')
   .description('Scaffolds a new Elm-UI project')
-  .action(function(dir){
+  .action(function(dir) {
     elmUi.scaffold(dir)
   })
 
 program
   .command('server')
   .description('Starts development server')
-  .action(function(env, opts){
+  .action(function(env, opts) {
     elmUi.serve(options())
   })
 
 program
   .command('build')
   .description('Builds final files')
-  .action(function(env, opts){
+  .action(function(env, opts) {
     elmUi.build(options())
   })
 

@@ -1,4 +1,4 @@
-var renderError = require('./render-error').renderCSSError
+var renderError = require('./error').renderCSSError
 var autoprefixer = require('autoprefixer')
 var sass = require('node-sass')
 var path = require('path')
@@ -6,7 +6,7 @@ var path = require('path')
 module.exports = function(file, shouldFail) {
   return function(callback) {
     sass.render({
-      includePaths: [path.resolve(__dirname, '../stylesheets/ui')],
+      includePaths: [path.resolve(__dirname, '../../../stylesheets/ui')],
       file: file,
     }, function(err, result) {
       if (err) {

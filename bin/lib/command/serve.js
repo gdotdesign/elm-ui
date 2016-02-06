@@ -4,9 +4,9 @@ var serve = require('koa-static')
 var path = require('path')
 var app = require('koa')()
 
-var renderHtml = require('./render-html')
-var renderElm = require('./render-elm')
-var renderCSS = require('./render-css')
+var renderHtml = require('../render/html')
+var renderElm = require('../render/elm')
+var renderCSS = require('../render/css')
 
 var readConfig = require('./read-config')
 

@@ -1,4 +1,4 @@
-var renderCSS = require('./render-css')
+var renderCSS = require('../render/css')
 var cleanCSS = require('clean-css')
 var path = require('path')
 var fs = require('fs')

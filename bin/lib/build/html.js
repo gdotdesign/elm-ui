@@ -1,4 +1,4 @@
-var renderHtml = require('./render-html')
+var renderHtml = require('../render/html')
 var path = require('path')
 var fs = require('fs')
 

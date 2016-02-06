@@ -30,6 +30,7 @@ program
 
 program
   .command('new <dir>')
+  .alias('init')
   .description('Scaffolds a new Elm-UI project')
   .action(function(dir) {
     elmUi.scaffold(dir)

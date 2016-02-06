@@ -1,4 +1,4 @@
-var renderError = require('./render-error').renderHTMLError
+var renderError = require('./error').renderHTMLError
 var child_process = require('child_process')
 var spawn = child_process.spawn
 var path = require('path')
@@ -6,7 +6,7 @@ var fs = require('fs')
 
 // Find the elm-make executable
 var elmExecutable =
-  path.resolve(__dirname, '../../node_modules/elm/binwrappers/elm-make')
+  path.resolve(__dirname, '../../../node_modules/elm/binwrappers/elm-make')
 
 // Try to load pty.js beacause it's an optional dependency.
 var pty

@@ -3,6 +3,11 @@ ui-icon {
   display: inline-flex;
   align-items: center;
 
+  &:focus {
+    outline: none;
+    color: $focus;
+  }
+
   &.clickable {
     cursor: pointer;
 

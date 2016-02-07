@@ -236,7 +236,10 @@ rendertag address model tag =
       if (model.disabled || model.readonly) && model.removeable then
         text ""
       else
-        Ui.icon "android-close" True [ onClick address (Remove tag)]
+        Ui.icon
+          "android-close"
+          True
+          ([onClick address (Remove tag)] ++ (Ui.tabIndex model))
   in
     node "ui-tagger-tag" []
       [ text label

@@ -14,6 +14,7 @@
     "spec-local": "intern-runner config=specs/config-local",
     "selenium": "selenium-standalone install; selenium-standalone start"
   },
+  "homepage": "https://github.com/gdotdesign/elm-ui#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gdotdesign/elm-ui.git"
@@ -51,5 +52,7 @@
   "bin": {
     "elm-ui": "bin/index.js"
   },
-  "homepage": "https://github.com/gdotdesign/elm-ui#readme"
+  "engines": {
+    "node": ">= 4"
+  }
 }

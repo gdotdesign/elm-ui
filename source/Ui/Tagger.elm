@@ -239,7 +239,9 @@ rendertag address model tag =
         Ui.icon
           "android-close"
           True
-          ([onClick address (Remove tag)] ++ (Ui.tabIndex model))
+          ([ onClick address (Remove tag)
+           , onKeys address [ (13, Remove tag) ]
+           ] ++ (Ui.tabIndex model))
   in
     node "ui-tagger-tag" []
       [ text label

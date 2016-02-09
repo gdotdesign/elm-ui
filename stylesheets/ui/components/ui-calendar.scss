@@ -104,6 +104,10 @@ ui-calendar {
     }
   }
 
+  &:not(.selectable) ui-calendar-cell {
+    pointer-events: none;
+  }
+
   // Disabled state
   &.disabled {
     @extend %disabled;

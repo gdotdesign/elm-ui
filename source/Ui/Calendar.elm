@@ -150,7 +150,9 @@ render address model =
 
     {- Header container -}
     container =
-      Ui.Container.row []
+      Ui.Container.view { compact = True
+                        , align = "stretch"
+                        , direction = "row" } []
         [ Ui.icon "chevron-left" (not model.readonly) previousAction
         , node "div" [] [text (format "%Y - %B" month)]
         , Ui.icon "chevron-right" (not model.readonly) nextAction
@@ -158,6 +160,7 @@ render address model =
   in
     node "ui-calendar" [classList [ ("disabled", model.disabled)
                                   , ("readonly", model.readonly)
+                                  , ("selectable", model.selectable)
                                   ]
                        ]
       [ container

@@ -1,25 +1,48 @@
 ui-header {
+  @include colors(dampen($background, 5%));
+
+  border-bottom: 1px solid dampen($background, 10%);
+  position: relative;
+  line-height: 60px;
+  padding: 0 20px;
   display: block;
   flex: 0 0 auto;
-  color: readable($primary);
-  background: linear-gradient($primary, mix($primary, #000, 95%));
-  border-bottom: 1px solid rgba(#000, 0.2);
-  border-top: 1px solid rgba(#FFF, 0.2);
-  z-index: 10;
-  position: relative;
   height: 60px;
-  padding: 0 20px;
-  line-height: 60px;
+  z-index: 10;
+}
 
-  &:before {
-    content: '';
-    height: 6px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -7px;
-    pointer-events: none;
-    z-index: 1;
-    background: linear-gradient(rgba(#000, 0.2), rgba(#000, 0));
+ui-header-icon {
+  @extend ui-icon;
+
+  font-size: 32px;
+  flex: 0 0 32px;
+  width: 32px;
+}
+
+ui-header-title {
+  align-items: center;
+  font-weight: 600;
+  font-size: 22px;
+  display: flex;
+  flex: 1;
+
+  div {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
+}
+
+ui-header-separator {
+  background: dampen($background, 10%);
+  height: 40px;
+  width: 2px;
+}
+
+ui-header-item {
+
+}
+
+ui-header-icon-item {
+
 }

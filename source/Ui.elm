@@ -1,16 +1,16 @@
 module Ui
-  (icon, title, subTitle, panel, spacer, inputGroup,
-   stylesheetLink, tabIndex, header, headerTitle, fab, textBlock, open,
-   redirect, alert, enabledActions, breadcrumbs, headerIcon) where
+  (icon, title, subTitle, panel, spacer, inputGroup, iconAttributes,
+   stylesheetLink, tabIndex, fab, textBlock, open, redirect, alert,
+   enabledActions, breadcrumbs ) where
 
 {-| UI Library for ELM!
 
 # Static Components
-@docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup, header
-@docs headerTitle, headerIcon, fab, textBlock, breadcrumbs
+@docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup
+@docs fab, textBlock, breadcrumbs
 
 # Helper Functions
-@docs tabIndex, open, redirect, alert, enabledActions
+@docs tabIndex, open, redirect, alert, enabledActions, iconAttributes
 -}
 import Html.Attributes exposing (classList, tabindex, rel, href, class)
 import Html.Events exposing (onClick)
@@ -24,7 +24,7 @@ icon : String -> Bool -> List Html.Attribute -> Html.Html
 icon glyph clickable attributes =
   node "ui-icon" (iconAttributes glyph clickable attributes) []
 
--- Attributes for icons
+{- Attributes for icons. -}
 iconAttributes : String -> Bool -> List Html.Attribute -> List Html.Attribute
 iconAttributes glyph clickable attributes =
   let
@@ -34,11 +34,6 @@ iconAttributes glyph clickable attributes =
                 ]
   in
     classes :: attributes
-
-{-| An icon component for use in the header. -}
-headerIcon : String -> Bool -> List Html.Attribute -> Html.Html
-headerIcon glyph clickable attributes =
-  node "ui-header-icon" (iconAttributes glyph clickable attributes) []
 
 {-| Renders a title component. -}
 title : List Html.Attribute -> List Html.Html -> Html.Html
@@ -88,17 +83,6 @@ enabledActions model attributes =
 spacer : Html.Html
 spacer =
   node "ui-spacer" [] []
-
-{-| Renders a header element. -}
-header : List Html.Attribute -> List Html.Html -> Html.Html
-header attributes children =
-  node "ui-header" attributes children
-
-{-| Renders a header title element. -}
-headerTitle : List Html.Attribute -> List Html.Html -> Html.Html
-headerTitle attributes children =
-  node "ui-header-title" attributes
-    [node "div" [] children]
 
 {-| Renders a floating action button. -}
 fab : String -> List Html.Attribute -> Html.Html

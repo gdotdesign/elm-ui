@@ -4,8 +4,12 @@ module Ui.Header where
 
 @docs view, icon, title, separator
 -}
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, tabindex)
+import Html.Events exposing (onClick)
+import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
+
+import VirtualDom exposing (attribute)
 
 import Ui
 
@@ -30,16 +34,31 @@ separator : Html.Html
 separator =
   node "ui-header-separator" [] []
 
-item : String -> List Html.Attribute -> Html.Html
-item content attributes =
-  node "ui-header-item" attributes [text content]
+item : Signal.Address a -> String -> a -> Html.Html
+item address content action =
+  node "ui-header-item" (itemAttributes address action) [text content]
 
-iconItem : String -> String -> String -> List Html.Attribute -> Html.Html
-iconItem content glyph side attributes =
+iconItem : Signal.Address a -> String -> a -> String -> String -> Html.Html
+iconItem address content action glyph side =
   let
-    attrs = class ("ui-header-item-" ++ side) :: attributes
+    icon =
+      Ui.icon glyph False []
+
+    span =
+      node "span" [] [text content]
+
+    sideAttribute =
+      attribute "side" side
+
+    children =
+      if side == "left" then [icon, span] else [span, icon]
   in
-    node "ui-header-item" attrs
-      [ Ui.icon glyph False []
-      , text content
-      ]
+    node "ui-header-icon-item" (itemAttributes address action) children
+
+itemAttributes address action =
+  [ tabindex 0
+  , onClick address action
+  , onKeys address [ (13, action)
+                   , (32, action)
+                   ]
+  ]

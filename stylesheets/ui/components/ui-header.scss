@@ -9,6 +9,14 @@ ui-header {
   flex: 0 0 auto;
   height: 60px;
   z-index: 10;
+
+  flex-direction: row;
+  align-items: center;
+  display: flex;
+
+  > * + * {
+    margin-left: 20px;
+  }
 }
 
 ui-header-icon {
@@ -24,7 +32,6 @@ ui-header-title {
   font-weight: 600;
   font-size: 22px;
   display: flex;
-  flex: 1;
 
   div {
     text-overflow: ellipsis;
@@ -39,10 +46,29 @@ ui-header-separator {
   width: 2px;
 }
 
-ui-header-item {
+%ui-header-item {
+  font-weight: 600;
+  cursor: pointer;
 
+  &:hover {
+    color: $focus;
+  }
+
+  &:focus {
+    color: $focus;
+    outline: none;
+  }
+}
+
+ui-header-item {
+  @extend %ui-header-item;
 }
 
 ui-header-icon-item {
+  @extend %ui-header-item;
 
+  ui-icon + span,
+  span + ui-icon {
+    margin-left: 10px;
+  }
 }

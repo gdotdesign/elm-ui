@@ -1,7 +1,7 @@
 ui-header {
   @include colors(dampen($background, 5%));
 
-  border-bottom: 1px solid dampen($background, 10%);
+  border-bottom: 1px solid dampen($background, 7.5%);
   position: relative;
   line-height: 60px;
   padding: 0 20px;

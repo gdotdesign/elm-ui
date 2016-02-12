@@ -1,5 +1,7 @@
 ui-breadcrumbs {
-  background: linear-gradient($secondary, dampen($secondary, 2%));
+  @include colors(dampen($background, 2.5%));
+
+  border-bottom: 1px solid dampen($background, 5%);
   display: block;
   padding: 15px;
 

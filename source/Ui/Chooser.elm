@@ -80,7 +80,8 @@ type alias Model =
 
 {-| Actions that a chooser can make. -}
 type Action
-  = Focus Html.Extra.DropdownDimensions
+  = Toggle Html.Extra.DropdownDimensions
+  | Focus Html.Extra.DropdownDimensions
   | Close Html.Extra.DropdownDimensions
   | Enter Html.Extra.DropdownDimensions
   | Next Html.Extra.DropdownDimensions
@@ -146,6 +147,7 @@ update action model =
       in
         (fn dimensions updatedModel, effect)
 
+
     Select value ->
       toggleItemAndClose value model
 
@@ -159,6 +161,10 @@ update' action model =
     Filter value ->
       setValue value model
        |> intendFirst
+
+    Toggle dimensions ->
+      Dropdown.toggleWithDimensions dimensions model
+        |> intendFirst
 
     Focus dimensions ->
       Dropdown.openWithDimensions dimensions model
@@ -211,6 +217,7 @@ render address model =
         [ onInput address Filter
         , onWithDropdownDimensions "focus" address Focus
         , onBlur address Blur
+        , onWithDropdownDimensions "mousedown" address Toggle
         , onKeysWithDimensions address
           ([ (27, Close)
            , (13, Enter)

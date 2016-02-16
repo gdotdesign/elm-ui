@@ -1,5 +1,6 @@
 module Ui.ColorPanel
-  (Model, Action, init, initWithAddress, update, view, handleMove, handleClick) where
+  (Model, Action, init, initWithAddress, update, view, handleMove, handleClick
+  ,setValue) where
 
 {-| Color panel component for selecting a colors **hue**, **saturation**,
 **value** and **alpha** components with draggable interfaces.
@@ -11,7 +12,7 @@ module Ui.ColorPanel
 @docs view
 
 # Functions
-@docs handleMove, handleClick
+@docs handleMove, handleClick, setValue
 -}
 import Html.Attributes exposing (style, classList)
 import Html.Extra exposing (onWithDimensions)
@@ -189,6 +190,11 @@ handleClick value model =
       { model | alphaDrag = alphaDrag
               , hueDrag = hueDrag
               , drag = drag  }
+
+{-| Sets the vale of a color panel. -}
+setValue : Color -> Model -> Model
+setValue color model =
+  { model | value = Ext.Color.toHsv color }
 
 -- Handles the hue drag
 handleHue : Int -> Int -> Hsv -> Drag.Model -> Hsv

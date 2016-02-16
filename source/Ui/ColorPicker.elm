@@ -1,5 +1,6 @@
 module Ui.ColorPicker
-  (Model, Action, init, initWithAddress, update, view, handleMove, handleClick) where
+  (Model, Action, init, initWithAddress, update, view, handleMove, handleClick
+  ,setValue) where
 
 {-| Color picker input component.
 
@@ -10,7 +11,7 @@ module Ui.ColorPicker
 @docs view
 
 # Functions
-@docs handleMove, handleClick
+@docs handleMove, handleClick, setValue
 -}
 import Html.Extra exposing (onWithDropdownDimensions,onKeysWithDimensions)
 import Html.Attributes exposing (classList, style)
@@ -20,8 +21,8 @@ import Html.Lazy
 
 import Signal exposing (forwardTo)
 import Ext.Color exposing (Hsv)
+import Color exposing (Color)
 import Effects
-import Color
 import Dict
 
 import Ui.Helpers.Dropdown as Dropdown
@@ -138,6 +139,11 @@ handleClick pressed model =
       model
     else
       { model | colorPanel = colorPanel }
+
+{-| Sets the vale of a color picker. -}
+setValue : Color -> Model -> Model
+setValue color model =
+  { model | colorPanel = ColorPanel.setValue color model.colorPanel }
 
 -- Render internal.
 render : Signal.Address Action -> Model -> Html.Html

@@ -40,7 +40,7 @@ To scaffold a new project just use the `elm-ui init my-project-name` command.
 
 ### The elm-ui.json
 The project configuration lives in the **elm-ui.json** file, which is a clone
-of **Elms elm-package.json** file. This is needed because the *Elm Pacakge Manager*
+of **Elms elm-package.json** file. This is needed because the *Elm Package Manager*
 doesn't support installing packages from Github, so Elm-UI manages the the actual
 **elm-package-json**.
 

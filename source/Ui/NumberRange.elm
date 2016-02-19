@@ -206,7 +206,7 @@ render address model =
       ]
       [ focusedInput ]
 
-{-| Focused the component. -}
+{-| Focuses the component. -}
 focus : Model -> Model
 focus model =
   case model.focused of

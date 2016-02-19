@@ -24,7 +24,7 @@ icon : String -> Bool -> List Html.Attribute -> Html.Html
 icon glyph clickable attributes =
   node "ui-icon" (iconAttributes glyph clickable attributes) []
 
-{- Attributes for icons. -}
+{-| Attributes for icons. -}
 iconAttributes : String -> Bool -> List Html.Attribute -> List Html.Attribute
 iconAttributes glyph clickable attributes =
   let

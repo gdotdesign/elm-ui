@@ -5,8 +5,8 @@ $warning: #E07800 !default;
 $danger: #F44336 !default;
 
 // Calulated colors
-$background: mix($primary, #FCFCFC, 3%) !default;
-$secondary: mix($primary, #EFEFEF, 3%) !default;
+$background: mix($primary, #FCFCFC, 1%) !default;
+$secondary: mix($primary, #F6F6F6, 2%) !default;
 $input: mix($primary, #FFF, 1%) !default;
 
 // Border

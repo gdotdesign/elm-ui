@@ -20,14 +20,28 @@ ui-dropdown {
   visibility: hidden;
   opacity: 0;
 
-  // Top Position
-  &.position-top {
+  // Top Left Position
+  &.position-top-left,
+  &.position-top-right {
     transform: translateY(-10px);
     bottom: calc(100% + 4px);
   }
 
+  &.position-top-right,
+  &.position-bottom-right {
+    right: auto;
+    left: 0;
+  }
+
+  &.position-top-left,
+  &.position.bottom-left {
+    left: auto;
+    right: 0;
+  }
+
   // Bottom Position
-  &.position-bottom {
+  &.position-bottom-left,
+  &.position-bottom-right {
     transform: translateY(10px);
     top: calc(100% + 4px);
   }
@@ -43,6 +57,6 @@ ui-dropdown {
     transform: translateY(0);
     pointer-events: auto;
     visibility: visible;
-    opacity: 1;
+    opacity: 200;
   }
 }

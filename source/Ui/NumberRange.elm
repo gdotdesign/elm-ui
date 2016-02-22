@@ -238,8 +238,11 @@ handleClick value model =
 {-| Sets the value of a number range. -}
 setValue : Float -> Model -> (Model, Effects.Effects Action)
 setValue value model =
-  { model | value = clamp model.min model.max value }
-  |> sendValue
+  if model.value == value then
+    (model, Effects.none)
+  else
+    { model | value = clamp model.min model.max value }
+    |> sendValue
 
 {-| Increments a number ranges value by it's defined step. -}
 increment : Model -> (Model, Effects.Effects Action)

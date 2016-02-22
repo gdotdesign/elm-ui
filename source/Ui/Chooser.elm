@@ -241,8 +241,14 @@ render address model =
 {-| Selects the given value of chooser. -}
 select : String -> Model -> (Model, Effects.Effects Action)
 select value model =
-  { model | selected = Set.singleton value }
-  |> sendValue
+  let
+    newSelected = Set.singleton value
+  in
+    if (Set.size (Set.diff newSelected model.selected)) == 0 then
+      (model, Effects.none)
+    else
+      { model | selected = newSelected }
+      |> sendValue
 
 {-| Closes the dropdown of a chooser. -}
 close : Model -> Model

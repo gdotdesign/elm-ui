@@ -122,12 +122,12 @@ ui-chooser {
 
     // Hover state
     &:hover {
-      background: dampen($input, 5%);
+      background: $secondary;
     }
 
     // Intended state
     &.intended {
-      background: dampen($input, 5%);
+      background: $secondary;
       padding-right: 25px;
 
       // Chevron at the end

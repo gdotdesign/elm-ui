@@ -13,7 +13,7 @@
 
   &.dropdown-open {
     transition: z-index 1ms;
-    z-index: 2;
+    z-index: 50;
 
     // Fix opened state
     ui-dropdown {

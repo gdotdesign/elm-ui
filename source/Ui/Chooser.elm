@@ -200,9 +200,12 @@ view address model =
 render : Signal.Address Action -> Model -> Html.Html
 render address model =
   let
+    children =
+      (List.map (\item -> renderItem item address model) (items model))
+
     dropdown =
       [ Dropdown.view model.dropdownPosition
-        (List.map (\item -> renderItem item address model) (items model)) ]
+        [(Ui.scrolledPanel children)] ]
 
     val =
       if model.open && model.searchable then

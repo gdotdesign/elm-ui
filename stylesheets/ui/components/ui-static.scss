@@ -20,3 +20,49 @@ ui-text {
   line-height: 24px;
   margin-bottom: 20px;
 }
+
+ui-scrolled-panel {
+  max-height: inherit;
+  position: relative;
+  height: inherit;
+  display: flex;
+  flex: 1;
+
+  ui-scrolled-panel-wrapper {
+    max-height: inherit;
+    overflow-y: scroll;
+    padding-right: 5px;
+    height: inherit;
+    flex: 1;
+
+    &::-webkit-scrollbar {
+      height: 10px;
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-button {
+      width: 0px;
+      height: 0px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: dampen($background, 20%);
+      border-radius: $border-radius;
+      border: 0;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: dampen($background, 40%);
+    }
+
+    &::-webkit-scrollbar-track {
+      border-radius: $border-radius;
+      background: $secondary;
+      border: 0;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+  }
+}

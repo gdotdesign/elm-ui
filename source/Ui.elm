@@ -1,13 +1,13 @@
 module Ui
   (icon, title, subTitle, panel, spacer, inputGroup, iconAttributes,
    stylesheetLink, tabIndex, fab, textBlock, open, redirect, alert,
-   enabledActions, breadcrumbs ) where
+   enabledActions, breadcrumbs, scrolledPanel ) where
 
 {-| UI Library for ELM!
 
 # Static Components
 @docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup
-@docs fab, textBlock, breadcrumbs
+@docs fab, textBlock, breadcrumbs, scrolledPanel
 
 # Helper Functions
 @docs tabIndex, open, redirect, alert, enabledActions, iconAttributes
@@ -129,3 +129,9 @@ redirect url model =
 alert : String -> a -> a
 alert message model =
   Native.Browser.alert message model
+
+{-| Renders a panel that have scrolling content. -}
+scrolledPanel : List Html.Html -> Html.Html
+scrolledPanel contents =
+  node "ui-scrolled-panel" []
+    [ node "ui-scrolled-panel-wrapper" [] contents ]

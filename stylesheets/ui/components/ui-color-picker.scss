@@ -8,8 +8,8 @@ ui-color-picker {
 
   // Color preview on the right side
   ui-color-picker-rect {
-    background: linear-gradient(45deg, #DDD 25%, transparent 25%, transparent 75%, #DDD 75%, #DDD),
-                linear-gradient(45deg, #DDD 25%, transparent 25%, transparent 75%, #DDD 75%, #DDD);
+    background: linear-gradient(45deg, $background 25%, transparent 25%, transparent 75%, $background 75%, $background),
+                linear-gradient(45deg, $background 25%, transparent 25%, transparent 75%, $background 75%, $background);
     background-position: 0 0, 9px 9px;
     background-size: 18px 18px;
 

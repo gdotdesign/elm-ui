@@ -6,12 +6,12 @@ ui-dropdown {
   z-index: map-get($z-index, dropdown);
   position: absolute;
   max-height: 250px;
+  display: flex;
   right: 0;
   left: 0;
 
   // Stlying
   box-shadow: 0 5px 20px rgba(#000, 0.1);
-  overflow: auto;
   padding: 3px;
 
   // Effect

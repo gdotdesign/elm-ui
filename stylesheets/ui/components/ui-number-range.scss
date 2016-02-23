@@ -66,5 +66,9 @@ ui-number-range {
     text-align: center;
     width: 100%;
     z-index: 0;
+
+    &:focus {
+      @extend %focused;
+    }
   }
 }

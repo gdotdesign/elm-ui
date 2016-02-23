@@ -8,6 +8,10 @@ ui-chooser {
     position: relative;
     width: 100%;
     z-index: 2;
+
+    &:focus {
+      @extend %focused;
+    }
   }
 
   &.dropdown-open {
@@ -93,10 +97,6 @@ ui-chooser {
     ui-dropdown {
       display: none;
     }
-  }
-
-  input:focus {
-    @extend %focused;
   }
 
   // Empty state

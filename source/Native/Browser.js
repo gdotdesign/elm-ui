@@ -3,7 +3,8 @@ Elm.Native.Browser.make = function(elm) {
   elm.Native = elm.Native || {};
   elm.Native.Browser = elm.Native.Browser || {};
   if (elm.Native.Browser.values) { return elm.Native.Browser.values; }
-  if(typeof window !== 'undefined' && window.HTMLElement) {
+
+  function patchHTMLElement(element) {
     var fallbackMenu = { getBoundingClientRect: function(){
         return { bottom: 0,
           height: 0,
@@ -15,7 +16,7 @@ Elm.Native.Browser.make = function(elm) {
       }
     }
 
-    Object.defineProperty(HTMLElement.prototype, "dropdown", {
+    Object.defineProperty(element.prototype, "dropdown", {
       configurable: false,
       enumerable: false,
       writeable: false,
@@ -26,7 +27,7 @@ Elm.Native.Browser.make = function(elm) {
       }
     })
 
-    Object.defineProperty(HTMLElement.prototype, "dropdownMenu", {
+    Object.defineProperty(element.prototype, "dropdownMenu", {
       configurable: false,
       enumerable: false,
       writeable: false,
@@ -43,7 +44,7 @@ Elm.Native.Browser.make = function(elm) {
 
     /* Add dimensions property to HTMLElement so we can decode it, it's not
        exposed so it won't conflict with anything hopefully. */
-    Object.defineProperty(HTMLElement.prototype, "dimensions", {
+    Object.defineProperty(element.prototype, "dimensions", {
       configurable: false,
       enumerable: false,
       writeable: false,
@@ -62,7 +63,7 @@ Elm.Native.Browser.make = function(elm) {
 
     /* Add ontransitionend property to use virtual node attributes. Maybe this
        needs a better implementation. */
-    Object.defineProperty(HTMLElement.prototype, "ontransitionend", {
+    Object.defineProperty(element.prototype, "ontransitionend", {
       configurable: false,
       enumerable: false,
       writeable: false,
@@ -84,6 +85,10 @@ Elm.Native.Browser.make = function(elm) {
         this._ontransitionend_hadler = wrap
       }
     })
+  }
+
+  if(typeof window !== 'undefined' && window.HTMLElement) {
+    patchHTMLElement(window.HTMLElement)
   }
 
   /* Focus an element and place the cursor at the end of it's text. */
@@ -141,6 +146,7 @@ Elm.Native.Browser.make = function(elm) {
     toFixed: F2(function(value,decimals) { return value.toFixed(decimals) }),
     open: F2(function(url,value) { window.open(url); return value; }),
     rem: F2(function(a,b){ return a % b }),
+    patchHTMLElement: patchHTMLElement,
     alert: F2(alertWindow),
     focusEnd: focusEnd,
     focus: focus,

@@ -101,6 +101,8 @@ ui-chooser {
 
   // Empty state
   ui-dropdown {
+    min-width: 100%;
+
     &:empty:before {
       content: 'No items to display!';
       font-style: italic;

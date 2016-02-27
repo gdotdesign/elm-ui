@@ -15,10 +15,10 @@ form a list of choises, with lots of options.
 @docs toggleItem, close, getFirstSelected, updateData, selectFirst, select
 -}
 import Html.Extra exposing (onInput, onPreventDefault, onWithDropdownDimensions
-                           ,onKeysWithDimensions)
+                           ,onKeysWithDimensions, onStop)
 import Html.Attributes exposing (value, placeholder, readonly, classList
                                 , disabled)
-import Html.Events exposing (onFocus, onBlur, onClick, onMouseDown)
+import Html.Events exposing (onFocus, onBlur, onClick)
 import Html exposing (span, text, node, input, Html)
 import Html.Lazy
 
@@ -373,7 +373,7 @@ renderItem item address model =
   let
     selectEvent =
       if model.closeOnSelect then
-        onMouseDown address (Select item.value)
+        onStop "mouseup" address (Select item.value)
       else
         onPreventDefault "mousedown" address (Select item.value)
   in

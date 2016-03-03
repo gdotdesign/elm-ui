@@ -1,21 +1,19 @@
 var generatePackage = require('./generate-package')
 var child_process = require('child_process')
 var spawn = child_process.spawn
-var _ = require('underscore')
 var path = require('path')
-var fs = require('fs')
 
-
-var elmPackageExecutable =
-  path.resolve(__dirname, '../../../node_modules/elm/binwrappers/elm-package')
+// Find the elm-make executable
+var elmExecutable =
+  path.resolve(__dirname, '../../../node_modules/elm/binwrappers/elm-make')
 
 module.exports = function() {
   generatePackage()
 
-  // Install dependencies
-  console.log('Installing Elm packages...')
+  // Generate documentation
+  console.log('Generating Elm documentation...')
 
-  spawn(elmPackageExecutable, ['install', '--yes'], {
+  spawn(elmExecutable, ['--docs=documentation.json'], {
     stdio: 'inherit'
   }).on('close', function(code) {
     process.exit(code)

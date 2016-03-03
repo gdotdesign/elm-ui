@@ -22,6 +22,13 @@ program
   })
 
 program
+  .command('docs')
+  .description('Generates Elm documentation')
+  .action(function(env, opts) {
+    elmUi.docs()
+  })
+
+program
   .command('help')
   .description('Output usage information')
   .action(function(env, opts) {

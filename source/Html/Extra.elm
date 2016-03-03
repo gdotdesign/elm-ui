@@ -4,7 +4,7 @@ module Html.Extra
   , preventDefaultOptions, stopPropagationOptions, stopOptions, onTransitionEnd
   , onPreventDefault, onEnterPreventDefault, onStop, onStopNothing, onEnter
   , onLoad, onKeys, onInput, onWithDimensions, onScroll, onWithDropdownDimensions
-  , DropdownDimensions, onKeysWithDimensions) where
+  , DropdownDimensions, onKeysWithDimensions, onWheel, deltaDecoder) where
 
 {-| Extra functions / events / decoders for working with HTML.
 
@@ -13,7 +13,7 @@ module Html.Extra
 
 # Decoders
 @docs dimensionsDecoder, positionDecoder, positionAndDimensionDecoder
-@docs windowDimensionsDecoder
+@docs windowDimensionsDecoder, deltaDecoder
 
 # Options
 @docs preventDefaultOptions, stopPropagationOptions, stopOptions
@@ -21,7 +21,7 @@ module Html.Extra
 # Events
 @docs onTransitionEnd, onPreventDefault, onEnterPreventDefault, onStop, onScroll
 @docs onStopNothing, onEnter, onLoad, onKeys, onInput, onWithDimensions
-@docs onWithDropdownDimensions, onKeysWithDimensions
+@docs onWithDropdownDimensions, onKeysWithDimensions, onWheel
 -}
 import Html.Events exposing (on, onWithOptions, targetValue, keyCode, defaultOptions)
 import Html
@@ -71,6 +71,16 @@ type alias DropdownDimensions =
   , dropdown : Dimensions
   , window : WindowDimensions
   }
+
+{-| Decodes deltaY. -}
+deltaDecoder : Json.Decoder Float
+deltaDecoder =
+  Json.at ["deltaY"] Json.float
+
+{-| An event listener that for the wheel event. -}
+onWheel : Signal.Address a -> (Float -> a) -> Html.Attribute
+onWheel address action =
+  Html.Events.on "wheel" deltaDecoder (\a -> Signal.message address (action a))
 
 {-| Decodes the window dimesions. -}
 windowDimensionsDecoder : Json.Decoder WindowDimensions

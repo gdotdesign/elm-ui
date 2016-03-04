@@ -78,9 +78,9 @@ deltaDecoder =
   Json.at ["deltaY"] Json.float
 
 {-| An event listener that for the wheel event. -}
-onWheel : Signal.Address a -> (Float -> a) -> Html.Attribute
-onWheel address action =
-  Html.Events.on "wheel" deltaDecoder (\a -> Signal.message address (action a))
+onWheel : Json.Decoder b -> Signal.Address a -> (b -> a) -> Html.Attribute
+onWheel decoder address action =
+  Html.Events.on "wheel" decoder (\a -> Signal.message address (action a))
 
 {-| Decodes the window dimesions. -}
 windowDimensionsDecoder : Json.Decoder WindowDimensions

@@ -58,7 +58,7 @@
     "deadfoxygrandpa/elm-test": "3.0.1 <= v < 4.0.0",
     "laszlopandy/elm-console" : "1.0.3 <= v < 2.0.0",
     "coreytrampe/elm-vendor": "2.0.0 <= v < 3.0.0",
-    "mgold/elm-date-format": "1.0.3 <= v < 2.0.0",
+    "rluiten/elm-date-extra": "2.2.1 <= v < 3.0.0",
     "evancz/elm-markdown": "2.0.0 <= v < 3.0.0",
     "evancz/virtual-dom": "2.1.0 <= v < 3.0.0",
     "evancz/elm-effects": "2.0.0 <= v < 3.0.0",

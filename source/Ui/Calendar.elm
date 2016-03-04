@@ -20,7 +20,8 @@ import Html.Events exposing (onMouseDown)
 import Html exposing (node, text, span)
 import Html.Lazy
 
-import Date.Format exposing (format)
+import Date.Format exposing (isoDateFormat, format)
+import Date.Config.Configs as DateConfigs
 import Time exposing (Time)
 import Ext.Signal
 import Ext.Date
@@ -47,6 +48,7 @@ type alias Model =
   , date : Date.Date
   , disabled : Bool
   , readonly : Bool
+  , locale : String
   }
 
 {-| Actions that a calendar can make. -}
@@ -68,6 +70,7 @@ init date =
   , readonly = False
   , value = date
   , date = date
+  , locale = "en_us"
   }
 
 {-| Initializes a calendar with the given value and value address.
@@ -82,6 +85,7 @@ initWithAddress valueAddress date =
   , readonly = False
   , value = date
   , date = date
+  , locale = "en_us"
   }
 
 {-| Updates a calendar. -}
@@ -154,7 +158,7 @@ render address model =
                         , align = "stretch"
                         , direction = "row" } []
         [ Ui.icon "chevron-left" (not model.readonly) previousAction
-        , node "div" [] [text (format "%Y - %B" month)]
+        , node "div" [] [text (format (DateConfigs.getConfig model.locale) "%Y - %B" month)]
         , Ui.icon "chevron-right" (not model.readonly) nextAction
         ]
   in

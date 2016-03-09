@@ -140,6 +140,10 @@ Elm.Native.Browser.make = function(elm) {
     return returnValue;
   }
 
+  function haveSelector(selector) {
+    return !!document.querySelector(selector)
+  }
+
   /* Interface. */
   return elm.Native.Browser.values = {
     redirect: F2(function(url,value) { window.location.href = url; return value; }),
@@ -147,6 +151,7 @@ Elm.Native.Browser.make = function(elm) {
     open: F2(function(url,value) { window.open(url); return value; }),
     rem: F2(function(a,b){ return a % b }),
     patchHTMLElement: patchHTMLElement,
+    haveSelector: haveSelector,
     alert: F2(alertWindow),
     focusEnd: focusEnd,
     focus: focus,

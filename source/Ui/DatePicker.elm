@@ -23,7 +23,8 @@ import Ext.Signal
 import Effects
 import Dict
 
-import Date.Format exposing (format)
+import Date.Format exposing (isoDateFormat, format)
+import Date.Config.Configs as DateConfigs
 import Time
 import Date
 
@@ -49,6 +50,7 @@ type alias Model =
   , dropdownPosition : String
   , closeOnSelect : Bool
   , format : String
+  , locale : String
   , disabled : Bool
   , readonly : Bool
   , open : Bool
@@ -77,7 +79,8 @@ init address date =
   , dropdownPosition = "bottom"
   , closeOnSelect = False
   , calendar = Calendar.init date
-  , format = "%Y-%m-%d"
+  , format = isoDateFormat
+  , locale = "en_us"
   , disabled = False
   , readonly = False
   , open = False
@@ -97,7 +100,8 @@ initWithAddress valueAddress address date =
   , dropdownPosition = "bottom"
   , closeOnSelect = False
   , calendar = Calendar.initWithAddress (forwardTo address Select) date
-  , format = "%Y-%m-%d"
+  , format = isoDateFormat
+  , locale = "en_us"
   , disabled = False
   , readonly = False
   , open = False
@@ -179,7 +183,7 @@ render address model =
                                        , ("readonly", model.readonly)
                                        ]
                            ] ++ actions ++ (Ui.tabIndex model))
-      [ div [] [text (format model.format model.calendar.value)]
+      [ div [] [text (format (DateConfigs.getConfig model.locale) model.format model.calendar.value)]
       , Ui.icon "calendar" False []
       , Dropdown.view model.dropdownPosition
         [ node "ui-dropdown-overlay" [onClick address Blur] []

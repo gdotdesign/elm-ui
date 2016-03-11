@@ -1,3 +1,4 @@
+import Date.Config.Configs as DateConfigs
 import Signal exposing (forwardTo)
 import Signal.Time
 import Maybe.Extra
@@ -163,6 +164,9 @@ type alias Model =
   , time : Ui.Time.Model
   , clicked : Bool
   }
+
+dateConfig =
+  (DateConfigs.getConfig "en")
 
 handleMoveIdentity x y model = (model, Effects.none)
 handleClickIndetity pressed model = model
@@ -899,9 +903,9 @@ update' action model =
       in
         notify ("Chooser changed to: " ++ selected) model
     CalendarChanged time ->
-      notify ("Calendar changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
+      notify ("Calendar changed to: " ++ (Date.Format.format dateConfig "%Y-%m-%d" (Date.fromTime time))) model
     DatePickerChanged time ->
-      notify ("Date picker changed to: " ++ (Date.Format.format "%Y-%m-%d" (Date.fromTime time))) model
+      notify ("Date picker changed to: " ++ (Date.Format.format dateConfig "%Y-%m-%d" (Date.fromTime time))) model
     RatingsChanged value ->
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
     TaggerAddFailed err ->

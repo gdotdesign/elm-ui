@@ -8,6 +8,7 @@ module Ui.Time where
 # View
 @docs view
 -}
+import Date.Config.Configs as DateConfigs
 import Date.Format exposing (format)
 import Ext.Date
 import Date
@@ -22,16 +23,18 @@ import Html exposing (text, node)
 type alias Model =
   { date: Date.Date
   , format : String
+  , locale : String
   }
 
 init : Date.Date -> Model
 init date =
   { date = date
   , format = "%Y-%m-%d %H:%M:%S"
+  , locale = "en"
   }
 
 view : Model -> Html.Html
 view model =
   node "ui-time"
-    [title (format model.format model.date)]
+    [title (format (DateConfigs.getConfig model.locale) model.format model.date)]
     [text (Ext.Date.ago model.date (Ext.Date.now ()))]

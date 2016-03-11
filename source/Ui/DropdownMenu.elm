@@ -1,16 +1,17 @@
 module Ui.DropdownMenu
-  (Model, Action, init, update, view, item, handleClick, close) where
+  (Dimensions, Model, Action, init, update, view, item, handleClick, close
+  , open, openHandler) where
 
 {-| Dropdown menu that is always visible on the screen.
 
 # Model
-@docs Model, Action, init, update
+@docs Dimensions, Model, Action, init, update
 
 # View
 @docs view, item
 
 # Functions
-@docs handleClick, close
+@docs handleClick, close, open, openHandler
 -}
 import Html.Extra exposing ( onStopNothing, WindowDimensions
                            , windowDimensionsDecoder)
@@ -18,6 +19,15 @@ import Html.Attributes exposing (style, classList)
 import Html.Events exposing (onWithOptions)
 import Html exposing (node)
 import Json.Decode as Json
+
+import Native.Browser
+
+{-| Represents dimensions for a dropdown menu. -}
+type alias Dimensions =
+  { parent : Html.Extra.Dimensions
+  , dropdown : Html.Extra.Dimensions
+  , window : WindowDimensions
+  }
 
 {-| Represents a dropdown menu:
   - **favoredSides** - The sides to open the dropdown when there is space
@@ -64,7 +74,7 @@ init =
 view: Signal.Address Action -> Html.Html -> List Html.Html -> Model -> Html.Html
 view address element children model =
   node "ui-dropdown-menu"
-    [ openHandler "mouseup" address Toggle
+    [ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" address Toggle
     ]
     [ element
     , node "ui-dropdown-menu-items"
@@ -87,8 +97,7 @@ update: Action -> Model -> Model
 update action model =
   case action of
     Toggle dimensions ->
-      updatePosition dimensions model
-        |> toggle
+      open dimensions model
 
 {-| Handles the click, closes the modal if not pressed. -}
 handleClick : Bool -> Model -> Model
@@ -103,42 +112,28 @@ close : Model -> Model
 close model =
   { model | open = False }
 
--- Represents dimensions of the dropdown and window.
-type alias Dimensions =
-  { parent : Html.Extra.Dimensions
-  , dropdown : Html.Extra.Dimensions
-  , window : WindowDimensions
-  }
-
--- Toggles a dropdown menu
-toggle : Model -> Model
-toggle model =
-  { model | open = not model.open }
-
 -- Decodes dimensions
-dimensionsDecoder : Json.Decoder Dimensions
-dimensionsDecoder =
+dimensionsDecoder : String -> String -> Json.Decoder Dimensions
+dimensionsDecoder parent dropdown =
   Json.object3
     Dimensions
-    (Json.at [ "target", "dropdownMenu"
-             , "element", "dimensions"] Html.Extra.dimensionsDecoder)
-    (Json.at [ "target", "dropdownMenu"
-             , "dropdown", "dimensions"] Html.Extra.dimensionsDecoder)
+    (Json.at ["target"] (Native.Browser.closest parent (Native.Browser.atElement "*:first-child" (Json.at ["dimensions"] Html.Extra.dimensionsDecoder))))
+    (Json.at ["target"] (Native.Browser.closest parent (Native.Browser.atElement dropdown (Json.at ["dimensions"] Html.Extra.dimensionsDecoder))))
     windowDimensionsDecoder
 
--- Open event handler
-openHandler : String -> Signal.Address Action ->
-              (Dimensions -> Action) -> Html.Attribute
-openHandler event address action =
+{-| Open event handler. -}
+openHandler : String -> String -> String -> Signal.Address a ->
+              (Dimensions -> a) -> Html.Attribute
+openHandler parent dropdown event address action =
   onWithOptions
     event
     Html.Events.defaultOptions
-    dimensionsDecoder
+    (dimensionsDecoder parent dropdown)
     (\dimensions -> Signal.message address (action dimensions))
 
--- Updates the position of a dropdown form the given dimensions.
-updatePosition : Dimensions -> Model -> Model
-updatePosition {parent,dropdown,window} model =
+{-| Updates the position of a dropdown form the given dimensions. -}
+open : Dimensions -> Model -> Model
+open {parent,dropdown,window} model =
   let
     topSpace = parent.top - dropdown.height - model.offsetY
     topPosition = topSpace
@@ -170,4 +165,4 @@ updatePosition {parent,dropdown,window} model =
       else
         rightPosition
   in
-    { model | top = top, left = left }
+    { model | top = top, left = left, open = True }

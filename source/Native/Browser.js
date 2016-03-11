@@ -27,21 +27,6 @@ Elm.Native.Browser.make = function(elm) {
       }
     })
 
-    Object.defineProperty(element.prototype, "dropdownMenu", {
-      configurable: false,
-      enumerable: false,
-      writeable: false,
-      get: function(){
-        var dropdown = this.closest('ui-dropdown-menu')
-        if(dropdown){
-          return { element: dropdown.firstElementChild || fallbackMenu
-                 , dropdown: dropdown.lastElementChild || fallbackMenu }
-        }else {
-          return { element: fallbackMenu, dropdown: fallbackMenu }
-        }
-      }
-    })
-
     /* Add dimensions property to HTMLElement so we can decode it, it's not
        exposed so it won't conflict with anything hopefully. */
     Object.defineProperty(element.prototype, "dimensions", {
@@ -144,6 +129,35 @@ Elm.Native.Browser.make = function(elm) {
     return !!document.querySelector(selector)
   }
 
+  function crash(expected, actual) {
+    throw new Error(
+      'expecting ' + expected + ' but got ' + actual
+    );
+  }
+
+  function elementQueryDecoder(method, selector, decoder) {
+    return function(value) {
+      if (value instanceof HTMLElement) {
+        var element = value[method](selector);
+        if(element){
+          return decoder(element)
+        } else {
+          throw new Error('Could not find selector: ' + selector)
+        }
+      } else {
+        crash('a HTMLElement', value);
+      }
+    };
+  }
+
+  function closest(selector, decoder) {
+    return elementQueryDecoder('closest', selector, decoder)
+  }
+
+  function atElement(selector, decoder) {
+    return elementQueryDecoder('querySelector', selector, decoder)
+  }
+
   /* Interface. */
   return elm.Native.Browser.values = {
     redirect: F2(function(url,value) { window.location.href = url; return value; }),
@@ -152,7 +166,9 @@ Elm.Native.Browser.make = function(elm) {
     rem: F2(function(a,b){ return a % b }),
     patchHTMLElement: patchHTMLElement,
     haveSelector: haveSelector,
+    atElement: F2(atElement),
     alert: F2(alertWindow),
+    closest: F2(closest),
     focusEnd: focusEnd,
     focus: focus,
     blur: blur,

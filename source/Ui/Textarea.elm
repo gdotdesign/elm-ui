@@ -14,13 +14,14 @@ way, thus creating an automatically growing textarea.
 @docs setValue, focus
 -}
 import Html.Attributes exposing (value, spellcheck, placeholder, classList,
-                                 readonly, disabled)
+                                 readonly, disabled, attribute)
 import Html.Extra exposing (onEnterPreventDefault, onInput, onStop)
 import Html exposing (node, textarea, text, br)
-import Html.Events exposing (onFocus)
 import Html.Lazy
 
 import Native.Browser
+import Native.Uid
+
 import Ext.Signal
 import Effects
 import Signal
@@ -35,16 +36,17 @@ import Ui
   - **valueAddress** - The address to send the changes in value
   - **disabled** - Whether or not the textarea is disabled
   - **readonly** - Whether or not the textarea is readonly
+  - **uid** - The unique identifier of the textarea
   - **value** - The value
 -}
 type alias Model =
   { valueAddress : Maybe (Signal.Address String)
   , placeholder : String
   , enterAllowed : Bool
-  , focusNext : Bool
   , disabled : Bool
   , readonly : Bool
   , value : String
+  , uid : String
   }
 
 {-| Actions a textrea can make. -}
@@ -52,7 +54,6 @@ type Action
   = Input String
   | Tasks ()
   | NoOp
-  | Focus
 
 
 {-| Initializes a textraea with the given value.
@@ -61,9 +62,9 @@ type Action
 -}
 init : String -> Model
 init value =
-  { valueAddress = Nothing
+  { uid = Native.Uid.uid ()
+  , valueAddress = Nothing
   , enterAllowed = True
-  , focusNext = False
   , placeholder = ""
   , disabled = False
   , readonly = False
@@ -78,8 +79,8 @@ in value to.
 initWithAddress : Signal.Address String -> String -> Model
 initWithAddress valueAddress value =
   { valueAddress = Just valueAddress
+  , uid = Native.Uid.uid ()
   , enterAllowed = True
-  , focusNext = False
   , placeholder = ""
   , disabled = False
   , readonly = False
@@ -92,9 +93,6 @@ update action model =
   case action of
     Input value ->
       setValue value model
-
-    Focus ->
-      ({ model | focusNext = False }, Effects.none)
 
     _ ->
       (model, Effects.none)
@@ -111,10 +109,11 @@ render address model =
     base =
       [ placeholder model.placeholder
       , value model.value
-      , onFocus address Focus
       , readonly model.readonly
       , disabled model.disabled
-      , spellcheck False ] ++ actions
+      , attribute "uid" model.uid
+      , spellcheck False
+      ] ++ actions
 
     actions =
       Ui.enabledActions model
@@ -127,17 +126,11 @@ render address model =
         base
       else
         base ++ [onEnterPreventDefault address NoOp]
-
-    textarea' =
-      if model.focusNext then
-        Native.Browser.focusEnd (textarea attributes [])
-      else
-        textarea attributes []
   in
     node "ui-textarea" ([classList [ ("disabled", model.disabled)
                                    , ("readonly", model.readonly)
                                    ]])
-      [ textarea'
+      [ textarea attributes []
       , node "ui-textarea-background" [] []
       , node "ui-textarea-mirror" [] (process model.value)
       ]
@@ -149,9 +142,10 @@ setValue value model =
   , Ext.Signal.sendAsEffect model.valueAddress value Tasks)
 
 {-| Focuses the textarea. -}
-focus : Model -> Model
+focus : Model -> Effects.Effects Action
 focus model =
-  { model | focusNext = True }
+  Effects.task (Native.Browser.focusTask ("[uid='" ++ model.uid ++ "']"))
+  |> Effects.map Tasks
 
 {-| Processes the value for the mirror object. -}
 process : String -> List Html.Html

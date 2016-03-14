@@ -98,6 +98,12 @@ update action model =
             model.textarea.value
             Tasks )
 
+    Edit ->
+      if model.disabled then
+        (model, Effects.none)
+      else
+        open model
+
     _ ->
       (update' action model, Effects.none)
 
@@ -105,12 +111,6 @@ update action model =
 update' : Action -> Model -> Model
 update' action model =
   case action of
-    Edit ->
-      if model.disabled then
-        model
-      else
-        open model
-
     Close ->
       close model
 
@@ -171,10 +171,14 @@ isEmpty model =
   String.isEmpty (String.trim model.textarea.value)
 
 {-| Opens an inplace input. -}
-open : Model -> Model
+open : Model -> (Model, Effects.Effects Action)
 open model =
-  { model | open = True
-          , textarea = Ui.Textarea.focus model.textarea }
+  let
+    effect =
+      Ui.Textarea.focus model.textarea
+      |> Effects.map Textarea
+  in
+    ({ model | open = True }, effect)
 
 {-| Closes an inplace input. -}
 close : Model -> Model

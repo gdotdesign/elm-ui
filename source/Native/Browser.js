@@ -102,16 +102,23 @@ Elm.Native.Browser.make = function(elm) {
     }.bind(this));
   };
 
-  function focusEnd(object) {
-    if(object.properties) object.properties["afocus"] = new MutableFocusHook(true)
-    if(object._0) object._0.properties["afocus"] = new MutableFocusHook(true)
-    return object;
-  }
-
   function focus(object){
     if(object.properties) object.properties["afocus"] = new MutableFocusHook
     if(object._0) object._0.properties["afocus"] = new MutableFocusHook
     return object;
+  }
+
+  var Task = Elm.Native.Task.make(elm);
+  var Utils = Elm.Native.Utils.make(elm);
+
+  function focusTask(selector){
+    return Task.asyncFunction(function(callback) {
+      setTimeout(function(){
+        var element = document.querySelector(selector)
+        if(element){ element.focus() }
+        return callback(Task.succeed(Utils.Tuple0));
+      }, 30)
+    });
   }
 
   /* Blurs the active element. */
@@ -168,10 +175,10 @@ Elm.Native.Browser.make = function(elm) {
     haveSelector: haveSelector,
     atElement: F2(atElement),
     alert: F2(alertWindow),
+    focusTask: focusTask,
     closest: F2(closest),
-    focusEnd: focusEnd,
     focus: focus,
-    blur: blur,
+    blur: blur
   };
 };
 

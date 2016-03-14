@@ -4,18 +4,6 @@ ui-container {
   &.direction-row {
     flex-direction: row;
 
-    &.align-start {
-      align-items: flex-start;
-    }
-
-    &.align-center {
-      align-items: center;
-    }
-
-    &.align-end {
-      align-items: flex-end;
-    }
-
     &:not(.compact) > * + * {
       margin-left: 10px;
     }
@@ -24,20 +12,20 @@ ui-container {
   &.direction-column {
     flex-direction: column;
 
-    &.align-start {
-      justify-content: flex-start;
-    }
-
-    &.align-center {
-      justify-content: center;
-    }
-
-    &.align-end {
-      justify-content: flex-end;
-    }
-
     &:not(.compact) > * + * {
       margin-top: 10px;
     }
+  }
+
+  &.align-start {
+    justify-content: flex-start;
+  }
+
+  &.align-center {
+    justify-content: center;
+  }
+
+  &.align-end {
+    justify-content: flex-end;
   }
 }

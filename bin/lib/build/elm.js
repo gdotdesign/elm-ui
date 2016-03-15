@@ -3,14 +3,14 @@ var uglifyJS = require('uglify-js')
 var path = require('path')
 var fs = require('fs')
 
-module.exports = function(shouldFail) {
+module.exports = function(config, shouldFail) {
   var destination = path.resolve('dist/main.js')
   var source = path.resolve('source/Main.elm')
 
   return function(callback) {
     console.log('Building JavaScript...')
 
-    renderElm(source, shouldFail)(function(err, contents) {
+    renderElm(source, config, shouldFail)(function(err, contents) {
       if (err) {
         return callback(err, null)
       }

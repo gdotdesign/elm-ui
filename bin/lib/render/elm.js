@@ -57,7 +57,7 @@ var render = function(file, callback) {
   })
 }
 
-module.exports = function(file, shouldFail) {
+module.exports = function(file, config, shouldFail) {
   return function(callback) {
     render(file, function(error, result) {
       if (error) {
@@ -70,7 +70,12 @@ module.exports = function(file, shouldFail) {
           callback(null, prettyError)
         }
       } else {
-        callback(null, fs.readFileSync('test.js', 'utf-8'))
+        var contents = [
+          fs.readFileSync('test.js', 'utf-8'),
+          `window.ENV = ${JSON.stringify(config)}`,
+          'Elm.fullscreen(Elm.Main);'
+        ].join('\n')
+        callback(null, contents)
         fs.unlink('test.js')
       }
     })

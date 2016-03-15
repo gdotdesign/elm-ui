@@ -34,12 +34,12 @@ module.exports = function(options) {
   })
 
   router.get('/', function*(next) {
-    this.body = renderHtml(config)
+    this.body = renderHtml()
   })
 
   router.get('/main.js', function*(next) {
     this.type = 'text/javascript'
-    this.body = yield renderElm(path.resolve('source/Main.elm'))
+    this.body = yield renderElm(path.resolve('source/Main.elm'), config)
   })
 
   router.get('/main.css', function*(next) {

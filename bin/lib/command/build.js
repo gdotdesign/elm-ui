@@ -30,8 +30,8 @@ module.exports = function(options) {
   // Build things with async
   async.series([
     buildPublic(),
-    buildHtml(config),
-    buildElm(true),
+    buildHtml(),
+    buildElm(config,true),
     buildCSS(true)
   ], function(error, results) {
     if (error) {

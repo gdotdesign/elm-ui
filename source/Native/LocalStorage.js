@@ -4,35 +4,67 @@ Elm.Native.LocalStorage.make = function(elm) {
   elm.Native.LocalStorage = elm.Native.LocalStorage || {};
   if (elm.Native.LocalStorage.values) {return elm.Native.LocalStorage.values; }
 
-  var Result = Elm.Result.make(elm);
+  var Task = Elm.Native.Task.make(elm);
+
+  var isChromeApp = window.chrome && window.chrome.storage
 
   /* Gets a value from the localStorage as a result. */
   function get(key){
-    result = window.localStorage.getItem(key);
-    if(result) {
-      return Result.Ok(result);
+    if(isChromeApp) {
+      return Task.asyncFunction(function(callback){
+        chrome.storage.local.get(key, function(data){
+          if(data[key]) {
+            callback(Task.succeed(data[key]))
+          } else {
+            callback(Task.fail("Key does not exsists in local storage!"))
+          }
+        })
+      })
     } else {
-      return Result.Err("Key does not exsists in local storage!");
+      result = window.localStorage.getItem(key);
+      if(result) {
+        return Task.succeed(result);
+      } else {
+        return Task.fail("Key does not exsists in local storage!");
+      }
     }
   }
 
   /* Sets a value to the localStoraget as a result. */
   function set(key, value){
-    try {
-      window.localStorage.setItem(key, value);
-      return Result.Ok(value);
-    } catch (e) {
-      return Result.Err("Could not write to local storage!")
+    if(isChromeApp) {
+      return Task.asyncFunction(function(callback){
+        obj = {}
+        obj[key] = value
+        chrome.storage.local.set(obj,function(){
+          callback(Task.succeed(""))
+        })
+      })
+    } else {
+      try {
+        window.localStorage.setItem(key, value);
+        return Task.succeed(value);
+      } catch (e) {
+        return Task.fail("Could not write to local storage!")
+      }
     }
   }
 
   /* Removes a value from the localStorage as a result. */
   function remove(key) {
-    try {
-      window.localStorage.removeItem(key);
-      return Result.Ok(key);
-    } catch (e) {
-      return Result.Err("Could not delete given key from local storage!");
+    if(isChromeApp) {
+      return Task.asyncFunction(function(callback){
+        chrome.storage.local.remove(key,function(){
+          callback(Task.succeed(""))
+        })
+      })
+    } else {
+      try {
+        window.localStorage.removeItem(key);
+        return Task.succeed(key);
+      } catch (e) {
+        return Task.fail("Could not delete given key from local storage!");
+      }
     }
   }
 

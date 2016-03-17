@@ -1,6 +1,6 @@
 module Ui.Chooser
   (Model, Item, Action, init, initWithAddress, update, close, toggleItem,
-   getFirstSelected, view, updateData, selectFirst, select) where
+   getFirstSelected, view, updateData, selectFirst, setValue) where
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
@@ -12,7 +12,7 @@ form a list of choises, with lots of options.
 @docs view
 
 # Functions
-@docs toggleItem, close, getFirstSelected, updateData, selectFirst, select
+@docs toggleItem, close, getFirstSelected, updateData, selectFirst, setValue
 -}
 import Html.Extra exposing (onInput, onPreventDefault, onWithDropdownDimensions
                            ,onKeysWithDimensions, onStop)
@@ -159,7 +159,7 @@ update' : Action -> Model -> Model
 update' action model =
   case action of
     Filter value ->
-      setValue value model
+      setInputValue value model
        |> intendFirst
 
     Toggle dimensions ->
@@ -242,22 +242,21 @@ render address model =
                 ] ++ actions) []] ++ dropdown)
 
 {-| Selects the given value of chooser. -}
-select : String -> Model -> (Model, Effects.Effects Action)
-select value model =
+setValue : String -> Model -> Model
+setValue value model =
   let
     newSelected = Set.singleton value
   in
     if (Set.size (Set.diff newSelected model.selected)) == 0 then
-      (model, Effects.none)
+      model
     else
       { model | selected = newSelected }
-      |> sendValue
 
 {-| Closes the dropdown of a chooser. -}
 close : Model -> Model
 close model =
   Dropdown.close model
-  |> setValue ""
+  |> setInputValue ""
 
 {-| Selects or deselects the item with the given value. -}
 toggleItem : String -> Model -> (Model, Effects.Effects Action)
@@ -344,8 +343,8 @@ intendFirst model =
       model
 
 -- Sets the value of a chooser.
-setValue : String -> Model -> Model
-setValue value model =
+setInputValue : String -> Model -> Model
+setInputValue value model =
   { model | value = value }
 
 -- Returns the label of a chooser.

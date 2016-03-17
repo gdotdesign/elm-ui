@@ -49,6 +49,7 @@ import Ui.Modal
 import Ui.Image
 import Ui.Input
 import Ui.Time
+import Ui.Tabs
 import Ui.App
 import Ui
 
@@ -74,6 +75,7 @@ type Action
   | Slider (Showcase.Action Ui.Slider.Action)
   | Tagger (Showcase.Action (Ui.Tagger.Action TaggerModel String))
   | Input (Showcase.Action Ui.Input.Action)
+  | Tabs (Showcase.Action Ui.Tabs.Action)
   | Image Ui.Image.Action
   | Modal Ui.Modal.Action
   | Pager Ui.Pager.Action
@@ -155,6 +157,8 @@ type alias Model =
   , chooser : Showcase.Model Ui.Chooser.Model Ui.Chooser.Action
   , slider : Showcase.Model Ui.Slider.Model Ui.Slider.Action
   , input : Showcase.Model Ui.Input.Model Ui.Input.Action
+  , tabs : Showcase.Model Ui.Tabs.Model Ui.Tabs.Action
+  , tabsContents : List (String, Html.Html)
   , menu : Ui.DropdownMenu.Model
   , loader : Ui.Loader.Model
   , modal : Ui.Modal.Model
@@ -239,6 +243,17 @@ init =
           Ui.Calendar.update
           handleMoveIdentity
           handleClickIndetity
+    , tabs =
+         Showcase.init
+          (\_ -> Ui.Tabs.init 0)
+          (forwardTo address Tabs)
+          Ui.Tabs.update
+          handleMoveIdentity
+          handleClickIndetity
+    , tabsContents = [("First", text "First Tab")
+                     ,("Second", text "Second Tab")
+                     ,("Third", text "Third Tab")
+                     ]
     , tagger =
         Showcase.init
           (\_ ->
@@ -542,7 +557,8 @@ view address model =
     , numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons
     , disabledButton, disabledIconButton, modalView, infos, modalButton
     , dropdownMenu, pagerControls, notificationButton, numberPadViewFn
-    , pagerAddress, pagerContents, searchInput, tagger } = model
+    , pagerAddress, pagerContents, searchInput, tagger, tabs, tabsContents
+    } = model
 
     clicked =
       if model.clicked then [node "clicked" [] [emptyText]] else []
@@ -603,6 +619,9 @@ view address model =
                      (emptyText)
           , componentHeader "Calendar"
           , Showcase.view Ui.Calendar.view calendar
+
+          , componentHeader "Tabs"
+          , Showcase.view (Ui.Tabs.view tabsContents) tabs
 
           , componentHeader "Checkbox"
           , Showcase.view Ui.Checkbox.view checkbox
@@ -749,6 +768,11 @@ update action model =
 update' : Action -> Model -> (Model, Effects.Effects Action)
 update' action model =
   case action of
+    Tabs act ->
+      let
+        (tabs, effect) = Showcase.update act model.tabs
+      in
+        ({ model | tabs = tabs }, Effects.map Tabs effect)
     Tagger act ->
       let
         (tagger, effect) = Showcase.update act model.tagger

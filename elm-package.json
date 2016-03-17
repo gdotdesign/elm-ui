@@ -32,6 +32,7 @@
     "Ui.SearchInput",
     "Ui.InplaceInput",
     "Ui.Input",
+    "Ui.Tabs",
     "Ui.Modal",
     "Ui.NumberPad",
     "Ui.NumberRange",

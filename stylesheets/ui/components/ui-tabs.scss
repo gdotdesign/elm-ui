@@ -1,0 +1,76 @@
+ui-tabs {
+  position: relative;
+  display: block;
+
+  ui-tab-handles {
+    border-bottom: 2px solid $primary;
+    display: flex;
+  }
+
+  ui-tabs-content {
+    display: block;
+    padding: 10px;
+  }
+
+  ui-tab-handle {
+    border-radius: $border-radius $border-radius 0 0;
+    padding: 10px 20px;
+    transition: 200ms;
+    font-weight: 600;
+
+    + ui-tab-handle {
+      margin-left: 5px;
+    }
+
+    &:hover {
+      @include colors(dampen($secondary, 5%));
+    }
+
+    &.selected {
+      @include colors($primary);
+    }
+
+    &:focus {
+      @include colors($focus);
+
+      outline: none;
+    }
+  }
+
+  &:not(.disabled):not(.readonly) ui-tab-handle {
+    cursor: pointer;
+  }
+
+  &.readonly ui-tab-handle:focus {
+    @include colors($focus-readonly)
+  }
+
+  &.disabled {
+    opacity: 0.6;
+
+    &:before {
+      cursor: not-allowed;
+      position: absolute;
+      user-select: none;
+      content: '';
+      bottom: 0;
+      right: 0;
+      left: 0;
+      top: 0;
+    }
+
+    ui-tabs-content {
+      pointer-events: none;
+    }
+
+    ui-tab-handles {
+      border-bottom-color: $disabled;
+    }
+
+    ui-tab-handle {
+      &.selected {
+        @include colors($disabled);
+      }
+    }
+  }
+}

@@ -221,6 +221,7 @@ handleMove x y model =
   in
     if model.drag.dragging then
       setValue (model.startValue - (-diff * model.step)) model
+      |> sendValue
     else
       (model, Effects.none)
 
@@ -236,23 +237,24 @@ handleClick value model =
       { model | drag = drag }
 
 {-| Sets the value of a number range. -}
-setValue : Float -> Model -> (Model, Effects.Effects Action)
+setValue : Float -> Model -> Model
 setValue value model =
   if model.value == value then
-    (model, Effects.none)
+    model
   else
     { model | value = clamp model.min model.max value }
-    |> sendValue
 
 {-| Increments a number ranges value by it's defined step. -}
 increment : Model -> (Model, Effects.Effects Action)
 increment model =
   setValue (model.value + model.step) model
+  |> sendValue
 
 {-| Decrements a number ranges value by it's defined step. -}
 decrement : Model -> (Model, Effects.Effects Action)
 decrement model =
   setValue (model.value - model.step) model
+  |> sendValue
 
 -- Exits a number range from its editing mode.
 endEdit : Model -> (Model, Effects.Effects Action)
@@ -263,3 +265,4 @@ endEdit model =
     True ->
       { model | editing = False }
       |> setValue (Result.withDefault 0 (String.toFloat model.inputValue))
+      |> sendValue

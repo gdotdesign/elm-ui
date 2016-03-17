@@ -82,14 +82,15 @@ update : Action -> Model -> (Model, Effects.Effects Action)
 update action model =
   case action of
     Input value ->
-      setValue value model
+      ( setValue value model
+      , Ext.Signal.sendAsEffect model.valueAddress value Tasks )
 
     Tasks _ ->
       (model, Effects.none)
 
 {-| Focuses an input if it's in the dom.
 
-This function has a 40ms (delay) to wait for the element to appear on the page.
+This function has a 30ms (delay) to wait for the element to appear on the page.
 -}
 focus : Model -> Effects.Effects Action
 focus model =
@@ -121,7 +122,6 @@ render address model =
     ]
 
 {-| Sets the value of the model. -}
-setValue : String -> Model -> (Model, Effects.Effects Action)
+setValue : String -> Model -> Model
 setValue value model =
-  ( { model | value = value }
-  , Ext.Signal.sendAsEffect model.valueAddress value Tasks)
+  { model | value = value }

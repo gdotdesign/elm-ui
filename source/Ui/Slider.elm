@@ -164,9 +164,10 @@ clampLeft : Model -> (Model, Effects.Effects Action)
 clampLeft model =
   { model | left = clamp 0 model.drag.dimensions.width model.left }
     |> updatePrecent
+    |> sendValue
 
 {-| Updates the value to match the current position. -}
-updatePrecent : Model -> (Model, Effects.Effects Action)
+updatePrecent : Model -> Model
 updatePrecent model =
   setValue (model.left / model.drag.dimensions.width * 100) model
 
@@ -179,17 +180,20 @@ distance diff =
 increment : Model -> (Model, Effects.Effects Action)
 increment model =
   setValue (model.value + 1) model
+  |> sendValue
 
 {-| Decrements the slider by 1 percent. -}
 decrement : Model -> (Model, Effects.Effects Action)
 decrement model =
   setValue (model.value - 1) model
+  |> sendValue
 
 {-| Sets the value of the slider. -}
-setValue : Float -> Model -> (Model, Effects.Effects Action)
+setValue : Float -> Model -> Model
 setValue value model =
-  let
-    clampedValue = clamp 0 100 value
-  in
-    ( { model | value = clampedValue }
-    , Ext.Signal.sendAsEffect model.valueAddress clampedValue Tasks)
+  { model | value = clamp 0 100 value }
+
+{-| Sends the value to the valueAddress. -}
+sendValue : Model -> (Model, Effects.Effects Action)
+sendValue model =
+  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)

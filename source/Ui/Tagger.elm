@@ -136,11 +136,8 @@ update action model =
         (model, effect)
 
     Created (Ok tag) ->
-      let
-        (input, inputEffect) = Ui.Input.setValue "" model.input
-      in
-        ({ model | tags = tag :: model.tags
-                 , input = input }, Effects.map Input inputEffect)
+      ({ model | tags = tag :: model.tags
+               , input = Ui.Input.setValue "" model.input }, Effects.none)
 
     Created (Err err) ->
       (model, failMessageEffect err model)

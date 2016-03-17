@@ -175,10 +175,9 @@ render viewModel address model =
       ]
 
 {-| Sets the value of a number pad. -}
-setValue : Int -> Model -> (Model, Effects.Effects Action)
+setValue : Int -> Model -> Model
 setValue value model =
   { model | value = clampValue value model }
-  |> sendValue
 
 {- Renders a digit button. -}
 renderButton : Signal.Address Action -> Int -> Model -> Html.Html

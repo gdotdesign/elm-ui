@@ -93,6 +93,7 @@ update action model =
   case action of
     Input value ->
       setValue value model
+      |> sendValue
 
     _ ->
       (model, Effects.none)
@@ -136,10 +137,14 @@ render address model =
       ]
 
 {-| Sets the value of the given textarea. -}
-setValue : String -> Model -> (Model, Effects.Effects Action)
+setValue : String -> Model -> Model
 setValue value model =
-  ( { model | value = value }
-  , Ext.Signal.sendAsEffect model.valueAddress value Tasks)
+  { model | value = value }
+
+{-| Sends the value to the the valueAddress. -}
+sendValue : Model -> (Model, Effects.Effects Action)
+sendValue model =
+  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
 
 {-| Focuses the textarea. -}
 focus : Model -> Effects.Effects Action

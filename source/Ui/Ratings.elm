@@ -1,6 +1,6 @@
 module Ui.Ratings
   ( Model, Action, init, initWithAddress, update, view, setValue
-  , valueAsStars) where
+  , valueAsStars, setAndSendValue) where
 
 {-| A simple star rating component.
 
@@ -11,7 +11,7 @@ module Ui.Ratings
 @docs view
 
 # Functions
-@docs setValue, valueAsStars
+@docs setValue, setAndSendValue, valueAsStars
 -}
 import Ext.Number exposing (roundTo)
 import Ext.Signal
@@ -98,17 +98,17 @@ update action model =
       ({ model | hoverValue = model.value }, Effects.none)
 
     Increment ->
-      setValue (clamp 0 1 (model.value + (1 / (toFloat model.size)))) model
+      setAndSendValue (clamp 0 1 (model.value + (1 / (toFloat model.size)))) model
 
     Decrement ->
       let
         oneStarValue = 1 / (toFloat model.size)
         min = if model.clearable then 0 else oneStarValue
       in
-        setValue (clamp oneStarValue 1 (model.value - oneStarValue)) model
+        setAndSendValue (clamp oneStarValue 1 (model.value - oneStarValue)) model
 
     Click index ->
-      setValue (calculateValue index model) model
+      setAndSendValue (calculateValue index model) model
 
     Tasks _ ->
       (model, Effects.none)
@@ -119,26 +119,34 @@ view address model =
   Html.Lazy.lazy2 render address model
 
 {-| Sets the value of a ratings component. -}
-setValue : Float -> Model -> (Model, Effects.Effects Action)
+setValue : Float -> Model -> Model
 setValue value' model =
   let
-    value =
-      roundTo 2 value'
-
-    updatedModel =
+    value = roundTo 2 value'
+  in
+    if model.value == value
+    && model.hoverValue == value
+    then
+      model
+    else
       { model | value = value
               , hoverValue = value }
 
-    effect =
-      Ext.Signal.sendAsEffect
-        model.valueAddress
-        value
-        Tasks
+{-| Sets the given value and sends it to the value address. -}
+setAndSendValue : Float -> Model -> (Model, Effects.Effects Action)
+setAndSendValue value model =
+  let
+    updatedModel = setValue value model
   in
-    if updatedModel == model then
+    if model.value == updatedModel.value then
       (model, Effects.none)
     else
-      (updatedModel, effect)
+      sendValue updatedModel
+
+{-| Sends the value to the value address as an effect. -}
+sendValue : Model -> (Model, Effects.Effects Action)
+sendValue model =
+  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
 
 {-| Returns the value of a ratings component as number of stars. -}
 valueAsStars : Float -> Model -> Int

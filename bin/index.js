@@ -45,6 +45,7 @@ program
 
 program
   .command('server')
+  .alias('start')
   .description('Starts development server')
   .action(function(env, opts) {
     elmUi.serve(options())

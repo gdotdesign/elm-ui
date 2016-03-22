@@ -7,7 +7,7 @@ An opinionated **UI library** and **application framework** for the web in *Elm*
 following the **Elm Architecture**.
 
 [![Build Status](https://travis-ci.org/gdotdesign/elm-ui.svg?branch=master)](https://travis-ci.org/gdotdesign/elm-ui)
-[![NPM Package](https://d25lcipzij17d.cloudfront.net/badge.svg?id=js&type=6&v=0.1.3&x2=0)](https://www.npmjs.com/package/elm-ui)
+[![NPM Package](https://d25lcipzij17d.cloudfront.net/badge.svg?id=js&type=6&v=0.1.5&x2=0)](https://www.npmjs.com/package/elm-ui)
 [![Dependencies](https://david-dm.org/gdotdesign/elm-ui.svg)](https://david-dm.org/gdotdesign/elm-ui)
 
 ## Getting Started
@@ -71,6 +71,7 @@ Interactive components so far:
 - [x] Ui.App - The base for a web or mobile application
 - [x] Ui.Button - Basic button component with different sizes and styles
 - [x] Ui.ButtonGroup - A component for handling multiple buttons in a row
+- [x] Ui.IconButton - A button with an icon on the left or right side
 - [x] Ui.Calendar - A calendar component (orignially for the date picker)
 - [x] Ui.Checkbox - Basic checkobx with three variations (checkbox, toggle, radio)
 - [x] Ui.Chooser - A searchable, customizable select box with lots of features
@@ -93,22 +94,24 @@ Interactive components so far:
 - [x] Ui.Tagger - A component to manage tags on an entity
 - [x] Ui.Textarea - An automatically growing textarea
 - [x] Ui.Time - A component to show relative time
+- [x] Ui.Tabs - A tab component
 
 Static components so far:
 - [x] Ui.Container - A flexbox container for layouts
-- [x] Ui.IconButton - A button with an icon on the left or right side
 - [x] Ui.icon - Icons from Ionicons
 - [x] Ui.title - Title
 - [x] Ui.subTitle - Subtitle
 - [x] Ui.panel - Panel for grouping content
 - [x] Ui.inputGroup - Container for and input and a label
-- [x] Ui.header - A mobile header
-- [x] Ui.headerTitle - A title for a mobile header
-- [x] Ui.headerIcon - An icon to be used in a header
 - [x] Ui.fab - Floating action button
+- [x] Ui.Header - A mobile header
+- [x] Ui.Header.title - A title for a mobile header
+- [x] Ui.Header.icon - An icon to be used in a header
+- [x] Ui.Header.item - An item to be used in a header
+- [x] Ui.Header.iconItem - An icon item to be used in a header
+- [x] Ui.Header.separator - A separator to be used in a header
 
 Planned components:
-- [ ] Ui.Tabs - A tab component
 - [ ] Ui.Upload - A file upload component
 - [ ] Ui.MaskedInput - An input component where the value is masked by a pattern
 - [ ] Ui.CheckboxGroup - A component for selecting a value via checkboxes

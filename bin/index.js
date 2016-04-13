@@ -45,10 +45,14 @@ program
 
 program
   .command('server')
+  .option('-p, --prefix [prefix]', 'path prefix')
   .alias('start')
   .description('Starts development server')
   .action(function(env, opts) {
-    elmUi.serve(options())
+    elmUi.serve({
+      env: program.env,
+      prefix: env.prefix
+    })
   })
 
 program

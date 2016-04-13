@@ -1,5 +1,5 @@
 module Ui.SearchInput
-  (Model, Action, init, initWithAddress, update, view) where
+  (Model, Action, init, initWithAddress, update, view, setValue) where
 
 {-| A input component for handling searches. The component will send the
 current value of the input when it has settled after the given timeout.
@@ -126,3 +126,8 @@ render address {input, disabled, readonly} =
       [ Ui.icon "search" False []
       , Ui.Input.view (forwardTo address Input) updatedInput
       ]
+
+{-| Sets the value of the model. -}
+setValue : String -> Model -> Model
+setValue value model =
+  { model | value = value, input = Ui.Input.setValue value model.input }

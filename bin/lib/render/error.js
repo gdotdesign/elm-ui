@@ -31,6 +31,7 @@ var renderHTMLError = function(title, content) {
   var formattedContent =
     ansi_up
     .ansi_to_html(content)
+    .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"')
     .split("\n")
     .filter(function(line) {

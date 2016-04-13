@@ -5,7 +5,7 @@ module Ui.SearchInput
 current value of the input when it has settled after the given timeout.
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Action, init, initWithAddress, update, setValue
 
 # View
 @docs view

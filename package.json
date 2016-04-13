@@ -8,7 +8,7 @@
     "predeploy": "npm run build",
     "build": "bin/index.js build",
     "test": "node tests.js",
-    "elm-install": "elm-package install -y",
+    "elm-install": "bash elm-install.sh",
     "elm-docs": "elm-make --docs=documentation.json",
     "spec-sauce": "intern-runner config=specs/config-sauce",
     "spec-local": "intern-runner config=specs/config-local",

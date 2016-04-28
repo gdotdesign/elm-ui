@@ -25,7 +25,6 @@ import Html exposing (span, text, node, input, Html)
 import Html.Lazy
 
 import Set exposing (Set)
-import Native.Browser
 import String
 import Regex
 import List

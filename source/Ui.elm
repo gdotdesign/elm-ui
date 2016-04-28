@@ -1,6 +1,6 @@
 module Ui exposing
   (icon, title, subTitle, panel, spacer, inputGroup, iconAttributes,
-   stylesheetLink, tabIndex, fab, textBlock, open, redirect, alert,
+   stylesheetLink, tabIndex, fab, textBlock,
    enabledActions, breadcrumbs, scrolledPanel) -- where
 
 {-| UI Library for ELM!
@@ -10,14 +10,12 @@ module Ui exposing
 @docs fab, textBlock, breadcrumbs, scrolledPanel
 
 # Helper Functions
-@docs tabIndex, open, redirect, alert, enabledActions, iconAttributes
+@docs tabIndex, enabledActions, iconAttributes
 -}
 import Html.Attributes exposing (classList, tabindex, rel, href, class)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onLoad)
 import Html exposing (node, text)
-
-import Native.Browser
 
 {-| An icon component from Ionicons. -}
 icon : String -> Bool -> List (Html.Attribute msg) -> Html.Html msg
@@ -117,21 +115,6 @@ breadcrumbs separator items =
     node "ui-breadcrumbs" []
       (List.map renderItem items
       |> List.intersperse separator)
-
-{-| Opens a link. -}
-open : String -> a -> a
-open url model =
-  Native.Browser.open url model
-
-{-| Replace the current page with the given url. -}
-redirect : String -> a -> a
-redirect url model =
-  Native.Browser.redirect url model
-
-{-| Shows an alert box. -}
-alert : String -> a -> a
-alert message model =
-  Native.Browser.alert message model
 
 {-| Renders a panel that have scrolling content. -}
 scrolledPanel : List (Html.Html msg) -> (Html.Html msg)

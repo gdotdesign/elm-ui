@@ -1,6 +1,29 @@
 var _gdotdesign$elm_ui$Native_Browser = function() {
 
   function patchHTMLElement(element) {
+    var fallbackMenu = { getBoundingClientRect: function(){
+        return { bottom: 0,
+          height: 0,
+          width: 0,
+          right: 0,
+          left: 0,
+          top: 0
+        }
+      }
+    }
+
+    Object.defineProperty(element.prototype, "dropdown", {
+      configurable: false,
+      enumerable: false,
+      writeable: false,
+      get: function(){
+        console.log(this)
+        return this.querySelector('ui-dropdown') ||
+               this.parentElement.querySelector('ui-dropdown')
+               fallbackMenu
+      }
+    })
+
     /* Add ontransitionend property to use virtual node attributes. Maybe this
        needs a better implementation. */
     Object.defineProperty(element.prototype, "ontransitionend", {
@@ -31,7 +54,7 @@ var _gdotdesign$elm_ui$Native_Browser = function() {
     patchHTMLElement(window.HTMLElement)
   }
 
-  function focus(selector){
+  function focusSelector(selector){
     return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
       setTimeout(function(){
         var element = document.querySelector(selector)
@@ -39,10 +62,6 @@ var _gdotdesign$elm_ui$Native_Browser = function() {
         return callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
       }, 30)
     })
-  }
-
-  function focusUid(uid) {
-    return focus("[uid='" + uid + "']")
   }
 
   function delay(duration){
@@ -72,12 +91,29 @@ var _gdotdesign$elm_ui$Native_Browser = function() {
     }
   }
 
+  function redirect(url, value) {
+    window.location.href = url
+    return value
+  }
+
+  function alert(message, value) {
+    window.alert(message)
+    return value
+  }
+
+  function openWindow(url,value) {
+    window.open(url)
+    return value
+  }
+
   return {
     boundingClientRectDecoder: F2(elementQueryDecoder('getBoundingClientRect', '')),
     toFixed: F2(function(value,decimals) { return value.toFixed(decimals) }),
     rem: F2(function(a,b){ return a % b }),
-    focusUid: focusUid,
+    focusSelector: focusSelector,
+    openWindow: F2(openWindow),
+    redirect: F2(redirect),
+    alert: F2(alert),
     delay: delay,
-    focus: focus
   }
 }()

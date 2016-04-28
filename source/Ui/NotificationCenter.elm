@@ -20,6 +20,8 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 -- import Html.Lazy
 
+import Ui.Native.Browser as Browser
+
 import Json.Encode
 import List.Extra
 import Vendor
@@ -90,7 +92,7 @@ notify contents model =
     updatedModel =
       { model | notifications = model.notifications ++ [notification] }
   in
-    (updatedModel, performTask (AutoHide notification.id) model.timeout)
+    (updatedModel, Browser.delay model.timeout Tasks (AutoHide notification.id))
 
 -- PRIVATE --
 
@@ -101,10 +103,6 @@ type alias Notification msg =
   , class : String
   , id : Int
   }
-
-performTask : (a -> Msg) -> Float -> Cmd Msg
-performTask action delay =
-  Task.perform Tasks action (Native.Browser.delay delay)
 
 -- Render
 render: (Msg -> a) -> Model a -> Html.Html a
@@ -164,7 +162,7 @@ hide id model =
       else item
   in
     ({ model | notifications = updatedNotifications }
-     , performTask (Remove id) (model.duration + 100))
+     , Browser.delay (model.duration + 100) Tasks (Remove id))
 
 -- Tries to hide the notification with the given id
 autoHide: Int -> Model a -> (Model a, Cmd Msg)
@@ -179,9 +177,9 @@ autoHide id model =
 
     hideEffect =
       if updatedNotifications /= model.notifications then
-        performTask (Remove id) (model.duration + 100)
+        Browser.delay (model.duration + 100) Tasks (Remove id)
       else
-        performTask (AutoHide id) 100
+        Browser.delay 100 Tasks (AutoHide id)
 
     effect =
       if isMember then hideEffect else Cmd.none

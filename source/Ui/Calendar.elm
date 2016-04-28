@@ -18,7 +18,7 @@ module Ui.Calendar exposing
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)
 import Html exposing (node, text, span)
---import Html.Lazy
+import Html.Lazy
 
 import Date.Format exposing (isoDateFormat, format)
 import Date.Config.Configs as DateConfigs
@@ -103,8 +103,7 @@ update action model =
 {-| Renders a calendar. -}
 view :Model -> Html.Html Msg
 view model =
-  render model
-  -- Html.Lazy.lazy render model
+  Html.Lazy.lazy render model
 
 -- Render internal
 render : Model -> Html.Html Msg

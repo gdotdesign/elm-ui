@@ -18,6 +18,7 @@ import Html.App
 
 import Debug exposing (log)
 
+import Ui.Native.Browser as Browser
 import Ui.NotificationCenter
 import Ui.DropdownMenu
 import Ui.InplaceInput
@@ -128,24 +129,24 @@ type alias Model =
     { enabled: Ui.ButtonGroup.Model Msg
     , disabled: Ui.ButtonGroup.Model Msg
     }
-  , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Msg
-  , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Msg
+  , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Msg Msg
+  , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Msg Msg
   -- , tagger : Showcase.Model (Ui.Tagger.Model TaggerModel Int String) (Ui.Tagger.Msg TaggerModel String)
-  , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Msg
-  , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Msg
-  , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Msg
-  , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Msg
-  , numberPad : Showcase.Model Ui.NumberPad.Model Ui.NumberPad.Msg
-  , checkbox3 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg
-  , checkbox2 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg
-  , checkbox : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg
-  , textarea : Showcase.Model Ui.Textarea.Model Ui.Textarea.Msg
-  , calendar : Showcase.Model Ui.Calendar.Model Ui.Calendar.Msg
-  , ratings : Showcase.Model Ui.Ratings.Model Ui.Ratings.Msg
-  , chooser : Showcase.Model Ui.Chooser.Model Ui.Chooser.Msg
-  , slider : Showcase.Model Ui.Slider.Model Ui.Slider.Msg
-  , input : Showcase.Model Ui.Input.Model Ui.Input.Msg
-  , tabs : Showcase.Model Ui.Tabs.Model Ui.Tabs.Msg
+  , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Msg Msg
+  , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Msg Msg
+  , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Msg Msg
+  , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Msg Msg
+  , numberPad : Showcase.Model Ui.NumberPad.Model Ui.NumberPad.Msg Msg
+  , checkbox3 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg Msg
+  , checkbox2 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg Msg
+  , checkbox : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg Msg
+  , textarea : Showcase.Model Ui.Textarea.Model Ui.Textarea.Msg Msg
+  , calendar : Showcase.Model Ui.Calendar.Model Ui.Calendar.Msg Msg
+  , ratings : Showcase.Model Ui.Ratings.Model Ui.Ratings.Msg Msg
+  , chooser : Showcase.Model Ui.Chooser.Model Ui.Chooser.Msg Msg
+  , slider : Showcase.Model Ui.Slider.Model Ui.Slider.Msg Msg
+  , input : Showcase.Model Ui.Input.Model Ui.Input.Msg Msg
+  , tabs : Showcase.Model Ui.Tabs.Model Ui.Tabs.Msg Msg
   , tabsContents : List (String, Html.Html Msg)
   , menu : Ui.DropdownMenu.Model
   , loader : Ui.Loader.Model
@@ -212,11 +213,13 @@ init =
         Showcase.init
           (\_-> Ui.Calendar.init (Ext.Date.createDate 2015 5 1))
           Ui.Calendar.update
+          (Ui.Calendar.subscribe CalendarChanged)
           (\_ -> Sub.none)
     , tabs =
          Showcase.init
           (\_ -> Ui.Tabs.init 0)
           Ui.Tabs.update
+          (\_ -> Sub.none)
           (\_ -> Sub.none)
     , tabsContents = [("First", text "First Tab")
                      ,("Second", text "Second Tab")
@@ -242,6 +245,7 @@ init =
         Showcase.init
           (\_ -> Ui.SearchInput.init 1000)
           Ui.SearchInput.update
+          (\_ -> Sub.none)
           (\_ -> Sub.none)
     , notificationButton = Ui.IconButton.primary
                             "Show Notification"
@@ -328,9 +332,9 @@ init =
                               , disabled = True }
                            ]
     , disabledButton = [ Ui.Button.view NoOp { text = "Disabled"
-                                                        , kind = "danger"
-                                                        , size = "medium"
-                                                        , disabled = True }
+                                             , kind = "danger"
+                                             , size = "medium"
+                                             , disabled = True }
                       ]
     , iconButtons = [ Ui.IconButton.primaryBig
                         "Load" "android-download" "right" NoOp
@@ -350,6 +354,7 @@ init =
           (\_ -> Ui.DatePicker.init (Ext.Date.now ()))
           Ui.DatePicker.update
           (\_ -> Sub.none)
+          (\_ -> Sub.none)
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
     , input =
@@ -357,26 +362,31 @@ init =
           (\_ -> Ui.Input.init "" "Type here...")
           Ui.Input.update
           (\_ -> Sub.none)
+          (\_ -> Sub.none)
     , inplaceInput =
         Showcase.init
           (\_-> Ui.InplaceInput.init "Test" "Placeholder")
           Ui.InplaceInput.update
+          (\_ -> Sub.none)
           (\_ -> Sub.none)
     , colorPicker =
         Showcase.init
           (\_ -> Ui.ColorPicker.init Color.yellow)
           Ui.ColorPicker.update
           (\_ -> Sub.none)
+          (\_ -> Ui.ColorPicker.subscriptions)
     , colorPanel =
         Showcase.init
           (\_-> Ui.ColorPanel.init Color.blue)
           Ui.ColorPanel.update
           (\_ -> Sub.none)
+          (\_ -> Ui.ColorPanel.subscriptions)
     , numberRange =
         Showcase.init
           (\_-> Ui.NumberRange.init 0)
           Ui.NumberRange.update
           (\_ -> Sub.none)
+          (\_ -> Ui.NumberRange.subscriptions)
     , buttonGroup = { enabled = buttonGroup
                     , disabled = { buttonGroup | disabled = True }
                     }
@@ -385,37 +395,44 @@ init =
           (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
           (\_ -> Sub.none)
+          (\_ -> Sub.none)
     , checkbox2 =
         Showcase.init
           (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
+          (\_ -> Sub.none)
           (\_ -> Sub.none)
     , checkbox =
         Showcase.init
           (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
           (\_ -> Sub.none)
+          (\_ -> Sub.none)
     , textarea =
         Showcase.init
           (\_ -> Ui.Textarea.init "Test" "Placeholder")
           Ui.Textarea.update
+          (\_ -> Sub.none)
           (\_ -> Sub.none)
     , numberPad =
         Showcase.init
           (\_ -> Ui.NumberPad.init 0)
           Ui.NumberPad.update
           (\_ -> Sub.none)
+          (\_ -> Sub.none)
     , image = Ui.Image.init imageUrl
     , ratings =
         Showcase.init
           (\_ -> Ui.Ratings.init 5 0.4)
           Ui.Ratings.update
+          (Ui.Ratings.subscribe RatingsChanged)
           (\_ -> Sub.none)
     , slider =
         Showcase.init
           (\_ -> Ui.Slider.init 50)
           Ui.Slider.update
           (\_ -> Sub.none)
+          (\_ -> Ui.Slider.subscriptions)
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
     , loader = { loader | shown = True }
@@ -426,6 +443,7 @@ init =
         Showcase.init
           (\_ -> Ui.Chooser.init data "Select a country..." "")
           Ui.Chooser.update
+          (\_ -> Sub.none)
           (\_ -> Sub.none)
     , app = Ui.App.init "Elm-UI Kitchen Sink"
     }
@@ -641,7 +659,7 @@ update msg model =
       { model | menu = Ui.DropdownMenu.close model.menu }
 
     Open url ->
-      Ui.open url model
+      Browser.openWindow url model
 
     NextPage ->
       { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active + 1)) model.pager }
@@ -824,10 +842,19 @@ notify message model =
   in
     ({ model | notifications = notis }, Cmd.map Notis effect)
 
+gatherSubs model =
+  Sub.batch [ Showcase.subscribe model.ratings
+            , Showcase.subscribe model.calendar
+            , Sub.map ColorPanel (Showcase.subscriptions model.colorPanel)
+            , Sub.map NumberRange (Showcase.subscriptions model.numberRange)
+            , Sub.map Slider (Showcase.subscriptions model.slider)
+            , Sub.map ColorPicker (Showcase.subscriptions model.colorPicker)
+            ]
+
 main =
   Html.App.program
     { init = (init, Cmd.none)
     , view = view
     , update = update'
-    , subscriptions = \model -> Sub.none
+    , subscriptions = \model -> gatherSubs model
     }

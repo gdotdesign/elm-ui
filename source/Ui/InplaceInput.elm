@@ -18,7 +18,6 @@ import Html.App
 
 import String
 
-import Native.Browser
 import Native.Uid
 
 import Ui.Helpers.Emitter as Emitter

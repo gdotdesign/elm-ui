@@ -1,0 +1,55 @@
+module Ui.Native.Browser exposing (..)
+
+import Task exposing (Task)
+import Native.Browser
+
+--where
+
+{-| Focuses a DOM element with the given selector.
+
+    Ui.Native.Browser.focusSelector 'input#comments'
+-}
+focusSelector : String -> Task Never Never
+focusSelector selector =
+  Native.Browser.focusSelector selector
+
+
+{-| Focuses a DOM element with the given uid attribute.
+
+    Ui.Native.Browser.focusUid 'xxxx-xxx-xxx-xxxx'
+-}
+focusUid : String -> Task Never Never
+focusUid uid =
+  focusSelector ("[uid='" ++ uid ++ "']")
+
+
+{-| Opens a new window with the given URL and return the given value.
+
+    Ui.Native.Browser.openWindow 'asd' value
+-}
+openWindow : String -> value -> value
+openWindow url value =
+  Native.Browser.openWindow url value
+
+
+{-| Replace the current page with the given URL and return the given value.
+
+    Ui.Native.Browser.redirect 'http://elm-lang.org' value
+-}
+redirect : String -> value -> value
+redirect url value =
+  Native.Browser.redirect url value
+
+
+{-| Shows an alert dialog with the given text and returns the given value.
+
+    Ui.Native.Browser.alert 'Hey there!' value
+-}
+alert : String -> value -> value
+alert message value =
+  Native.Browser.alert message value
+
+
+delay : Float -> (() -> msg) -> (() -> msg) -> Cmd msg
+delay duration failMsg successMsg =
+  Task.perform failMsg successMsg (Native.Browser.delay duration)

@@ -19,10 +19,10 @@ import Html.Extra exposing (onKeys)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
 
-import Native.Browser
 import Native.Uid
 import Dict
 
+import Ui.Native.Browser as Browser
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui
@@ -115,7 +115,7 @@ render model =
 
     actions =
       Ui.enabledActions model
-        [ onWithDimensions "mousedown" True Lift
+        [ onWithDimensions "mousedown" False Lift
         , onKeys [ (40, Increment)
                  , (38, Decrement)
                  , (37, Increment)
@@ -133,10 +133,7 @@ render model =
           [ node "ui-slider-progress" [style [("width", position)]] [] ]
         , node "ui-slider-handle" [style [("left", position)]] [] ]
   in
-    if model.drag.dragging && not model.disabled && not model.readonly then
-      Native.Browser.focus element
-    else
-      element
+    element
 
 {-| Updates a sliders value by coordinates. -}
 handleMove : Int -> Int -> Model -> (Model, Cmd Msg)

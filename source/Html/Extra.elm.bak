@@ -28,7 +28,6 @@ import Html
 
 import Json.Decode as Json exposing ((:=))
 import Dict exposing (Dict)
-import Native.Browser
 import List
 
 type Nothing = Nothing

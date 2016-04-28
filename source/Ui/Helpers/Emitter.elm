@@ -1,15 +1,15 @@
 effect module Ui.Helpers.Emitter
   where { command = MyCmd, subscription = MySub}
-  exposing (send, sendString, sendFloat, listen, listenString, listenFloat, decode)
+  exposing (send, sendString, sendFloat, sendInt, listen, listenString, listenFloat, listenInt, decode)
 
 {-| This is a module for publishing and subscribing to arbritary data in
 different channels that are identified by strings.
 
 # Listining
-@docs listen, listenString, listenFloat
+@docs listen, listenString, listenFloat, listenInt
 
 # Sending Data
-@docs send, sendString, sendFloat
+@docs send, sendString, sendFloat, sendInt
 
 # Decodeing
 @docs decode
@@ -39,6 +39,9 @@ sendFloat : String -> Float -> Cmd b
 sendFloat id value =
   send id (JE.float value)
 
+sendInt : String -> Int -> Cmd b
+sendInt id value =
+  send id (JE.int value)
 
 cmdMap : (a -> b) -> MyCmd a -> MyCmd b
 cmdMap _ (Send id value) =
@@ -61,6 +64,10 @@ listenFloat : String -> (Float -> msg) -> Sub msg
 listenFloat id tagger =
   listen id (decodeFloat 0 tagger)
 
+listenInt : String -> (Int -> msg) -> Sub msg
+listenInt id tagger =
+  listen id (decodeInt 0 tagger)
+
 decode : Json.Decode.Decoder a -> a -> (a -> b) -> Value -> b
 decode decoder default action value =
   Json.Decode.decodeValue decoder value
@@ -77,6 +84,10 @@ decodeFloat : Float -> (Float -> a) -> Value -> a
 decodeFloat default msg =
   decode Json.Decode.float default msg
 
+
+decodeInt : Int -> (Int -> a) -> Value -> a
+decodeInt default msg =
+  decode Json.Decode.int default msg
 
 subMap : (a -> b) -> MySub a -> MySub b
 subMap func sub =

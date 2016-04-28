@@ -3,7 +3,6 @@ module Html.Extra exposing (..)
 -- where
 
 import Html.Events exposing (on, keyCode, onWithOptions)
-import Html.Dimensions exposing (..)
 import Json.Decode as Json exposing ((:=))
 import Html
 import Dict
@@ -36,6 +35,27 @@ stopOptions =
   , preventDefault = True
   }
 
+{-|-}
+onEnter : Bool -> msg -> Html.Attribute msg
+onEnter control msg =
+  let
+    decoder2 pressed =
+      if pressed then
+        keysDecoder [(13, msg)]
+      else
+        Json.fail "Control wasn't pressed!"
+
+    decoder =
+      if control then
+        Json.andThen
+          ("ctrlKey" := Json.bool) decoder2
+      else
+        (decoder2 True)
+  in
+    onWithOptions
+      "keyup"
+      stopOptions
+      decoder
 
 {-| An keydown event listener that will prevent default on enter.
 -}
@@ -47,6 +67,14 @@ onEnterPreventDefault action =
   in
     onWithOptions "keydown" preventDefaultOptions (keysDecoder mappings)
 
+
+{-| An event listener that will prevent default acitons. -}
+onPreventDefault : String -> msg -> Html.Attribute msg
+onPreventDefault event msg =
+  onWithOptions
+    event
+    preventDefaultOptions
+    (Json.succeed msg)
 
 {-| An event listener that stops propagation and prevents default action.
 -}
@@ -106,19 +134,6 @@ pagePositionDecoder =
     (,)
     ("pageX" := Json.int)
     ("pageY" := Json.int)
-
-
-{-| An event listener that will returns the dimensions of the element that
-triggered it and position of the mouse.
-
-    onWithDimensions event preventDefault address action
--}
-onWithDimensions : String -> Bool -> (PositionAndDimension -> msg) -> Html.Attribute msg
-onWithDimensions event preventDefault action =
-  onWithOptions
-    event
-    { stopPropagationOptions | preventDefault = preventDefault }
-    (Json.map action positionAndDimensionDecoder)
 
 
 {-| A decoder which succeeds when a specific key

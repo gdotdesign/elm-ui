@@ -1,5 +1,5 @@
 module Ui.Chooser exposing
-  (Model, Item, Action, init, initWithAddress, update, close, toggleItem,
+  (Model, Item, Msg, init, update, close, toggleItem,
    getFirstSelected, view, updateData, selectFirst, setValue)
 
 -- where
@@ -8,7 +8,7 @@ module Ui.Chooser exposing
 form a list of choises, with lots of options.
 
 # Model
-@docs Model, Item, Action, init, initWithAddress, update
+@docs Model, Item, Msg, init, subscribe, update
 
 # View
 @docs view
@@ -16,11 +16,11 @@ form a list of choises, with lots of options.
 # Functions
 @docs toggleItem, close, getFirstSelected, updateData, selectFirst, setValue
 -}
-import Html.Extra exposing (onInput, onPreventDefault, onWithDropdownDimensions
-                           ,onKeysWithDimensions, onStop)
+import Html.DropdownDimensions exposing (DropdownDimensions, onWithDropdownDimensions,onKeysWithDimensions)
+import Html.Extra exposing (onPreventDefault, onStop)
 import Html.Attributes exposing (value, placeholder, readonly, classList
                                 , disabled)
-import Html.Events exposing (onFocus, onBlur, onClick)
+import Html.Events exposing (onFocus, onBlur, onClick, onInput)
 import Html exposing (span, text, node, input, Html)
 import Html.Lazy
 
@@ -61,9 +61,8 @@ type alias Item =
   - **value** (internal) - The value of the input
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address (Set String))
-  , dropdownPosition : String
-  , render : Item -> Html
+  { dropdownPosition : String
+  , render : Item -> Html Msg
   , selected : Set String
   , placeholder : String
   , closeOnSelect : Bool
@@ -79,16 +78,17 @@ type alias Model =
   }
 
 {-| Actions that a chooser can make. -}
-type Action
-  = Toggle Html.Extra.DropdownDimensions
-  | Focus Html.Extra.DropdownDimensions
-  | Close Html.Extra.DropdownDimensions
-  | Enter Html.Extra.DropdownDimensions
-  | Next Html.Extra.DropdownDimensions
-  | Prev Html.Extra.DropdownDimensions
+type Msg
+  = Toggle DropdownDimensions
+  | Focus DropdownDimensions
+  | Close DropdownDimensions
+  | Enter DropdownDimensions
+  | Next DropdownDimensions
+  | Prev DropdownDimensions
   | Filter String
   | Select String
   | Tasks ()
+  | NoOp
   | Blur
 
 {-| Initializes a chooser with the given values.
@@ -103,7 +103,6 @@ init data placeholder value =
     { render = (\item -> span [] [text item.label])
     , dropdownPosition = "bottom"
     , placeholder = placeholder
-    , valueAddress = Nothing
     , closeOnSelect = False
     , deselectable = False
     , selected = selected
@@ -118,23 +117,8 @@ init data placeholder value =
     }
       |> intendFirst
 
-{-| Initializes a chooser with the given values and value address.
-
-    Chooser.init
-      (forwardTo address ChooserChanged)
-      items
-      placeholder
-      selectedValue
--}
-initWithAddress : Signal.Address (Set String) -> List Item -> String -> String -> Model
-initWithAddress valueAddress data placeholder value =
-  let
-    model = init data placeholder value
-  in
-    { model | valueAddress = Just valueAddress }
-
 {-| Updates a chooser. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     Enter dimensions ->
@@ -152,10 +136,10 @@ update action model =
       toggleItemAndClose value model
 
     _ ->
-      (update' action model, Effects.none)
+      (update' action model, Cmd.none)
 
 -- Non effects updates
-update' : Action -> Model -> Model
+update' : Msg -> Model -> Model
 update' action model =
   case action of
     Filter value ->
@@ -192,19 +176,19 @@ update' action model =
       model
 
 {-| Renders a chooser. -}
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
+view : Model -> Html.Html Msg
+view  model =
+  render  model
 
 -- Renders a chooser.
-render : Signal.Address Action -> Model -> Html.Html
-render address model =
+render : Model -> Html.Html Msg
+render model =
   let
     children =
-      (List.map (\item -> renderItem item address model) (items model))
+      (List.map (\item -> renderItem item model) (items model))
 
     dropdown =
-      [ Dropdown.view model.dropdownPosition
+      [ Dropdown.view NoOp model.dropdownPosition
         [(Ui.scrolledPanel children)] ]
 
     val =
@@ -217,11 +201,11 @@ render address model =
 
     actions =
       Ui.enabledActions model
-        [ onInput address Filter
-        , onWithDropdownDimensions "focus" address Focus
-        , onBlur address Blur
-        , onWithDropdownDimensions "mousedown" address Toggle
-        , onKeysWithDimensions address
+        [ onInput Filter
+        , onWithDropdownDimensions "focus" Focus
+        , onBlur Blur
+        , onWithDropdownDimensions "mousedown" Toggle
+        , onKeysWithDimensions
           ([ (27, Close)
            , (13, Enter)
            , (40, Next)
@@ -259,7 +243,7 @@ close model =
   |> setInputValue ""
 
 {-| Selects or deselects the item with the given value. -}
-toggleItem : String -> Model -> (Model, Effects.Effects Action)
+toggleItem : String -> Model -> (Model, Cmd Msg)
 toggleItem value model =
   if model.multiple then
     toggleMultipleItem value model
@@ -277,25 +261,26 @@ updateData data model =
   { model | data = data }
 
 {-| Selects the first item if available. -}
-selectFirst : Model -> (Model, Effects.Effects Action)
+selectFirst : Model -> (Model, Cmd Msg)
 selectFirst model =
   case List.head model.data of
     Just item ->
       { model | selected = Set.singleton item.value }
       |> sendValue
     _ ->
-      (model, Effects.none)
+      (model, Cmd.none)
 
 -- ========================= PRIVATE =========================
 
 -- Sends the current value of the model to the signal
-sendValue : Model -> (Model, Effects.Effects Action)
+sendValue : Model -> (Model, Cmd Msg)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.valueAddress model.selected Tasks)
+  -- (model, Ext.Signal.sendAsEffect model.valueAddress model.selected Tasks)
+  (model, Cmd.none)
 
 {- Select or deslect a single item with the given value and closes
 the dropdown if needed. -}
-toggleItemAndClose : String -> Model -> (Model, Effects.Effects Action)
+toggleItemAndClose : String -> Model -> (Model, Cmd Msg)
 toggleItemAndClose value model =
   let
     (model, effect) = toggleItem value model
@@ -303,7 +288,7 @@ toggleItemAndClose value model =
     (closeIfShouldClose model, effect)
 
 -- Toggle item if multiple is True.
-toggleMultipleItem : String -> Model -> (Model, Effects.Effects Action)
+toggleMultipleItem : String -> Model -> (Model, Cmd Msg)
 toggleMultipleItem value model =
   let
     updated_set =
@@ -319,7 +304,7 @@ toggleMultipleItem value model =
    |> sendValue
 
 -- Toggle item if multiple is False.
-toggleSingleItem : String -> Model -> (Model, Effects.Effects Action)
+toggleSingleItem : String -> Model -> (Model, Cmd Msg)
 toggleSingleItem value model =
   let
     updatedModel =
@@ -367,14 +352,14 @@ createRegex value =
     |> Regex.caseInsensitive
 
 -- Renders an item
-renderItem : Item -> Signal.Address Action -> Model -> Html.Html
-renderItem item address model =
+renderItem : Item -> Model -> Html.Html Msg
+renderItem item model =
   let
     selectEvent =
       if model.closeOnSelect then
-        onStop "mouseup" address (Select item.value)
+        onStop "mouseup" (Select item.value)
       else
-        onPreventDefault "mousedown" address (Select item.value)
+        onPreventDefault "mousedown" (Select item.value)
   in
     node "ui-chooser-item"
       [ selectEvent

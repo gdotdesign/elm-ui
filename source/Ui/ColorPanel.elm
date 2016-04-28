@@ -1,12 +1,12 @@
 module Ui.ColorPanel exposing
-  (Model, Action, init, update, view, handleMove, handleClick, setValue,
+  (Model, Msg, init, update, view, handleMove, handleClick, setValue,
    subscriptions, subscribe) -- where
 
 {-| Color panel component for selecting a colors **hue**, **saturation**,
 **value** and **alpha** components with draggable interfaces.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Msg, init, update
 
 # View
 @docs view
@@ -14,9 +14,8 @@ module Ui.ColorPanel exposing
 # Functions
 @docs handleMove, handleClick, setValue
 -}
-import Html.Dimensions exposing (PositionAndDimension)
+import Html.Dimensions exposing (PositionAndDimension, onWithDimensions)
 import Html.Attributes exposing (style, classList)
-import Html.Extra exposing (onWithDimensions)
 import Html exposing (node, div, text)
 -- import Html.Lazy
 
@@ -47,7 +46,7 @@ type alias Model =
   }
 
 {-| Actions that a color panel can make. -}
-type Action
+type Msg
   = LiftAlpha (PositionAndDimension)
   | LiftRect (PositionAndDimension)
   | LiftHue (PositionAndDimension)
@@ -70,7 +69,7 @@ init color =
   , uid = Native.Uid.uid ()
   }
 
-subscriptions : Sub Action
+subscriptions : Sub Msg
 subscriptions =
   Drag.subscriptions Move Click
 
@@ -82,7 +81,7 @@ subscribe action model =
     (Emitter.decode decodeHsv (Ext.Color.toHsv Color.black) action)
 
 {-| Updates a color panel. -}
-update : Action -> Model -> (Model, Cmd Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     LiftRect {dimensions, position} ->
@@ -107,13 +106,13 @@ update action model =
       (model, Cmd.none)
 
 {-| Renders a color panel. -}
-view : Model -> Html.Html Action
+view : Model -> Html.Html Msg
 view model =
   render model
   -- Html.Lazy.lazy render model
 
 -- Render internal
-render : Model -> Html.Html Action
+render : Model -> Html.Html Msg
 render model =
   let
     background =
@@ -165,7 +164,7 @@ render model =
       ]
 
 {-| Updates a color panel color by coordinates. -}
-handleMove : Int -> Int -> Model -> (Model, Cmd Action)
+handleMove : Int -> Int -> Model -> (Model, Cmd Msg)
 handleMove x y model =
   let
     color =
@@ -245,7 +244,7 @@ handleAlpha x y color drag =
       { color | alpha = alpha }
 
 -- Renders a handle
-renderHandle : String -> String -> Html.Html Action
+renderHandle : String -> String -> Html.Html Msg
 renderHandle top left =
   node "ui-color-panel-handle"
     [ style [ ("top", top)

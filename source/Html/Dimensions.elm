@@ -3,6 +3,10 @@ module Html.Dimensions exposing (..) -- where
 import Native.Browser
 import Json.Decode as Json exposing ((:=))
 
+import Html.Extra exposing (stopPropagationOptions)
+import Html.Events exposing (onWithOptions)
+import Html
+
 {-| Represents a HTMLElements dimensions. -}
 type alias Dimensions =
   { height: Float
@@ -58,3 +62,16 @@ atDimensionsDecoder =
 
 boundingClientRectDecoder decoder =
   Native.Browser.boundingClientRectDecoder decoder
+
+
+{-| An event listener that will returns the dimensions of the element that
+triggered it and position of the mouse.
+
+    onWithDimensions event preventDefault address action
+-}
+onWithDimensions : String -> Bool -> (PositionAndDimension -> msg) -> Html.Attribute msg
+onWithDimensions event preventDefault action =
+  onWithOptions
+    event
+    { stopPropagationOptions | preventDefault = preventDefault }
+    (Json.map action positionAndDimensionDecoder)

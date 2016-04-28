@@ -35,7 +35,7 @@ import Ui.Textarea
 import Ui.Chooser
 import Ui.Ratings
 import Ui.Button
-import Ui.Tagger
+-- import Ui.Tagger
 import Ui.Slider
 import Ui.Loader
 import Ui.Pager
@@ -49,35 +49,35 @@ import Ui
 
 import Kitchensink.Showcase as Showcase
 
-type Action
-  = InplaceInput (Showcase.Action Ui.InplaceInput.Action)
-  | NumberRange (Showcase.Action Ui.NumberRange.Action)
-  | ColorPicker (Showcase.Action Ui.ColorPicker.Action)
-  | SearchInput (Showcase.Action Ui.SearchInput.Action)
-  | DatePicker (Showcase.Action Ui.DatePicker.Action)
-  | ColorPanel (Showcase.Action Ui.ColorPanel.Action)
-  | DropdownMenu Ui.DropdownMenu.Action
-  | NumberPad (Showcase.Action Ui.NumberPad.Action)
-  | Notis Ui.NotificationCenter.Action
-  | Checkbox2 (Showcase.Action Ui.Checkbox.Action)
-  | Checkbox3 (Showcase.Action Ui.Checkbox.Action)
-  | TextArea (Showcase.Action Ui.Textarea.Action)
-  | Calendar (Showcase.Action Ui.Calendar.Action)
-  | Checkbox (Showcase.Action Ui.Checkbox.Action)
-  | Chooser (Showcase.Action Ui.Chooser.Action)
-  | Ratings (Showcase.Action Ui.Ratings.Action)
-  | Slider (Showcase.Action Ui.Slider.Action)
-  | Tagger (Showcase.Action (Ui.Tagger.Action TaggerModel String))
-  | Input (Showcase.Action Ui.Input.Action)
-  | Tabs (Showcase.Action Ui.Tabs.Action)
-  | Image Ui.Image.Action
-  | Modal Ui.Modal.Action
-  | Pager Ui.Pager.Action
-  | App Ui.App.Action
+type Msg
+  = InplaceInput (Showcase.Msg Ui.InplaceInput.Msg)
+  | NumberRange (Showcase.Msg Ui.NumberRange.Msg)
+  | ColorPicker (Showcase.Msg Ui.ColorPicker.Msg)
+  | SearchInput (Showcase.Msg Ui.SearchInput.Msg)
+  | DatePicker (Showcase.Msg Ui.DatePicker.Msg)
+  | ColorPanel (Showcase.Msg Ui.ColorPanel.Msg)
+  | DropdownMenu Ui.DropdownMenu.Msg
+  | NumberPad (Showcase.Msg Ui.NumberPad.Msg)
+  | Notis Ui.NotificationCenter.Msg
+  | Checkbox2 (Showcase.Msg Ui.Checkbox.Msg)
+  | Checkbox3 (Showcase.Msg Ui.Checkbox.Msg)
+  | TextArea (Showcase.Msg Ui.Textarea.Msg)
+  | Calendar (Showcase.Msg Ui.Calendar.Msg)
+  | Checkbox (Showcase.Msg Ui.Checkbox.Msg)
+  | Chooser (Showcase.Msg Ui.Chooser.Msg)
+  | Ratings (Showcase.Msg Ui.Ratings.Msg)
+  | Slider (Showcase.Msg Ui.Slider.Msg)
+  -- | Tagger (Showcase.Msg (Ui.Tagger.Msg TaggerModel String))
+  | Input (Showcase.Msg Ui.Input.Msg)
+  | Tabs (Showcase.Msg Ui.Tabs.Msg)
+  | Image Ui.Image.Msg
+  | Modal Ui.Modal.Msg
+  | Pager Ui.Pager.Msg
+  | App Ui.App.Msg
   | MousePosition (Int, Int)
   | MouseIsDown Bool
   | ShowNotification
-  | AppAction String
+  | AppMsg String
   | EscIsDown Bool
   | Open String
   | CloseMenu
@@ -94,7 +94,7 @@ type Action
   | ColorPickerChanged Ext.Color.Hsv
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
-  | TaggerAddFailed String
+  -- | TaggerAddFailed String
   | CalendarChanged Time.Time
   | SearchInputChanged String
   | BreadcrumbClicked String
@@ -111,47 +111,43 @@ type alias TaggerModel =
 
 type alias Model =
   { app : Ui.App.Model
-  , mailbox : Signal.Mailbox Action
-  , settledMailbox : Signal.Mailbox Action
-  , notifications : Ui.NotificationCenter.Model
-  , dropdownMenu : { address : Signal.Address Ui.DropdownMenu.Action
-                   , content : Html.Html
-                   , items : List Html.Html
+  , notifications : Ui.NotificationCenter.Model Msg
+  , dropdownMenu : { content : Html.Html Msg
+                   , items : List (Html.Html Msg)
                    }
-  , pagerControls : Html.Html
-  , pagerContents : List Html.Html
-  , pagerAddress : Signal.Address Ui.Pager.Action
-  , modalButton : Html.Html
-  , modalView : Ui.Modal.ViewModel
-  , infos : List Html.Html
-  , disabledIconButton : List Html.Html
-  , disabledButton : List Html.Html
-  , iconButtons : List Html.Html
-  , buttons : List Html.Html
-  , notificationButton : Html.Html
+  , pagerControls : Html.Html Msg
+  , pagerContents : List (Html.Html Msg)
+  , modalButton : (Html.Html Msg)
+  , modalView : Ui.Modal.ViewModel Msg
+  , infos : List (Html.Html Msg)
+  , disabledIconButton : List (Html.Html Msg)
+  , disabledButton : List (Html.Html Msg)
+  , iconButtons : List (Html.Html Msg)
+  , buttons : List (Html.Html Msg)
+  , notificationButton : (Html.Html Msg)
   , buttonGroup :
-    { enabled: Ui.ButtonGroup.Model Action
-    , disabled: Ui.ButtonGroup.Model Action
+    { enabled: Ui.ButtonGroup.Model Msg
+    , disabled: Ui.ButtonGroup.Model Msg
     }
-  , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Action
-  , numberPadViewFn : Signal.Address Ui.NumberPad.Action -> Ui.NumberPad.Model -> Html.Html
-  , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Action
-  , tagger : Showcase.Model (Ui.Tagger.Model TaggerModel Int String) (Ui.Tagger.Action TaggerModel String)
-  , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Action
-  , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Action
-  , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Action
-  , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Action
-  , numberPad : Showcase.Model Ui.NumberPad.Model Ui.NumberPad.Action
-  , checkbox3 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Action
-  , checkbox2 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Action
-  , checkbox : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Action
-  , textarea : Showcase.Model Ui.Textarea.Model Ui.Textarea.Action
-  , calendar : Showcase.Model Ui.Calendar.Model Ui.Calendar.Action
-  , ratings : Showcase.Model Ui.Ratings.Model Ui.Ratings.Action
-  , chooser : Showcase.Model Ui.Chooser.Model Ui.Chooser.Action
-  , slider : Showcase.Model Ui.Slider.Model Ui.Slider.Action
-  , input : Showcase.Model Ui.Input.Model Ui.Input.Action
-  , tabs : Showcase.Model Ui.Tabs.Model Ui.Tabs.Action
+  , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Msg
+  , numberPadViewFn : Signal.Address Ui.NumberPad.Msg -> Ui.NumberPad.Model -> Html.Html
+  , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Msg
+  -- , tagger : Showcase.Model (Ui.Tagger.Model TaggerModel Int String) (Ui.Tagger.Msg TaggerModel String)
+  , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Msg
+  , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Msg
+  , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Msg
+  , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Msg
+  , numberPad : Showcase.Model Ui.NumberPad.Model Ui.NumberPad.Msg
+  , checkbox3 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg
+  , checkbox2 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg
+  , checkbox : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg
+  , textarea : Showcase.Model Ui.Textarea.Model Ui.Textarea.Msg
+  , calendar : Showcase.Model Ui.Calendar.Model Ui.Calendar.Msg
+  , ratings : Showcase.Model Ui.Ratings.Model Ui.Ratings.Msg
+  , chooser : Showcase.Model Ui.Chooser.Model Ui.Chooser.Msg
+  , slider : Showcase.Model Ui.Slider.Model Ui.Slider.Msg
+  , input : Showcase.Model Ui.Input.Model Ui.Input.Msg
+  , tabs : Showcase.Model Ui.Tabs.Model Ui.Tabs.Msg
   , tabsContents : List (String, Html.Html)
   , menu : Ui.DropdownMenu.Model
   , loader : Ui.Loader.Model
@@ -248,7 +244,7 @@ init =
                      ,("Second", text "Second Tab")
                      ,("Third", text "Third Tab")
                      ]
-    , tagger =
+    {-, tagger =
         Showcase.init
           (\_ ->
             Ui.Tagger.initWithAddress
@@ -263,7 +259,7 @@ init =
           (forwardTo address Tagger)
           Ui.Tagger.update
           handleMoveIdentity
-          handleClickIndetity
+          handleClickIndetity -}
     , searchInput =
         Showcase.init
           (\_ -> Ui.SearchInput.initWithAddress (forwardTo address SearchInputChanged) 1000)
@@ -541,7 +537,7 @@ tableRow active readonly disabled =
     , td [] [ disabled ]
     ]
 
-view : Signal.Address Action -> Model -> Html.Html
+view : Signal.Address Msg -> Model -> Html.Html
 view address model =
   let
     emptyText = text ""
@@ -551,7 +547,7 @@ view address model =
     , numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons
     , disabledButton, disabledIconButton, modalView, infos, modalButton
     , dropdownMenu, pagerControls, notificationButton, numberPadViewFn
-    , pagerAddress, pagerContents, searchInput, tagger, tabs, tabsContents
+    , pagerAddress, pagerContents, searchInput, tabs, tabsContents
     } = model
 
     clicked =
@@ -640,8 +636,8 @@ view address model =
           , componentHeader "Slider"
           , Showcase.view Ui.Slider.view slider
 
-          , componentHeader "Tagger"
-          , Showcase.view Ui.Tagger.view tagger
+          --, componentHeader "Tagger"
+          --, Showcase.view Ui.Tagger.view tagger
 
           , componentHeader "Time"
           , tableRow
@@ -703,9 +699,9 @@ view address model =
         ])
       ]
 
-update : Action -> Model -> Model
-update action model =
-  case action of
+update : Msg -> Model -> Model
+update Msg model =
+  case Msg of
     DropdownMenu act ->
       { model | menu = Ui.DropdownMenu.update act model.menu }
 
@@ -759,19 +755,19 @@ update action model =
     _ ->
       model
 
-update' : Action -> Model -> (Model, Effects.Effects Action)
-update' action model =
-  case action of
+update' : Msg -> Model -> (Model, Effects.Effects Msg)
+update' Msg model =
+  case Msg of
     Tabs act ->
       let
         (tabs, effect) = Showcase.update act model.tabs
       in
         ({ model | tabs = tabs }, Effects.map Tabs effect)
-    Tagger act ->
+    {-Tagger act ->
       let
         (tagger, effect) = Showcase.update act model.tagger
       in
-        ({ model | tagger = tagger }, Effects.map Tagger effect)
+        ({ model | tagger = tagger }, Effects.map Tagger effect) -}
     SearchInput act ->
       let
         (searchInput, effect) = Showcase.update act model.searchInput
@@ -926,12 +922,12 @@ update' action model =
       notify ("Date picker changed to: " ++ (Date.Format.format dateConfig "%Y-%m-%d" (Date.fromTime time))) model
     RatingsChanged value ->
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
-    TaggerAddFailed err ->
-      notify err model
+    -- TaggerAddFailed err ->
+    --   notify err model
     _ ->
-      (update action model, Effects.none)
+      (update Msg model, Effects.none)
 
-notify : String -> Model -> (Model, Effects.Effects Action)
+notify : String -> Model -> (Model, Effects.Effects Msg)
 notify message model =
   let
     (notis, effect) = Ui.NotificationCenter.notify (text message) model.notifications
@@ -961,8 +957,9 @@ app =
                    }
 
 main =
-  app.html
-
-port tasks : Signal (Task.Task Effects.Never ())
-port tasks =
-  app.tasks
+  Html.program
+    { init = init
+    , view = view
+    , update = update
+    , subscriptions = \model -> gatherSubs model
+    }

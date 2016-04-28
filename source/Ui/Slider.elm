@@ -14,8 +14,8 @@ module Ui.Slider exposing
 # Functions
 @docs setValue
 -}
-import Html.Dimensions exposing (PositionAndDimension)
-import Html.Extra exposing (onWithDimensions, onKeys)
+import Html.Dimensions exposing (onWithDimensions, PositionAndDimension)
+import Html.Extra exposing (onKeys)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
 

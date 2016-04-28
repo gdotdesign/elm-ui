@@ -1,12 +1,12 @@
 module Ui.NumberPad exposing
-  (Model, Action, init, initWithAddress, update, ViewModel, view, setValue)
+  (Model, Msg, init, update, ViewModel, view, setValue)
 
 -- where
 
 {-| Number pad component.
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Msg, init, update
 
 # View
 @docs ViewModel, view
@@ -18,12 +18,14 @@ import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
-import Html.Lazy
 
 import Number.Format exposing (prettyInt)
 import String
 import Dict
 
+import Native.Uid
+
+import Ui.Helpers.Emitter as Emitter
 import Ui
 
 {-| Representation of a number pad.
@@ -37,27 +39,27 @@ import Ui
   - **affix** - The affix to use
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address Int)
-  , maximumDigits : Int
+  { maximumDigits : Int
   , disabled : Bool
   , readonly : Bool
   , prefix : String
   , affix : String
   , format : Bool
-  , value: Int
+  , value : Int
+  , uid : String
   }
 
 {-| Represents elements for the view:
   - **bottomRight** - What to display in the bottom right button
   - **bottomLeft** - What to display in the bottom left button
 -}
-type alias ViewModel =
-  { bottomRight : Html.Html
-  , bottomLeft : Html.Html
+type alias ViewModel msg =
+  { bottomRight : Html.Html msg
+  , bottomLeft : Html.Html msg
   }
 
 {-| Actions that a number pad can make. -}
-type Action
+type Msg
   = Pressed Int
   | Tasks ()
   | Delete
@@ -68,29 +70,18 @@ type Action
 -}
 init : Int -> Model
 init value =
-  { valueAddress = Nothing
-  , maximumDigits = 10
+  {  maximumDigits = 10
   , disabled = False
   , readonly = False
   , format = True
   , value = value
   , prefix = ""
   , affix = ""
+  , uid = Native.Uid.uid ()
   }
 
-{-| Initializes a number pad with the given value.
-
-    NumberPad.init (forwardTo address NumberPadChanged) 0
--}
-initWithAddress : Signal.Address Int -> Int -> Model
-initWithAddress valueAddress value =
-  let
-    model = init value
-  in
-    { model | valueAddress = Just valueAddress }
-
 {-| Updates a number pad. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     Pressed number ->
@@ -102,20 +93,20 @@ update action model =
       |> sendValue
 
     Tasks _ ->
-      (model, Effects.none)
+      (model, Cmd.none)
 
 -- Sends the value to the signal
-sendValue : Model -> (Model, Effects.Effects Action)
+sendValue : Model -> (Model, Cmd Msg)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
+  (model, Emitter.sendInt model.uid model.value)
 
 {-| Renders a number pad. -}
-view : ViewModel -> Signal.Address Action -> Model -> Html.Html
+view : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
 view viewModel address model =
-  Html.Lazy.lazy3 render viewModel address model
+  render viewModel address model
 
 -- Renders a number pad.
-render : ViewModel -> Signal.Address Action -> Model -> Html.Html
+render : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
 render viewModel address model =
   let
     value =
@@ -128,33 +119,33 @@ render viewModel address model =
       text (model.prefix ++ value ++ model.affix)
 
     back =
-      Ui.enabledActions model [onClick address Delete]
+      Ui.enabledActions model [onClick (address Delete)]
 
     actions =
       Ui.enabledActions model
-        [ onKeys address [ (8, Delete)
-                         , (46, Delete)
-                         , (48, Pressed 0)
-                         , (49, Pressed 1)
-                         , (50, Pressed 2)
-                         , (51, Pressed 3)
-                         , (52, Pressed 4)
-                         , (53, Pressed 5)
-                         , (54, Pressed 6)
-                         , (55, Pressed 7)
-                         , (56, Pressed 8)
-                         , (57, Pressed 9)
-                         , (96, Pressed 0)
-                         , (97, Pressed 1)
-                         , (98, Pressed 2)
-                         , (99, Pressed 3)
-                         , (100, Pressed 4)
-                         , (101, Pressed 5)
-                         , (102, Pressed 6)
-                         , (103, Pressed 7)
-                         , (104, Pressed 8)
-                         , (105, Pressed 9)
-                         ]
+        [ onKeys [ (8, address Delete)
+                 , (46, address Delete)
+                 , (48, address (Pressed 0))
+                 , (49, address (Pressed 1))
+                 , (50, address (Pressed 2))
+                 , (51, address (Pressed 3))
+                 , (52, address (Pressed 4))
+                 , (53, address (Pressed 5))
+                 , (54, address (Pressed 6))
+                 , (55, address (Pressed 7))
+                 , (56, address (Pressed 8))
+                 , (57, address (Pressed 9))
+                 , (96, address (Pressed 0))
+                 , (97, address (Pressed 1))
+                 , (98, address (Pressed 2))
+                 , (99, address (Pressed 3))
+                 , (100, address (Pressed 4))
+                 , (101, address (Pressed 5))
+                 , (102, address (Pressed 6))
+                 , (103, address (Pressed 7))
+                 , (104, address (Pressed 8))
+                 , (105, address (Pressed 9))
+                 ]
         ]
   in
     node "ui-number-pad"
@@ -179,10 +170,10 @@ setValue value model =
   { model | value = clampValue value model }
 
 {- Renders a digit button. -}
-renderButton : Signal.Address Action -> Int -> Model -> Html.Html
+renderButton : (Msg -> msg) -> Int -> Model -> Html.Html msg
 renderButton address number model =
   let
-    click = Ui.enabledActions model [onClick address (Pressed number)]
+    click = Ui.enabledActions model [onClick (address (Pressed number))]
   in
     node
       "ui-number-pad-button"

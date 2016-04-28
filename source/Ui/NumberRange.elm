@@ -16,9 +16,8 @@ double clicking on the component.
 # Functions
 @docs focus, setValue, increment, decrement
 -}
-import Html.Dimensions exposing (PositionAndDimension)
-import Html.Extra exposing (onWithDimensions, onKeys,
-                            onEnterPreventDefault, onStop)
+import Html.Dimensions exposing (onWithDimensions, PositionAndDimension)
+import Html.Extra exposing (onKeys, onEnterPreventDefault, onStop)
 import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onInput, onFocus, onBlur)
 import Html exposing (node, input)

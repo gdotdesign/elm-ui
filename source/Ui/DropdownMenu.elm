@@ -75,7 +75,7 @@ init =
 
     DropdownMenu.view address triggerElement children model
 -}
-view: ((Dimensions -> Msg) -> msg) -> Html.Html msg -> List (Html.Html msg) -> Model -> Html.Html msg
+-- view: ((Dimensions -> Msg) -> msg) -> Html.Html msg -> List (Html.Html msg) -> Model -> Html.Html msg
 view address element children model =
   node "ui-dropdown-menu"
     [ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" (address Toggle)
@@ -133,8 +133,7 @@ openHandler parent dropdown event msg =
   onWithOptions
     event
     Html.Events.defaultOptions
-    (dimensionsDecoder parent dropdown)
-    msg
+    (Json.map msg (dimensionsDecoder parent dropdown))
 
 {-| Updates the position of a dropdown form the given dimensions. -}
 open : Dimensions -> Model -> Model

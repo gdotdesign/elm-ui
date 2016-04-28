@@ -13,6 +13,7 @@ module Ui.Helpers.Dropdown exposing (..)
 # Functions
 @docs open, close, toggle, openWithDimensions, toggleWithDimensions
 -}
+import Html.DropdownDimensions exposing (DropdownDimensions)
 import Html.Attributes exposing (classList)
 import Html.Extra exposing (onStop)
 import Html exposing (node)
@@ -28,7 +29,7 @@ type alias Dropdown a =
 view : msg -> String -> List (Html.Html msg) -> (Html.Html msg)
 view noop position children =
   node "ui-dropdown"
-    [ onStop "mousedown"
+    [ onStop "mousedown" noop
     , classList [("position-" ++ position, True)]
     ]
     children
@@ -49,13 +50,13 @@ toggle model =
   { model | open = not model.open }
 
 {-| Toggles a component. -}
-toggleWithDimensions : Html.Extra.DropdownDimensions -> Dropdown a -> Dropdown a
+toggleWithDimensions : DropdownDimensions -> Dropdown a -> Dropdown a
 toggleWithDimensions dimensions model =
   if model.open then close model
   else openWithDimensions dimensions model
 
 {-| Opens a component. -}
-openWithDimensions : Html.Extra.DropdownDimensions -> Dropdown a -> Dropdown a
+openWithDimensions : DropdownDimensions -> Dropdown a -> Dropdown a
 openWithDimensions {dimensions,dropdown,window} model =
   let
     bottom = dimensions.bottom + dropdown.height

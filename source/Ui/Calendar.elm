@@ -1,5 +1,5 @@
 module Ui.Calendar exposing
-  ( Model, Action(..), init, subscribe, update, view, setValue, nextDay
+  ( Model, Msg(..), init, subscribe, update, view, setValue, nextDay
   , previousDay ) -- where
 
 {-| This is a calendar component where the user can:
@@ -7,7 +7,7 @@ module Ui.Calendar exposing
   - Change the month with arrows
 
 # Model
-@docs Model, Action, init, subscribe, update
+@docs Model, Msg, init, subscribe, update
 
 # View
 @docs view
@@ -53,7 +53,7 @@ type alias Model =
   }
 
 {-| Actions that a calendar can make. -}
-type Action
+type Msg
   = Select Date.Date
   | PreviousMonth
   | NextMonth
@@ -81,7 +81,7 @@ subscribe action model =
   Emitter.listen model.uid (Emitter.decode JD.float 0 action)
 
 {-| Updates a calendar. -}
-update : Action -> Model -> (Model, Cmd Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     NextMonth ->
@@ -101,13 +101,13 @@ update action model =
       (model, Cmd.none)
 
 {-| Renders a calendar. -}
-view :Model -> Html.Html Action
+view :Model -> Html.Html Msg
 view model =
   render model
   -- Html.Lazy.lazy render model
 
 -- Render internal
-render : Model -> Html.Html Action
+render : Model -> Html.Html Msg
 render model =
   let
     -- The date of the month
@@ -210,7 +210,7 @@ dayNames =
   ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 -- Renders a single cell
-renderCell : Date.Date -> Model -> Html.Html Action
+renderCell : Date.Date -> Model -> Html.Html Msg
 renderCell date model =
   let
     sameMonth =

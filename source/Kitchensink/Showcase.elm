@@ -1,7 +1,8 @@
 module Kitchensink.Showcase exposing (..)
 
 import Html exposing (tr, td)
-import Html.Lazy
+
+-- where
 
 type alias Partial a =
   { a | enabled : Bool
@@ -12,11 +13,11 @@ type alias Model a b =
   { enabled : a
   , disabled : a
   , readonly : a
-  , enabledAddress : Signal.Address b
-  , disabledAddress : Signal.Address b
-  , readonlyAddress : Signal.Address b
-  , update : b -> a -> (a, Effects.Effects b)
-  , handleMove : Int -> Int -> a -> (a, Effects.Effects b)
+  , enabledAddress : b
+  , disabledAddress : b
+  , readonlyAddress : b
+  , update : b -> a -> (a, Cmd b)
+  , handleMove : Int -> Int -> a -> (a, Cmd b)
   , handleClick : Bool -> a -> a
   }
 
@@ -27,9 +28,9 @@ type Action a
 
 init fn address update handleMove handleClick =
   let
-    enabledAddress = forwardTo address Enabled
-    disabledAddress = forwardTo address Disabled
-    readonlyAddress = forwardTo address Readonly
+    enabledAddress = address Enabled
+    disabledAddress = address Disabled
+    readonlyAddress = address Readonly
 
     enabled = fn enabledAddress
     disabled = fn disabledAddress
@@ -52,10 +53,10 @@ handleMove x y model =
     (disabled, disabledEffect) = model.handleMove x y model.disabled
     (readonly, readonlyEffect) = model.handleMove x y model.readonly
     effect =
-      [ Effects.map Enabled enabledEffect
-      , Effects.map Disabled disabledEffect
-      , Effects.map Readonly readonlyEffect
-      ] |> Effects.batch
+      [ Cmd.map Enabled enabledEffect
+      , Cmd.map Disabled disabledEffect
+      , Cmd.map Readonly readonlyEffect
+      ] |> Cmd.batch
   in
     ({ model | enabled = enabled
              , disabled = disabled
@@ -72,22 +73,22 @@ update action model =
       let
         (enabled, effect) = model.update act model.enabled
       in
-        ({ model | enabled = enabled }, Effects.map Enabled effect)
+        ({ model | enabled = enabled }, Cmd.map Enabled effect)
 
     Readonly act ->
       let
         (readonly, effect) = model.update act model.readonly
       in
-        ({ model | readonly = readonly }, Effects.map Readonly effect)
+        ({ model | readonly = readonly }, Cmd.map Readonly effect)
 
     Disabled act ->
       let
         (disabled, effect) = model.update act model.disabled
       in
-        ({ model | disabled = disabled }, Effects.map Disabled effect)
+        ({ model | disabled = disabled }, Cmd.map Disabled effect)
 
 view renderFn model =
-  Html.Lazy.lazy2 render renderFn model
+  render renderFn model
 
 render renderFn model =
   tr []

@@ -1,12 +1,12 @@
 module Ui.DatePicker exposing
-  (Model, Action, init, initWithAddress, update, view, setValue)
+  (Model, Msg, init, update, view, setValue)
 
 -- where
 
 {-| Date picker input component.
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Msg, init, subscribe, update
 
 # View
 @docs view
@@ -14,11 +14,11 @@ module Ui.DatePicker exposing
 # Functions
 @docs setValue
 -}
-import Html.Extra exposing (onKeysWithDimensions, onWithDropdownDimensions)
+import Html.DropdownDimensions exposing (onKeysWithDimensions, onWithDropdownDimensions, DropdownDimensions)
 import Html.Events exposing (onBlur, onClick)
 import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
-import Html.Lazy
+import Html.App
 
 import Dict
 
@@ -28,12 +28,11 @@ import Time
 import Date
 
 import Ui.Helpers.Dropdown as Dropdown
-import Ui.Calendar as Calendar
+import Ui.Calendar
 import Ui
 
 {-| Representation of a date picker component:
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
-  - **valueAddress** - The address to send the change in value
   - **format** - The format of the date to render in the input
   - **readonly** - Whether or not the date picker is readonly
   - **disabled** - Whether or not the date picker is disabled
@@ -43,9 +42,7 @@ import Ui
   - **calendar** (internal) - The model of a calendar
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address Time.Time)
-  , address : Signal.Address Action
-  , calendar : Calendar.Model
+  { calendar : Ui.Calendar.Model
   , dropdownPosition : String
   , closeOnSelect : Bool
   , format : String
@@ -56,28 +53,27 @@ type alias Model =
   }
 
 {-| Actions that a date picker can make. -}
-type Action
-  = Increment Html.Extra.DropdownDimensions
-  | Decrement Html.Extra.DropdownDimensions
-  | Toggle Html.Extra.DropdownDimensions
-  | Focus Html.Extra.DropdownDimensions
-  | Close Html.Extra.DropdownDimensions
-  | Calendar Calendar.Action
+type Msg
+  = Increment DropdownDimensions
+  | Decrement DropdownDimensions
+  | Toggle DropdownDimensions
+  | Focus DropdownDimensions
+  | Close DropdownDimensions
+  | Calendar Ui.Calendar.Msg
   | Select Time.Time
   | Tasks ()
+  | NoOp
   | Blur
 
 {-| Initializes a date picker with the given values.
 
     DatePicker.init (forwardTo address DatePicker) date
 -}
-init : Signal.Address Action -> Date.Date -> Model
-init address date =
-  { address = address
-  , valueAddress = Nothing
-  , dropdownPosition = "bottom"
+init : Date.Date -> Model
+init date =
+  { dropdownPosition = "bottom"
   , closeOnSelect = False
-  , calendar = Calendar.init date
+  , calendar = Ui.Calendar.init date
   , format = isoDateFormat
   , locale = "en_us"
   , disabled = False
@@ -85,36 +81,21 @@ init address date =
   , open = False
   }
 
-{-| Initializes a date picker with the given values and value address.
+subscribe model =
+  Ui.Calendar.subscribe model.colorPanel
 
-    DatePicker.init
-      (forwardTo address DatePicker)
-      (forwardTo address DatePickerChanged)
-      date
--}
-initWithAddress : Signal.Address Time.Time -> Signal.Address Action -> Date.Date -> Model
-initWithAddress valueAddress address date =
-  { address = address
-  , valueAddress = Just valueAddress
-  , dropdownPosition = "bottom"
-  , closeOnSelect = False
-  , calendar = Calendar.initWithAddress (forwardTo address Select) date
-  , format = isoDateFormat
-  , locale = "en_us"
-  , disabled = False
-  , readonly = False
-  , open = False
-  }
+subscriptions model =
+  Ui.Calendar.subscribe Select model.calendar
 
 {-| Updates a date picker. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     Calendar act ->
       let
-        (calendar, effect) = Calendar.update act model.calendar
+        (calendar, effect) = Ui.Calendar.update act model.calendar
       in
-        ({ model | calendar = calendar }, Effects.map Calendar effect)
+        ({ model | calendar = calendar }, Cmd.map Calendar effect)
 
     Select time ->
       let
@@ -124,13 +105,13 @@ update action model =
           else
             model
       in
-        (updatedModel, Ext.Signal.sendAsEffect model.valueAddress time Tasks)
+        (updatedModel, Cmd.none)
 
     _ ->
-      (update' action model, Effects.none)
+      (update' action model, Cmd.none)
 
 -- Effectless updates
-update' : Action -> Model -> Model
+update' : Msg -> Model -> Model
 update' action model =
   case action of
     Focus dimensions ->
@@ -146,35 +127,35 @@ update' action model =
       Dropdown.toggleWithDimensions dimensions model
 
     Decrement dimensions ->
-      { model | calendar = Calendar.previousDay model.calendar }
+      { model | calendar = Ui.Calendar.previousDay model.calendar }
         |> Dropdown.openWithDimensions dimensions
 
     Increment dimensions ->
-      { model | calendar = Calendar.nextDay model.calendar }
+      { model | calendar = Ui.Calendar.nextDay model.calendar }
         |> Dropdown.openWithDimensions dimensions
 
     _ -> model
 
 {-| Renders a date picker. -}
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
+view : Model -> Html.Html Msg
+view model =
+  render model
 
 -- Renders a date picker.
-render : Signal.Address Action -> Model -> Html.Html
-render address model =
+render : Model -> Html.Html Msg
+render model =
   let
     actions =
       Ui.enabledActions model
-        [ onWithDropdownDimensions "focus" address Focus
-        , onBlur address Blur
-        , onKeysWithDimensions address [ (27, Close)
-                                       , (13, Toggle)
-                                       , (40, Increment)
-                                       , (38, Decrement)
-                                       , (39, Increment)
-                                       , (37, Decrement)
-                                       ]
+        [ onWithDropdownDimensions "focus" Focus
+        , onBlur Blur
+        , onKeysWithDimensions [ (27, Close)
+                               , (13, Toggle)
+                               , (40, Increment)
+                               , (38, Decrement)
+                               , (39, Increment)
+                               , (37, Decrement)
+                               ]
         ]
   in
     node "ui-date-picker" ([ classList [ ("dropdown-open", model.open)
@@ -184,13 +165,13 @@ render address model =
                            ] ++ actions ++ (Ui.tabIndex model))
       [ div [] [text (format (DateConfigs.getConfig model.locale) model.format model.calendar.value)]
       , Ui.icon "calendar" False []
-      , Dropdown.view model.dropdownPosition
-        [ node "ui-dropdown-overlay" [onClick address Blur] []
-        , Calendar.view (forwardTo address Calendar) model.calendar
+      , Dropdown.view NoOp model.dropdownPosition
+        [ node "ui-dropdown-overlay" [onClick Blur] []
+        , Html.App.map Calendar (Ui.Calendar.view model.calendar)
         ]
       ]
 
 {-| Sets the value of a date picker -}
 setValue : Date.Date -> Model -> Model
 setValue date model =
-  { model | calendar = Calendar.setValue date model.calendar }
+  { model | calendar = Ui.Calendar.setValue date model.calendar }

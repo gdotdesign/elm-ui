@@ -1,4 +1,4 @@
-module Ui.Helpers.Drag where
+module Ui.Helpers.Drag exposing (..) -- where
 
 {-| Helper functions for handling drags.
 
@@ -19,12 +19,17 @@ module Ui.Helpers.Drag where
 # Functions
 @docs diff, relativePosition, relativePercentPosition
 -}
-import Html.Extra
+import Html.Dimensions exposing (Position, Dimensions)
+
+import Ui.Helpers.Emitter as Emitter
+
+import Json.Encode as JE
+import Json.Decode as JD
 
 {-| Represents a drag. -}
 type alias Model =
-  { mouseStartPosition : Html.Extra.Position
-  , dimensions : Html.Extra.Dimensions
+  { mouseStartPosition : Position
+  , dimensions : Dimensions
   , dragging : Bool
   }
 
@@ -33,6 +38,16 @@ type alias Point =
   { left : Float
   , top : Float
   }
+
+subscriptions : ((Int,Int) -> msg) -> (Bool -> msg) -> Sub msg
+subscriptions move click =
+  let
+    decoder = Emitter.decode (JD.tuple2 (,) JD.int JD.int) (0,0)
+    decoder2 = Emitter.decode (JD.bool) False
+  in
+    Sub.batch [ Emitter.listen "mouse-move" (decoder move)
+              , Emitter.listen "mouse-click" (decoder2 click)
+              ]
 
 {-| Initilalizes a drag model. -}
 init : Model
@@ -75,7 +90,7 @@ relativePercentPosition x y model =
     }
 
 {-| Starts a drag. -}
-lift : Html.Extra.Dimensions -> Html.Extra.Position -> Model -> Model
+lift : Dimensions -> Position -> Model -> Model
 lift dimensions position model =
   { model | mouseStartPosition = position
           , dimensions = dimensions

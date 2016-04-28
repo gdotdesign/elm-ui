@@ -1,35 +1,34 @@
-module Ui.Slider
-  ( Model, Action, init, initWithAddress, update, view, handleMove, handleClick
-  , setValue) where
+module Ui.Slider exposing
+  ( Model, Msg, init, subscribe, subscriptions, update, view, setValue)
+
+-- where
 
 {-| Simple slider component.
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Msg, init, subscribe, update
 
 # View
 @docs view
 
 # Functions
-@docs handleMove, handleClick, setValue
+@docs setValue
 -}
+import Html.Dimensions exposing (PositionAndDimension)
 import Html.Extra exposing (onWithDimensions, onKeys)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
-import Html.Lazy
 
 import Native.Browser
-import Ext.Signal
-import Effects
-import Signal
+import Native.Uid
 import Dict
 
+import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui
 
 {-| Representation of a slider:
   - **startDistance** - The distance in pixels when the dragging can start
-  - **valueAddress** - The address to send the changes in value
   - **disabled** - Whether or not the slider is disabled
   - **readonly** - Whether or not the slider is readonly
   - **value** - The current value (0 - 100)
@@ -37,18 +36,20 @@ import Ui
   - **drag** (internal) - The drag for the slider
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address Float)
-  , startDistance : Float
+  { startDistance : Float
   , drag : Drag.Model
   , disabled : Bool
   , readonly : Bool
   , value : Float
   , left : Float
+  , uid : String
   }
 
 {-| Actions that a slider can make. -}
-type Action
-  = Lift (Html.Extra.PositionAndDimension)
+type Msg
+  = Lift PositionAndDimension
+  | Move (Int, Int)
+  | Click Bool
   | Increment
   | Decrement
   | Tasks ()
@@ -59,28 +60,25 @@ type Action
 -}
 init : Float -> Model
 init value =
-  { valueAddress = Nothing
-  , startDistance = 0
+  { startDistance = 0
   , drag = Drag.init
+  , uid = Native.Uid.uid ()
   , disabled = False
   , readonly = False
   , value = value
   , left = 0
   }
 
-{-| Initializes a slider with the given value.
+subscribe : (Float -> msg) -> Model -> Sub msg
+subscribe msg model =
+  Emitter.listenFloat model.uid msg
 
-    Slider.init (forwardTo address SliderChanged) 0.5
--}
-initWithAddress : Signal.Address Float -> Float -> Model
-initWithAddress valueAddress value =
-  let
-    model = init value
-  in
-    { model | valueAddress = Just valueAddress }
+subscriptions : Sub Msg
+subscriptions =
+  Drag.subscriptions Move Click
 
 {-| Updates a slider. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     Decrement ->
@@ -89,34 +87,40 @@ update action model =
     Increment ->
       decrement model
 
+    Move (x, y) ->
+      handleMove x y model
+
+    Click pressed ->
+      handleClick pressed model
+
     Lift {dimensions, position} ->
       { model | drag = Drag.lift dimensions position model.drag
               , left = position.pageX - dimensions.left }
         |> clampLeft
 
     Tasks _ ->
-      (model, Effects.none)
+      (model, Cmd.none)
+
+{-| Lazily renders a slider. -}
+view : Model -> Html.Html Msg
+view model =
+  render model
 
 {-| Renders a slider. -}
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
-
--- Render internal
-render : Signal.Address Action -> Model -> Html.Html
-render address model =
+render :Model -> Html.Html Msg
+render model =
   let
     position =
       (toString (clamp 0 100 model.value)) ++ "%"
 
     actions =
       Ui.enabledActions model
-        [ onWithDimensions "mousedown" True address Lift
-        , onKeys address [ (40, Increment)
-                         , (38, Decrement)
-                         , (37, Increment)
-                         , (39, Decrement)
-                         ]
+        [ onWithDimensions "mousedown" True Lift
+        , onKeys [ (40, Increment)
+                 , (38, Decrement)
+                 , (37, Increment)
+                 , (39, Decrement)
+                 ]
         ]
 
     element =
@@ -135,7 +139,7 @@ render address model =
       element
 
 {-| Updates a sliders value by coordinates. -}
-handleMove : Int -> Int -> Model -> (Model, Effects.Effects Action)
+handleMove : Int -> Int -> Model -> (Model, Cmd Msg)
 handleMove x y model =
   let
     dist = distance diff
@@ -152,15 +156,15 @@ handleMove x y model =
       { model | left = left }
         |> clampLeft
     else
-      (model, Effects.none)
+      (model, Cmd.none)
 
 {-| Updates a slider, stopping the drag if the mouse isnt pressed. -}
-handleClick : Bool -> Model -> Model
+handleClick : Bool -> Model -> (Model, Cmd Msg)
 handleClick value model =
-  { model | drag = Drag.handleClick value model.drag }
+  ({ model | drag = Drag.handleClick value model.drag }, Cmd.none)
 
 {-| Clamps left position of the handle to width of the slider. -}
-clampLeft : Model -> (Model, Effects.Effects Action)
+clampLeft : Model -> (Model, Cmd Msg)
 clampLeft model =
   { model | left = clamp 0 model.drag.dimensions.width model.left }
     |> updatePrecent
@@ -177,13 +181,13 @@ distance diff =
   sqrt diff.top^2 + diff.left^2
 
 {-| Increments the slider by 1 percent. -}
-increment : Model -> (Model, Effects.Effects Action)
+increment : Model -> (Model, Cmd Msg)
 increment model =
   setValue (model.value + 1) model
   |> sendValue
 
 {-| Decrements the slider by 1 percent. -}
-decrement : Model -> (Model, Effects.Effects Action)
+decrement : Model -> (Model, Cmd Msg)
 decrement model =
   setValue (model.value - 1) model
   |> sendValue
@@ -194,6 +198,6 @@ setValue value model =
   { model | value = clamp 0 100 value }
 
 {-| Sends the value to the valueAddress. -}
-sendValue : Model -> (Model, Effects.Effects Action)
+sendValue : Model -> (Model, Cmd Msg)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
+  (model, Emitter.sendFloat model.uid model.value)

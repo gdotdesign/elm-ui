@@ -1,11 +1,9 @@
-module Ui.Ratings
-  ( Model, Action, init, initWithAddress, update, view, setValue
-  , valueAsStars, setAndSendValue) where
+module Ui.Ratings exposing (Model, Msg, init, subscribe, update, view, setValue, valueAsStars)
 
 {-| A simple star rating component.
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Msg, init, subscribe, update
 
 # View
 @docs view
@@ -13,49 +11,54 @@ module Ui.Ratings
 # Functions
 @docs setValue, setAndSendValue, valueAsStars
 -}
+
+-- where
+
 import Ext.Number exposing (roundTo)
-import Ext.Signal
-import Effects
-import Signal
 import Array
 
 import Html.Events exposing (onClick, onMouseEnter, onMouseLeave)
 import Html.Attributes exposing (classList)
 import Html.Extra exposing (onKeys)
 import Html exposing (node)
-import Html.Lazy
 
+import Native.Browser
+import Native.Uid
+
+import Ui.Helpers.Emitter as Emitter
 import Ui
 
-import Debug exposing (log)
 
-{-| Representation of a ratings component.
+{-| Representation of a ratings component:
+  - **hoverValue** (internal) - The transient value of the component
   - **clearable** - Whether or not the component is clearable
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
-  - **valueAddress** - The address to send changes in value
   - **value** - The current value of the component (0..1)
+  - **uid** - The unique identifier of the input
   - **size** - The number of starts to display
-  - **hoverValue** (internal) - The transient value of the component
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address Float)
-  , hoverValue : Float
+  { hoverValue : Float
   , clearable : Bool
   , disabled : Bool
   , readonly : Bool
   , value : Float
+  , uid : String
   , size : Int
   }
 
-{-| Actions that a ratings component can make. -}
-type Action
+
+{-| Messages that a ratings component can receive.
+-}
+type Msg
   = MouseEnter Int
   | MouseLeave
   | Increment
   | Decrement
   | Click Int
   | Tasks ()
+
 
 {-| Initializes a ratings component with the given number of stars and initial
 value.
@@ -65,8 +68,8 @@ value.
 -}
 init : Int -> Float -> Model
 init size value =
-  { valueAddress = Nothing
-  , hoverValue = value
+  { hoverValue = value
+  , uid = Native.Uid.uid ()
   , clearable = False
   , disabled = False
   , readonly = False
@@ -74,36 +77,43 @@ init size value =
   , size = size
   }
 
-{-| Initializes a ratings component with the given number of stars, initial
-value and value address.
 
-    -- 1 out of 10 star rating
-    Ratings.init (forwardTo adress RatingsChanged) 10 0.1
+{-| Subscribe to the changes of a ratings components.
+
+    ...
+    subscriptions =
+      \model -> Ui.Ratings.subscribe Ratings model.ratings
+    ...
 -}
-initWithAddress : Signal.Address Float -> Int -> Float -> Model
-initWithAddress valueAddress size value =
-  let
-    model = init size value
-  in
-    { model | valueAddress = Just valueAddress }
+subscribe : (Float -> msg) -> Model -> Sub msg
+subscribe msg model =
+  Emitter.listenFloat model.uid msg
 
-{-| Updates a ratings component. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
-update action model =
-  case action of
+
+{-| Updates a ratings component.
+-}
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+  case msg of
     MouseEnter index ->
-      ({ model | hoverValue = calculateValue index model }, Effects.none)
+      ( { model | hoverValue = calculateValue index model }, Cmd.none )
 
     MouseLeave ->
-      ({ model | hoverValue = model.value }, Effects.none)
+      ( { model | hoverValue = model.value }, Cmd.none )
 
     Increment ->
       setAndSendValue (clamp 0 1 (model.value + (1 / (toFloat model.size)))) model
 
     Decrement ->
       let
-        oneStarValue = 1 / (toFloat model.size)
-        min = if model.clearable then 0 else oneStarValue
+        oneStarValue =
+          1 / (toFloat model.size)
+
+        min =
+          if model.clearable then
+            0
+          else
+            oneStarValue
       in
         setAndSendValue (clamp oneStarValue 1 (model.value - oneStarValue)) model
 
@@ -111,49 +121,101 @@ update action model =
       setAndSendValue (calculateValue index model) model
 
     Tasks _ ->
-      (model, Effects.none)
+      ( model, Cmd.none )
 
-{-| Renders a ratings component. -}
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
 
-{-| Sets the value of a ratings component. -}
+{-| Lazily renders a ratings component.
+-}
+view : Model -> Html.Html Msg
+view model =
+  render model
+
+
+{-| Renders a ratings component.
+-}
+render : Model -> Html.Html Msg
+render model =
+  let
+    actions =
+      Ui.enabledActions
+        model
+        [ onKeys
+            [ ( 40, Decrement )
+            , ( 38, Increment )
+            , ( 37, Decrement )
+            , ( 39, Increment )
+            ]
+        ]
+
+    stars =
+      Array.initialize model.size ((+) 1)
+        |> Array.toList
+  in
+    node
+      "ui-ratings"
+      ([ classList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+       ]
+        ++ (Ui.tabIndex model)
+        ++ actions
+      )
+      (List.map (renderStar model) stars)
+
+
+{-| Sets the value of a ratings component.
+-}
 setValue : Float -> Model -> Model
 setValue value' model =
   let
-    value = roundTo 2 value'
+    value =
+      roundTo 2 value'
   in
-    if model.value == value
-    && model.hoverValue == value
+    if
+      model.value
+        == value
+        && model.hoverValue
+        == value
     then
       model
     else
-      { model | value = value
-              , hoverValue = value }
+      { model
+        | value = value
+        , hoverValue = value
+      }
 
-{-| Sets the given value and sends it to the value address. -}
-setAndSendValue : Float -> Model -> (Model, Effects.Effects Action)
+
+{-| Sets the given value and sends it to the value address.
+-}
+setAndSendValue : Float -> Model -> ( Model, Cmd Msg )
 setAndSendValue value model =
   let
-    updatedModel = setValue value model
+    updatedModel =
+      setValue value model
   in
     if model.value == updatedModel.value then
-      (model, Effects.none)
+      ( model, Cmd.none )
     else
-      sendValue updatedModel
+      ( updatedModel, sendValue updatedModel )
 
-{-| Sends the value to the value address as an effect. -}
-sendValue : Model -> (Model, Effects.Effects Action)
+
+{-| Sends the value to the value address as an effect.
+-}
+sendValue : Model -> Cmd Msg
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
+  Emitter.sendFloat model.uid model.value
 
-{-| Returns the value of a ratings component as number of stars. -}
+
+{-| Returns the value of a ratings component as number of stars.
+-}
 valueAsStars : Float -> Model -> Int
 valueAsStars value model =
   round (value * (toFloat model.size))
 
--- Calculates the value for the given index
+
+{-| Calculates the value for the given star (index).
+-}
 calculateValue : Int -> Model -> Float
 calculateValue index model =
   let
@@ -163,39 +225,23 @@ calculateValue index model =
     currentIndex =
       valueAsStars model.value model
   in
-    if currentIndex == index && model.clearable then 0 else value
+    if currentIndex == index && model.clearable then
+      0
+    else
+      value
 
--- Render internal
-render : Signal.Address Action -> Model -> Html.Html
-render address model =
+
+{-| Renders a individual star.
+-}
+renderStar : Model -> Int -> Html.Html Msg
+renderStar model index =
   let
     actions =
-      Ui.enabledActions model
-        [onKeys address [ (40, Decrement)
-                        , (38, Increment)
-                        , (37, Decrement)
-                        , (39, Increment)
-                        ]
-        ]
-
-    stars =
-      Array.initialize model.size ((+) 1)
-      |> Array.toList
-  in
-    node "ui-ratings" ([classList [ ("disabled", model.disabled)
-                                  , ("readonly", model.readonly)]
-                       ] ++ (Ui.tabIndex model) ++ actions)
-      (List.map (renderStar address model) stars)
-
--- Renders a star
-renderStar : Signal.Address Action -> Model -> Int -> Html.Html
-renderStar address model index =
-  let
-    actions =
-      Ui.enabledActions model
-        [ onClick address (Click index)
-        , onMouseEnter address (MouseEnter index)
-        , onMouseLeave address MouseLeave
+      Ui.enabledActions
+        model
+        [ onClick (Click index)
+        , onMouseEnter (MouseEnter index)
+        , onMouseLeave MouseLeave
         ]
 
     class =
@@ -204,7 +250,10 @@ renderStar address model index =
       else
         "ui-ratings-empty"
   in
-    node "ui-ratings-star"
-      ([classList [ (class, True)]
-       ] ++ actions)
+    node
+      "ui-ratings-star"
+      ([ classList [ ( class, True ) ]
+       ]
+        ++ actions
+      )
       []

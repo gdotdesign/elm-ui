@@ -1,10 +1,4 @@
-module Ui.IconButton
-  ( Model, init, view
-  , primary, primarySmall, primaryBig
-  , secondaryBig, secondarySmall, secondary
-  , warningBig, warningSmall, warning
-  , successBig, successSmall, success
-  , dangerBig, dangerSmall, danger) where
+module Ui.IconButton exposing (Model, init, render, view, primary, primarySmall, primaryBig, secondaryBig, secondarySmall, secondary, warningBig, warningSmall, warning, successBig, successSmall, success, dangerBig, dangerSmall, danger)
 
 {-| Button with an icon either on the left or right side.
 
@@ -12,7 +6,7 @@ module Ui.IconButton
 @docs Model, init
 
 # View
-@docs view
+@docs render, view
 
 # View Variations
 @docs primary, primaryBig, primarySmall
@@ -21,19 +15,22 @@ module Ui.IconButton
 @docs success, successBig, successSmall
 @docs danger, dangerBig, dangerSmall
 -}
+
+-- where
+
 import Html exposing (node, text)
-import Html.Lazy
 
 import Ui.Button exposing (attributes)
 import Ui
 
+
 {-| Representation of an icon button:
   - **disabled** - Whether or not the icon button is disabled
   - **glyph** - The glyph to use form IonIcons
-  - **side** - The side to display the icon
-  - **kind** - The type of the icon button
-  - **size** - The size of the icon button
   - **text** - The text of the icon button
+  - **kind** - The type of the icon button
+  - **side** - The side to display the icon
+  - **size** - The size of the icon button
 -}
 type alias Model =
   { disabled : Bool
@@ -44,9 +41,10 @@ type alias Model =
   , size : String
   }
 
+
 {-| Initializes an icon button with a glyph and text.
 
-    IconButton.initialite "android-download" "Download"
+    IconButton.init "android-download" "Download"
 -}
 init : String -> String -> Model
 init glyph text =
@@ -58,87 +56,148 @@ init glyph text =
   , text = text
   }
 
-{-| Renders an icon button. -}
-view : Signal.Address a -> a -> Model -> Html.Html
-view address action model =
-  Html.Lazy.lazy3 render address action model
 
-{-| Renders a "medium primary" icon button with the given text, glyph and size. -}
-primary : String -> String -> String -> Signal.Address a -> a -> Html.Html
-primary text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "medium" "primary" glyph side)
+{-| Renders an icon button.
 
-{-| Renders a "small primary" icon button with the given text, glyph and size. -}
-primarySmall : String -> String -> String -> Signal.Address a -> a -> Html.Html
-primarySmall text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "small" "primary" glyph side)
+    Ui.IconButton.render msg model
+-}
+render : msg -> Model -> Html.Html msg
+render msg model =
+  let
+    icon =
+      Ui.icon model.glyph False []
 
-{-| Renders a "big primary" icon button with the given text, glyph and size. -}
-primaryBig : String -> String -> String -> Signal.Address a -> a -> Html.Html
-primaryBig text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "big" "primary" glyph side)
+    span =
+      node "span" [] [ text model.text ]
 
-{-| Renders a "medium danger" icon button with the given text, glyph and size. -}
-danger : String -> String -> String -> Signal.Address a -> a -> Html.Html
-danger text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "medium" "danger" glyph side)
+    children =
+      if model.side == "left" then
+        [ icon, span ]
+      else
+        [ span, icon ]
+  in
+    node
+      "ui-icon-button"
+      (attributes msg model)
+      children
 
-{-| Renders a "small danger" icon button with the given text, glyph and size. -}
-dangerSmall : String -> String -> String -> Signal.Address a -> a -> Html.Html
-dangerSmall text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "small" "danger" glyph side)
 
-{-| Renders a "big danger" icon button with the given text, glyph and size. -}
-dangerBig : String -> String -> String -> Signal.Address a -> a -> Html.Html
-dangerBig text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "big" "danger" glyph side)
+{-| Lazily renders an icon button.
 
-{-| Renders a "medium secondary" icon button with the given text, glyph and size. -}
-secondary : String -> String -> String -> Signal.Address a -> a -> Html.Html
-secondary text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "medium" "secondary" glyph side)
+    Ui.IconButton.view msg model
+-}
+view : msg -> Model -> Html.Html msg
+view msg model =
+  render msg model
 
-{-| Renders a "small secondary" icon button with the given text, glyph and size. -}
-secondarySmall : String -> String -> String -> Signal.Address a -> a -> Html.Html
-secondarySmall text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "small" "secondary" glyph side)
 
-{-| Renders a "big secondary" icon button with the given text, glyph and size. -}
-secondaryBig : String -> String -> String -> Signal.Address a -> a -> Html.Html
-secondaryBig text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "big" "secondary" glyph side)
+{-| Lazily renders a "medium primary" icon button with the given text, glyph and size.
+-}
+primary : String -> String -> String -> msg -> Html.Html msg
+primary text glyph side msg =
+  render msg (model text "medium" "primary" glyph side)
 
-{-| Renders a "medium success" icon button with the given text, glyph and size. -}
-success : String -> String -> String -> Signal.Address a -> a -> Html.Html
-success text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "medium" "success" glyph side)
 
-{-| Renders a "small success" icon button with the given text, glyph and size. -}
-successSmall : String -> String -> String -> Signal.Address a -> a -> Html.Html
-successSmall text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "small" "success" glyph side)
+{-| Lazily renders a "small primary" icon button with the given text, glyph and size.
+-}
+primarySmall : String -> String -> String -> msg -> Html.Html msg
+primarySmall text glyph side msg =
+  render msg (model text "small" "primary" glyph side)
 
-{-| Renders a "big success" icon button with the given text, glyph and size. -}
-successBig : String -> String -> String -> Signal.Address a -> a -> Html.Html
-successBig text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "big" "success" glyph side)
 
-{-| Renders a "medium warning" icon button with the given text, glyph and size. -}
-warning : String -> String -> String -> Signal.Address a -> a -> Html.Html
-warning text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "medium" "warning" glyph side)
+{-| Lazily renders a "big primary" icon button with the given text, glyph and size.
+-}
+primaryBig : String -> String -> String -> msg -> Html.Html msg
+primaryBig text glyph side msg =
+  render msg (model text "big" "primary" glyph side)
 
-{-| Renders a "small warning" icon button with the given text, glyph and size. -}
-warningSmall : String -> String -> String -> Signal.Address a -> a -> Html.Html
-warningSmall text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "small" "warning" glyph side)
 
-{-| Renders a "big warning" icon button with the given text, glyph and size. -}
-warningBig : String -> String -> String -> Signal.Address a -> a -> Html.Html
-warningBig text glyph side address action =
-  Html.Lazy.lazy3 render address action (model text "big" "warning" glyph side)
+{-| Lazily renders a "medium danger" icon button with the given text, glyph and size.
+-}
+danger : String -> String -> String -> msg -> Html.Html msg
+danger text glyph side msg =
+  render msg (model text "medium" "danger" glyph side)
 
--- Generates a model from the given arguments.
+
+{-| Lazily renders a "small danger" icon button with the given text, glyph and size.
+-}
+dangerSmall : String -> String -> String -> msg -> Html.Html msg
+dangerSmall text glyph side msg =
+  render msg (model text "small" "danger" glyph side)
+
+
+{-| Lazily renders a "big danger" icon button with the given text, glyph and size.
+-}
+dangerBig : String -> String -> String -> msg -> Html.Html msg
+dangerBig text glyph side msg =
+  render msg (model text "big" "danger" glyph side)
+
+
+{-| Lazily renders a "medium secondary" icon button with the given text, glyph and size.
+-}
+secondary : String -> String -> String -> msg -> Html.Html msg
+secondary text glyph side msg =
+  render msg (model text "medium" "secondary" glyph side)
+
+
+{-| Lazily renders a "small secondary" icon button with the given text, glyph and size.
+-}
+secondarySmall : String -> String -> String -> msg -> Html.Html msg
+secondarySmall text glyph side msg =
+  render msg (model text "small" "secondary" glyph side)
+
+
+{-| Lazily renders a "big secondary" icon button with the given text, glyph and size.
+-}
+secondaryBig : String -> String -> String -> msg -> Html.Html msg
+secondaryBig text glyph side msg =
+  render msg (model text "big" "secondary" glyph side)
+
+
+{-| Lazily renders a "medium success" icon button with the given text, glyph and size.
+-}
+success : String -> String -> String -> msg -> Html.Html msg
+success text glyph side msg =
+  render msg (model text "medium" "success" glyph side)
+
+
+{-| Lazily renders a "small success" icon button with the given text, glyph and size.
+-}
+successSmall : String -> String -> String -> msg -> Html.Html msg
+successSmall text glyph side msg =
+  render msg (model text "small" "success" glyph side)
+
+
+{-| Lazily renders a "big success" icon button with the given text, glyph and size.
+-}
+successBig : String -> String -> String -> msg -> Html.Html msg
+successBig text glyph side msg =
+  render msg (model text "big" "success" glyph side)
+
+
+{-| Lazily renders a "medium warning" icon button with the given text, glyph and size.
+-}
+warning : String -> String -> String -> msg -> Html.Html msg
+warning text glyph side msg =
+  render msg (model text "medium" "warning" glyph side)
+
+
+{-| Lazily renders a "small warning" icon button with the given text, glyph and size.
+-}
+warningSmall : String -> String -> String -> msg -> Html.Html msg
+warningSmall text glyph side msg =
+  render msg (model text "small" "warning" glyph side)
+
+
+{-| Lazily renders a "big warning" icon button with the given text, glyph and size.
+-}
+warningBig : String -> String -> String -> msg -> Html.Html msg
+warningBig text glyph side msg =
+  render msg (model text "big" "warning" glyph side)
+
+
+{-| Generates a model from the given arguments.
+-}
 model : String -> String -> String -> String -> String -> Model
 model text size kind glyph side =
   { disabled = False
@@ -148,19 +207,3 @@ model text size kind glyph side =
   , side = side
   , text = text
   }
-
--- Render internal.
-render : Signal.Address a -> a -> Model -> Html.Html
-render address action model =
-  let
-    icon = Ui.icon model.glyph False []
-
-    span = node "span" [] [text model.text]
-
-    children =
-      if model.side == "left" then [icon, span] else [span, icon]
-  in
-    node
-      "ui-icon-button"
-      (attributes address action model)
-      children

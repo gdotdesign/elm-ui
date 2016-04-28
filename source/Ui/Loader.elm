@@ -1,28 +1,30 @@
-module Ui.Loader
-  (Model, Action, init, update, view, overlayView, barView, start, finish) where
+module Ui.Loader exposing (Model, Msg, init, update, render, view, overlayView, barView, start, finish)
 
 {-| Loading component, it has a wait period before showing itself.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Msg, init, update
 
 # View
-@docs view, overlayView, barView
+@docs render, view,
+
+# View Variations
+overlayView, barView
 
 # Functions
 @docs start, finish
 -}
-import Effects
-import Task
 
 import Html.Attributes exposing (classList, class)
 import Html exposing (node, div)
-import Html.Lazy
+
+import Task
+
 
 {-| Representation of a loader:
-  - **loading** - Whether or not the loading is started
-  - **shown** - Whether or not the loader is shown
   - **timeout** - The waiting perid in milliseconds
+  - **shown** - Whether or not the loader is shown
+  - **loading** - Whether or not the loading is started
 -}
 type alias Model =
   { timeout : Float
@@ -30,12 +32,17 @@ type alias Model =
   , shown : Bool
   }
 
-{-| Actions that a loader can make. -}
-type Action = Show
+
+{-| Messages that a loader can receive.
+-}
+type Msg
+  = Show ()
+  | NoOp ()
+
 
 {-| Initializes a loader with the given timeout.
 
-    Loader.init 200
+    model = Ui.Loader.init 200
 -}
 init : Float -> Model
 init timeout =
@@ -44,63 +51,87 @@ init timeout =
   , shown = False
   }
 
-{-| Updates a loader. -}
-update : Action -> Model -> Model
-update action model =
-  case action of
-    Show ->
+
+{-| Updates a loader.
+
+    Ui.Loader.update msg model
+-}
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+  case msg of
+    Show _ ->
       if model.loading then
-        { model | shown = True }
+        ( { model | shown = True }, Cmd.none )
       else
-        model
+        ( model, Cmd.none )
 
-{-| Renders a loader as an overlay. -}
-overlayView : Model -> Html.Html
+    _ ->
+      ( model, Cmd.none )
+
+
+{-| Lazily renders a loader.
+
+    Ui.Loader.view model
+-}
+view : String -> List (Html.Html msg) -> Model -> Html.Html msg
+view kind content model =
+  render kind content model
+
+
+{-| Lazily renders a loader as an overlay.
+
+    Ui.Loader.overlayView model
+-}
+overlayView : Model -> Html.Html msg
 overlayView model =
-  view "overlay" [loadingRects] model
+  view "overlay" [ loadingRectangles ] model
 
-{-| Renders a loader as a bar. -}
-barView : Model -> Html.Html
+
+{-| Lazily renders a loader as a bar.
+
+    Ui.Loader.barView model
+-}
+barView : Model -> Html.Html msg
 barView model =
   view "bar" [] model
 
-{-| Renders a loader. -}
-view : String -> List Html.Html -> Model -> Html.Html
-view kind content model =
-  Html.Lazy.lazy3 render kind content model
 
-{-| Finishes the loading process. -}
+{-| Rendes a loader.
+
+    Ui.Loader.render kind contents model
+-}
+render : String -> List (Html.Html msg) -> Model -> Html.Html msg
+render kind content model =
+  node
+    "ui-loader"
+    [ classList
+        [ ( "ui-loader-" ++ kind, True )
+        , ( "loading", model.shown )
+        ]
+    ]
+    content
+
+
+{-| Finishes the loading process.
+-}
 finish : Model -> Model
 finish model =
   { model | loading = False, shown = False }
 
-{-| Starts the loading process. -}
-start : Model -> (Model, Effects.Effects Action)
+
+{-| Starts the loading process.
+-}
+start : Model -> ( Model, Cmd Msg )
 start model =
-  let
-    effect =
-      Task.andThen
-        (Task.sleep model.timeout)
-        (\_ -> Task.succeed Show)
-        |> Effects.task
-  in
-  ({ model | loading = True }, effect)
+  ( { model | loading = True }, Task.perform Show NoOp (Task.succeed ()) )
 
 
--- Render internal
-render : String -> List Html.Html -> Model -> Html.Html
-render kind content model =
-  node "ui-loader"
-    [ classList [ ("ui-loader-" ++ kind, True)
-                , ("loading", model.shown)
-                ]
-    ]
-    content
-
--- Renders loading rects
-loadingRects : Html.Html
-loadingRects =
-  div [ class "ui-loader-rects" ]
+{-| Renders loading rectangles.
+-}
+loadingRectangles : Html.Html msg
+loadingRectangles =
+  div
+    [ class "ui-loader-rectangles" ]
     [ div [] []
     , div [] []
     , div [] []

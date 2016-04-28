@@ -1,104 +1,135 @@
-module Ui.App (Model, Action(..), init, initWithAddress, update, view) where
+module Ui.App exposing
+  (Model, Action(..), init, subscribe, subscriptions, update, view) -- where
 
 {-| Base frame for a web/mobile application:
-  - Provides singals for **load** and **scroll** events
+  - Provides subscriptions for **load** and **scroll** events
+  - Provides periodic updates to Ui.Time
   - Sets the viewport to be mobile friendly
   - Sets the title of the application
   - Loads the stylesheet
 
 # Model
-@docs Model, Action, update, init, initWithAddress
+@docs Model, Action, update, init, subscribe, subscriptions
 
 # View
 @docs view
 -}
-import Ext.Signal
-import Effects
-
 import Html.Attributes exposing (name, content, style)
-import Html.Extra exposing (onScroll)
+import Html.Events exposing (onMouseDown, onMouseUp)
+import Html.Extra exposing (onScroll, onMouseMove)
 import Html exposing (node, text)
-import Html.Lazy
+-- import Html.Lazy
 
+import Json.Decode as JD
+import Json.Encode as JE
+
+import Time exposing (Time)
+import Native.Uid
+
+import Ui.Helpers.Emitter as Emitter
+import Ui.Time
 import Ui
 
 {-| Representation of an application:
-  - **loadedAddress** - The address to send messages when the application is loaded
-  - **scrolledAddress** - The address to send messages when something is scrolled
   - **loaded** (internal) - Whether or not the application is loaded
   - **title** - The title of the application (and the window)
+  - **uid** - The unique ID of the application
 -}
 type alias Model =
-  { scrolledAddress : Maybe (Signal.Address Bool)
-  , loadedAddress : Maybe (Signal.Address Bool)
-  , title : String
+  { title : String
   , loaded : Bool
+  , uid : String
   }
 
 {-| Actions an application can make. -}
 type Action
-  = Scrolled
+  = Tick Time
+  | Scrolled
+  | MouseMove (Int, Int)
+  | Click Bool
   | Loaded
   | Tasks ()
 
 {-| Initializes an application with the given title.
 
-    App.init "My Application"
+    app = App.init "My Application"
 -}
 init : String -> Model
 init title =
-  { scrolledAddress = Nothing
-  , loadedAddress = Nothing
+  { uid = Native.Uid.uid ()
   , loaded = False
   , title = title
   }
 
-{-| Initializes an application with the given title.
+{-| Subscribes to changes for an application.
 
-    App.initinitWithSignals
-      (forwardTo address Loaded)
-      (forwardTo address Scrolled)
-      "My Application"
+    Ui.App.subscribe ScrollAction LoadAction app
 -}
-initWithAddress : Signal.Address Bool -> Signal.Address Bool -> String -> Model
-initWithAddress loadedAddress scrolledAddress title =
-  { scrolledAddress = Just scrolledAddress
-  , loadedAddress = Just loadedAddress
-  , loaded = False
-  , title = title
-  }
+subscribe : (Bool -> a) -> (Bool -> a) -> Model -> Sub a
+subscribe scrollMsg loadMsg model =
+  let
+    decoder =
+      Emitter.decode JD.bool False
+  in
+    Sub.batch
+      [ Emitter.listen (model.uid ++ "-scroll") (decoder scrollMsg)
+      , Emitter.listen (model.uid ++ "-load") (decoder loadMsg)
+      ]
+
+{-| Subscriptions for an application.
+
+    Sub.map App Ui.App.subscriptions
+-}
+subscriptions : Sub Action
+subscriptions =
+  Time.every 1000 Tick
 
 {-| Updates an application. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
+update : Action -> Model -> (Model, Cmd Action)
 update action model =
   case action of
     Loaded ->
       ({ model | loaded = True }
-       , Ext.Signal.sendAsEffect model.loadedAddress True Tasks)
+       , Emitter.send (model.uid ++ "-load") (JE.bool True))
 
     Scrolled ->
-      (model, Ext.Signal.sendAsEffect model.scrolledAddress True Tasks)
+      (model, Emitter.send (model.uid ++ "-scroll") (JE.bool True))
 
-    Tasks _ ->
-      (model, Effects.none)
+    Tick now ->
+      (model, Ui.Time.updateTime now)
+
+    MouseMove (x,y) ->
+      (model, Emitter.send "mouse-move" (JE.list [JE.int x, JE.int y]))
+
+    Click pressed ->
+      (model, Emitter.send "mouse-click" (JE.bool pressed))
+
+    _ ->
+      (model, Cmd.none)
 
 {-| Renders an application.
 
-    App.view address app [text "Hello there!"]
+    Ui.App.view address app [text "Hello there!"]
 -}
-view: Signal.Address Action -> Model -> List Html.Html -> Html.Html
+view: (Action -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 view address model children =
-  Html.Lazy.lazy3 render address model children
+  render address model children
+  -- FIXME: Lazy is broken in 0.17
+  -- Html.Lazy.lazy3 render model address children
 
 -- Render (Internal)
-render : Signal.Address Action -> Model -> List Html.Html -> Html.Html
+render : (Action -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 render address model children =
-  node "ui-app" [ onScroll address Scrolled
-                , style [("visibility", if model.loaded then "" else "hidden")]
+  node "ui-app" [ style [("visibility", if model.loaded then "" else "hidden")]
+                , onScroll (address Scrolled)
+                , onMouseMove (\pos -> address (MouseMove pos))
+                , onMouseUp (address (Click False))
+                , onMouseDown (address (Click True))
                 ]
-    ([ Ui.stylesheetLink "main.css" address Loaded
+    ([ Ui.stylesheetLink "http://localhost:8000/Projects/elm-017-experiments/main.css" (address Loaded)
      , node "title" [] [text model.title]
-     , node "meta" [ name "viewport"
-                   , content "initial-scale=1.0, user-scalable=no"
-                   ] []
+     , node "meta"
+       [ content "initial-scale=1.0, user-scalable=no"
+       , name "viewport"
+       ] []
      ] ++ children)

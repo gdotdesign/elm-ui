@@ -1,6 +1,10 @@
-module Ui.NotificationCenter (Model, Action, init, update, view, notify) where
+module Ui.NotificationCenter exposing
+  (Model, Action, init, update, view, notify) -- where
 
 {-| Notification center for displaying messages to the user.
+
+TODO: Refactor this into something that doesn't use animations, or wait for
+virtual-dom to fix "keys" concept.
 
 # Models
 @docs Model, Action, init, update
@@ -14,12 +18,10 @@ module Ui.NotificationCenter (Model, Action, init, update, view, notify) where
 import Html.Attributes exposing (classList, style)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
-import Html.Lazy
+-- import Html.Lazy
 
 import Json.Encode
-import VirtualDom
 import List.Extra
-import Effects
 import Vendor
 import Task
 
@@ -28,24 +30,25 @@ import Task
   - **notifications** - The list of notifications that is displayed
   - **duration** - The duration of the notifications animation
 -}
-type alias Model =
-  { notifications : List Notification
+type alias Model msg =
+  { notifications : List (Notification msg)
   , duration : Float
   , timeout : Float
   }
 
 {-| Actions that notification center can make. -}
 type Action
-  = AutoHide Int
-  | Remove Int
+  = AutoHide Int ()
+  | Remove Int ()
   | Hide Int
+  | Tasks ()
 
 {-| Initializes a notification center with the given timeout and duration (in
 milliseconds).
 
     NotificationCenter.init timeout duration
 -}
-init : Float -> Float -> Model
+init : Float -> Float -> Model msg
 init timeout duration =
   { duration = duration
   , notifications = []
@@ -53,28 +56,32 @@ init timeout duration =
   }
 
 {-| Renders a notification center. -}
-view: Signal.Address Action -> Model -> Html.Html
+view: (Action -> a) -> Model a -> Html.Html a
 view address model =
-  Html.Lazy.lazy2 render address model
+  render address model
+  -- Html.Lazy.lazy2 render address model
 
 {-| Updates a notification center. -}
-update: Action -> Model -> (Model, Effects.Effects Action)
+update: Action -> Model msg -> (Model msg, Cmd Action)
 update action model =
   case action of
-    AutoHide id ->
+    AutoHide id _ ->
       autoHide id model
 
-    Remove id ->
+    Remove id _ ->
       remove id model
 
     Hide id ->
       hide id model
 
+    Tasks _ ->
+      (model, Cmd.none)
+
 {-| Adds a notification with the given html content.
 
     NotificationCenter.notify (text "Hello") model
 -}
-notify : Html.Html -> Model -> (Model, Effects.Effects Action)
+notify : Html.Html msg -> Model msg -> (Model msg, Cmd Action)
 notify contents model =
   let
     notification =
@@ -83,32 +90,30 @@ notify contents model =
     updatedModel =
       { model | notifications = model.notifications ++ [notification] }
   in
-    (updatedModel, asEffect model.timeout (AutoHide notification.id))
+    (updatedModel, performTask (AutoHide notification.id) model.timeout)
 
 -- PRIVATE --
 
 -- Represents a notification
-type alias Notification =
-  { contents : Html.Html
+type alias Notification msg =
+  { contents : Html.Html msg
   , duration : Float
   , class : String
   , id : Int
   }
 
--- Returns an effect that will be run after the given timeout
-asEffect : Float -> Action -> Effects.Effects Action
-asEffect timeout action =
-  Task.andThen (Task.sleep timeout) (\_ -> Task.succeed action)
-  |> Effects.task
+performTask : (a -> Action) -> Float -> Cmd Action
+performTask action delay =
+  Task.perform Tasks action (Native.Browser.delay delay)
 
 -- Render
-render: Signal.Address Action -> Model -> Html.Html
+render: (Action -> a) -> Model a -> Html.Html a
 render address model =
   node "ui-notification-center" []
     (List.map (renderNotification address) model.notifications)
 
 -- Renders a notification
-renderNotification : Signal.Address Action -> Notification -> Html.Html
+renderNotification : (Action -> a) -> Notification a -> Html.Html a
 renderNotification address model =
   let
     duration =
@@ -123,9 +128,8 @@ renderNotification address model =
         _ -> ""
   in
     node "ui-notification"
-      [ VirtualDom.property "key" (Json.Encode.int model.id)
-      , classList [(model.class, True)]
-      , onClick address (Hide model.id)
+      [ classList [(model.class, True)]
+      , onClick (address (Hide model.id))
       , style [ ("animation-duration", duration)
               , (prefix ++ "animation-duration", duration)
               ]
@@ -133,7 +137,7 @@ renderNotification address model =
       [ node "div" [] [ model.contents ] ]
 
 -- Initiliazes a notification with the given contents and model
-initNotification : Model -> Html.Html -> Notification
+initNotification : Model a -> Html.Html a -> Notification a
 initNotification model contents =
   let
     id =
@@ -148,7 +152,7 @@ initNotification model contents =
     }
 
 -- Hides the notification with the given id
-hide : Int -> Model -> (Model, Effects.Effects Action)
+hide : Int -> Model msg -> (Model msg, Cmd Action)
 hide id model =
   let
     updatedNotifications =
@@ -160,10 +164,10 @@ hide id model =
       else item
   in
     ({ model | notifications = updatedNotifications }
-     , asEffect (model.duration + 100) (Remove id))
+     , performTask (Remove id) (model.duration + 100))
 
 -- Tries to hide the notification with the given id
-autoHide: Int -> Model -> (Model, Effects.Effects Action)
+autoHide: Int -> Model a -> (Model a, Cmd Action)
 autoHide id model =
   let
     updatedNotifications =
@@ -175,12 +179,12 @@ autoHide id model =
 
     hideEffect =
       if updatedNotifications /= model.notifications then
-        asEffect (model.duration + 100) (Remove id)
+        performTask (Remove id) (model.duration + 100)
       else
-        asEffect 100 (AutoHide id)
+        performTask (AutoHide id) 100
 
     effect =
-      if isMember then hideEffect else Effects.none
+      if isMember then hideEffect else Cmd.none
 
     updatedNotification item =
       let
@@ -195,11 +199,11 @@ autoHide id model =
     ({ model | notifications = updatedNotifications }, effect)
 
 -- Removes the notification with the given id
-remove : Int -> Model -> (Model, Effects.Effects Action)
+remove : Int -> Model a -> (Model a, Cmd Action)
 remove id model =
   let
     updatedNotifications =
       List.filter (\item -> item.id /= id) model.notifications
   in
-    ({ model | notifications = updatedNotifications }, Effects.none)
+    ({ model | notifications = updatedNotifications }, Cmd.none)
 

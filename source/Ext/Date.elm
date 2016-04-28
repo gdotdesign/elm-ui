@@ -1,4 +1,4 @@
-module Ext.Date where
+module Ext.Date exposing (..)
 
 {-| Utility functions for dates.
 
@@ -24,15 +24,20 @@ import Native.DateTime
 import Array
 import Date
 
-{-| Returns the current date. -}
+
+{-| Returns the current date.
+-}
 now : a -> Date.Date
 now _ =
   Native.DateTime.now Nothing
 
-{-| Returns the current date as time. -}
+
+{-| Returns the current date as time.
+-}
 nowTime : a -> Time
 nowTime a =
   Date.toTime (now a)
+
 
 {-| Creates a date from the given year, month and day.
 
@@ -42,6 +47,7 @@ createDate : Int -> Int -> Int -> Date.Date
 createDate year month day =
   Native.DateTime.create year month day
 
+
 {-| Returns the month from the given date.
 
     month (createDate 2015 1 1) -- 1
@@ -50,6 +56,7 @@ month : Date.Date -> Int
 month date =
   Native.DateTime.month date
 
+
 {-| Returns how many days are in the month of the given date.
 
     daysInMonth (createDate 2015 1 1) -- 31
@@ -57,6 +64,7 @@ month date =
 daysInMonth : Date.Date -> Int
 daysInMonth date =
   Native.DateTime.daysInMonth date
+
 
 {-| Return the dates in the month of the given date.
 
@@ -70,6 +78,7 @@ datesInMonth date =
   in
     Array.toList (Array.initialize (daysInMonth date) create)
 
+
 {-| Returns the previous days date in relation to the given date.
 
     previousDay (createDate 2015 1 1) -- 2014-12-31
@@ -78,6 +87,7 @@ previousDay : Date.Date -> Date.Date
 previousDay date =
   createDate (Date.year date) (month date) ((Date.day date) - 1)
 
+
 {-| Returns the next days date in relation to the given date.
 
     nextDay (createDate 2015 1 1) -- 2015-01-02
@@ -85,6 +95,7 @@ previousDay date =
 nextDay : Date.Date -> Date.Date
 nextDay date =
   createDate (Date.year date) (month date) ((Date.day date) + 1)
+
 
 {-| Returns the next month date in relation to the given date.
 
@@ -95,6 +106,7 @@ nextMonth date =
   createDate (Date.year date) ((month date) + 1) (Date.day date)
     |> begginingOfMonth
 
+
 {-| Returns the previous month date in relation to the given date.
 
     previousMonth (createDate 2015 1 5) -- 2014-12-05
@@ -104,6 +116,7 @@ previousMonth date =
   createDate (Date.year date) (month date) 0
     |> begginingOfMonth
 
+
 {-| Returns the first date in of the month of the given date.
 
     begginingOfMonth (createDate 2015 1 5) -- 2015-01-01
@@ -111,6 +124,7 @@ previousMonth date =
 begginingOfMonth : Date.Date -> Date.Date
 begginingOfMonth date =
   createDate (Date.year date) (month date) 1
+
 
 {-| Returns the last date in of the month of the given date.
 
@@ -120,52 +134,78 @@ endOfMonth : Date.Date -> Date.Date
 endOfMonth date =
   createDate (Date.year date) ((month date) + 1) 0
 
-{-| Tests if the given dates are in the same month. -}
+
+{-| Tests if the given dates are in the same month.
+-}
 isSameMonth : Date.Date -> Date.Date -> Bool
 isSameMonth date other =
-  (Date.year date) == (Date.year other)
-  && (month date) == (month other)
+  (Date.year date)
+    == (Date.year other)
+    && (month date)
+    == (month other)
 
-{-| Tests if the given dates are in the same. -}
+
+{-| Tests if the given dates are in the same.
+-}
 isSameDate : Date.Date -> Date.Date -> Bool
 isSameDate date other =
-  (Date.year date) == (Date.year other)
-  && (Date.day date) == (Date.day other)
-  && (month date) == (month other)
+  (Date.year date)
+    == (Date.year other)
+    && (Date.day date)
+    == (Date.day other)
+    && (month date)
+    == (month other)
 
-{-| Returns the date in relative format. -}
+
+{-| Returns the date in relative format.
+-}
 ago : Date.Date -> Date.Date -> String
 ago date other =
   let
-    seconds = ((Date.toTime other) - (Date.toTime date)) / 1000
+    seconds =
+      ((Date.toTime other) - (Date.toTime date)) / 1000
 
-    year   = floor (seconds / 31536000)
-    month  = floor (seconds / 2592000)
-    day    = floor (seconds / 86400)
-    hour   = floor (seconds / 3600)
-    minute = floor (seconds / 60)
+    year =
+      floor (seconds / 31536000)
+
+    month =
+      floor (seconds / 2592000)
+
+    day =
+      floor (seconds / 86400)
+
+    hour =
+      floor (seconds / 3600)
+
+    minute =
+      floor (seconds / 60)
 
     format number affix =
       let
-        prefix = if affix == "hour" then "an" else "a"
+        prefix =
+          if affix == "hour" then
+            "an"
+          else
+            "a"
       in
         if number < 2 then
           prefix ++ " " ++ affix
         else
           (toString number) ++ " " ++ affix ++ "s"
 
-    value = if year >= 1 then
-              format year "year"
-            else if month >= 1 then
-              format month "month"
-            else if day >= 1 then
-              format day "day"
-            else if hour >= 1 then
-              format hour "hour"
-            else if minute >= 1 then
-              format minute "minute"
-            else
-              format (floor seconds) "second"
+    value =
+      if year >= 1 then
+        format year "year"
+      else if month >= 1 then
+        format month "month"
+      else if day >= 1 then
+        format day "day"
+      else if hour >= 1 then
+        format hour "hour"
+      else if minute >= 1 then
+        format minute "minute"
+      else
+        format (floor seconds) "second"
   in
     if minute > 0 then
       if seconds > 0 then

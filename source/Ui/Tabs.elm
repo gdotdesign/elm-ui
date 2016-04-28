@@ -1,20 +1,23 @@
-module Ui.Tabs (Model, Action, init, update, view) where
+module Ui.Tabs exposing (Model, Msg, init, update, render, view)
 
 {-| A component for tabbed content.
 
 # Model
-@docs Model, Action, init, update, view
+@docs Model, Msg, init, update,
+
+# View
+@docs render, view
 -}
+
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
-import Html.Lazy
 
 import List.Extra
-import Effects
 
 import Ui
+
 
 {-| Representation of a tabs component:
   - **readonly** - Whether or not the component is readonly
@@ -22,16 +25,22 @@ import Ui
   - **selected** - The currently selected tabs index
 -}
 type alias Model =
-  { selected : Int
-  , readonly : Bool
+  { readonly : Bool
   , disabled : Bool
+  , selected : Int
   }
 
-{-| Actions that a tabs component can make. -}
-type Action
+
+{-| Messages that a tabs component can receive.
+-}
+type Msg
   = Select Int
 
-{-| Initializes a tabs component with the index of the selected tab. -}
+
+{-| Initializes a tabs component with the index of the selected tab.
+
+    model = Ui.Tabs.init 0
+-}
 init : Int -> Model
 init selected =
   { selected = selected
@@ -39,46 +48,77 @@ init selected =
   , disabled = False
   }
 
-{-| Updates a tabs component. -}
-update: Action -> Model -> (Model, Effects.Effects Action)
+
+{-| Updates a tabs component.
+
+    Ui.Tabs.update msg model
+-}
+update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
     Select page ->
-      ({ model | selected = page }, Effects.none)
+      ( { model | selected = page }, Cmd.none )
 
-{-| Renders a tabs component. -}
-view: List (String, Html.Html) -> Signal.Address Action -> Model -> Html.Html
+
+{-| Lazily renders a tabs component.
+
+    Ui.Tabs.render
+      [("title", content), ("title", content)]
+      Tabs
+      model
+-}
+view : List ( String, Html.Html msg ) -> (Msg -> msg) -> Model -> Html.Html msg
 view contents address model =
-  Html.Lazy.lazy3 render contents address model
+  render contents address model
 
-{-| Renders a tabs component. -}
-render: List (String, Html.Html) -> Signal.Address Action -> Model -> Html.Html
+
+{-| Renders a tabs component.
+
+    Ui.Tabs.render
+      [("title", content), ("title", content)]
+      Tabs
+      model
+-}
+render : List ( String, Html.Html msg ) -> (Msg -> msg) -> Model -> Html.Html msg
 render contents address model =
   let
     activeTab =
       List.Extra.getAt contents model.selected
-      |> Maybe.map snd
-      |> Maybe.withDefault (text "")
+        |> Maybe.map snd
+        |> Maybe.withDefault (text "")
   in
-    node "ui-tabs" [ classList [ ("disabled", model.disabled)
-                               , ("readonly", model.readonly)
-                               ]
-                   ]
+    node
+      "ui-tabs"
+      [ classList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+      ]
       [ node "ui-tab-handles" [] (List.indexedMap (renderTabHandle address model) contents)
       , node "ui-tabs-content" [] [ activeTab ]
       ]
 
-{-| Renders a tab handle. -}
-renderTabHandle : Signal.Address Action -> Model -> Int -> (String, Html.Html) -> Html.Html
-renderTabHandle address model index (title, contents) =
+
+{-| Renders a tab handle.
+-}
+renderTabHandle : (Msg -> msg) -> Model -> Int -> ( String, Html.Html msg ) -> Html.Html msg
+renderTabHandle address model index ( title, contents ) =
   let
-    action = Select index
+    action =
+      Select index
   in
-    node "ui-tab-handle"
-      ([ classList [("selected", index == model.selected)]] ++
-        (Ui.enabledActions model [ onClick address action
-                                 , onKeys address [ (13, action)
-                                                  , (32, action)
-                                                  ]]) ++
-        (Ui.tabIndex model))
+    node
+      "ui-tab-handle"
+      ([ classList [ ( "selected", index == model.selected ) ] ]
+        ++ (Ui.enabledActions
+              model
+              [ onClick (address action)
+              , onKeys
+                  [ ( 13, address action )
+                  , ( 32, address action )
+                  ]
+              ]
+           )
+        ++ (Ui.tabIndex model)
+      )
       [ text title ]

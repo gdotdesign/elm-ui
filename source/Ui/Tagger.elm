@@ -1,25 +1,28 @@
-module Ui.Tagger (Model, Action, init, initWithAddress, update, view) where
+module Ui.Tagger exposing (Model, Msg, init, update, view)
 
 {-| Component for managing (add / remove) tags
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Msg, init, update
 
 # View
 @docs view
 -}
-import Signal exposing (forwardTo)
+
+-- where
+
 import Task exposing (Task)
-import Ext.Signal
-import Effects
 import String
 
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
-import Html.Lazy
+import Html.App
 
+import Native.Uid
+
+import Ui.Helpers.Emitter as Emitter
 import Ui.IconButton
 import Ui.Container
 import Ui.Input
@@ -39,7 +42,6 @@ import Ui
 -}
 type alias Model tag id err =
   { create : String -> List tag -> Task err tag
-  , failAddress : Maybe (Signal.Address err)
   , remove : tag -> Task err tag
   , input : Ui.Input.Model
   , label : tag -> String
@@ -48,13 +50,15 @@ type alias Model tag id err =
   , id : tag -> id
   , disabled : Bool
   , readonly : Bool
+  , uid : String
   }
 
 {-| Actions that a tagger can make. -}
-type Action tag err
-  = Created (Result err tag)
-  | Removed (Result err tag)
-  | Input Ui.Input.Action
+type Msg tag err
+  = Created tag
+  | Removed tag
+  | Error err
+  | Input Ui.Input.Msg
   | Remove tag
   | Tasks ()
   | Create
@@ -72,8 +76,8 @@ init : List tag
      -> Model tag id err
 init tags placeholder label id create remove =
   { input = Ui.Input.init "" placeholder
-  , failAddress = Nothing
   , removeable = True
+  , uid = Native.Uid.uid ()
   , disabled = False
   , readonly = False
   , create = create
@@ -83,42 +87,17 @@ init tags placeholder label id create remove =
   , id = id
   }
 
-{-| Initializes a tagger with a faliure address.
-
-    Tagger.init
-      (forwardTo address TagActionFailed)
-      [tag1, tag2]
-      "Add a tag..."
-      .label
-      .id
-      createTask
-      removeTask
--}
-initWithAddress : Signal.Address err
-                -> List tag
-                -> String
-                -> (tag -> String)
-                -> (tag -> id)
-                -> (String -> List tag -> Task err tag)
-                -> (tag -> Task err tag)
-                -> Model tag id err
-initWithAddress failAddress tags placeholder label id create remove =
-  let
-    model = init tags placeholder label id create remove
-  in
-    { model | failAddress = Just failAddress }
-
 {-| Updates a tagger. -}
-update : Action tag err
+update : Msg tag err
        -> Model tag id err
-       -> (Model tag id err, Effects.Effects (Action tag err))
+       -> (Model tag id err, Cmd (Msg tag err))
 update action model =
   case action of
     Input act ->
       let
         (input, effect) = Ui.Input.update act model.input
       in
-        ({ model | input = input }, Effects.map Input effect)
+        ({ model | input = input }, Cmd.map Input effect)
 
     Create ->
       let
@@ -126,29 +105,20 @@ update action model =
 
         effect =
           if String.isEmpty value then
-            Effects.none
+            Cmd.none
           else
-            model.create model.input.value model.tags
-            |> Task.toResult
-            |> Effects.task
-            |> Effects.map Created
+            performCreateTask model
       in
         (model, effect)
 
     Created (Ok tag) ->
       ({ model | tags = tag :: model.tags
-               , input = Ui.Input.setValue "" model.input }, Effects.none)
-
-    Created (Err err) ->
-      (model, failMessageEffect err model)
+               , input = Ui.Input.setValue "" model.input }, Cmd.none)
 
     Remove tag ->
       let
         effect =
-          model.remove tag
-          |> Task.toResult
-          |> Effects.task
-          |> Effects.map Removed
+          performRemoveTask tag model
       in
         (model, effect)
 
@@ -157,22 +127,31 @@ update action model =
         id = model.id removedtag
         tags = List.filter (\tag -> (model.id tag) /= id) model.tags
       in
-        ({ model | tags = tags }, Effects.none)
+        ({ model | tags = tags }, Cmd.none)
 
-    Removed (Err err) ->
-      (model, failMessageEffect err model)
+    Error err ->
+      (model, Emitter.send model.uid err)
 
     Tasks _ ->
-      (model, Effects.none)
+      (model, Cmd.none)
+
+performRemoveTask tag model =
+  Task.perform Removed Error (model.remove tag)
+
+performCreateTask model =
+  let
+    task = model.create model.input.value model.tags
+  in
+    Task.perform Created Error task
 
 {-| Renders a tagger. -}
-view: Signal.Address (Action tag err) -> Model tag id err -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
+view: Model tag id err -> Html.Html (Msg tag err)
+view model =
+  render model
 
 {-| Render internal. -}
-render: Signal.Address (Action tag err) -> Model tag id err -> Html.Html
-render address model =
+render: Model tag id err -> Html.Html (Msg tag err)
+render model =
   let
     input =
       model.input
@@ -197,34 +176,26 @@ render address model =
 
     actions =
       Ui.enabledActions model
-        [ onKeys address [ ( 13, Create )
-                         ]
+        [ onKeys [ ( 13, Create )
+                 ]
         ]
   in
     node "ui-tagger" (classes :: actions)
       [ Ui.Container.row
         []
-        [ Ui.Input.view (forwardTo address Input) updatedInput
-        , Ui.IconButton.view address Create button
+        [ Html.App.map Input (Ui.Input.view updatedInput)
+        , Ui.IconButton.view Create button
         ]
       , node "ui-tagger-tags"
         []
-        (List.map (rendertag address model) model.tags)
+        (List.map (rendertag model) model.tags)
       ]
 
-{-| Returns a failure message as an Effect. -}
-failMessageEffect : err
-                  -> Model tag id err
-                  -> Effects.Effects (Action tag err)
-failMessageEffect message model =
-  Ext.Signal.sendAsEffect model.failAddress message Tasks
-
 {-| Renders a tag. -}
-rendertag : Signal.Address (Action tag err)
-           -> Model tag id err
+rendertag : Model tag id err
            -> tag
-           -> Html.Html
-rendertag address model tag =
+           -> Html.Html (Msg tag err)
+rendertag model tag =
   let
     label =
       model.label tag
@@ -236,8 +207,8 @@ rendertag address model tag =
         Ui.icon
           "android-close"
           True
-          ([ onClick address (Remove tag)
-           , onKeys address [ (13, Remove tag) ]
+          ([ onClick (Remove tag)
+           , onKeys [ (13, Remove tag) ]
            ] ++ (Ui.tabIndex model))
   in
     node "ui-tagger-tag" []

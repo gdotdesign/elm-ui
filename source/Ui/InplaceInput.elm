@@ -1,5 +1,7 @@
-module Ui.InplaceInput
-  (Model, Action, init, initWithAddress, update, view) where
+module Ui.InplaceInput exposing
+  (Model, Action, init, initWithAddress, update, view)
+
+-- where
 
 {-| Inplace editing textarea / input component.
 
@@ -14,9 +16,6 @@ import Html exposing (node, div, text)
 import Html.Events exposing (onClick)
 import Html.Lazy
 
-import Signal exposing (forwardTo)
-import Ext.Signal
-import Effects
 import String
 
 import Native.Browser

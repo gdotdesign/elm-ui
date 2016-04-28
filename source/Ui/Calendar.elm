@@ -1,13 +1,13 @@
-module Ui.Calendar
-  ( Model, Action(..), init, initWithAddress, update, view, setValue, nextDay
-  , previousDay ) where
+module Ui.Calendar exposing
+  ( Model, Action(..), init, subscribe, update, view, setValue, nextDay
+  , previousDay ) -- where
 
 {-| This is a calendar component where the user can:
   - Select a date by clicking on it
   - Change the month with arrows
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Action, init, subscribe, update
 
 # View
 @docs view
@@ -18,37 +18,38 @@ module Ui.Calendar
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)
 import Html exposing (node, text, span)
-import Html.Lazy
+--import Html.Lazy
 
 import Date.Format exposing (isoDateFormat, format)
 import Date.Config.Configs as DateConfigs
 import Time exposing (Time)
-import Ext.Signal
+import Json.Decode as JD
+import Json.Encode as JE
+import Native.Uid
 import Ext.Date
-import Effects
-import Signal
 import List
 import Date
 
+import Ui.Helpers.Emitter as Emitter
 import Ui.Container
 import Ui
 
 {-| Representation of a calendar component:
   - **selectable** - Whether or not the user can select a date by clicking
-  - **valueAddress** - The address to send the changes in value
   - **readonly** - Whether or not the calendar is interactive
   - **disabled** - Whether or not the calendar is disabled
   - **value** - The current selected date
   - **date** (internal) - The month in which this date is will be displayed
+  - **uid** - The unique identifier of the calendar
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address Time)
-  , selectable : Bool
+  { selectable : Bool
   , value : Date.Date
   , date : Date.Date
   , disabled : Bool
   , readonly : Bool
   , locale : String
+  , uid : String
   }
 
 {-| Actions that a calendar can make. -}
@@ -64,7 +65,7 @@ type Action
 -}
 init : Date.Date -> Model
 init date =
-  { valueAddress = Nothing
+  { uid = Native.Uid.uid ()
   , selectable = True
   , disabled = False
   , readonly = False
@@ -73,49 +74,41 @@ init date =
   , locale = "en_us"
   }
 
-{-| Initializes a calendar with the given value and value address.
-
-    Calendar.init (forwardTo address CalendarChanged) date
+{-| Subscribe to the changes of a calendar.
 -}
-initWithAddress : Signal.Address Time -> Date.Date -> Model
-initWithAddress valueAddress date =
-  { valueAddress = Just valueAddress
-  , selectable = True
-  , disabled = False
-  , readonly = False
-  , value = date
-  , date = date
-  , locale = "en_us"
-  }
+subscribe : (Time -> msg) -> Model -> Sub msg
+subscribe action model =
+  Emitter.listen model.uid (Emitter.decode JD.float 0 action)
 
 {-| Updates a calendar. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
+update : Action -> Model -> (Model, Cmd Action)
 update action model =
   case action of
     NextMonth ->
-      ({ model | date = Ext.Date.nextMonth model.date }, Effects.none)
+      ({ model | date = Ext.Date.nextMonth model.date }, Cmd.none)
 
     PreviousMonth ->
-      ({ model | date = Ext.Date.previousMonth model.date }, Effects.none)
+      ({ model | date = Ext.Date.previousMonth model.date }, Cmd.none)
 
     Select date ->
       if Ext.Date.isSameDate model.value date then
-        (model, Effects.none)
+        (model, Cmd.none)
       else
         ({ model | value = date }
-         , Ext.Signal.sendAsEffect model.valueAddress (Date.toTime date) Tasks)
+         , Emitter.send model.uid (JE.float (Date.toTime date)))
 
     Tasks _ ->
-      (model, Effects.none)
+      (model, Cmd.none)
 
 {-| Renders a calendar. -}
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
+view :Model -> Html.Html Action
+view model =
+  render model
+  -- Html.Lazy.lazy render model
 
 -- Render internal
-render : Signal.Address Action -> Model -> Html.Html
-render address model =
+render : Model -> Html.Html Action
+render model =
   let
     -- The date of the month
     month =
@@ -144,13 +137,13 @@ render address model =
     -- All of the 42 cells combined --
     cells =
       paddingLeftItems ++ dates ++ paddingRightItems
-      |> List.map (\item -> renderCell address item model)
+      |> List.map (\item -> renderCell item model)
 
     nextAction =
-      Ui.enabledActions model [ onMouseDown address NextMonth ]
+      Ui.enabledActions model [ onMouseDown NextMonth ]
 
     previousAction =
-      Ui.enabledActions model [ onMouseDown address PreviousMonth ]
+      Ui.enabledActions model [ onMouseDown PreviousMonth ]
 
     {- Header container -}
     container =
@@ -217,8 +210,8 @@ dayNames =
   ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 -- Renders a single cell
-renderCell : Signal.Address Action -> Date.Date -> Model -> Html.Html
-renderCell address date model =
+renderCell : Date.Date -> Model -> Html.Html Action
+renderCell date model =
   let
     sameMonth =
       Ext.Date.isSameMonth date model.date
@@ -229,7 +222,7 @@ renderCell address date model =
     click =
       if model.selectable && sameMonth &&
          not model.disabled && not model.readonly then
-        [onMouseDown address (Select date)]
+        [onMouseDown (Select date)]
       else
         []
 

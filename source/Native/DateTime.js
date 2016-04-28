@@ -1,8 +1,4 @@
-Elm.Native.DateTime = {};
-Elm.Native.DateTime.make = function(elm) {
-  elm.Native = elm.Native || {};
-  elm.Native.DateTime = elm.Native.DateTime || {};
-  if (elm.Native.DateTime.values) { return elm.Native.DateTime.values; }
+var _gdotdesign$elm_ui$Native_DateTime = function() {
 
   /* Function to return the current day. */
   function now(){
@@ -25,10 +21,10 @@ Elm.Native.DateTime.make = function(elm) {
   }
 
   /* Interface. */
-  return elm.Native.DateTime.values = {
+  return {
     daysInMonth: daysInMonth,
     create: F3(create),
     month: month,
     now: now
   };
-};
+}();

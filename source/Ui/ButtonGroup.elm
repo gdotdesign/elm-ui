@@ -1,4 +1,4 @@
-module Ui.ButtonGroup (Model, view, init) where
+module Ui.ButtonGroup exposing (Model, view, init) -- where
 
 {-| Groups a series of buttons together.
 
@@ -8,11 +8,9 @@ module Ui.ButtonGroup (Model, view, init) where
 # View
 @docs view
 -}
-import Signal exposing (forwardTo)
-
 import Html.Extra exposing (onKeys)
 import Html exposing (node)
-import Html.Lazy
+-- import Html.Lazy
 
 import Ui.Button
 
@@ -22,8 +20,8 @@ import Ui.Button
   - **kind** - The type of the buttons
   - **size** - The size of the buttons
 -}
-type alias Model a =
-  { items : List (String, a)
+type alias Model msg =
+  { items : List (String, msg)
   , disabled : Bool
   , kind : String
   , size : String
@@ -35,7 +33,7 @@ type alias Model a =
                      , ("Label2", Action2)
                      ]
 -}
-init : List (String, a) -> Model a
+init : List (String, msg) -> Model msg
 init items =
   { disabled = False
   , items = items
@@ -44,21 +42,22 @@ init items =
   }
 
 {-| Renders a button group. -}
-view : Signal.Address a -> Model a -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
+view : Model msg -> Html.Html msg
+view model =
+  render model
+  -- FIXME: Lazy is broken in 0.17
+  -- Html.Lazy.lazy2 render address model
 
 -- Render intrenal
-render : Signal.Address a -> Model a -> Html.Html
-render address model =
+render : Model msg -> Html.Html msg
+render model =
   node "ui-button-group" []
-    (List.map (renderButton address model) model.items)
+    (List.map (renderButton model) model.items)
 
 -- Renders a button
-renderButton : Signal.Address a -> Model a -> (String, a) -> Html.Html
-renderButton address model (label, action) =
+renderButton : Model msg -> (String, msg) -> Html.Html msg
+renderButton model (label, action) =
   Ui.Button.view
-    address
     action
     { disabled = model.disabled
     , kind = model.kind

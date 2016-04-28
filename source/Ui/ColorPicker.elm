@@ -1,6 +1,8 @@
-module Ui.ColorPicker
+module Ui.ColorPicker exposing
   (Model, Action, init, initWithAddress, update, view, handleMove, handleClick
-  ,setValue) where
+  ,setValue)
+
+--  where
 
 {-| Color picker input component.
 
@@ -19,10 +21,8 @@ import Html.Events exposing (onBlur, onClick)
 import Html exposing (node, div, text)
 import Html.Lazy
 
-import Signal exposing (forwardTo)
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
-import Effects
 import Dict
 
 import Ui.Helpers.Dropdown as Dropdown

@@ -1,4 +1,4 @@
-module Ext.Number where
+module Ext.Number exposing (..)
 
 {-| Utility functions for numbers.
 
@@ -7,20 +7,27 @@ module Ext.Number where
 
 import Native.Browser
 
-{-| Rounds the given number to the given precision. -}
+
+{-| Rounds the given number to the given precision.
+-}
 toFixed : Int -> Float -> String
 toFixed precision number =
   Native.Browser.toFixed number precision
 
-{-| Remainder function that works on floats. -}
+
+{-| Remainder function that works on floats.
+-}
 remFloat : Float -> Float -> Float
 remFloat a b =
   Native.Browser.rem a b
 
-{-| Rounds the given number to the given precision. -}
+
+{-| Rounds the given number to the given precision.
+-}
 roundTo : Int -> Float -> Float
 roundTo precision number =
   let
-    magnitude = 10 * precision
+    magnitude =
+      10 * precision
   in
     (toFloat (round (number * magnitude))) / magnitude

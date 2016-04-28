@@ -1,6 +1,8 @@
-module Ui.Chooser
+module Ui.Chooser exposing
   (Model, Item, Action, init, initWithAddress, update, close, toggleItem,
-   getFirstSelected, view, updateData, selectFirst, setValue) where
+   getFirstSelected, view, updateData, selectFirst, setValue)
+
+-- where
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
@@ -24,8 +26,6 @@ import Html.Lazy
 
 import Set exposing (Set)
 import Native.Browser
-import Ext.Signal
-import Effects
 import String
 import Regex
 import List

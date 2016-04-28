@@ -1,10 +1,12 @@
-module Ui.Modal
-  (Model, ViewModel, Action, init, view, update, close, open) where
+module Ui.Modal exposing
+  (Model, ViewModel, Msg, init, view, update, close, open)
+
+-- where
 
 {-| Modal dialog.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Msg, init, update
 
 # View
 @docs ViewModel, view
@@ -32,14 +34,14 @@ type alias Model =
   }
 
 {-| View model for the view. -}
-type alias ViewModel =
-  { content : List Html.Html
-  , footer : List Html.Html
+type alias ViewModel msg =
+  { content : List (Html.Html msg)
+  , footer : List (Html.Html msg)
   , title : String
   }
 
 {-| Actions that a modal window can make. -}
-type Action
+type Msg
   = Close
 
 {-| Initializes the a modal. -}
@@ -51,12 +53,12 @@ init =
   }
 
 {-| Renders a modal window. -}
-view: Signal.Address Action -> ViewModel -> Model -> Html.Html
+view: (Msg -> msg) -> ViewModel msg -> Model -> Html.Html msg
 view address viewModel model =
-  Html.Lazy.lazy3 render address viewModel model
+  render address viewModel model
 
 {-| Updates a modal window. -}
-update: Action -> Model -> Model
+update: Msg -> Model -> Model
 update action model =
   case action of
     Close ->
@@ -73,7 +75,7 @@ open model =
   { model | open = True }
 
 -- Render internal
-render: Signal.Address Action -> ViewModel -> Model -> Html.Html
+render: (Msg -> msg) -> ViewModel msg -> Model -> Html.Html msg
 render address viewModel model =
   let
     backdrop =
@@ -81,12 +83,12 @@ render address viewModel model =
 
     closeAction =
       if model.closeable && model.backdrop then
-        [onClick address Close]
+        [onClick (address Close)]
       else []
 
     closeIcon =
       if model.closeable then
-        [Ui.icon "close" True [onClick address Close]]
+        [Ui.icon "close" True [onClick (address Close)]]
       else []
   in
     node "ui-modal" [classList [("ui-modal-open", model.open)]]

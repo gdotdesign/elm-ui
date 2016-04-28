@@ -1,36 +1,36 @@
-module Ui.NumberRange
-  ( Model, Action, init, initWithAddress, update, view, focus, handleClick
-  , handleMove, setValue, increment, decrement ) where
+module Ui.NumberRange exposing
+  ( Model, Msg, init, subscriptions, update, view, focus, setValue, increment, decrement )
+
+-- where
 
 {-| This is a component allows the user to change a number value by
 dragging or by using the keyboard, also traditional editing is enabled by
 double clicking on the component.
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Msg, init, subscribe, subscriptions, update
 
 # View
 @docs view
 
 # Functions
-@docs focus, handleClick, handleMove, setValue, increment, decrement
+@docs focus, setValue, increment, decrement
 -}
-import Html.Extra exposing (onWithDimensions, onKeys, onInput,
+import Html.Dimensions exposing (PositionAndDimension)
+import Html.Extra exposing (onWithDimensions, onKeys,
                             onEnterPreventDefault, onStop)
 import Html.Attributes exposing (value, readonly, disabled, classList)
-import Html.Events exposing (onFocus, onBlur)
+import Html.Events exposing (onInput, onFocus, onBlur)
 import Html exposing (node, input)
-import Html.Lazy
 
 import Ext.Number exposing (toFixed)
 import Json.Decode as Json
 import Native.Browser
-import Ext.Signal
-import Effects
 import Result
 import String
 import Dict
 
+import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui
 
@@ -52,8 +52,7 @@ import Ui
   - **drag** (internal) - The drag model
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address Float)
-  , inputValue : String
+  { inputValue : String
   , startValue : Float
   , drag : Drag.Model
   , focusNext : Bool
@@ -67,15 +66,18 @@ type alias Model =
   , min : Float
   , max : Float
   , round : Int
+  , uid : String
   }
 
 {-| Actions that a number range can make. -}
-type Action
-  = Lift (Html.Extra.PositionAndDimension)
+type Msg
+  = Lift (PositionAndDimension)
   | Input String
   | Increment
   | Decrement
   | Tasks ()
+  | Move (Int, Int)
+  | Click Bool
   | Focus
   | Edit
   | Blur
@@ -87,10 +89,10 @@ type Action
 -}
 init : Float -> Model
 init value =
-  { valueAddress = Nothing
-  , startValue = value
+  { startValue = value
   , focusNext = False
   , drag = Drag.init
+  , uid = Native.Uid.uid ()
   , disabled = False
   , readonly = False
   , focused = False
@@ -104,21 +106,18 @@ init value =
   , step = 1
   }
 
-{-| Initializes a slider with the given value and value address.
+subscribe : (Float -> msg) -> Model -> Sub msg
+subscribe msg model =
+  Emitter.listenFloat model.uid msg
 
-    NumberRange.init (forwardTo address SliderChanged) 0.5
--}
-initWithAddress : Signal.Address Float -> Float -> Model
-initWithAddress valueAddress value =
-  let
-    model = init value
-  in
-    { model | valueAddress = Just valueAddress }
+subscriptions : Sub Msg
+subscriptions =
+  Drag.subscriptions Move Click
 
 {-| Updates a number range. -}
-update: Action -> Model -> (Model, Effects.Effects Action)
-update action model =
-  case action of
+update: Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of
     Increment ->
       increment model
 
@@ -128,11 +127,17 @@ update action model =
     Save ->
       endEdit model
 
+    Move (x, y) ->
+      handleMove x y model
+
+    Click pressed ->
+      (handleClick pressed model, Cmd.none)
+
     Input value ->
-      ({ model | inputValue = value }, Effects.none)
+      ({ model | inputValue = value }, Cmd.none)
 
     Focus ->
-      ({ model | focusNext = False, focused = True }, Effects.none)
+      ({ model | focusNext = False, focused = True }, Cmd.none)
 
     Blur ->
       { model | focused = False }
@@ -141,45 +146,45 @@ update action model =
     Edit ->
       ({ model | editing = True
                , inputValue = toFixed model.round model.value }
-        |> focus, Effects.none)
+        |> focus, Cmd.none)
 
     Lift {dimensions, position} ->
       ({ model | drag = Drag.lift dimensions position model.drag
                , startValue = model.value }
-        |> focus, Effects.none)
+        |> focus, Cmd.none)
 
     Tasks _ ->
-      (model, Effects.none)
+      (model, Cmd.none)
 
 -- Sends the value to the signal
-sendValue : Model -> (Model, Effects.Effects Action)
+sendValue : Model -> (Model, Cmd Msg)
 sendValue model =
-  (model, Ext.Signal.sendAsEffect model.valueAddress model.value Tasks)
+  (model, Emitter.sendFloat model.uid model.value)
 
 {-| Renders a number range. -}
-view: Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
+view: Model -> Html.Html Msg
+view model =
+  render model
 
 -- Render internal
-render: Signal.Address Action -> Model -> Html.Html
-render address model =
+render: Model -> Html.Html Msg
+render model =
   let
     actions =
       if model.readonly || model.disabled then []
       else if model.editing then
-        [ onInput address Input
-        , onEnterPreventDefault address Save
+        [ onInput Input
+        , onEnterPreventDefault Save
         ]
       else
-        [ onWithDimensions "mousedown" False address Lift
-        , onStop "dblclick" address Edit
-        , onKeys address [ (40, Decrement)
-                         , (38, Increment)
-                         , (37, Decrement)
-                         , (39, Increment)
-                         , (13, Edit)
-                         ]
+        [ onWithDimensions "mousedown" False Lift
+        , onStop "dblclick" Edit
+        , onKeys [ (40, Decrement)
+                 , (38, Increment)
+                 , (37, Decrement)
+                 , (39, Increment)
+                 , (13, Edit)
+                 ]
         ]
     attributes =
       if model.editing then
@@ -188,8 +193,8 @@ render address model =
         [ value ((toFixed model.round model.value) ++ model.affix) ]
 
     inputElement =
-      input ([ onFocus address Focus
-             , onBlur address Blur
+      input ([ onFocus Focus
+             , onBlur Blur
              , readonly (not model.editing)
              , disabled model.disabled
              ] ++ attributes ++ actions) []
@@ -214,7 +219,7 @@ focus model =
     False -> { model | focusNext = True }
 
 {-| Updates a number range value by coordinates. -}
-handleMove : Int -> Int -> Model -> (Model, Effects.Effects Action)
+handleMove : Int -> Int -> Model -> (Model, Cmd Msg)
 handleMove x y model =
   let
     diff = (Drag.diff x y model.drag).left
@@ -223,7 +228,7 @@ handleMove x y model =
       setValue (model.startValue - (-diff * model.step)) model
       |> sendValue
     else
-      (model, Effects.none)
+      (model, Cmd.none)
 
 {-| Updates a number range, stopping the drag if the mouse isnt pressed. -}
 handleClick : Bool -> Model -> Model
@@ -245,23 +250,23 @@ setValue value model =
     { model | value = clamp model.min model.max value }
 
 {-| Increments a number ranges value by it's defined step. -}
-increment : Model -> (Model, Effects.Effects Action)
+increment : Model -> (Model, Cmd Msg)
 increment model =
   setValue (model.value + model.step) model
   |> sendValue
 
 {-| Decrements a number ranges value by it's defined step. -}
-decrement : Model -> (Model, Effects.Effects Action)
+decrement : Model -> (Model, Cmd Msg)
 decrement model =
   setValue (model.value - model.step) model
   |> sendValue
 
 -- Exits a number range from its editing mode.
-endEdit : Model -> (Model, Effects.Effects Action)
+endEdit : Model -> (Model, Cmd Msg)
 endEdit model =
   case model.editing of
     False ->
-      (model, Effects.none)
+      (model, Cmd.none)
     True ->
       { model | editing = False }
       |> setValue (Result.withDefault 0 (String.toFloat model.inputValue))

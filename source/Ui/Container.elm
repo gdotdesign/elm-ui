@@ -1,6 +1,6 @@
-module Ui.Container
+module Ui.Container exposing
   ( Model, view, row, rowEnd, rowCenter, rowStart, column, columnStart
-  , columnEnd, columnCenter, render) where
+  , columnEnd, columnCenter, render) -- where
 
 {-| Flexbox container component.
 
@@ -18,7 +18,7 @@ module Ui.Container
 -}
 import Html.Attributes exposing (classList, style)
 import Html exposing (node)
-import Html.Lazy
+--import Html.Lazy
 
 {-| Representation of a container. -}
 type alias Model =
@@ -44,57 +44,57 @@ columnOptions =
   }
 
 {-| Renders a container. -}
-view : Model -> List Html.Attribute -> List Html.Html -> Html.Html
+view : Model -> List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 view model attributes children =
-  Html.Lazy.lazy3 render model attributes children
+  {- Html.Lazy.lazy3 -} render model attributes children
 
 {-| Renders a container as a row. -}
-row : List Html.Attribute -> List Html.Html -> Html.Html
+row : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 row attributes children =
-  Html.Lazy.lazy3 render rowOptions attributes children
+  {- Html.Lazy.lazy3 -} render rowOptions attributes children
 
 {-| Renders a container as a row with content aligned to start. -}
-rowStart : List Html.Attribute -> List Html.Html -> Html.Html
+rowStart : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 rowStart attributes children =
-  Html.Lazy.lazy3 render { rowOptions | align = "start" } attributes children
+  {- Html.Lazy.lazy3 -} render { rowOptions | align = "start" } attributes children
 
 {-| Renders a container as a row with content aligned to center. -}
-rowCenter : List Html.Attribute -> List Html.Html -> Html.Html
+rowCenter : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 rowCenter attributes children =
-  Html.Lazy.lazy3 render { rowOptions | align = "center" } attributes children
+  {- Html.Lazy.lazy3 -} render { rowOptions | align = "center" } attributes children
 
 {-| Renders a container as a row with content aligned to end. -}
-rowEnd : List Html.Attribute -> List Html.Html -> Html.Html
+rowEnd : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 rowEnd attributes children =
-  Html.Lazy.lazy3 render { rowOptions | align = "end" } attributes children
+  {- Html.Lazy.lazy3 -} render { rowOptions | align = "end" } attributes children
 
 {-| Renders a container as a column. -}
-column : List Html.Attribute -> List Html.Html -> Html.Html
+column : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 column attributes children =
-  Html.Lazy.lazy3 render columnOptions attributes children
+  {- Html.Lazy.lazy3 -} render columnOptions attributes children
 
 {-| Renders a container as a column with content aligned to start. -}
-columnStart : List Html.Attribute -> List Html.Html -> Html.Html
+columnStart : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 columnStart attributes children =
-  Html.Lazy.lazy3 render { columnOptions | align = "start" } attributes children
+  {- Html.Lazy.lazy3 -} render { columnOptions | align = "start" } attributes children
 
 {-| Renders a container as a column with content aligned to center. -}
-columnCenter : List Html.Attribute -> List Html.Html -> Html.Html
+columnCenter : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 columnCenter attributes children =
-  Html.Lazy.lazy3 render { columnOptions | align = "center" } attributes children
+  {- Html.Lazy.lazy3 -} render { columnOptions | align = "center" } attributes children
 
 {-| Renders a container as a column with content aligned to end. -}
-columnEnd : List Html.Attribute -> List Html.Html -> Html.Html
+columnEnd : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 columnEnd attributes children =
-  Html.Lazy.lazy3 render { columnOptions | align = "end" } attributes children
+  {- Html.Lazy.lazy3 -} render { columnOptions | align = "end" } attributes children
 
 {-| Renders a container without lazy. -}
-render : Model -> List Html.Attribute -> List Html.Html -> Html.Html
+render : Model -> List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 render model attributes children =
   node "ui-container" ([classes model] ++ attributes) children
 
 -- Returns classes for a container
-classes : Model -> Html.Attribute
+classes : Model -> Html.Attribute msg
 classes model =
   classList [
     ("direction-" ++ model.direction, True),

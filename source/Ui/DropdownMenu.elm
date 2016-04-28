@@ -1,11 +1,13 @@
-module Ui.DropdownMenu
-  (Dimensions, Model, Action, init, update, view, item, handleClick, close
-  , open, openHandler) where
+module Ui.DropdownMenu exposing
+  (Dimensions, Model, Msg, init, update, view, item, handleClick, close
+  , open, openHandler)
+
+-- where
 
 {-| Dropdown menu that is always visible on the screen.
 
 # Model
-@docs Dimensions, Model, Action, init, update
+@docs Dimensions, Model, Msg, init, update
 
 # View
 @docs view, item
@@ -13,8 +15,9 @@ module Ui.DropdownMenu
 # Functions
 @docs handleClick, close, open, openHandler
 -}
-import Html.Extra exposing ( onStopNothing, WindowDimensions
-                           , windowDimensionsDecoder)
+import Html.Dimensions
+import Html.WindowDimensions exposing (WindowDimensions)
+import Html.Extra exposing (onStop)
 import Html.Attributes exposing (style, classList)
 import Html.Events exposing (onWithOptions)
 import Html exposing (node)
@@ -24,8 +27,8 @@ import Native.Browser
 
 {-| Represents dimensions for a dropdown menu. -}
 type alias Dimensions =
-  { parent : Html.Extra.Dimensions
-  , dropdown : Html.Extra.Dimensions
+  { parent : Html.Dimensions.Dimensions
+  , dropdown : Html.Dimensions.Dimensions
   , window : WindowDimensions
   }
 
@@ -50,9 +53,10 @@ type alias Model =
                    }
   }
 
-{-| Actions that a dropdown menu can make. -}
-type Action
+{-| Msgs that a dropdown menu can make. -}
+type Msg
   = Toggle Dimensions
+  | NoOp
 
 {-| Initializes a dropdown. -}
 init : Model
@@ -71,14 +75,14 @@ init =
 
     DropdownMenu.view address triggerElement children model
 -}
-view: Signal.Address Action -> Html.Html -> List Html.Html -> Model -> Html.Html
+view: ((Dimensions -> Msg) -> msg) -> Html.Html msg -> List (Html.Html msg) -> Model -> Html.Html msg
 view address element children model =
   node "ui-dropdown-menu"
-    [ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" address Toggle
+    [ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" (address Toggle)
     ]
     [ element
     , node "ui-dropdown-menu-items"
-      [ onStopNothing "mouseup"
+      [ onStop "mouseup" NoOp
       , classList [("open", model.open)]
       , style [ ("top", (toString model.top) ++ "px")
               , ("left", (toString model.left) ++ "px")
@@ -88,16 +92,18 @@ view address element children model =
     ]
 
 {-| Renders a dropdown item. -}
-item : List Html.Attribute -> List Html.Html -> Html.Html
+item : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 item attributes children =
   node "ui-dropdown-menu-item" attributes children
 
 {-| Updates a dropdown menu. -}
-update: Action -> Model -> Model
+update: Msg -> Model -> Model
 update action model =
   case action of
     Toggle dimensions ->
       open dimensions model
+    NoOp ->
+      model
 
 {-| Handles the click, closes the modal if not pressed. -}
 handleClick : Bool -> Model -> Model
@@ -117,19 +123,18 @@ dimensionsDecoder : String -> String -> Json.Decoder Dimensions
 dimensionsDecoder parent dropdown =
   Json.object3
     Dimensions
-    (Json.at ["target"] (Native.Browser.closest parent (Native.Browser.atElement "*:first-child" (Json.at ["dimensions"] Html.Extra.dimensionsDecoder))))
-    (Json.at ["target"] (Native.Browser.closest parent (Native.Browser.atElement dropdown (Json.at ["dimensions"] Html.Extra.dimensionsDecoder))))
-    windowDimensionsDecoder
+    (Json.at ["target"] (Native.Browser.closest parent (Native.Browser.atElement "*:first-child" (Json.at ["dimensions"] Html.Dimensions.dimensionsDecoder))))
+    (Json.at ["target"] (Native.Browser.closest parent (Native.Browser.atElement dropdown (Json.at ["dimensions"] Html.Dimensions.dimensionsDecoder))))
+    Html.WindowDimensions.decoder
 
 {-| Open event handler. -}
-openHandler : String -> String -> String -> Signal.Address a ->
-              (Dimensions -> a) -> Html.Attribute
-openHandler parent dropdown event address action =
+openHandler : String -> String -> String -> (Dimensions -> msg) -> Html.Attribute msg
+openHandler parent dropdown event msg =
   onWithOptions
     event
     Html.Events.defaultOptions
     (dimensionsDecoder parent dropdown)
-    (\dimensions -> Signal.message address (action dimensions))
+    msg
 
 {-| Updates the position of a dropdown form the given dimensions. -}
 open : Dimensions -> Model -> Model

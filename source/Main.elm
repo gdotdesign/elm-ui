@@ -1,15 +1,9 @@
 import Date.Config.Configs as DateConfigs
-import Signal exposing (forwardTo)
-import Signal.Time
 import Maybe.Extra
 import Date.Format
 import List.Extra
 import Ext.Color
 import Ext.Date
-import StartApp
-import Keyboard
-import Effects
-import Mouse
 import Color
 import Task
 import Date
@@ -951,8 +945,8 @@ app =
 
     inputs =
       -- Lifecycle
-      [ Signal.map EscIsDown (Keyboard.isDown 27)
-      , Signal.map MousePosition Mouse.position
+      -- [ Signal.map EscIsDown (Keyboard.isDown 27)
+      [ Signal.map MousePosition Mouse.position
       , Signal.map MouseIsDown Mouse.isDown
       -- Mailbox
       , Signal.Time.settledAfter 500 initial.settledMailbox.signal

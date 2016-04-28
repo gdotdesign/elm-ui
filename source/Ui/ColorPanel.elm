@@ -1,12 +1,12 @@
-module Ui.ColorPanel
-  (Model, Action, init, initWithAddress, update, view, handleMove, handleClick
-  ,setValue) where
+module Ui.ColorPanel exposing
+  (Model, Action, init, update, view, handleMove, handleClick, setValue,
+   subscriptions, subscribe) -- where
 
 {-| Color panel component for selecting a colors **hue**, **saturation**,
 **value** and **alpha** components with draggable interfaces.
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Action, init, update
 
 # View
 @docs view
@@ -14,42 +14,45 @@ module Ui.ColorPanel
 # Functions
 @docs handleMove, handleClick, setValue
 -}
+import Html.Dimensions exposing (PositionAndDimension)
 import Html.Attributes exposing (style, classList)
 import Html.Extra exposing (onWithDimensions)
 import Html exposing (node, div, text)
-import Html.Lazy
+-- import Html.Lazy
 
-import Ext.Color exposing (Hsv)
+import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)
 import Color exposing (Color)
-import Ext.Signal
-import Effects
 
+import Json.Decode as JD
+
+import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui
 
 {-| Representation of a color panel:
   - **readonly** - Whether or not the color panel is editable
   - **disabled** - Whether or not the color panel is disabled
-  - **valueAddress** - The address to send changes in value
   - **drag** (internal) - The drag model of the value / saturation rectangle
   - **alphaDrag** (internal) - The drag model of the alpha slider
   - **hueDrag** (internal) - The drag model of the hue slider
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address Hsv)
-  , alphaDrag : Drag.Model
+  { alphaDrag : Drag.Model
   , hueDrag : Drag.Model
   , drag : Drag.Model
   , disabled : Bool
   , readonly : Bool
+  , uid : String
   , value : Hsv
   }
 
 {-| Actions that a color panel can make. -}
 type Action
-  = LiftAlpha (Html.Extra.PositionAndDimension)
-  | LiftRect (Html.Extra.PositionAndDimension)
-  | LiftHue (Html.Extra.PositionAndDimension)
+  = LiftAlpha (PositionAndDimension)
+  | LiftRect (PositionAndDimension)
+  | LiftHue (PositionAndDimension)
+  | Move (Int, Int)
+  | Click Bool
   | Tasks ()
 
 {-| Initializes a color panel with the given Elm color.
@@ -59,27 +62,27 @@ type Action
 init : Color -> Model
 init color =
   { value = Ext.Color.toHsv color
-  , valueAddress = Nothing
   , alphaDrag = Drag.init
   , hueDrag = Drag.init
   , drag = Drag.init
   , disabled = False
   , readonly = False
+  , uid = Native.Uid.uid ()
   }
 
-{-| Initializes a color panel with the given Elm color and value address.
+subscriptions : Sub Action
+subscriptions =
+  Drag.subscriptions Move Click
 
-    ColorPanel.init (forwardTo address ColorPanelChanged) Color.blue
--}
-initWithAddress : Signal.Address Hsv -> Color -> Model
-initWithAddress valueAddress color =
-  let
-    model = init color
-  in
-    { model | valueAddress = Just valueAddress }
+{-| Provides a subscription for the changes of a checkbox. -}
+subscribe : (Hsv -> a) -> Model -> Sub a
+subscribe action model =
+  Emitter.listen
+    model.uid
+    (Emitter.decode decodeHsv (Ext.Color.toHsv Color.black) action)
 
 {-| Updates a color panel. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
+update : Action -> Model -> (Model, Cmd Action)
 update action model =
   case action of
     LiftRect {dimensions, position} ->
@@ -94,17 +97,24 @@ update action model =
       { model | hueDrag = Drag.lift dimensions position model.hueDrag }
         |> handleMove (round position.pageX) (round position.pageY)
 
+    Move (x, y) ->
+      handleMove x y model
+
+    Click pressed ->
+      (handleClick pressed model, Cmd.none)
+
     Tasks _ ->
-      (model, Effects.none)
+      (model, Cmd.none)
 
 {-| Renders a color panel. -}
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
+view : Model -> Html.Html Action
+view model =
+  render model
+  -- Html.Lazy.lazy render model
 
 -- Render internal
-render : Signal.Address Action -> Model -> Html.Html
-render address model =
+render : Model -> Html.Html Action
+render model =
   let
     background =
       "hsla(" ++ (toString (round (model.value.hue * 360))) ++ ", 100%, 50%, 1)"
@@ -126,7 +136,7 @@ render address model =
 
     action act =
       Ui.enabledActions model
-        [ onWithDimensions "mousedown" False address act ]
+        [ onWithDimensions "mousedown" False act ]
   in
     node "ui-color-panel" [ classList [ ("disabled", model.disabled)
                                       , ("readonly", model.readonly)
@@ -155,7 +165,7 @@ render address model =
       ]
 
 {-| Updates a color panel color by coordinates. -}
-handleMove : Int -> Int -> Model -> (Model, Effects.Effects Action)
+handleMove : Int -> Int -> Model -> (Model, Cmd Action)
 handleMove x y model =
   let
     color =
@@ -169,10 +179,10 @@ handleMove x y model =
         model.value
   in
     if model.value == color then
-      (model, Effects.none)
+      (model, Cmd.none)
     else
       ({ model | value = color }
-       , Ext.Signal.sendAsEffect model.valueAddress color Tasks)
+       , Emitter.send model.uid (encodeHsv model.value) )
 
 {-| Updates a color panel, stopping the drags if the mouse isn't pressed. -}
 handleClick : Bool -> Model -> Model
@@ -235,7 +245,7 @@ handleAlpha x y color drag =
       { color | alpha = alpha }
 
 -- Renders a handle
-renderHandle : String -> String -> Html.Html
+renderHandle : String -> String -> Html.Html Action
 renderHandle top left =
   node "ui-color-panel-handle"
     [ style [ ("top", top)

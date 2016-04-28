@@ -1,4 +1,6 @@
-module Ui.Helpers.Dropdown where
+module Ui.Helpers.Dropdown exposing (..)
+
+-- where
 
 {-| Dropdown for other components.
 
@@ -12,7 +14,7 @@ module Ui.Helpers.Dropdown where
 @docs open, close, toggle, openWithDimensions, toggleWithDimensions
 -}
 import Html.Attributes exposing (classList)
-import Html.Extra exposing (onStopNothing)
+import Html.Extra exposing (onStop)
 import Html exposing (node)
 
 import Debug exposing (log)
@@ -23,10 +25,10 @@ type alias Dropdown a =
       , dropdownPosition : String }
 
 {-| Renders a dropdown. -}
-view : String -> List Html.Html -> Html.Html
-view position children =
+view : msg -> String -> List (Html.Html msg) -> (Html.Html msg)
+view noop position children =
   node "ui-dropdown"
-    [ onStopNothing "mousedown"
+    [ onStop "mousedown"
     , classList [("position-" ++ position, True)]
     ]
     children

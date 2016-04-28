@@ -1,44 +1,50 @@
-module Ui.Input
-  (Model, Action, init, initWithAddress, update, view, setValue, focus) where
+module Ui.Input exposing (Model, Msg, init, subscribe, update, view, render, setValue, focus)
 
-{-| Component for text based input.
+{-| Component for single line text based input (wrapper for the input HTML tag).
 
 # Model
-@docs Model, Action, init, initWithAddress, update
+@docs Model, Msg, init, subscribe, update
 
 # View
-@docs view
+@docs view, render
 
 # Functions
 @docs setValue, focus
 -}
-import Html.Attributes exposing (value, spellcheck, placeholder, type',
-                                 readonly, disabled, classList, attribute)
-import Html.Extra exposing (onInput)
+
+import Html.Events exposing (onInput)
 import Html exposing (node)
-import Html.Lazy
+import Html.Attributes
+  exposing
+    ( value
+    , spellcheck
+    , placeholder
+    , type'
+    , readonly
+    , disabled
+    , classList
+    , attribute
+    )
 
 import Native.Browser
 import Native.Uid
 
-import Ext.Signal
-import Effects
-import Signal
+import Ui.Helpers.Emitter as Emitter
+
 import String
 import Task
 
+
 {-| Representation of an input:
   - **placeholder** - The text to display when there is no value
-  - **valueAddress** - The address to send the changes in value
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
-  - **uid** - The unique identifier of the input
-  - **kind** - The type of the input
   - **value** - The value
+  - **kind** - The type of the input
+  - **uid** - The unique identifier of the input
 -}
 type alias Model =
-  { valueAddress : Maybe (Signal.Address String)
-  , placeholder : String
+  { placeholder : String
   , disabled : Bool
   , readonly : Bool
   , value : String
@@ -46,82 +52,105 @@ type alias Model =
   , uid : String
   }
 
-{-| Actions that an input can make. -}
-type Action
+
+{-| Messages that an input can receive.
+-}
+type Msg
   = Input String
   | Tasks ()
 
-{-| Initializes an input.
 
-    Input.init "value"
+{-| Initializes an input with a default value and a placeholder.
+
+    model = Ui.Input.init "value" "Placeholder..."
 -}
 init : String -> String -> Model
 init value placeholder =
   { placeholder = placeholder
   , uid = Native.Uid.uid ()
-  , valueAddress = Nothing
   , disabled = False
   , readonly = False
   , value = value
   , kind = "text"
   }
 
-{-| Initializes an input.
 
-    Input.init (forwardTo address InputChanged) "value"
+{-| Subscribe to the changes of an input.
+
+    ...
+    subscriptions =
+      \model -> Ui.Input.subscribe InputChanged model.input
+    ...
 -}
-initWithAddress : Signal.Address String -> String -> String -> Model
-initWithAddress valueAddress value placeholder =
-  let
-    model = init value placeholder
-  in
-    { model | valueAddress = Just valueAddress }
+subscribe : (String -> msg) -> Model -> Sub msg
+subscribe msg model =
+  Emitter.listenString model.uid msg
 
-{-| Updates an input. -}
-update : Action -> Model -> (Model, Effects.Effects Action)
-update action model =
-  case action of
+
+{-| Updates an input.
+
+    Ui.Input.update msg model
+-}
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+  case msg of
     Input value ->
-      ( setValue value model
-      , Ext.Signal.sendAsEffect model.valueAddress value Tasks )
+      ( setValue value model, Emitter.sendString model.uid value )
 
     Tasks _ ->
-      (model, Effects.none)
+      ( model, Cmd.none )
 
-{-| Focuses an input if it's in the dom.
 
-This function has a 30ms (delay) to wait for the element to appear on the page.
+{-| Lazily renders an input.
+
+    Ui.Input.view model
 -}
-focus : Model -> Effects.Effects Action
-focus model =
-  Effects.task (Native.Browser.focusTask ("[uid='" ++ model.uid ++ "']"))
-  |> Effects.map Tasks
+view : Model -> Html.Html Msg
+view model =
+  render model
 
-{-| Renders an input. -}
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
 
--- Render internal
-render : Signal.Address Action -> Model -> Html.Html
-render address model =
-  node "ui-input" [ classList [ ("disabled", model.disabled)
-                              , ("readonly", model.readonly)
-                              ]
-                  ]
-    [ node "input" [ placeholder model.placeholder
-                   , onInput address Input
-                   , value model.value
-                   , spellcheck False
-                   , type' model.kind
-                   , readonly model.readonly
-                   , disabled model.disabled
-                   , attribute "uid" model.uid
-                   ]
-                   []
+{-| Renders an input.
+
+    Ui.Input.render model
+-}
+render : Model -> Html.Html Msg
+render model =
+  node
+    "ui-input"
+    [ classList
+        [ ( "disabled", model.disabled )
+        , ( "readonly", model.readonly )
+        ]
+    ]
+    [ node
+        "input"
+        [ placeholder model.placeholder
+        , attribute "uid" model.uid
+        , readonly model.readonly
+        , disabled model.disabled
+        , value model.value
+        , spellcheck False
+        , type' model.kind
+        , onInput Input
+        ]
+        []
     ]
 
-{-| Sets the value of the model. -}
+
+{-| Sets the value of an input.
+
+    Ui.Input.setValue "new value" model
+-}
 setValue : String -> Model -> Model
 setValue value model =
   { model | value = value }
+
+
+{-| Focuses an input.
+
+    Cmd.map Input (Ui.Input.focus model)
+-}
+focus : Model -> Cmd Msg
+focus model =
+  Task.perform Tasks Tasks (Native.Browser.focusUid model.uid)

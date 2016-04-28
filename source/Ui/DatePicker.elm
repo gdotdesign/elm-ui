@@ -1,5 +1,7 @@
-module Ui.DatePicker
-  (Model, Action, init, initWithAddress, update, view, setValue) where
+module Ui.DatePicker exposing
+  (Model, Action, init, initWithAddress, update, view, setValue)
+
+-- where
 
 {-| Date picker input component.
 
@@ -18,9 +20,6 @@ import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
 import Html.Lazy
 
-import Signal exposing (forwardTo)
-import Ext.Signal
-import Effects
 import Dict
 
 import Date.Format exposing (isoDateFormat, format)

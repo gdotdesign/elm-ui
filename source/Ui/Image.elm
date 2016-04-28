@@ -1,20 +1,23 @@
-module Ui.Image (Model, Action, init, update, view) where
+module Ui.Image exposing (Model, Msg, init, update, render, view)
 
 {-| Image component that fades when loaded.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Msg, init, update
 
 # View
-@docs view
+@docs render, view
 -}
+
+-- where
+
 import Html.Attributes exposing (src, classList)
 import Html.Extra exposing (onLoad)
 import Html exposing (node, img)
-import Html.Lazy
+
 
 {-| Representation of an image:
-  - **loaded** (internal) - Whether or not the image is loaded
+  - **loaded** - Whether or not the image is loaded
   - **src** - The url for the image
 -}
 type alias Model =
@@ -22,13 +25,16 @@ type alias Model =
   , src : String
   }
 
-{-| Actions that an image can make. -}
-type Action
+
+{-| Messages that an image can receive.
+-}
+type Msg
   = Loaded
+
 
 {-| Initializes an image from an URL.
 
-    Image.init "http://some.url/image.png"
+    model = Ui.Image.init "http://some.url/image.png"
 -}
 init : String -> Model
 init url =
@@ -36,20 +42,35 @@ init url =
   , src = url
   }
 
-{-| Updates an image. -}
-update : Action -> Model -> Model
+
+{-| Updates an image.
+
+    Ui.Image.update model
+-}
+update : Msg -> Model -> Model
 update action model =
   case action of
-    Loaded -> { model | loaded = True }
+    Loaded ->
+      { model | loaded = True }
 
-{-| Renders an image. -}
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
-  Html.Lazy.lazy2 render address model
 
--- Render internal
-render : Signal.Address Action -> Model -> Html.Html
-render address model =
-  node "ui-image" [classList [("loaded", model.loaded)]] [
-    img [src model.src, onLoad address Loaded] []
-  ]
+{-| Lazily renders an image.
+
+    Ui.Image.view model
+-}
+view : Model -> Html.Html Msg
+view model =
+  render model
+
+
+{-| Renders an image.
+
+    Ui.Image.render model
+-}
+render : Model -> Html.Html Msg
+render model =
+  node
+    "ui-image"
+    [ classList [ ( "loaded", model.loaded ) ] ]
+    [ img [ src model.src, onLoad Loaded ] []
+    ]

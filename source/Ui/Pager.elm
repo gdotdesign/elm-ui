@@ -1,10 +1,12 @@
-module Ui.Pager
-  (Model, Action, init, update, view, select) where
+module Ui.Pager exposing
+  (Model, Msg, init, update, view, select)
+
+-- where
 
 {-| Pager Component.
 
 # Model
-@docs Model, Action, init, update
+@docs Model, Msg, init, update
 
 # View
 @docs view
@@ -34,7 +36,7 @@ type alias Model =
   }
 
 {-| Actions that a pager can take. -}
-type Action
+type Msg
   = End Int
   | Active Int
 
@@ -49,7 +51,7 @@ init active =
   }
 
 {-| Updates a pager. -}
-update : Action -> Model -> Model
+update : Msg -> Model -> Model
 update action model =
   case action of
     End page ->
@@ -59,12 +61,12 @@ update action model =
       { model | center = [], active = page }
 
 {-| Renders a pager. -}
-view : Signal.Address Action -> List Html.Html -> Model -> Html.Html
+view : (Msg -> msg) -> List (Html.Html msg) -> Model -> Html.Html msg
 view address pages model =
-  Html.Lazy.lazy3 render address pages model
+  render address pages model
 
 -- Render internal
-render : Signal.Address Action -> List Html.Html -> Model -> Html.Html
+render : (Msg -> msg) -> List (Html.Html msg) -> Model -> Html.Html msg
 render address pages model =
   let
     updatedPage page =
@@ -75,12 +77,12 @@ render address pages model =
           if List.member index model.left then
             [ classList [("animating", True)]
             , style [("left", "-100%")]
-            , onTransitionEnd address (End index)
+            , onTransitionEnd (address (End index))
             ]
           else if List.member index model.center then
             [ style [("left", "0%")]
             , classList [("animating", True)]
-            , onTransitionEnd address (Active index)
+            , onTransitionEnd (address (Active index))
             ]
           else if index == model.active then
             [ style [("left", "0%")] ]

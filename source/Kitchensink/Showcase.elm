@@ -1,9 +1,7 @@
-module Kitchensink.Showcase where
+module Kitchensink.Showcase exposing (..)
 
-import Signal exposing (forwardTo)
 import Html exposing (tr, td)
 import Html.Lazy
-import Effects
 
 type alias Partial a =
   { a | enabled : Bool

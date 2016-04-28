@@ -1,5 +1,7 @@
-module Ui.NumberPad
-  (Model, Action, init, initWithAddress, update, ViewModel, view, setValue) where
+module Ui.NumberPad exposing
+  (Model, Action, init, initWithAddress, update, ViewModel, view, setValue)
+
+-- where
 
 {-| Number pad component.
 
@@ -19,9 +21,6 @@ import Html exposing (node, text)
 import Html.Lazy
 
 import Number.Format exposing (prettyInt)
-import Ext.Signal
-import Effects
-import Signal
 import String
 import Dict
 

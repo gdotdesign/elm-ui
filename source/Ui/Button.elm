@@ -1,10 +1,10 @@
-module Ui.Button
+module Ui.Button exposing
   ( Model, init, view, attributes
   , primaryBig, primarySmall, primary
   , secondaryBig, secondarySmall, secondary
   , warningBig, warningSmall, warning
   , successBig, successSmall, success
-  , dangerBig, dangerSmall, danger) where
+  , dangerBig, dangerSmall, danger) -- where
 
 {-| Basic button component that implements:
   - 5 different types (primary, secondary, warning, danger, success)
@@ -31,7 +31,7 @@ import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node, text)
-import Html.Lazy
+-- import Html.Lazy
 
 import Ui
 
@@ -65,84 +65,84 @@ init =
                         , size = "medium"
                         }
 -}
-view : Signal.Address a -> a -> Model -> Html.Html
-view address action model =
-  Html.Lazy.lazy3 render address action model
+view : msg -> Model -> Html.Html msg
+view msg model =
+  {- Html.Lazy.lazy2 -} render msg model
 
 {-| Renders a **big primary** button with the given text. -}
-primaryBig : String -> Signal.Address a -> a -> Html.Html
-primaryBig title address action =
-  Html.Lazy.lazy3 render address action (model title "primary" "big")
+primaryBig : String -> msg -> Html.Html msg
+primaryBig title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "primary" "big")
 
 {-| Renders a **small primary** button with the given text. -}
-primarySmall : String -> Signal.Address a -> a -> Html.Html
-primarySmall title address action =
-  Html.Lazy.lazy3 render address action (model title "primary" "small")
+primarySmall : String -> msg -> Html.Html msg
+primarySmall title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "primary" "small")
 
 {-| Renders a **medium primary** (normal) button with the given text. -}
-primary : String -> Signal.Address a -> a -> Html.Html
-primary title address action =
-  Html.Lazy.lazy3 render address action (model title "primary" "medium")
+primary : String -> msg -> Html.Html msg
+primary title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "primary" "medium")
 
 {-| Renders a **big secondary** button with the given text. -}
-secondaryBig : String -> Signal.Address a -> a -> Html.Html
-secondaryBig title address action =
-  Html.Lazy.lazy3 render address action (model title "secondary" "big")
+secondaryBig : String -> msg -> Html.Html msg
+secondaryBig title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "secondary" "big")
 
 {-| Renders a **small secondary** button with the given text. -}
-secondarySmall : String -> Signal.Address a -> a -> Html.Html
-secondarySmall title address action =
-  Html.Lazy.lazy3 render address action (model title "secondary" "small")
+secondarySmall : String -> msg -> Html.Html msg
+secondarySmall title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "secondary" "small")
 
 {-| Renders a **medium secondary** (normal) button with the given text. -}
-secondary : String -> Signal.Address a -> a -> Html.Html
-secondary title address action =
-  Html.Lazy.lazy3 render address action (model title "secondary" "medium")
+secondary : String -> msg -> Html.Html msg
+secondary title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "secondary" "medium")
 
 {-| Renders a **big warning** button with the given text. -}
-warningBig : String -> Signal.Address a -> a -> Html.Html
-warningBig title address action =
-  Html.Lazy.lazy3 render address action (model title "warning" "big")
+warningBig : String -> msg -> Html.Html msg
+warningBig title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "warning" "big")
 
 {-| Renders a **small warning** button with the given text. -}
-warningSmall : String -> Signal.Address a -> a -> Html.Html
-warningSmall title address action =
-  Html.Lazy.lazy3 render address action (model title "warning" "small")
+warningSmall : String -> msg -> Html.Html msg
+warningSmall title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "warning" "small")
 
 {-| Renders a **medium warning** (normal) button with the given text. -}
-warning : String -> Signal.Address a -> a -> Html.Html
-warning title address action =
-  Html.Lazy.lazy3 render address action (model title "warning" "medium")
+warning : String -> msg -> Html.Html msg
+warning title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "warning" "medium")
 
 {-| Renders a **big success** button with the given text. -}
-successBig : String -> Signal.Address a -> a -> Html.Html
-successBig title address action =
-  Html.Lazy.lazy3 render address action (model title "success" "big")
+successBig : String -> msg -> Html.Html msg
+successBig title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "success" "big")
 
 {-| Renders a **small success** button with the given text. -}
-successSmall : String -> Signal.Address a -> a -> Html.Html
-successSmall title address action =
-  Html.Lazy.lazy3 render address action (model title "success" "small")
+successSmall : String -> msg -> Html.Html msg
+successSmall title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "success" "small")
 
 {-| Renders a **medium success** (normal) button with the given text. -}
-success : String -> Signal.Address a -> a -> Html.Html
-success title address action =
-  Html.Lazy.lazy3 render address action (model title "success" "medium")
+success : String -> msg -> Html.Html msg
+success title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "success" "medium")
 
 {-| Renders a **big danger** button with the given text. -}
-dangerBig : String -> Signal.Address a -> a -> Html.Html
-dangerBig title address action =
-  Html.Lazy.lazy3 render address action (model title "danger" "big")
+dangerBig : String -> msg -> Html.Html msg
+dangerBig title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "danger" "big")
 
 {-| Renders a **small danger** button with the given text. -}
-dangerSmall : String -> Signal.Address a -> a -> Html.Html
-dangerSmall title address action =
-  Html.Lazy.lazy3 render address action (model title "danger" "small")
+dangerSmall : String -> msg -> Html.Html msg
+dangerSmall title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "danger" "small")
 
 {-| Renders a **medium danger** (normal) button with the given text. -}
-danger : String -> Signal.Address a -> a -> Html.Html
-danger title address action =
-  Html.Lazy.lazy3 render address action (model title "danger" "medium")
+danger : String -> msg -> Html.Html msg
+danger title msg =
+  {- Html.Lazy.lazy2 -} render msg (model title "danger" "medium")
 
 -- Generate model from text kind and size.
 model : String -> String -> String -> Model
@@ -154,28 +154,27 @@ model title kind size =
   }
 
 -- Render internal.
-render : Signal.Address a -> a -> Model -> Html.Html
-render address action model =
+render : msg -> Model -> Html.Html msg
+render msg model =
   node "ui-button"
-    (attributes address action model)
+    (attributes msg model)
     [node "span" [] [text model.text]]
 
 {-| Creates the attributes for a button that contains events, tabindex and
 classes. -}
-attributes : Signal.Address a
-           -> a
+attributes : msg
            -> { b | disabled : Bool, kind : String, size : String }
-           -> List Html.Attribute
-attributes address action model =
+           -> List (Html.Attribute msg)
+attributes msg model =
   let
     actions =
       Ui.enabledActions { disabled = model.disabled
                         , readonly = False
                         }
-        [ onClick address action
-        , onKeys address [ (13, action)
-                         , (32, action)
-                         ]
+        [ onClick msg
+        , onKeys [ (13, msg)
+                 , (32, msg)
+                 ]
         ]
   in
     [ classList

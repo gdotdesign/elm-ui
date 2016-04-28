@@ -1,4 +1,4 @@
-module Ui.Helpers.Intendable where
+module Ui.Helpers.Intendable exposing (..)
 
 {-| Helper functions for intending list items
 

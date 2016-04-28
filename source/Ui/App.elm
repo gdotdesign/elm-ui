@@ -18,7 +18,6 @@ import Html.Attributes exposing (name, content, style)
 import Html.Events exposing (onMouseDown, onMouseUp)
 import Html.Extra exposing (onScroll, onMouseMove)
 import Html exposing (node, text)
--- import Html.Lazy
 
 import Json.Decode as JD
 import Json.Encode as JE
@@ -29,6 +28,8 @@ import Native.Uid
 import Ui.Helpers.Emitter as Emitter
 import Ui.Time
 import Ui
+
+import Debug exposing (log)
 
 {-| Representation of an application:
   - **loaded** (internal) - Whether or not the application is loaded
@@ -99,7 +100,10 @@ update action model =
       (model, Ui.Time.updateTime now)
 
     MouseMove (x,y) ->
-      (model, Emitter.send "mouse-move" (JE.list [JE.int x, JE.int y]))
+      let
+        a = log "mousemove" x
+      in
+        (model, Emitter.send "mouse-move" (JE.list [JE.int x, JE.int y]))
 
     Click pressed ->
       (model, Emitter.send "mouse-click" (JE.bool pressed))
@@ -114,8 +118,6 @@ update action model =
 view: (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 view address model children =
   render address model children
-  -- FIXME: Lazy is broken in 0.17
-  -- Html.Lazy.lazy3 render model address children
 
 -- Render (Internal)
 render : (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg

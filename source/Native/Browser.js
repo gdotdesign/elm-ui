@@ -23,31 +23,6 @@ var _gdotdesign$elm_ui$Native_Browser = function() {
                fallbackMenu
       }
     })
-
-    /* Add ontransitionend property to use virtual node attributes. Maybe this
-       needs a better implementation. */
-    Object.defineProperty(element.prototype, "ontransitionend", {
-      configurable: false,
-      enumerable: false,
-      writeable: false,
-      set: function(handler) {
-        var wrap = function(event) {
-          /* Don't forward bubbled events from children. */
-          if(event.target != this) return;
-          handler.call(event)
-        }.bind(this)
-
-        /* Remove old handler if present. */
-        if (this._ontransitionend_hadler) {
-          this.removeEventListener('transitionend', this._ontransitionend_hadler)
-          this._ontransitionend_hadler = null
-        }
-
-        /* Add event listener. */
-        this.addEventListener('transitionend', wrap)
-        this._ontransitionend_hadler = wrap
-      }
-    })
   }
 
   if(typeof window !== 'undefined' && window.HTMLElement) {

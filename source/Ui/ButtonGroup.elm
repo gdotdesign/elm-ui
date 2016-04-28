@@ -10,7 +10,6 @@ module Ui.ButtonGroup exposing (Model, view, init) -- where
 -}
 import Html.Extra exposing (onKeys)
 import Html exposing (node)
--- import Html.Lazy
 
 import Ui.Button
 
@@ -45,8 +44,6 @@ init items =
 view : Model msg -> Html.Html msg
 view model =
   render model
-  -- FIXME: Lazy is broken in 0.17
-  -- Html.Lazy.lazy2 render address model
 
 -- Render intrenal
 render : Model msg -> Html.Html msg

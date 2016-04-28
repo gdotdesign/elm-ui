@@ -17,7 +17,6 @@ module Ui.ColorPanel exposing
 import Html.Dimensions exposing (PositionAndDimension, onWithDimensions)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node, div, text)
--- import Html.Lazy
 
 import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)
 import Color exposing (Color)
@@ -109,7 +108,6 @@ update action model =
 view : Model -> Html.Html Msg
 view model =
   render model
-  -- Html.Lazy.lazy render model
 
 -- Render internal
 render : Model -> Html.Html Msg

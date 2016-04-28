@@ -18,7 +18,6 @@ virtual-dom to fix "keys" concept.
 import Html.Attributes exposing (classList, style)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
--- import Html.Lazy
 
 import Ui.Native.Browser as Browser
 
@@ -61,7 +60,6 @@ init timeout duration =
 view: (Msg -> a) -> Model a -> Html.Html a
 view address model =
   render address model
-  -- Html.Lazy.lazy2 render address model
 
 {-| Updates a notification center. -}
 update: Msg -> Model msg -> (Model msg, Cmd Msg)

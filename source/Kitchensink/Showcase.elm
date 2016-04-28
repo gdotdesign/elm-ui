@@ -1,7 +1,6 @@
 module Kitchensink.Showcase exposing (..)
 
 import Html exposing (tr, td)
-import Html.Lazy
 import Html.App
 
 -- where

@@ -17,7 +17,6 @@ module Ui.Modal exposing
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
-import Html.Lazy
 
 import Ui
 

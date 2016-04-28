@@ -17,7 +17,6 @@ module Ui.Pager exposing
 import Html.Attributes exposing (style, classList)
 import Html.Extra exposing (onTransitionEnd)
 import Html exposing (node)
-import Html.Lazy
 import List.Extra
 
 {-| Representation of a pager:

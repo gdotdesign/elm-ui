@@ -17,7 +17,6 @@ import Html.Attributes exposing (classList, tabindex)
 import Html.Events exposing (onClick)
 import Html.Extra exposing (onKeys)
 import Html exposing (node)
--- import Html.Lazy
 
 import Json.Decode as JD
 import Json.Encode as JE
@@ -80,7 +79,7 @@ setValue value model =
 {-| Renders a checkbox. -}
 view : Model -> Html.Html Msg
 view model =
-  {- Html.Lazy.lazy -} render model
+  render model
 
 -- Render internal.
 render : Model -> Html.Html Msg
@@ -92,7 +91,7 @@ render model =
 {-| Renders a checkbox as a radio. -}
 radioView : Model -> Html.Html Msg
 radioView model =
-  {- Html.Lazy.lazy -} radioRender model
+  radioRender model
 
 -- Render radio internal.
 radioRender : Model -> Html.Html Msg
@@ -105,7 +104,7 @@ radioRender model =
 {-| Renders a checkbox as a toggle. -}
 toggleView : Model -> Html.Html Msg
 toggleView model =
-  {- Html.Lazy.lazy -} toggleRender model
+  toggleRender model
 
 -- Render toggle internal.
 toggleRender : Model -> Html.Html Msg

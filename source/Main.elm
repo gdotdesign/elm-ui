@@ -13,7 +13,6 @@ import Set
 import Html.Attributes exposing (style, classList, class, colspan, href)
 import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
-import Html.Lazy
 import Html.App
 
 import Debug exposing (log)
@@ -464,7 +463,7 @@ imageUrl =
 
 componentHeader : String -> Html.Html Msg
 componentHeader title =
-  Html.Lazy.lazy componentHeaderRender title
+  componentHeaderRender title
 
 componentHeaderRender : String -> Html.Html Msg
 componentHeaderRender title =

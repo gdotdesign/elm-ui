@@ -13,6 +13,8 @@ relative time like: 10 minutes ago).
 @docs updateTime
 -}
 
+-- where
+
 import Date.Config.Configs as DateConfigs
 import Date.Format exposing (format)
 import Time exposing (Time)
@@ -90,7 +92,7 @@ update msg model =
 
     Ui.Time.view model
 -}
-view : Model -> Html.Html Msg
+view : Model -> Html.Html msg
 view model =
   render model
 
@@ -99,7 +101,7 @@ view model =
 
     Ui.Time.render model
 -}
-render : Model -> Html.Html Msg
+render : Model -> Html.Html msg
 render model =
   let
     titleText =

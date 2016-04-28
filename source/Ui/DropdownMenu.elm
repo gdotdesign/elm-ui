@@ -78,12 +78,13 @@ init =
 -- view: ((Dimensions -> Msg) -> msg) -> Html.Html msg -> List (Html.Html msg) -> Model -> Html.Html msg
 view address element children model =
   node "ui-dropdown-menu"
-    [ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" (address Toggle)
-    ]
+    --[ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" (address Toggle)
+    --]
+    []
     [ element
     , node "ui-dropdown-menu-items"
-      [ onStop "mouseup" NoOp
-      , classList [("open", model.open)]
+      --[ onStop "mouseup" (address NoOp)
+      [ classList [("open", model.open)]
       , style [ ("top", (toString model.top) ++ "px")
               , ("left", (toString model.left) ++ "px")
               ]

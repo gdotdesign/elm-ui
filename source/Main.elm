@@ -14,6 +14,7 @@ import Html.Attributes exposing (style, classList, class, colspan, href)
 import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
 import Html.Lazy
+import Html.App
 
 import Debug exposing (log)
 
@@ -74,8 +75,6 @@ type Msg
   | Modal Ui.Modal.Msg
   | Pager Ui.Pager.Msg
   | App Ui.App.Msg
-  | MousePosition (Int, Int)
-  | MouseIsDown Bool
   | ShowNotification
   | AppMsg String
   | EscIsDown Bool
@@ -130,7 +129,6 @@ type alias Model =
     , disabled: Ui.ButtonGroup.Model Msg
     }
   , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Msg
-  , numberPadViewFn : Signal.Address Ui.NumberPad.Msg -> Ui.NumberPad.Model -> Html.Html
   , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Msg
   -- , tagger : Showcase.Model (Ui.Tagger.Model TaggerModel Int String) (Ui.Tagger.Msg TaggerModel String)
   , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Msg
@@ -148,7 +146,7 @@ type alias Model =
   , slider : Showcase.Model Ui.Slider.Model Ui.Slider.Msg
   , input : Showcase.Model Ui.Input.Model Ui.Input.Msg
   , tabs : Showcase.Model Ui.Tabs.Model Ui.Tabs.Msg
-  , tabsContents : List (String, Html.Html)
+  , tabsContents : List (String, Html.Html Msg)
   , menu : Ui.DropdownMenu.Model
   , loader : Ui.Loader.Model
   , modal : Ui.Modal.Model
@@ -161,9 +159,6 @@ type alias Model =
 
 dateConfig =
   (DateConfigs.getConfig "en")
-
-handleMoveIdentity x y model = (model, Effects.none)
-handleClickIndetity pressed model = model
 
 removeLabel : TaggerModel -> Task.Task String TaggerModel
 removeLabel item =
@@ -195,27 +190,16 @@ taggerData =
 init : Model
 init =
   let
-    input = Ui.Input.init "" "Type here..."
     pager = Ui.Pager.init 0
     loader = Ui.Loader.init 0
-
-    address = mailbox.address
 
     numberPadViewModel =
       { bottomLeft = text ""
       , bottomRight = text ""
       }
 
-    settledMailbox = Signal.mailbox NoOp
-    mailbox = Signal.mailbox NoOp
-
     -- datePicker =
     --  { datePickerOptions | format = "%Y %B %e." }
-
-    inplaceInput localAddress =
-      Ui.InplaceInput.initWithAddress
-        (forwardTo address InplaceInputChanged)
-        "Test Value"
 
     buttonGroup =
       Ui.ButtonGroup.init [("A", (ButtonClicked "A")),
@@ -226,20 +210,14 @@ init =
   in
     { calendar =
         Showcase.init
-          (\_-> Ui.Calendar.initWithAddress
-                (forwardTo address CalendarChanged)
-                (Ext.Date.createDate 2015 5 1))
-          (forwardTo address Calendar)
+          (\_-> Ui.Calendar.init (Ext.Date.createDate 2015 5 1))
           Ui.Calendar.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , tabs =
          Showcase.init
           (\_ -> Ui.Tabs.init 0)
-          (forwardTo address Tabs)
           Ui.Tabs.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , tabsContents = [("First", text "First Tab")
                      ,("Second", text "Second Tab")
                      ,("Third", text "Third Tab")
@@ -262,42 +240,36 @@ init =
           handleClickIndetity -}
     , searchInput =
         Showcase.init
-          (\_ -> Ui.SearchInput.initWithAddress (forwardTo address SearchInputChanged) 1000)
-          (forwardTo address SearchInput)
+          (\_ -> Ui.SearchInput.init 1000)
           Ui.SearchInput.update
-          handleMoveIdentity
-          handleClickIndetity
-    , numberPadViewFn = (Ui.NumberPad.view numberPadViewModel)
+          (\_ -> Sub.none)
     , notificationButton = Ui.IconButton.primary
                             "Show Notification"
                             "alert-circled"
                             "right"
-                            address
                             ShowNotification
     , pagerContents =
         [ text "Page 1"
         , text "Page 2"
         , text "Page 3"
         ]
-    , pagerAddress = (forwardTo address Pager)
     , pagerControls =
         Ui.Container.row []
-          [ Ui.IconButton.primary "Previous Page" "chevron-left" "left" address PreviousPage
+          [ Ui.IconButton.primary "Previous Page" "chevron-left" "left" PreviousPage
           , Ui.spacer
-          , Ui.IconButton.primary "Next Page" "chevron-right" "right" address NextPage
+          , Ui.IconButton.primary "Next Page" "chevron-right" "right" NextPage
           ]
     , dropdownMenu =
-      { address = forwardTo address DropdownMenu
-      , content = Ui.IconButton.secondary
-                    "Open" "chevron-down" "right" address NoOp
+      { content = Ui.IconButton.secondary
+                    "Open" "chevron-down" "right" NoOp
       , items =
         [ Ui.DropdownMenu.item
-          [ onClick address CloseMenu ]
+          [ onClick CloseMenu ]
           [ Ui.icon "android-download" True []
           , node "span" [] [text "Download"]
           ]
         , Ui.DropdownMenu.item
-          [ onClick address CloseMenu ]
+          [ onClick CloseMenu ]
           [ Ui.icon "trash-b" True []
           , node "span" [] [text "Delete"]
           ]
@@ -310,7 +282,7 @@ init =
       , node "p" []
         [ Ui.IconButton.primaryBig
             "Get Started at Github" "social-github" "right"
-            address (Open "https://github.com/gdotdesign/elm-ui") ]
+            (Open "https://github.com/gdotdesign/elm-ui") ]
       , Ui.subTitle [] [text "Components"]
       , Ui.textBlock "The business logic for following components are
                       implemented fully in Elm, with minimal Native
@@ -319,7 +291,7 @@ init =
       ]
     , modalButton =
       Ui.IconButton.primary
-       "Open Modal" "android-open" "right" address OpenModal
+       "Open Modal" "android-open" "right" OpenModal
     , modalView = { title = "Test Modal"
                   , content =
                     [ node "p" [] [text "This is a modal window."]
@@ -338,16 +310,16 @@ init =
                     ]
                   , footer =
                     [ Ui.Container.rowEnd []
-                      [ Ui.Button.primary "Close" address CloseModal ]
+                      [ Ui.Button.primary "Close" CloseModal ]
                     ]
                   }
-    , buttons = [ Ui.Button.primaryBig "Primary" address Alert
-                , Ui.Button.secondary "Secondary" address NoOp
-                , Ui.Button.success "Success" address NoOp
-                , Ui.Button.warning "Warning" address NoOp
-                , Ui.Button.dangerSmall "Danger" address NoOp
+    , buttons = [ Ui.Button.primaryBig "Primary" Alert
+                , Ui.Button.secondary "Secondary" NoOp
+                , Ui.Button.success "Success" NoOp
+                , Ui.Button.warning "Warning" NoOp
+                , Ui.Button.dangerSmall "Danger" NoOp
                 ]
-    , disabledIconButton = [ Ui.IconButton.view address NoOp
+    , disabledIconButton = [ Ui.IconButton.view NoOp
                               { side = "left"
                               , text = "Disabled"
                               , kind = "success"
@@ -355,156 +327,107 @@ init =
                               , size = "medium"
                               , disabled = True }
                            ]
-    , disabledButton = [ Ui.Button.view address NoOp { text = "Disabled"
+    , disabledButton = [ Ui.Button.view NoOp { text = "Disabled"
                                                         , kind = "danger"
                                                         , size = "medium"
                                                         , disabled = True }
                       ]
     , iconButtons = [ Ui.IconButton.primaryBig
-                        "Load" "android-download" "right" address NoOp
+                        "Load" "android-download" "right" NoOp
                     , Ui.IconButton.primary
-                        "" "archive" "right" address NoOp
+                        "" "archive" "right" NoOp
                     , Ui.IconButton.secondary
-                        "Send" "arrow-left-c" "left" address NoOp
+                        "Send" "arrow-left-c" "left" NoOp
                     , Ui.IconButton.success
-                        "Success" "checkmark" "right" address NoOp
+                        "Success" "checkmark" "right" NoOp
                     , Ui.IconButton.warning
-                        "Warning" "alert" "right" address NoOp
+                        "Warning" "alert" "right" NoOp
                     , Ui.IconButton.dangerSmall
-                        "Danger" "close" "right" address NoOp
+                        "Danger" "close" "right" NoOp
                     ]
     , datePicker =
         Showcase.init
-          (\localAddress ->
-            Ui.DatePicker.initWithAddress
-              (forwardTo address DatePickerChanged)
-              localAddress
-              (Ext.Date.now ()))
-          (forwardTo address DatePicker)
+          (\_ -> Ui.DatePicker.init (Ext.Date.now ()))
           Ui.DatePicker.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
     , input =
         Showcase.init
-          (\_ -> input)
-          (forwardTo address Input)
+          (\_ -> Ui.Input.init "" "Type here...")
           Ui.Input.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , inplaceInput =
         Showcase.init
-          inplaceInput
-          (forwardTo address InplaceInput)
+          (\_-> Ui.InplaceInput.init "Test" "Placeholder")
           Ui.InplaceInput.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , colorPicker =
         Showcase.init
-          (\_ ->
-            Ui.ColorPicker.initWithAddress
-            (forwardTo settledMailbox.address ColorPickerChanged)
-            Color.yellow)
-          (forwardTo address ColorPicker)
+          (\_ -> Ui.ColorPicker.init Color.yellow)
           Ui.ColorPicker.update
-          Ui.ColorPicker.handleMove
-          Ui.ColorPicker.handleClick
+          (\_ -> Sub.none)
     , colorPanel =
         Showcase.init
-          (\_->
-            Ui.ColorPanel.initWithAddress
-            (forwardTo settledMailbox.address ColorPanelChanged)
-            Color.blue)
-          (forwardTo address ColorPanel)
+          (\_-> Ui.ColorPanel.init Color.blue)
           Ui.ColorPanel.update
-          Ui.ColorPanel.handleMove
-          Ui.ColorPanel.handleClick
+          (\_ -> Sub.none)
     , numberRange =
         Showcase.init
-          (\_->
-            Ui.NumberRange.initWithAddress
-            (forwardTo settledMailbox.address NumberRangeChanged)
-            0)
-          (forwardTo address NumberRange)
+          (\_-> Ui.NumberRange.init 0)
           Ui.NumberRange.update
-          Ui.NumberRange.handleMove
-          Ui.NumberRange.handleClick
+          (\_ -> Sub.none)
     , buttonGroup = { enabled = buttonGroup
                     , disabled = { buttonGroup | disabled = True }
                     }
     , checkbox3 =
         Showcase.init
-          (\_-> Ui.Checkbox.initWithAddress (forwardTo address Checkbox3Changed) False)
-          (forwardTo address Checkbox3)
+          (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , checkbox2 =
         Showcase.init
-          (\_-> Ui.Checkbox.initWithAddress (forwardTo address Checkbox2Changed) False)
-          (forwardTo address Checkbox2)
+          (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , checkbox =
         Showcase.init
-          (\_-> Ui.Checkbox.initWithAddress (forwardTo address CheckboxChanged) False)
-          (forwardTo address Checkbox)
+          (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , textarea =
         Showcase.init
-          (\_ -> Ui.Textarea.init "Test")
-          (forwardTo address TextArea)
+          (\_ -> Ui.Textarea.init "Test" "Placeholder")
           Ui.Textarea.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , numberPad =
         Showcase.init
           (\_ -> Ui.NumberPad.init 0)
-          (forwardTo address NumberPad)
           Ui.NumberPad.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , image = Ui.Image.init imageUrl
     , ratings =
         Showcase.init
-          (\_ -> Ui.Ratings.initWithAddress (forwardTo address RatingsChanged) 5 0.4)
-          (forwardTo address Ratings)
+          (\_ -> Ui.Ratings.init 5 0.4)
           Ui.Ratings.update
-          handleMoveIdentity
-          handleClickIndetity
+          (\_ -> Sub.none)
     , slider =
         Showcase.init
           (\_ -> Ui.Slider.init 50)
-          (forwardTo address Slider)
           Ui.Slider.update
-          Ui.Slider.handleMove
-          Ui.Slider.handleClick
+          (\_ -> Sub.none)
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
     , loader = { loader | shown = True }
     , time = Ui.Time.init (Ext.Date.createDate 2015 11 1)
     , time2 = Ui.Time.init (Ext.Date.now ())
-    , settledMailbox = settledMailbox
-    , mailbox = mailbox
     , clicked = False
     , chooser =
         Showcase.init
-          (\_ -> Ui.Chooser.initWithAddress
-                  (forwardTo address ChooserChanged)
-                  data
-                  "Select a country..." "")
-          (forwardTo address Chooser)
+          (\_ -> Ui.Chooser.init data "Select a country..." "")
           Ui.Chooser.update
-          handleMoveIdentity
-          handleClickIndetity
-    , app = Ui.App.initWithAddress
-        (forwardTo address Loaded)
-        (forwardTo address Scrolled)
-        "Elm-UI Kitchen Sink"
+          (\_ -> Sub.none)
+    , app = Ui.App.init "Elm-UI Kitchen Sink"
     }
 
 data : List Ui.Chooser.Item
@@ -521,15 +444,15 @@ imageUrl : String
 imageUrl =
   "http://rs1371.pbsrc.com/albums/ag299/Victor_Binhara/Despicable%20Me/DespicableMe2_zpsc67ebdc5.jpg~c200"
 
-componentHeader : String -> Html.Html
+componentHeader : String -> Html.Html Msg
 componentHeader title =
   Html.Lazy.lazy componentHeaderRender title
 
-componentHeaderRender : String -> Html.Html
+componentHeaderRender : String -> Html.Html Msg
 componentHeaderRender title =
   tr [] [ td [colspan 3] [text title] ]
 
-tableRow : Html.Html -> Html.Html -> Html.Html -> Html.Html
+tableRow : Html.Html Msg -> Html.Html Msg -> Html.Html Msg -> Html.Html Msg
 tableRow active readonly disabled =
   tr []
     [ td [] [ active   ]
@@ -537,8 +460,8 @@ tableRow active readonly disabled =
     , td [] [ disabled ]
     ]
 
-view : Signal.Address Msg -> Model -> Html.Html
-view address model =
+view : Model -> Html.Html Msg
+view model =
   let
     emptyText = text ""
 
@@ -546,20 +469,17 @@ view address model =
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
     , numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons
     , disabledButton, disabledIconButton, modalView, infos, modalButton
-    , dropdownMenu, pagerControls, notificationButton, numberPadViewFn
-    , pagerAddress, pagerContents, searchInput, tabs, tabsContents
+    , dropdownMenu, pagerControls, notificationButton
+    , pagerContents, searchInput, tabs, tabsContents
     } = model
 
     clicked =
       if model.clicked then [node "clicked" [] [emptyText]] else []
 
   in
-    Ui.App.view (forwardTo address App) model.app
-      [ Ui.NotificationCenter.view (forwardTo address Notis) model.notifications
-      , Ui.Modal.view
-        (forwardTo address Modal)
-        modalView
-        model.modal
+    Ui.App.view App model.app
+      [ Ui.NotificationCenter.view Notis model.notifications
+      , Ui.Modal.view  Modal modalView model.modal
       , node "kitchen-sink" []
         (infos ++ [ table []
           [ tr [] [ td [] [text "Active"]
@@ -582,12 +502,12 @@ view address model =
             , td [] disabledIconButton
             ]
           , componentHeader "Button Group"
-          , tableRow (Ui.ButtonGroup.view address buttonGroup.enabled)
+          , tableRow (Ui.ButtonGroup.view buttonGroup.enabled)
                      (emptyText)
-                     (Ui.ButtonGroup.view address buttonGroup.disabled)
+                     (Ui.ButtonGroup.view buttonGroup.disabled)
 
           , componentHeader "Ratings"
-          , Showcase.view Ui.Ratings.view ratings
+          , Showcase.view Ratings Ui.Ratings.view ratings
 
           , componentHeader "NotificationCenter"
           , tableRow (notificationButton)
@@ -601,40 +521,40 @@ view address model =
 
           , componentHeader "Dropdown Menu"
           , tableRow ( Ui.DropdownMenu.view
-                       dropdownMenu.address
+                       DropdownMenu
                        dropdownMenu.content
                        dropdownMenu.items
                        model.menu)
                      (emptyText)
                      (emptyText)
           , componentHeader "Calendar"
-          , Showcase.view Ui.Calendar.view calendar
+          , Showcase.view Calendar Ui.Calendar.view calendar
 
           , componentHeader "Tabs"
-          , Showcase.view (Ui.Tabs.view tabsContents) tabs
+          -- , Showcase.view Tabs (Ui.Tabs.view tabsContents) tabs
 
           , componentHeader "Checkbox"
-          , Showcase.view Ui.Checkbox.view checkbox
-          , Showcase.view Ui.Checkbox.toggleView checkbox2
-          , Showcase.view Ui.Checkbox.radioView checkbox3
+          , Showcase.view Checkbox Ui.Checkbox.view checkbox
+          , Showcase.view Checkbox2 Ui.Checkbox.toggleView checkbox2
+          , Showcase.view Checkbox3 Ui.Checkbox.radioView checkbox3
 
           , componentHeader "Chooser"
-          , Showcase.view Ui.Chooser.view chooser
+          , Showcase.view Chooser Ui.Chooser.view chooser
 
           , componentHeader "Color Panel"
-          , Showcase.view Ui.ColorPanel.view colorPanel
+          , Showcase.view ColorPanel Ui.ColorPanel.view colorPanel
 
           , componentHeader "Color Picker"
-          , Showcase.view Ui.ColorPicker.view colorPicker
+          , Showcase.view ColorPicker Ui.ColorPicker.view colorPicker
 
           , componentHeader "Date Picker"
-          , Showcase.view Ui.DatePicker.view datePicker
+          , Showcase.view DatePicker Ui.DatePicker.view datePicker
 
           , componentHeader "Number Range"
-          , Showcase.view Ui.NumberRange.view numberRange
+          , Showcase.view NumberRange Ui.NumberRange.view numberRange
 
           , componentHeader "Slider"
-          , Showcase.view Ui.Slider.view slider
+          , Showcase.view Slider Ui.Slider.view slider
 
           --, componentHeader "Tagger"
           --, Showcase.view Ui.Tagger.view tagger
@@ -653,24 +573,24 @@ view address model =
               emptyText
 
           , componentHeader "Input"
-          , Showcase.view Ui.Input.view input
+          , Showcase.view Input Ui.Input.view input
 
           , componentHeader "Search Input"
-          , Showcase.view Ui.SearchInput.view searchInput
+          , Showcase.view SearchInput Ui.SearchInput.view searchInput
 
           , componentHeader "Autogrow Textarea"
-          , Showcase.view Ui.Textarea.view textarea
+          , Showcase.view TextArea Ui.Textarea.view textarea
 
           , componentHeader "Inplace Input"
-          , Showcase.view Ui.InplaceInput.view inplaceInput
+          , Showcase.view InplaceInput Ui.InplaceInput.view inplaceInput
 
-          , componentHeader "Number Pad"
-          , Showcase.view numberPadViewFn numberPad
+          -- , componentHeader "Number Pad"
+          -- , Showcase.view numberPadViewFn numberPad
 
           , componentHeader "Pager"
           , tr []
             [ td [colspan 3]
-              [ Ui.Pager.view pagerAddress pagerContents pager
+              [ Ui.Pager.view Pager pagerContents pager
               ]
             ]
           , tr []
@@ -681,7 +601,7 @@ view address model =
           , componentHeader "Breadcrumbs"
           , tr []
             [ td [colspan 3]
-              [ Ui.breadcrumbs address (node "span" [] [text "/"])
+              [ Ui.breadcrumbs (node "span" [] [text "/"])
                 [ ("First", Just (BreadcrumbClicked "First"))
                 , ("Second", Just (BreadcrumbClicked "Second"))
                 , ("Third", Nothing)
@@ -691,7 +611,7 @@ view address model =
           , componentHeader "Image"
           , tr []
             [ td []
-              [ Ui.Image.view (forwardTo address Image) model.image ]
+              [ Html.App.map Image (Ui.Image.view model.image) ]
             , td [] []
             , td [] []
             ]
@@ -700,8 +620,8 @@ view address model =
       ]
 
 update : Msg -> Model -> Model
-update Msg model =
-  case Msg of
+update msg model =
+  case msg of
     DropdownMenu act ->
       { model | menu = Ui.DropdownMenu.update act model.menu }
 
@@ -713,15 +633,6 @@ update Msg model =
 
     Pager act ->
       { model | pager = Ui.Pager.update act model.pager }
-
-    MouseIsDown value ->
-      { model
-        | numberRange = Showcase.handleClick value model.numberRange
-        , colorPicker = Showcase.handleClick value model.colorPicker
-        , colorPanel = Showcase.handleClick value model.colorPanel
-        , menu = Ui.DropdownMenu.handleClick value model.menu
-        , slider = Showcase.handleClick value model.slider
-        }
 
     Scrolled _ ->
       { model | menu = Ui.DropdownMenu.close model.menu }
@@ -755,135 +666,114 @@ update Msg model =
     _ ->
       model
 
-update' : Msg -> Model -> (Model, Effects.Effects Msg)
-update' Msg model =
-  case Msg of
+update' : Msg -> Model -> (Model, Cmd Msg)
+update' msg model =
+  case msg of
     Tabs act ->
       let
         (tabs, effect) = Showcase.update act model.tabs
       in
-        ({ model | tabs = tabs }, Effects.map Tabs effect)
+        ({ model | tabs = tabs }, Cmd.map Tabs effect)
     {-Tagger act ->
       let
         (tagger, effect) = Showcase.update act model.tagger
       in
-        ({ model | tagger = tagger }, Effects.map Tagger effect) -}
+        ({ model | tagger = tagger }, Cmd.map Tagger effect) -}
     SearchInput act ->
       let
         (searchInput, effect) = Showcase.update act model.searchInput
       in
-        ({ model | searchInput = searchInput }, Effects.map SearchInput effect)
+        ({ model | searchInput = searchInput }, Cmd.map SearchInput effect)
     Input act ->
       let
         (input, effect) = Showcase.update act model.input
       in
-        ({ model | input = input }, Effects.map Input effect)
+        ({ model | input = input }, Cmd.map Input effect)
     TextArea act ->
       let
         (textarea, effect) = Showcase.update act model.textarea
       in
-        ({ model | textarea = textarea }, Effects.map TextArea effect)
+        ({ model | textarea = textarea }, Cmd.map TextArea effect)
     NumberPad act ->
       let
         (numberPad, effect) = Showcase.update act model.numberPad
       in
-        ({ model | numberPad = numberPad }, Effects.map NumberPad effect)
+        ({ model | numberPad = numberPad }, Cmd.map NumberPad effect)
 
     InplaceInput act ->
       let
         (inplaceInput, effect) = Showcase.update act model.inplaceInput
       in
-        ({ model | inplaceInput = inplaceInput }, Effects.map InplaceInput effect)
+        ({ model | inplaceInput = inplaceInput }, Cmd.map InplaceInput effect)
 
     Chooser act ->
       let
         (chooser, effect) = Showcase.update act model.chooser
       in
-        ({ model | chooser = chooser }, Effects.map Chooser effect)
+        ({ model | chooser = chooser }, Cmd.map Chooser effect)
     Checkbox2 act ->
       let
         (checkbox2, effect) = Showcase.update act model.checkbox2
       in
-        ({ model | checkbox2 = checkbox2 }, Effects.map Checkbox2 effect)
+        ({ model | checkbox2 = checkbox2 }, Cmd.map Checkbox2 effect)
     Checkbox3 act ->
       let
         (checkbox3, effect) = Showcase.update act model.checkbox3
       in
-        ({ model | checkbox3 = checkbox3 }, Effects.map Checkbox3 effect)
+        ({ model | checkbox3 = checkbox3 }, Cmd.map Checkbox3 effect)
     Checkbox act ->
       let
         (checkbox, effect) = Showcase.update act model.checkbox
       in
-        ({ model | checkbox = checkbox }, Effects.map Checkbox effect)
+        ({ model | checkbox = checkbox }, Cmd.map Checkbox effect)
     ColorPicker act ->
       let
         (colorPicker, effect) = Showcase.update act model.colorPicker
       in
-        ({ model | colorPicker = colorPicker }, Effects.map ColorPicker effect)
+        ({ model | colorPicker = colorPicker }, Cmd.map ColorPicker effect)
     ColorPanel act ->
       let
         (colorPanel, effect) = Showcase.update act model.colorPanel
       in
-        ({ model | colorPanel = colorPanel }, Effects.map ColorPanel effect)
+        ({ model | colorPanel = colorPanel }, Cmd.map ColorPanel effect)
 
     DatePicker act ->
       let
         (datePicker, effect) = Showcase.update act model.datePicker
       in
-        ({ model | datePicker = datePicker }, Effects.map DatePicker effect)
+        ({ model | datePicker = datePicker }, Cmd.map DatePicker effect)
 
     Calendar act ->
       let
         (calendar, effect) = Showcase.update act model.calendar
       in
-        ({ model | calendar = calendar}, Effects.map Calendar effect)
+        ({ model | calendar = calendar}, Cmd.map Calendar effect)
     Ratings act ->
       let
         (ratings, effect) = Showcase.update act model.ratings
       in
-        ({ model | ratings = ratings }, Effects.map Ratings effect)
+        ({ model | ratings = ratings }, Cmd.map Ratings effect)
     App act ->
       let
         (app, effect) = Ui.App.update act model.app
       in
-        ({ model | app = app }, Effects.map App effect)
+        ({ model | app = app }, Cmd.map App effect)
     Notis act ->
       let
         (notis, effect) = Ui.NotificationCenter.update act model.notifications
       in
-        ({ model | notifications = notis }, Effects.map Notis effect)
+        ({ model | notifications = notis }, Cmd.map Notis effect)
     NumberRange act ->
       let
         (numberRange, effect) = Showcase.update act model.numberRange
       in
-        ({ model | numberRange = numberRange}, Effects.map NumberRange effect)
+        ({ model | numberRange = numberRange}, Cmd.map NumberRange effect)
     Slider act ->
       let
         (slider, effect) = Showcase.update act model.slider
       in
-        ({ model | slider = slider }, Effects.map Slider effect)
+        ({ model | slider = slider }, Cmd.map Slider effect)
 
-    MousePosition (x,y) ->
-      let
-        (colorPicker, colorPickerEffect) =
-          Showcase.handleMove x y model.colorPicker
-        (colorPanel, colorPanelEffect) =
-          Showcase.handleMove x y model.colorPanel
-        (numberRange, numberRangeEffect) =
-          Showcase.handleMove x y model.numberRange
-        (slider, sliderEffect) =
-          Showcase.handleMove x y model.slider
-      in
-        ({ model
-          | numberRange = numberRange
-          , colorPicker = colorPicker
-          , colorPanel = colorPanel
-          , slider = slider
-          }, Effects.batch [ Effects.map ColorPanel colorPanelEffect
-                           , Effects.map ColorPicker colorPickerEffect
-                           , Effects.map NumberRange numberRangeEffect
-                           , Effects.map Slider sliderEffect
-                           ])
     ButtonClicked value ->
       notify ("Button clicked: " ++ value) model
     BreadcrumbClicked value ->
@@ -925,41 +815,19 @@ update' Msg model =
     -- TaggerAddFailed err ->
     --   notify err model
     _ ->
-      (update Msg model, Effects.none)
+      (update msg model, Cmd.none)
 
-notify : String -> Model -> (Model, Effects.Effects Msg)
+notify : String -> Model -> (Model, Cmd Msg)
 notify message model =
   let
     (notis, effect) = Ui.NotificationCenter.notify (text message) model.notifications
   in
-    ({ model | notifications = notis }, Effects.map Notis effect)
-
-app =
-  let
-    initial =
-      init
-
-    inputs =
-      -- Lifecycle
-      -- [ Signal.map EscIsDown (Keyboard.isDown 27)
-      [ Signal.map MousePosition Mouse.position
-      , Signal.map MouseIsDown Mouse.isDown
-      -- Mailbox
-      , Signal.Time.settledAfter 500 initial.settledMailbox.signal
-      , initial.mailbox.signal
-      , Signal.map Tick (Time.every 10000)
-      ]
-  in
-    StartApp.start { init = (initial, Effects.none)
-                   , view = view
-                   , update = update'
-                   , inputs = inputs
-                   }
+    ({ model | notifications = notis }, Cmd.map Notis effect)
 
 main =
-  Html.program
-    { init = init
+  Html.App.program
+    { init = (init, Cmd.none)
     , view = view
-    , update = update
-    , subscriptions = \model -> gatherSubs model
+    , update = update'
+    , subscriptions = \model -> Sub.none
     }

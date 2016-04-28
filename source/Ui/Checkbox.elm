@@ -1,11 +1,11 @@
 module Ui.Checkbox exposing
-  ( Model, Action(..), init, subscribe, update, setValue, view, toggleView
+  ( Model, Msg, init, subscribe, update, setValue, view, toggleView
   , radioView) -- where
 
 {-| Checkbox component with three different views.
 
 # Model
-@docs Model, Action, init, subscribe, update
+@docs Model, Msg, init, subscribe, update
 
 # Views
 @docs view, toggleView, radioView
@@ -42,7 +42,7 @@ type alias Model =
   }
 
 {-| Actions that a checkbox can make. -}
-type Action
+type Msg
   = Toggle
 
 {-| Initiaizes a checkbox with the given value.
@@ -63,7 +63,7 @@ subscribe action model =
   Emitter.listen model.uid (Emitter.decode JD.bool False action)
 
 {-| Updates a checkbox. -}
-update : Action -> Model -> (Model, Cmd Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     Toggle ->
@@ -78,24 +78,24 @@ setValue value model =
   { model | value = value }
 
 {-| Renders a checkbox. -}
-view : Model -> Html.Html Action
+view : Model -> Html.Html Msg
 view model =
   {- Html.Lazy.lazy -} render model
 
 -- Render internal.
-render : Model -> Html.Html Action
+render : Model -> Html.Html Msg
 render model =
   node "ui-checkbox"
     (attributes model)
     [Ui.icon "checkmark" False []]
 
 {-| Renders a checkbox as a radio. -}
-radioView : Model -> Html.Html Action
+radioView : Model -> Html.Html Msg
 radioView model =
   {- Html.Lazy.lazy -} radioRender model
 
 -- Render radio internal.
-radioRender : Model -> Html.Html Action
+radioRender : Model -> Html.Html Msg
 radioRender model =
   node "ui-checkbox-radio"
     (attributes model)
@@ -103,12 +103,12 @@ radioRender model =
     ]
 
 {-| Renders a checkbox as a toggle. -}
-toggleView : Model -> Html.Html Action
+toggleView : Model -> Html.Html Msg
 toggleView model =
   {- Html.Lazy.lazy -} toggleRender model
 
 -- Render toggle internal.
-toggleRender : Model -> Html.Html Action
+toggleRender : Model -> Html.Html Msg
 toggleRender model =
   node "ui-checkbox-toggle"
     (attributes model)
@@ -117,7 +117,7 @@ toggleRender model =
     ]
 
 -- Returns attributes for a checkbox
-attributes : Model -> List (Html.Attribute Action)
+attributes : Model -> List (Html.Attribute Msg)
 attributes model =
   let
     actions =

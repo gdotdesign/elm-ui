@@ -1,72 +1,45 @@
 module Kitchensink.Showcase exposing (..)
 
 import Html exposing (tr, td)
+import Html.App
 
 -- where
 
 type alias Partial a =
-  { a | enabled : Bool
-      , disabled : Bool
+  { a | disabled : Bool
       , readonly : Bool }
 
-type alias Model a b =
-  { enabled : a
-  , disabled : a
-  , readonly : a
-  , enabledAddress : b
-  , disabledAddress : b
-  , readonlyAddress : b
-  , update : b -> a -> (a, Cmd b)
-  , handleMove : Int -> Int -> a -> (a, Cmd b)
-  , handleClick : Bool -> a -> a
+type alias Model component msg =
+  { enabled : component
+  , disabled : component
+  , readonly : component
+  , update : msg -> component -> (component, Cmd msg)
+  , subscriptions : component -> Sub msg
   }
 
-type Action a
+type Msg a
   = Enabled a
   | Disabled a
   | Readonly a
 
-init fn address update handleMove handleClick =
+init : (() -> Partial component)
+     -> (msg -> Partial component -> (Partial component, Cmd msg))
+     -> (Partial component -> Sub msg)
+     -> Model (Partial component) msg
+init fn update subscriptions =
   let
-    enabledAddress = address Enabled
-    disabledAddress = address Disabled
-    readonlyAddress = address Readonly
-
-    enabled = fn enabledAddress
-    disabled = fn disabledAddress
-    readonly = fn readonlyAddress
+    enabled = fn ()
+    disabled = fn ()
+    readonly = fn ()
   in
     { enabled = enabled
     , disabled = { disabled | disabled = True }
     , readonly = { readonly | readonly = True }
-    , enabledAddress = enabledAddress
-    , disabledAddress = disabledAddress
-    , readonlyAddress = readonlyAddress
     , update = update
-    , handleMove = handleMove
-    , handleClick = handleClick
+    , subscriptions = subscriptions
     }
 
-handleMove x y model =
-  let
-    (enabled, enabledEffect) = model.handleMove x y model.enabled
-    (disabled, disabledEffect) = model.handleMove x y model.disabled
-    (readonly, readonlyEffect) = model.handleMove x y model.readonly
-    effect =
-      [ Cmd.map Enabled enabledEffect
-      , Cmd.map Disabled disabledEffect
-      , Cmd.map Readonly readonlyEffect
-      ] |> Cmd.batch
-  in
-    ({ model | enabled = enabled
-             , disabled = disabled
-             , readonly = readonly }, effect)
-
-handleClick pressed model =
-  { model | enabled = model.handleClick pressed model.enabled
-          , disabled = model.handleClick pressed model.disabled
-          , readonly = model.handleClick pressed model.readonly }
-
+update : Msg msg -> Model component msg -> (Model component msg, Cmd (Msg msg))
 update action model =
   case action of
     Enabled act ->
@@ -87,12 +60,15 @@ update action model =
       in
         ({ model | disabled = disabled }, Cmd.map Disabled effect)
 
-view renderFn model =
-  render renderFn model
+view : ((Msg msg) -> parentMsg) -> (component -> Html.Html msg) -> Model component msg -> Html.Html parentMsg
+view address renderFn model =
+  render address renderFn model
 
-render renderFn model =
-  tr []
-    [ td [] [ renderFn model.enabledAddress model.enabled  ]
-    , td [] [ renderFn model.readonlyAddress model.readonly ]
-    , td [] [ renderFn model.disabledAddress model.disabled ]
-    ]
+render : ((Msg msg) -> parentMsg) -> (component -> Html.Html msg) -> Model component msg -> Html.Html parentMsg
+render address renderFn model =
+  Html.App.map address
+    (tr []
+      [ td [] [ Html.App.map Enabled (renderFn model.enabled) ]
+      , td [] [ Html.App.map Readonly (renderFn model.readonly) ]
+      , td [] [ Html.App.map Disabled (renderFn model.disabled) ]
+      ])

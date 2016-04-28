@@ -1,5 +1,5 @@
 module Ui.NotificationCenter exposing
-  (Model, Action, init, update, view, notify) -- where
+  (Model, Msg, init, update, view, notify) -- where
 
 {-| Notification center for displaying messages to the user.
 
@@ -7,7 +7,7 @@ TODO: Refactor this into something that doesn't use animations, or wait for
 virtual-dom to fix "keys" concept.
 
 # Models
-@docs Model, Action, init, update
+@docs Model, Msg, init, update
 
 # View
 @docs view
@@ -37,7 +37,7 @@ type alias Model msg =
   }
 
 {-| Actions that notification center can make. -}
-type Action
+type Msg
   = AutoHide Int ()
   | Remove Int ()
   | Hide Int
@@ -56,13 +56,13 @@ init timeout duration =
   }
 
 {-| Renders a notification center. -}
-view: (Action -> a) -> Model a -> Html.Html a
+view: (Msg -> a) -> Model a -> Html.Html a
 view address model =
   render address model
   -- Html.Lazy.lazy2 render address model
 
 {-| Updates a notification center. -}
-update: Action -> Model msg -> (Model msg, Cmd Action)
+update: Msg -> Model msg -> (Model msg, Cmd Msg)
 update action model =
   case action of
     AutoHide id _ ->
@@ -81,7 +81,7 @@ update action model =
 
     NotificationCenter.notify (text "Hello") model
 -}
-notify : Html.Html msg -> Model msg -> (Model msg, Cmd Action)
+notify : Html.Html msg -> Model msg -> (Model msg, Cmd Msg)
 notify contents model =
   let
     notification =
@@ -102,18 +102,18 @@ type alias Notification msg =
   , id : Int
   }
 
-performTask : (a -> Action) -> Float -> Cmd Action
+performTask : (a -> Msg) -> Float -> Cmd Msg
 performTask action delay =
   Task.perform Tasks action (Native.Browser.delay delay)
 
 -- Render
-render: (Action -> a) -> Model a -> Html.Html a
+render: (Msg -> a) -> Model a -> Html.Html a
 render address model =
   node "ui-notification-center" []
     (List.map (renderNotification address) model.notifications)
 
 -- Renders a notification
-renderNotification : (Action -> a) -> Notification a -> Html.Html a
+renderNotification : (Msg -> a) -> Notification a -> Html.Html a
 renderNotification address model =
   let
     duration =
@@ -152,7 +152,7 @@ initNotification model contents =
     }
 
 -- Hides the notification with the given id
-hide : Int -> Model msg -> (Model msg, Cmd Action)
+hide : Int -> Model msg -> (Model msg, Cmd Msg)
 hide id model =
   let
     updatedNotifications =
@@ -167,7 +167,7 @@ hide id model =
      , performTask (Remove id) (model.duration + 100))
 
 -- Tries to hide the notification with the given id
-autoHide: Int -> Model a -> (Model a, Cmd Action)
+autoHide: Int -> Model a -> (Model a, Cmd Msg)
 autoHide id model =
   let
     updatedNotifications =
@@ -199,7 +199,7 @@ autoHide id model =
     ({ model | notifications = updatedNotifications }, effect)
 
 -- Removes the notification with the given id
-remove : Int -> Model a -> (Model a, Cmd Action)
+remove : Int -> Model a -> (Model a, Cmd Msg)
 remove id model =
   let
     updatedNotifications =

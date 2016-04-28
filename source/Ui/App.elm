@@ -1,5 +1,5 @@
 module Ui.App exposing
-  (Model, Action(..), init, subscribe, subscriptions, update, view) -- where
+  (Model, Msg(..), init, subscribe, subscriptions, update, view) -- where
 
 {-| Base frame for a web/mobile application:
   - Provides subscriptions for **load** and **scroll** events
@@ -9,7 +9,7 @@ module Ui.App exposing
   - Loads the stylesheet
 
 # Model
-@docs Model, Action, update, init, subscribe, subscriptions
+@docs Model, Msg, update, init, subscribe, subscriptions
 
 # View
 @docs view
@@ -42,7 +42,7 @@ type alias Model =
   }
 
 {-| Actions an application can make. -}
-type Action
+type Msg
   = Tick Time
   | Scrolled
   | MouseMove (Int, Int)
@@ -80,12 +80,12 @@ subscribe scrollMsg loadMsg model =
 
     Sub.map App Ui.App.subscriptions
 -}
-subscriptions : Sub Action
+subscriptions : Sub Msg
 subscriptions =
   Time.every 1000 Tick
 
 {-| Updates an application. -}
-update : Action -> Model -> (Model, Cmd Action)
+update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
   case action of
     Loaded ->
@@ -111,14 +111,14 @@ update action model =
 
     Ui.App.view address app [text "Hello there!"]
 -}
-view: (Action -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
+view: (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 view address model children =
   render address model children
   -- FIXME: Lazy is broken in 0.17
   -- Html.Lazy.lazy3 render model address children
 
 -- Render (Internal)
-render : (Action -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
+render : (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 render address model children =
   node "ui-app" [ style [("visibility", if model.loaded then "" else "hidden")]
                 , onScroll (address Scrolled)

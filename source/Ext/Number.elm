@@ -11,7 +11,7 @@ import Native.Number
 
 
 {-| Formats a number using fixed-point notation. It's the direct wrapper for
-JavaScripts [toFixed](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed)
+JavaScripts [toFixed](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed).
 
     Ext.Number.toFixed 0.12340 2 -- "0.12"
     Ext.Number.toFxied 12 2 -- "12.00"

@@ -19,8 +19,12 @@ module Ext.Date exposing (..)
 @docs ago
 -}
 
-import Time exposing (Time)
+-- where
+
 import Native.DateTime
+
+import Time exposing (Time)
+
 import Array
 import Date
 

@@ -13,10 +13,17 @@ module Ext.Color exposing (..)
 
 # Extracting
 @docs toHsv
+
+# Decoding / Encoding
+@docs decodeHsv, encodeHsv
 -}
 
+-- where
+
 import Ext.Number exposing (roundTo)
+
 import Color exposing (Color)
+
 import Json.Decode as JD
 import Json.Encode as JE
 
@@ -31,12 +38,16 @@ type alias Hsv =
   }
 
 
+{-| Decodes a HSV color type from a four element tuple.
+-}
 decodeHsv : JD.Decoder Hsv
 decodeHsv =
   JD.tuple4 (,,,) JD.float JD.float JD.float JD.float
-    |> JD.map (\( s, v, a, h ) -> Hsv s v a h)
+    |> JD.map (\( sat, val, alpha, hue ) -> Hsv sat val alpha hue)
 
 
+{-| Encodes a HSV color type to a four element tuple.
+-}
 encodeHsv : Hsv -> JE.Value
 encodeHsv hsv =
   JE.list
@@ -48,6 +59,8 @@ encodeHsv hsv =
 
 
 {-| Renders the given HSV color to CSS rgba string.
+
+    Ext.Color.toCSSRgba blackHsv -- "rgba(0,0,0,1)"
 -}
 toCSSRgba : Hsv -> String
 toCSSRgba hsv =

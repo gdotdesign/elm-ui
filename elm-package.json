@@ -10,6 +10,9 @@
   ],
   "native-modules": true,
   "exposed-modules": [
+    "Ext.Color",
+    "Ext.Number",
+    "Ext.Date"
   ],
   "dependencies": {
     "elm-lang/virtual-dom": "1.0.0 <= v < 2.0.0",

@@ -28,6 +28,7 @@ var _gdotdesign$elm_ui$Native_Browser = function() {
     rem: F2(function(a,b){ return a % b }),
     openWindow: F2(openWindow),
     redirect: F2(redirect),
+    log: function(value) { console.log(value); return value;},
     alert: F2(alert),
     delay: delay
   }

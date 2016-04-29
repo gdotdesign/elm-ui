@@ -1,13 +1,13 @@
 module Ui.DropdownMenu exposing
   (Dimensions, Model, Msg, init, update, view, item, handleClick, close
-  , open, openHandler)
+  , open, openHandler, subscriptions)
 
 -- where
 
 {-| Dropdown menu that is always visible on the screen.
 
 # Model
-@docs Dimensions, Model, Msg, init, update
+@docs Dimensions, Model, Msg, init, subscriptions, update
 
 # View
 @docs view, item
@@ -23,6 +23,7 @@ import Html.Events exposing (onWithOptions)
 import Html exposing (node)
 import Json.Decode as Json
 
+import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Dom as Dom
 
 {-| Represents dimensions for a dropdown menu. -}
@@ -56,7 +57,15 @@ type alias Model =
 {-| Msgs that a dropdown menu can make. -}
 type Msg
   = Toggle Dimensions
+  | Click Bool
   | NoOp
+
+subscriptions : Sub Msg
+subscriptions =
+  let
+    decoder = Emitter.decode (Json.bool) False
+  in
+    Emitter.listen "mouse-click" (decoder Click)
 
 {-| Initializes a dropdown. -}
 init : Model
@@ -104,6 +113,8 @@ update action model =
       open dimensions model
     NoOp ->
       model
+    Click pressed ->
+      handleClick pressed model
 
 {-| Handles the click, closes the modal if not pressed. -}
 handleClick : Bool -> Model -> Model

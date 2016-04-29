@@ -848,6 +848,7 @@ gatherSubs model =
             , Sub.map NumberRange (Showcase.subscriptions model.numberRange)
             , Sub.map Slider (Showcase.subscriptions model.slider)
             , Sub.map ColorPicker (Showcase.subscriptions model.colorPicker)
+            , Sub.map DropdownMenu Ui.DropdownMenu.subscriptions
             ]
 
 main =

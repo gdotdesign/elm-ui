@@ -8,6 +8,8 @@ import Html.Dimensions exposing (Dimensions, dimensionsDecoder)
 import Html.Events exposing (defaultOptions, onWithOptions)
 import Html
 
+import Ui.Native.Dom as Dom
+
 import Json.Decode as Json
 
 type alias DropdownDimensions =
@@ -21,7 +23,9 @@ decoder : Json.Decoder DropdownDimensions
 decoder =
   Json.object3 DropdownDimensions
     (Json.at ["target"] Html.Dimensions.dimensionsDecoder)
-    (Json.at ["target", "dropdown"] dimensionsDecoder)
+    (Json.at ["target"] (Json.oneOf [ Dom.withClosest "ui-dropdown" dimensionsDecoder
+                                    , Dom.withSelector "ui-dropdown" dimensionsDecoder
+                                    ]))
     Html.WindowDimensions.decoder
 
 {-| Returns dimensions for an element and its dropdown. -}

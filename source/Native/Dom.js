@@ -13,6 +13,12 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     })
   }
 
+  function fail(msg){
+    var faliure = Json.fail(msg)
+    faliure._0 = {}
+    return faliure
+  }
+
   function elementFunctionDecoder(method, selector, decoder) {
     return Json.customAndThen(valueDecoder)(function(value){
       if (value instanceof HTMLElement) {
@@ -20,10 +26,10 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
         if(element){
           return Json.run(decoder)(element)
         } else {
-          return Json.fail('Could not find selector: ' + selector)
+          return fail('Could not find selector: ' + selector)
         }
       } else {
-        return { tag: 'primitive', type: 'HTMLElement', value: value };
+        return fail('Not HTML Element!')
       }
     })
   }

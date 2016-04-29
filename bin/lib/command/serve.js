@@ -34,10 +34,6 @@ module.exports = function(options) {
     }
   })
 
-  router.get('/', function*(next) {
-    this.body = renderHtml()
-  })
-
   router.get('/main.js', function*(next) {
     this.type = 'text/javascript'
     this.body = yield renderElm(path.resolve('source/Main.elm'), config)
@@ -48,9 +44,13 @@ module.exports = function(options) {
     this.body = yield renderCSS(path.resolve('stylesheets/main.scss'))
   })
 
+  router.get('*', function*(next) {
+    this.body = renderHtml()
+  })
+
   app
-    .use(router.routes())
     .use(serve(path.resolve('public')))
+    .use(router.routes())
 
   app.listen(8001)
 

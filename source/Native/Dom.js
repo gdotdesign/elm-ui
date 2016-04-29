@@ -32,28 +32,37 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     elementFunctionDecoder: F3(elementFunctionDecoder),
     focusSelector: focusSelector
   }
-}()
+}();
 
-/* CLOSEST POLYFILL */
-(function (ELEMENT) {
-  ELEMENT.matches =
-    ELEMENT.matches ||
-    ELEMENT.mozMatchesSelector ||
-    ELEMENT.msMatchesSelector ||
-    ELEMENT.oMatchesSelector ||
-    ELEMENT.webkitMatchesSelector;
+/* Polyfills */
+(function(){
+  if (typeof Element.prototype.matches !== 'function') {
+    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.webkitMatchesSelector || function matches(selector) {
+      var element = this;
+      var elements = (element.document || element.ownerDocument).querySelectorAll(selector);
+      var index = 0;
 
-  ELEMENT.closest = ELEMENT.closest || function closest(selector) {
-    var element = this;
-
-    while (element) {
-      if (element.matches(selector)) {
-        break;
+      while (elements[index] && elements[index] !== element) {
+        ++index;
       }
 
-      element = element.parentElement;
-    }
+      return Boolean(elements[index]);
+    };
+  }
 
-    return element;
-  };
-}(typeof Element == "function" && Element.prototype));
+  if (typeof Element.prototype.closest !== 'function') {
+    Element.prototype.closest = function closest(selector) {
+      var element = this;
+
+      while (element && element.nodeType === 1) {
+        if (element.matches(selector)) {
+          return element;
+        }
+
+        element = element.parentNode;
+      }
+
+      return null;
+    };
+  }
+})()

@@ -1,8 +1,15 @@
 module Html.Events.Options exposing (..)
 
+{-| Extra options for event handlers.
+
+# Options
+@docs preventDefaultOptions, stopPropagationOptions, stopOptions
+-}
+
 -- where
 
 import Html.Events exposing (Options)
+
 
 {-| Prevent default options.
 -}

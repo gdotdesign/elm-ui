@@ -1,29 +1,53 @@
 module Html.Events.Extra exposing (..)
 
+{-| Event handlers and event decoders that are not part of _elm-lang/html_.
+
+# Generic
+@docs onStop, onPreventDefault
+
+# Keyboard Related
+@docs onEnter, onEnterPreventDefault, onKeys, keysDecoder
+
+# Mouse Related
+@docs onMouseMove
+
+# Miscellaneous
+@docs onScroll, onTransitionEnd, onLoad
+-}
+
 -- where
 
 import Html.Events.Geometry exposing (MousePosition, decodeMousePosition)
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
 import Html.Events exposing (on, keyCode, onWithOptions)
-import Json.Decode as Json exposing ((:=))
 import Html
+
+import Json.Decode as Json exposing ((:=))
+
 import Dict
 
 
-{-|-}
+{-| Capture [keyup](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
+events that have the enter key pressed, additionally if the first agrument is
+true it will fail if the control key is not pressed.
+
+    onEnter False Send -- calls Send on enter
+    onEnter True Send -- calls Send on ctrl+enter
+-}
 onEnter : Bool -> msg -> Html.Attribute msg
 onEnter control msg =
   let
     decoder2 pressed =
       if pressed then
-        keysDecoder [(13, msg)]
+        keysDecoder [ ( 13, msg ) ]
       else
         Json.fail "Control wasn't pressed!"
 
     decoder =
       if control then
         Json.andThen
-          ("ctrlKey" := Json.bool) decoder2
+          ("ctrlKey" := Json.bool)
+          decoder2
       else
         (decoder2 True)
   in
@@ -32,7 +56,11 @@ onEnter control msg =
       stopOptions
       decoder
 
-{-| An keydown event listener that will prevent default on enter.
+
+{-| Capture [keydown](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
+events that have the enter key pressed and prevent their default behavior.
+
+    onEnterPreventDefault Send -- prevents default and calls Send on enter
 -}
 onEnterPreventDefault : msg -> Html.Attribute msg
 onEnterPreventDefault action =
@@ -43,7 +71,10 @@ onEnterPreventDefault action =
     onWithOptions "keydown" preventDefaultOptions (keysDecoder mappings)
 
 
-{-| An event listener that will prevent default acitons. -}
+{-| Capture events and prevent their default behavior.
+
+    onPreventDefault "keyup" Update
+-}
 onPreventDefault : String -> msg -> Html.Attribute msg
 onPreventDefault event msg =
   onWithOptions
@@ -51,7 +82,10 @@ onPreventDefault event msg =
     preventDefaultOptions
     (Json.succeed msg)
 
-{-| An event listener that stops propagation and prevents default action.
+
+{-| Capture events and prevent their default behavior and stop it's propagation.
+
+    onStop "keyup" Update
 -}
 onStop : String -> msg -> Html.Attribute msg
 onStop event msg =
@@ -66,7 +100,9 @@ onScroll msg =
   on "scroll" (Json.succeed msg)
 
 
-{-| Transition end event listener. -}
+{-| Capture [transitionend](https://developer.mozilla.org/en-US/docs/Web/Events/transitionend)
+events.
+-}
 onTransitionEnd : msg -> Html.Attribute msg
 onTransitionEnd msg =
   on "transitionend" (Json.succeed msg)
@@ -76,9 +112,9 @@ onTransitionEnd msg =
 events that will call the given action when a specific key
 is pressed from the give list
 
-  onKeys [ (13, Enter)
-         , (27, Esc)
-         ]
+    onKeys [ (13, Enter)
+           , (27, Esc)
+           ]
 -}
 onKeys : List ( Int, msg ) -> Html.Attribute msg
 onKeys mappings =
@@ -101,10 +137,9 @@ onMouseMove msg =
   on "mousemove" (Json.map msg decodeMousePosition)
 
 
-{-| A decoder which succeeds when a specific key
-is pressed from the given list.
+{-| A decoder which succeeds when a specific key is pressed from the given list.
 
-  on "keydown" [(13, Enter)]
+    on "keydown" [(13, Enter)]
 -}
 keysDecoder : List ( Int, msg ) -> Json.Decoder msg
 keysDecoder mappings =

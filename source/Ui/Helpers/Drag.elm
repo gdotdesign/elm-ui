@@ -19,7 +19,7 @@ module Ui.Helpers.Drag exposing (..) -- where
 # Functions
 @docs diff, relativePosition, relativePercentPosition
 -}
-import Html.Dimensions exposing (Position, Dimensions)
+import Html.Events.Geometry exposing (MousePosition, ElementDimensions)
 
 import Ui.Helpers.Emitter as Emitter
 
@@ -28,8 +28,8 @@ import Json.Decode as JD
 
 {-| Represents a drag. -}
 type alias Model =
-  { mouseStartPosition : Position
-  , dimensions : Dimensions
+  { mouseStartPosition : MousePosition
+  , dimensions : ElementDimensions
   , dragging : Bool
   }
 
@@ -39,10 +39,10 @@ type alias Point =
   , top : Float
   }
 
-subscriptions : ((Int,Int) -> msg) -> (Bool -> msg) -> Sub msg
+subscriptions : ((Float, Float) -> msg) -> (Bool -> msg) -> Sub msg
 subscriptions move click =
   let
-    decoder = Emitter.decode (JD.tuple2 (,) JD.int JD.int) (0,0)
+    decoder = Emitter.decode (JD.tuple2 (,) JD.float JD.float) (0,0)
     decoder2 = Emitter.decode (JD.bool) False
   in
     Sub.batch [ Emitter.listen "mouse-move" (decoder move)
@@ -58,39 +58,39 @@ init =
                  , height = 0
                  , bottom = 0
                  , right = 0 }
-  , mouseStartPosition = { pageX = 0, pageY = 0 }
+  , mouseStartPosition = { left = 0, top = 0 }
   , dragging = False
   }
 
 {-| Calculates the difference between the start position and
 the given position. -}
-diff : Int -> Int -> Model -> Point
-diff x y model =
-  { left = (toFloat x) - model.mouseStartPosition.pageX
-  , top = (toFloat y) - model.mouseStartPosition.pageY
+diff : Float -> Float -> Model -> Point
+diff left top model =
+  { left = left - model.mouseStartPosition.left
+  , top = top - model.mouseStartPosition.top
   }
 
 {-| Returns the given points relative position to the
 dimensions of the drag. -}
-relativePosition : Int -> Int -> Model -> Point
-relativePosition x y model =
-  { left = (toFloat x) - model.dimensions.left
-  , top = (toFloat y) - model.dimensions.top
+relativePosition : Float -> Float -> Model -> Point
+relativePosition left top model =
+  { left = left - model.dimensions.left
+  , top = top - model.dimensions.top
   }
 
 {-| Returns the give points relative position to the
 dimensions of the drag as a percentage. -}
-relativePercentPosition : Int -> Int -> Model -> Point
-relativePercentPosition x y model =
+relativePercentPosition : Float -> Float -> Model -> Point
+relativePercentPosition left top model =
   let
-    point = relativePosition x y model
+    point = relativePosition left top model
   in
     { top = point.top / model.dimensions.height
     , left = point.left / model.dimensions.width
     }
 
 {-| Starts a drag. -}
-lift : Dimensions -> Position -> Model -> Model
+lift : ElementDimensions -> MousePosition -> Model -> Model
 lift dimensions position model =
   { model | mouseStartPosition = position
           , dimensions = dimensions

@@ -15,7 +15,7 @@ module Ui.Pager exposing
 @docs select
 -}
 import Html.Attributes exposing (style, classList)
-import Html.Extra exposing (onTransitionEnd)
+import Html.Events.Extra exposing (onTransitionEnd)
 import Html exposing (node)
 import List.Extra
 

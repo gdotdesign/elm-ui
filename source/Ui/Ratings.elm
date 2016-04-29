@@ -19,7 +19,7 @@ import Array
 
 import Html.Events exposing (onClick, onMouseEnter, onMouseLeave)
 import Html.Attributes exposing (classList)
-import Html.Extra exposing (onKeys)
+import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
 
 import Native.Browser

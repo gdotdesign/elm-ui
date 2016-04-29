@@ -1,39 +1,14 @@
-module Html.Extra exposing (..)
+module Html.Events.Extra exposing (..)
 
 -- where
 
+import Html.Events.Geometry exposing (MousePosition, decodeMousePosition)
+import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
 import Html.Events exposing (on, keyCode, onWithOptions)
 import Json.Decode as Json exposing ((:=))
 import Html
 import Dict
 
-
-{-| Prevent default options.
--}
-preventDefaultOptions : Html.Events.Options
-preventDefaultOptions =
-  { stopPropagation = False
-  , preventDefault = True
-  }
-
-
-{-| Stop propagation options.
--}
-stopPropagationOptions : Html.Events.Options
-stopPropagationOptions =
-  { stopPropagation = True
-  , preventDefault = False
-  }
-
-
-{-| Options for completely stopping an event and
-preventing it's default behavior.
--}
-stopOptions : Html.Events.Options
-stopOptions =
-  { stopPropagation = True
-  , preventDefault = True
-  }
 
 {-|-}
 onEnter : Bool -> msg -> Html.Attribute msg
@@ -121,19 +96,9 @@ onLoad msg =
 {-| Capture [mousemove](https://developer.mozilla.org/en-US/docs/Web/Events/mousemove)
 events.
 -}
-onMouseMove : (( Int, Int ) -> msg) -> Html.Attribute msg
+onMouseMove : (MousePosition -> msg) -> Html.Attribute msg
 onMouseMove msg =
-  on "mousemove" (Json.map msg pagePositionDecoder)
-
-
-{-| Decoders pageX and pageY fields of an event into a tuple.
--}
-pagePositionDecoder : Json.Decoder ( Int, Int )
-pagePositionDecoder =
-  Json.object2
-    (,)
-    ("pageX" := Json.int)
-    ("pageY" := Json.int)
+  on "mousemove" (Json.map msg decodeMousePosition)
 
 
 {-| A decoder which succeeds when a specific key

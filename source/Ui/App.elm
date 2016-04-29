@@ -15,8 +15,9 @@ module Ui.App exposing
 @docs view
 -}
 import Html.Attributes exposing (name, content, style)
+import Html.Events.Geometry exposing (MousePosition)
+import Html.Events.Extra exposing (onScroll, onMouseMove)
 import Html.Events exposing (onMouseDown, onMouseUp)
-import Html.Extra exposing (onScroll, onMouseMove)
 import Html exposing (node, text)
 
 import Json.Decode as JD
@@ -44,7 +45,7 @@ type alias Model =
 type Msg
   = Tick Time
   | Scrolled
-  | MouseMove (Int, Int)
+  | MouseMove MousePosition
   | Click Bool
   | Loaded
   | Tasks ()
@@ -97,8 +98,8 @@ update action model =
     Tick now ->
       (model, Ui.Time.updateTime now)
 
-    MouseMove (x,y) ->
-      (model, Emitter.send "mouse-move" (JE.list [JE.int x, JE.int y]))
+    MouseMove {top, left} ->
+      (model, Emitter.send "mouse-move" (JE.list [JE.float left, JE.float top]))
 
     Click pressed ->
       (model, Emitter.send "mouse-click" (JE.bool pressed))

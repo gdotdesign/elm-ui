@@ -6,7 +6,7 @@ module Ui.Header where
 -}
 import Html.Attributes exposing (class, tabindex)
 import Html.Events exposing (onClick)
-import Html.Extra exposing (onKeys)
+import Html.Events.Extra exposing (onKeys)
 import Html exposing (node, text)
 
 import VirtualDom exposing (attribute)

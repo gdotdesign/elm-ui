@@ -12,7 +12,8 @@
   "exposed-modules": [
     "Ext.Color",
     "Ext.Number",
-    "Ext.Date"
+    "Ext.Date",
+    "Html.Events.Geometry"
   ],
   "dependencies": {
     "elm-lang/virtual-dom": "1.0.0 <= v < 2.0.0",

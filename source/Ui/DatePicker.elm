@@ -14,7 +14,6 @@ module Ui.DatePicker exposing
 # Functions
 @docs setValue
 -}
-import Html.DropdownDimensions exposing (onKeysWithDimensions, onWithDropdownDimensions, DropdownDimensions)
 import Html.Events exposing (onBlur, onClick)
 import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
@@ -54,11 +53,11 @@ type alias Model =
 
 {-| Actions that a date picker can make. -}
 type Msg
-  = Increment DropdownDimensions
-  | Decrement DropdownDimensions
-  | Toggle DropdownDimensions
-  | Focus DropdownDimensions
-  | Close DropdownDimensions
+  = Increment Dropdown.Dimensions
+  | Decrement Dropdown.Dimensions
+  | Toggle Dropdown.Dimensions
+  | Focus Dropdown.Dimensions
+  | Close Dropdown.Dimensions
   | Calendar Ui.Calendar.Msg
   | Select Time.Time
   | Tasks ()
@@ -147,15 +146,15 @@ render model =
   let
     actions =
       Ui.enabledActions model
-        [ onWithDropdownDimensions "focus" Focus
+        [ Dropdown.onWithDropdownDimensions "focus" Focus
         , onBlur Blur
-        , onKeysWithDimensions [ (27, Close)
-                               , (13, Toggle)
-                               , (40, Increment)
-                               , (38, Decrement)
-                               , (39, Increment)
-                               , (37, Decrement)
-                               ]
+        , Dropdown.onKeysWithDropdownDimensions [ (27, Close)
+                                                , (13, Toggle)
+                                                , (40, Increment)
+                                                , (38, Decrement)
+                                                , (39, Increment)
+                                                , (37, Decrement)
+                                                ]
         ]
   in
     node "ui-date-picker" ([ classList [ ("dropdown-open", model.open)

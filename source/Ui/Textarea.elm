@@ -13,7 +13,7 @@ thus creating an automatically growing textarea.
 @docs setValue, focus
 -}
 
-import Html.Extra exposing (onEnterPreventDefault, onStop)
+import Html.Events.Extra exposing (onEnterPreventDefault, onStop)
 import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onInput)
 import Html.Attributes

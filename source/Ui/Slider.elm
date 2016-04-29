@@ -14,8 +14,8 @@ module Ui.Slider exposing
 # Functions
 @docs setValue
 -}
-import Html.Dimensions exposing (onWithDimensions, PositionAndDimension)
-import Html.Extra exposing (onKeys)
+import Html.Events.Geometry exposing (onWithDimensions, Dimensions)
+import Html.Events.Extra exposing (onKeys)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
 
@@ -47,8 +47,8 @@ type alias Model =
 
 {-| Actions that a slider can make. -}
 type Msg
-  = Lift PositionAndDimension
-  | Move (Int, Int)
+  = Lift Dimensions
+  | Move (Float, Float)
   | Click Bool
   | Increment
   | Decrement
@@ -93,9 +93,9 @@ update action model =
     Click pressed ->
       handleClick pressed model
 
-    Lift {dimensions, position} ->
+    Lift (position, dimensions, size) ->
       { model | drag = Drag.lift dimensions position model.drag
-              , left = position.pageX - dimensions.left }
+              , left = position.left - dimensions.left }
         |> clampLeft
 
     Tasks _ ->
@@ -136,7 +136,7 @@ render model =
     element
 
 {-| Updates a sliders value by coordinates. -}
-handleMove : Int -> Int -> Model -> (Model, Cmd Msg)
+handleMove : Float -> Float -> Model -> (Model, Cmd Msg)
 handleMove x y model =
   let
     dist = distance diff
@@ -144,7 +144,7 @@ handleMove x y model =
 
     left =
       if dist >= model.startDistance then
-        model.drag.mouseStartPosition.pageX + diff.left - model.drag.dimensions.left
+        model.drag.mouseStartPosition.left + diff.left - model.drag.dimensions.left
       else
         model.left
 

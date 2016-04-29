@@ -14,7 +14,7 @@ module Ui.ColorPanel exposing
 # Functions
 @docs handleMove, handleClick, setValue
 -}
-import Html.Dimensions exposing (PositionAndDimension, onWithDimensions)
+import Html.Events.Geometry exposing (Dimensions, onWithDimensions)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node, div, text)
 
@@ -26,6 +26,8 @@ import Json.Decode as JD
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui
+
+import Debug exposing (log)
 
 {-| Representation of a color panel:
   - **readonly** - Whether or not the color panel is editable
@@ -46,10 +48,10 @@ type alias Model =
 
 {-| Actions that a color panel can make. -}
 type Msg
-  = LiftAlpha (PositionAndDimension)
-  | LiftRect (PositionAndDimension)
-  | LiftHue (PositionAndDimension)
-  | Move (Int, Int)
+  = LiftAlpha Dimensions
+  | LiftRect Dimensions
+  | LiftHue Dimensions
+  | Move (Float, Float)
   | Click Bool
   | Tasks ()
 
@@ -82,18 +84,18 @@ subscribe action model =
 {-| Updates a color panel. -}
 update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
-  case action of
-    LiftRect {dimensions, position} ->
+  case log "a" action of
+    LiftRect (position,dimensions,size) ->
       { model | drag = Drag.lift dimensions position model.drag }
-        |> handleMove (round position.pageX) (round position.pageY)
+        |> handleMove position.left position.top
 
-    LiftAlpha {dimensions, position} ->
+    LiftAlpha (position,dimensions,size) ->
       { model | alphaDrag = Drag.lift dimensions position model.alphaDrag }
-        |> handleMove (round position.pageX) (round position.pageY)
+        |> handleMove position.left position.top
 
-    LiftHue {dimensions, position} ->
+    LiftHue (position,dimensions,size) ->
       { model | hueDrag = Drag.lift dimensions position model.hueDrag }
-        |> handleMove (round position.pageX) (round position.pageY)
+        |> handleMove position.left position.top
 
     Move (x, y) ->
       handleMove x y model
@@ -162,7 +164,7 @@ render model =
       ]
 
 {-| Updates a color panel color by coordinates. -}
-handleMove : Int -> Int -> Model -> (Model, Cmd Msg)
+handleMove : Float -> Float -> Model -> (Model, Cmd Msg)
 handleMove x y model =
   let
     color =
@@ -204,7 +206,7 @@ setValue color model =
   { model | value = Ext.Color.toHsv color }
 
 -- Handles the hue drag
-handleHue : Int -> Int -> Hsv -> Drag.Model -> Hsv
+handleHue : Float -> Float -> Hsv -> Drag.Model -> Hsv
 handleHue x y color drag =
   let
     { top } = Drag.relativePercentPosition x y drag
@@ -216,7 +218,7 @@ handleHue x y color drag =
       { color | hue = hue }
 
 -- Handles the value / saturation drag
-handleRect : Int -> Int -> Hsv -> Drag.Model -> Hsv
+handleRect : Float -> Float -> Hsv -> Drag.Model -> Hsv
 handleRect x y color drag =
   let
     { top, left } = Drag.relativePercentPosition x y drag
@@ -230,7 +232,7 @@ handleRect x y color drag =
       { color | saturation = saturation, value = value }
 
 -- Handles the alpha drag
-handleAlpha : Int -> Int -> Hsv -> Drag.Model -> Hsv
+handleAlpha : Float -> Float -> Hsv -> Drag.Model -> Hsv
 handleAlpha x y color drag =
   let
     { left } = Drag.relativePercentPosition x y drag

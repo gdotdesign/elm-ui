@@ -14,7 +14,6 @@ module Ui.ColorPicker exposing
 # Functions
 @docs setValue
 -}
-import Html.DropdownDimensions exposing (onKeysWithDimensions, onWithDropdownDimensions, DropdownDimensions)
 import Html.Attributes exposing (classList, style)
 import Html.Events exposing (onBlur, onClick)
 import Html exposing (node, div, text)
@@ -47,9 +46,9 @@ type alias Model =
 
 {-| Actions that a color picker can make. -}
 type Msg
-  = Toggle DropdownDimensions
-  | Focus DropdownDimensions
-  | Close DropdownDimensions
+  = Toggle Dropdown.Dimensions
+  | Focus Dropdown.Dimensions
+  | Close Dropdown.Dimensions
   | ColorPanel Ui.ColorPanel.Msg
   | ColorChanged Hsv
   | Blur
@@ -125,11 +124,11 @@ render model =
 
     actions =
       Ui.enabledActions model
-        [ onWithDropdownDimensions "focus" Focus
+        [ Dropdown.onWithDropdownDimensions "focus" Focus
         , onBlur Blur
-        , onKeysWithDimensions [ (27, Close)
-                               , (13, Toggle)
-                               ]
+        , Dropdown.onKeysWithDropdownDimensions [ (27, Close)
+                                                , (13, Toggle)
+                                                ]
         ]
   in
     node "ui-color-picker" ([ classList [ ("dropdown-open", model.open)

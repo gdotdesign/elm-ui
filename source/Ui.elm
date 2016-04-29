@@ -17,7 +17,7 @@ module Ui exposing
 
 import Html.Attributes exposing (classList, tabindex, rel, href, class)
 import Html.Events exposing (onClick)
-import Html.Extra exposing (onLoad)
+import Html.Events.Extra exposing (onLoad)
 import Html exposing (node, text)
 
 

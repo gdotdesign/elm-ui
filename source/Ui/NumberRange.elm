@@ -16,8 +16,8 @@ double clicking on the component.
 # Functions
 @docs focus, setValue, increment, decrement
 -}
-import Html.Dimensions exposing (onWithDimensions, PositionAndDimension)
-import Html.Extra exposing (onKeys, onEnterPreventDefault, onStop)
+import Html.Events.Geometry as Geometry exposing (Dimensions, onWithDimensions)
+import Html.Events.Extra exposing (onKeys, onEnterPreventDefault, onStop)
 import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onInput, onBlur)
 import Html exposing (node, input)
@@ -66,12 +66,12 @@ type alias Model =
 
 {-| Actions that a number range can make. -}
 type Msg
-  = Lift (PositionAndDimension)
+  = Lift Dimensions
   | Input String
   | Increment
   | Decrement
   | Tasks ()
-  | Move (Int, Int)
+  | Move (Float, Float)
   | Click Bool
   | Edit
   | Blur
@@ -135,7 +135,7 @@ update msg model =
       ({ model | editing = True
                , inputValue = toFixed model.round model.value }, Cmd.none)
 
-    Lift {dimensions, position} ->
+    Lift (position, dimensions, size) ->
       ({ model | drag = Drag.lift dimensions position model.drag
                , startValue = model.value }, Cmd.none)
 
@@ -198,7 +198,7 @@ focus model =
   -- TODO: Use task here
 
 {-| Updates a number range value by coordinates. -}
-handleMove : Int -> Int -> Model -> (Model, Cmd Msg)
+handleMove : Float -> Float -> Model -> (Model, Cmd Msg)
 handleMove x y model =
   let
     diff = (Drag.diff x y model.drag).left

@@ -11,7 +11,7 @@ module Ui.InplaceInput exposing
 # View
 @docs view
 -}
-import Html.Extra exposing (onEnter, onKeys)
+import Html.Events.Extra exposing (onEnter, onKeys)
 import Html exposing (node, div, text)
 import Html.Events exposing (onClick)
 import Html.App

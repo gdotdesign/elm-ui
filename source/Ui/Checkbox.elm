@@ -15,7 +15,7 @@ module Ui.Checkbox exposing
 -}
 import Html.Attributes exposing (classList, tabindex)
 import Html.Events exposing (onClick)
-import Html.Extra exposing (onKeys)
+import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
 
 import Json.Decode as JD

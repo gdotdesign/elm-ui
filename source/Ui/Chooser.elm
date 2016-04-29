@@ -16,8 +16,7 @@ form a list of choises, with lots of options.
 # Functions
 @docs toggleItem, close, getFirstSelected, updateData, selectFirst, setValue
 -}
-import Html.DropdownDimensions exposing (DropdownDimensions, onWithDropdownDimensions,onKeysWithDimensions)
-import Html.Extra exposing (onPreventDefault, onStop)
+import Html.Events.Extra exposing (onPreventDefault, onStop)
 import Html.Attributes exposing (value, placeholder, readonly, classList
                                 , disabled)
 import Html.Events exposing (onFocus, onBlur, onClick, onInput)
@@ -75,12 +74,12 @@ type alias Model =
 
 {-| Actions that a chooser can make. -}
 type Msg
-  = Toggle DropdownDimensions
-  | Focus DropdownDimensions
-  | Close DropdownDimensions
-  | Enter DropdownDimensions
-  | Next DropdownDimensions
-  | Prev DropdownDimensions
+  = Toggle Dropdown.Dimensions
+  | Focus Dropdown.Dimensions
+  | Close Dropdown.Dimensions
+  | Enter Dropdown.Dimensions
+  | Next Dropdown.Dimensions
+  | Prev Dropdown.Dimensions
   | Filter String
   | Select String
   | Tasks ()
@@ -198,10 +197,10 @@ render model =
     actions =
       Ui.enabledActions model
         [ onInput Filter
-        , onWithDropdownDimensions "focus" Focus
+        , Dropdown.onWithDropdownDimensions "focus" Focus
         , onBlur Blur
-        , onWithDropdownDimensions "mousedown" Toggle
-        , onKeysWithDimensions
+        , Dropdown.onWithDropdownDimensions "mousedown" Toggle
+        , Dropdown.onKeysWithDropdownDimensions
           ([ (27, Close)
            , (13, Enter)
            , (40, Next)

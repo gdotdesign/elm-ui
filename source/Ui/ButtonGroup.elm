@@ -8,7 +8,7 @@ module Ui.ButtonGroup exposing (Model, view, init) -- where
 # View
 @docs view
 -}
-import Html.Extra exposing (onKeys)
+import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
 
 import Ui.Button

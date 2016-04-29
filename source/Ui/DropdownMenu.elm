@@ -15,9 +15,8 @@ module Ui.DropdownMenu exposing
 # Functions
 @docs handleClick, close, open, openHandler
 -}
-import Html.Dimensions
-import Html.WindowDimensions exposing (WindowDimensions)
-import Html.Extra exposing (onStop)
+import Html.Events.Geometry as Geometry
+import Html.Events.Extra exposing (onStop)
 import Html.Attributes exposing (style, classList)
 import Html.Events exposing (onWithOptions)
 import Html exposing (node)
@@ -28,9 +27,9 @@ import Ui.Native.Dom as Dom
 
 {-| Represents dimensions for a dropdown menu. -}
 type alias Dimensions =
-  { parent : Html.Dimensions.Dimensions
-  , dropdown : Html.Dimensions.Dimensions
-  , window : WindowDimensions
+  { dropdown : Geometry.ElementDimensions
+  , parent : Geometry.ElementDimensions
+  , window : Geometry.WindowSize
   }
 
 {-| Represents a dropdown menu:
@@ -134,9 +133,9 @@ dimensionsDecoder : String -> String -> Json.Decoder Dimensions
 dimensionsDecoder parent dropdown =
   Json.object3
     Dimensions
-    (Json.at ["target"] (Dom.withClosest parent (Dom.withSelector "*:first-child" Html.Dimensions.dimensionsDecoder)))
-    (Json.at ["target"] (Dom.withClosest parent (Dom.withSelector dropdown Html.Dimensions.dimensionsDecoder)))
-    Html.WindowDimensions.decoder
+    (Json.at ["target"] (Dom.withClosest parent (Dom.withSelector dropdown Geometry.decodeElementDimensions)))
+    (Json.at ["target"] (Dom.withClosest parent (Dom.withSelector "*:first-child" Geometry.decodeElementDimensions)))
+    Geometry.decodeWindowSize
 
 {-| Open event handler. -}
 openHandler : String -> String -> String -> (Dimensions -> msg) -> Html.Attribute msg

@@ -16,7 +16,7 @@ import String
 
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
-import Html.Extra exposing (onKeys)
+import Html.Events.Extra exposing (onKeys)
 import Html exposing (node, text)
 import Html.App
 

@@ -1,11 +1,12 @@
 module Html.Dimensions exposing (..) -- where
 
-import Native.Browser
 import Json.Decode as Json exposing ((:=))
 
 import Html.Extra exposing (stopPropagationOptions)
 import Html.Events exposing (onWithOptions)
 import Html
+
+import Ui.Native.Dom as Dom
 
 {-| Represents a HTMLElements dimensions. -}
 type alias Dimensions =
@@ -34,7 +35,7 @@ positionAndDimensionDecoder : Json.Decoder PositionAndDimension
 positionAndDimensionDecoder =
   Json.object2
     PositionAndDimension
-    atDimensionsDecoder
+    (Json.at ["target"] dimensionsDecoder)
     positionDecoder
 
 {-| Decodes a position from an event. -}
@@ -47,22 +48,14 @@ positionDecoder =
 {-| Decodes dimensions from an event. -}
 dimensionsDecoder : Json.Decoder Dimensions
 dimensionsDecoder =
-  Json.object6 Dimensions
-    ("height" := Json.float)
-    ("width" := Json.float)
-    ("bottom" := Json.float)
-    ("right" := Json.float)
-    ("left" := Json.float)
-    ("top" := Json.float)
-
--- Decoder dimensions from target
-atDimensionsDecoder : Json.Decoder Dimensions
-atDimensionsDecoder =
-  boundingClientRectDecoder (Json.at ["target"] Json.value) dimensionsDecoder
-
-boundingClientRectDecoder decoder =
-  Native.Browser.boundingClientRectDecoder decoder
-
+  Dom.withBoundingClientRect
+    (Json.object6 Dimensions
+      ("height" := Json.float)
+      ("width" := Json.float)
+      ("bottom" := Json.float)
+      ("right" := Json.float)
+      ("left" := Json.float)
+      ("top" := Json.float))
 
 {-| An event listener that will returns the dimensions of the element that
 triggered it and position of the mouse.

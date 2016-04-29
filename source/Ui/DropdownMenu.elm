@@ -23,7 +23,7 @@ import Html.Events exposing (onWithOptions)
 import Html exposing (node)
 import Json.Decode as Json
 
-import Native.Browser
+import Ui.Native.Dom as Dom
 
 {-| Represents dimensions for a dropdown menu. -}
 type alias Dimensions =
@@ -75,16 +75,15 @@ init =
 
     DropdownMenu.view address triggerElement children model
 -}
--- view: ((Dimensions -> Msg) -> msg) -> Html.Html msg -> List (Html.Html msg) -> Model -> Html.Html msg
+view: (Msg -> msg) -> Html.Html msg -> List (Html.Html msg) -> Model -> Html.Html msg
 view address element children model =
   node "ui-dropdown-menu"
-    --[ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" (address Toggle)
-    --]
-    []
+    [ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" (address << Toggle)
+    ]
     [ element
     , node "ui-dropdown-menu-items"
-      --[ onStop "mouseup" (address NoOp)
-      [ classList [("open", model.open)]
+      [ onStop "mouseup" (address NoOp)
+      , classList [("open", model.open)]
       , style [ ("top", (toString model.top) ++ "px")
               , ("left", (toString model.left) ++ "px")
               ]
@@ -124,8 +123,8 @@ dimensionsDecoder : String -> String -> Json.Decoder Dimensions
 dimensionsDecoder parent dropdown =
   Json.object3
     Dimensions
-    (Json.at ["target"] (Native.Browser.closest parent (Native.Browser.atElement "*:first-child" (Json.at ["dimensions"] Html.Dimensions.dimensionsDecoder))))
-    (Json.at ["target"] (Native.Browser.closest parent (Native.Browser.atElement dropdown (Json.at ["dimensions"] Html.Dimensions.dimensionsDecoder))))
+    (Json.at ["target"] (Dom.withClosest parent (Dom.withSelector "*:first-child" Html.Dimensions.dimensionsDecoder)))
+    (Json.at ["target"] (Dom.withClosest parent (Dom.withSelector dropdown Html.Dimensions.dimensionsDecoder)))
     Html.WindowDimensions.decoder
 
 {-| Open event handler. -}

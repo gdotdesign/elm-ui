@@ -5,24 +5,6 @@ import Native.Browser
 
 --where
 
-{-| Focuses a DOM element with the given selector.
-
-    Ui.Native.Browser.focusSelector 'input#comments'
--}
-focusSelector : String -> Task Never Never
-focusSelector selector =
-  Native.Browser.focusSelector selector
-
-
-{-| Focuses a DOM element with the given uid attribute.
-
-    Ui.Native.Browser.focusUid 'xxxx-xxx-xxx-xxxx'
--}
-focusUid : String -> Task Never Never
-focusUid uid =
-  focusSelector ("[uid='" ++ uid ++ "']")
-
-
 {-| Opens a new window with the given URL and return the given value.
 
     Ui.Native.Browser.openWindow 'asd' value

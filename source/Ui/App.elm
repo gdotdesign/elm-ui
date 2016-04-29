@@ -29,8 +29,6 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Time
 import Ui
 
-import Debug exposing (log)
-
 {-| Representation of an application:
   - **loaded** (internal) - Whether or not the application is loaded
   - **title** - The title of the application (and the window)
@@ -100,10 +98,7 @@ update action model =
       (model, Ui.Time.updateTime now)
 
     MouseMove (x,y) ->
-      let
-        a = log "mousemove" x
-      in
-        (model, Emitter.send "mouse-move" (JE.list [JE.int x, JE.int y]))
+      (model, Emitter.send "mouse-move" (JE.list [JE.int x, JE.int y]))
 
     Click pressed ->
       (model, Emitter.send "mouse-click" (JE.bool pressed))

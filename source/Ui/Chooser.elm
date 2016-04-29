@@ -29,8 +29,6 @@ import Regex
 import List
 import Dict
 
-import Debug exposing (log)
-
 import Ui.Helpers.Intendable as Intendable
 import Ui.Helpers.Dropdown as Dropdown
 import Ui

@@ -4,7 +4,7 @@ module Html.DropdownDimensions exposing (..)
 
 import Html.Extra exposing (keysDecoder, preventDefaultOptions)
 import Html.WindowDimensions exposing (WindowDimensions)
-import Html.Dimensions exposing (Dimensions, dimensionsDecoder, boundingClientRectDecoder)
+import Html.Dimensions exposing (Dimensions, dimensionsDecoder)
 import Html.Events exposing (defaultOptions, onWithOptions)
 import Html
 
@@ -20,8 +20,8 @@ type alias DropdownDimensions =
 decoder : Json.Decoder DropdownDimensions
 decoder =
   Json.object3 DropdownDimensions
-    Html.Dimensions.atDimensionsDecoder
-    (boundingClientRectDecoder (Json.at ["target", "dropdown"] Json.value) dimensionsDecoder)
+    (Json.at ["target"] Html.Dimensions.dimensionsDecoder)
+    (Json.at ["target", "dropdown"] dimensionsDecoder)
     Html.WindowDimensions.decoder
 
 {-| Returns dimensions for an element and its dropdown. -}

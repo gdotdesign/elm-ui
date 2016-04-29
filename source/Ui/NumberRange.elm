@@ -19,7 +19,7 @@ double clicking on the component.
 import Html.Dimensions exposing (onWithDimensions, PositionAndDimension)
 import Html.Extra exposing (onKeys, onEnterPreventDefault, onStop)
 import Html.Attributes exposing (value, readonly, disabled, classList)
-import Html.Events exposing (onInput, onFocus, onBlur)
+import Html.Events exposing (onInput, onBlur)
 import Html exposing (node, input)
 
 import Ext.Number exposing (toFixed)
@@ -45,8 +45,6 @@ import Ui
   - **value** - The current value
   - **editing** (internal) - Whether or not the number range is in edit mode
   - **startValue** (internal) - The value when the dragging starts
-  - **focusNext** (internal) - Whether or not to focus the input
-  - **focus** (internal) - Whether or not the input is focused
   - **inputValue** (internal) - The inputs value when editing
   - **drag** (internal) - The drag model
 -}
@@ -54,11 +52,9 @@ type alias Model =
   { inputValue : String
   , startValue : Float
   , drag : Drag.Model
-  , focusNext : Bool
   , disabled : Bool
   , readonly : Bool
   , editing : Bool
-  , focused : Bool
   , affix : String
   , value : Float
   , step : Float
@@ -77,7 +73,6 @@ type Msg
   | Tasks ()
   | Move (Int, Int)
   | Click Bool
-  | Focus
   | Edit
   | Blur
   | Save
@@ -89,12 +84,10 @@ type Msg
 init : Float -> Model
 init value =
   { startValue = value
-  , focusNext = False
   , drag = Drag.init
   , uid = Native.Uid.uid ()
   , disabled = False
   , readonly = False
-  , focused = False
   , editing = False
   , inputValue = ""
   , value = value
@@ -135,22 +128,16 @@ update msg model =
     Input value ->
       ({ model | inputValue = value }, Cmd.none)
 
-    Focus ->
-      ({ model | focusNext = False, focused = True }, Cmd.none)
-
     Blur ->
-      { model | focused = False }
-        |> endEdit
+      endEdit model
 
     Edit ->
       ({ model | editing = True
-               , inputValue = toFixed model.round model.value }
-        |> focus, Cmd.none)
+               , inputValue = toFixed model.round model.value }, Cmd.none)
 
     Lift {dimensions, position} ->
       ({ model | drag = Drag.lift dimensions position model.drag
-               , startValue = model.value }
-        |> focus, Cmd.none)
+               , startValue = model.value }, Cmd.none)
 
     Tasks _ ->
       (model, Cmd.none)
@@ -192,30 +179,23 @@ render model =
         [ value ((toFixed model.round model.value) ++ model.affix) ]
 
     inputElement =
-      input ([ onFocus Focus
-             , onBlur Blur
+      input ([ onBlur Blur
              , readonly (not model.editing)
              , disabled model.disabled
              ] ++ attributes ++ actions) []
-
-    focusedInput =
-      case model.focusNext && not model.disabled && not model.readonly of
-        True -> Native.Browser.focus inputElement
-        False -> inputElement
   in
     node "ui-number-range"
       [ classList [ ("disabled", model.disabled)
                   , ("readonly", model.readonly)
                   ]
       ]
-      [ focusedInput ]
+      [ inputElement ]
 
 {-| Focuses the component. -}
 focus : Model -> Model
 focus model =
-  case model.focused of
-    True -> model
-    False -> { model | focusNext = True }
+  model
+  -- TODO: Use task here
 
 {-| Updates a number range value by coordinates. -}
 handleMove : Int -> Int -> Model -> (Model, Cmd Msg)

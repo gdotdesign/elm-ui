@@ -27,8 +27,6 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui
 
-import Debug exposing (log)
-
 {-| Representation of a color panel:
   - **readonly** - Whether or not the color panel is editable
   - **disabled** - Whether or not the color panel is disabled
@@ -84,7 +82,7 @@ subscribe action model =
 {-| Updates a color panel. -}
 update : Msg -> Model -> (Model, Cmd Msg)
 update action model =
-  case log "a" action of
+  case action of
     LiftRect (position,dimensions,size) ->
       { model | drag = Drag.lift dimensions position model.drag }
         |> handleMove position.left position.top

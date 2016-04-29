@@ -108,7 +108,7 @@ onWithDimensions : String -> Bool -> (Dimensions -> msg) -> Html.Attribute msg
 onWithDimensions event preventDefault action =
   let
     decoder =
-      Json.tuple3
+      Json.object3
         (,,)
         decodeMousePosition
         (Json.at [ "target" ] decodeElementDimensions)

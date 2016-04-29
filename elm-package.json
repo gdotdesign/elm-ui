@@ -15,7 +15,9 @@
     "Ext.Date",
     "Html.Events.Geometry",
     "Html.Events.Options",
-    "Html.Events.Extra"
+    "Html.Events.Extra",
+    "Ui.Utils.Env",
+    "Ui"
   ],
   "dependencies": {
     "elm-lang/virtual-dom": "1.0.0 <= v < 2.0.0",

@@ -1,27 +1,36 @@
-module Ui.Utils.Env where
+module Ui.Utils.Env exposing (..)
 
 {-| Module for interacting with the environment variables.
 
-@docs get
+@docs get, getString
 -}
+
 import Json.Decode as Json
 import Native.Env
 import Debug
 
+
+-- where
+
+
 {-| Gets the value of the given environment variable with a decoder and a
-default value. -}
-get : String -> a -> Json.Decoder a -> a
-get key default decoder =
-  let
-    value = Native.Env.get key
-  in
-    case Json.decodeValue decoder value of
-      Ok data -> data
-      Err msg ->
-        let
-          log =
-            Debug.log
-              ("Error getting ENV value '" ++ key ++ "'")
-              msg
-        in
-          default
+default value.
+
+    case Ui.Utils.Env.get "token" Json.Decode.string of
+      Ok value -> value
+      Err msg -> msg
+-}
+get : String -> Json.Decoder a -> Result String a
+get key decoder =
+  Json.decodeValue decoder (Native.Env.get key)
+
+
+{-| Gets a string value of the given environment varaible.
+
+    case Ui.Utils.Env.getString "token" of
+      Ok value -> value
+      Err msg -> msg
+-}
+getString : String -> Result String String
+getString name =
+  get name Json.string

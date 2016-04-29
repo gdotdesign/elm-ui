@@ -18,6 +18,7 @@ import Html.App
 
 import Time exposing (Time)
 import Ext.Date
+import Process
 import Task
 import Date
 
@@ -25,7 +26,6 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Input
 import Ui
 
-import Native.Browser
 import Native.Uid
 
 
@@ -124,7 +124,7 @@ update msg model =
           Task.perform
             Tasks
             (Update (justNow + model.timeout))
-            (Native.Browser.delay model.timeout)
+            (Process.sleep model.timeout)
       in
         ( updatedModel, cmd )
 

@@ -13,6 +13,7 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     })
   }
 
+  /* TODO: When fixed in *core* return an "Err Result" */
   function fail(msg){
     var faliure = Json.fail(msg)
     faliure._0 = {}

@@ -30,8 +30,3 @@ redirect url value =
 alert : String -> value -> value
 alert message value =
   Native.Browser.alert message value
-
-
-delay : Float -> (() -> msg) -> (() -> msg) -> Cmd msg
-delay duration failMsg successMsg =
-  Task.perform failMsg successMsg (Native.Browser.delay duration)

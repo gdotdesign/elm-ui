@@ -19,10 +19,9 @@ import Html.Attributes exposing (classList, style)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
 
-import Ui.Native.Browser as Browser
-
 import Json.Encode
 import List.Extra
+import Process
 import Vendor
 import Task
 
@@ -90,7 +89,7 @@ notify contents model =
     updatedModel =
       { model | notifications = model.notifications ++ [notification] }
   in
-    (updatedModel, Browser.delay model.timeout Tasks (AutoHide notification.id))
+    (updatedModel, Task.perform Tasks (AutoHide notification.id) (Process.sleep model.timeout))
 
 -- PRIVATE --
 
@@ -160,7 +159,7 @@ hide id model =
       else item
   in
     ({ model | notifications = updatedNotifications }
-     , Browser.delay (model.duration + 100) Tasks (Remove id))
+     , Task.perform Tasks (Remove id) (Process.sleep (model.duration + 100)))
 
 -- Tries to hide the notification with the given id
 autoHide: Int -> Model a -> (Model a, Cmd Msg)
@@ -175,9 +174,9 @@ autoHide id model =
 
     hideEffect =
       if updatedNotifications /= model.notifications then
-        Browser.delay (model.duration + 100) Tasks (Remove id)
+        Task.perform Tasks (Remove id) (Process.sleep (model.duration + 100))
       else
-        Browser.delay 100 Tasks (AutoHide id)
+        Task.perform Tasks (AutoHide id) (Process.sleep 100)
 
     effect =
       if isMember then hideEffect else Cmd.none

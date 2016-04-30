@@ -1,17 +1,18 @@
 effect module Ui.Helpers.Emitter
   where { command = MyCmd, subscription = MySub}
-  exposing (send, sendString, sendFloat, sendInt,
-            listen, listenString, listenFloat, listenInt,
-            decode)
+  exposing
+  ( send, sendString, sendFloat, sendInt, sendBool
+  , listen, listenString, listenFloat, listenInt, listenBool
+  , decode)
 
 {-| This is a module for publishing and subscribing to arbritary data in
 different channels that are identified by strings.
 
 # Listining
-@docs listen, listenString, listenFloat, listenInt
+@docs listen, listenString, listenFloat, listenInt, listenBool
 
 # Sending Data
-@docs send, sendString, sendFloat, sendInt
+@docs send, sendString, sendFloat, sendInt, sendBool
 
 # Decodeing
 @docs decode
@@ -20,6 +21,7 @@ different channels that are identified by strings.
 
 import Json.Decode exposing (Value)
 import Json.Encode as JE
+
 import Task exposing (Task)
 
 
@@ -71,6 +73,15 @@ sendInt id value =
   send id (JE.int value)
 
 
+{-| Sends a boolean value to the given channel.
+
+    Ui.Helpers.Emitter.sendBool "channelId" 10
+-}
+sendBool : String -> Bool -> Cmd msg
+sendBool id value =
+  send id (JE.bool value)
+
+
 {-| Creates a subscription for the given channel.
 
     Ui.Helpers.Emitter.listen "channelId" HandleValue
@@ -107,6 +118,15 @@ listenInt id tagger =
   listen id (decodeInt 0 tagger)
 
 
+{-| Creates a subscription for the given boolean channel.
+
+    Ui.Helpers.Emitter.listenBool "channelId" HandleInt
+-}
+listenBool : String -> (Bool -> msg) -> Sub msg
+listenBool id tagger =
+  listen id (decodeBool False tagger)
+
+
 {-| Decodes a Json value and maps it to a message with a fallback value.
 
     Ui.Helpers.Emitter.decode Json.Decode.string "" HandleString value
@@ -137,6 +157,13 @@ decodeFloat default msg =
 decodeInt : Int -> (Int -> msg) -> Value -> msg
 decodeInt default msg =
   decode Json.Decode.int default msg
+
+
+{-| Decodes a Json boolean and maps it to a message with a fallback value.
+-}
+decodeBool : Bool -> (Bool -> msg) -> Value -> msg
+decodeBool default msg =
+  decode Json.Decode.bool default msg
 
 
 

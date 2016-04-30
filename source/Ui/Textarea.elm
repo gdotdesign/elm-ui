@@ -13,6 +13,8 @@ thus creating an automatically growing textarea.
 @docs setValue, focus
 -}
 
+-- where
+
 import Html.Events.Extra exposing (onEnterPreventDefault, onStop)
 import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onInput)
@@ -27,7 +29,6 @@ import Html.Attributes
     , attribute
     )
 
-import Native.Browser
 import Native.Uid
 
 import String
@@ -35,6 +36,7 @@ import Task
 import List
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Dom as Dom
 import Ui
 
 {-| Representation of a textarea:
@@ -59,7 +61,7 @@ type alias Model =
 -}
 type Msg
   = Input String
-  | Tasks ()
+  | Tasks Never
   | NoOp
 
 
@@ -172,7 +174,7 @@ setValue value model =
 -}
 focus : Model -> Cmd Msg
 focus model =
-  Task.perform Tasks Tasks (Native.Browser.focusUid model.uid)
+  Task.perform Tasks Tasks (Dom.focusUid model.uid)
 
 
 {-| Processes the value for the mirror object.

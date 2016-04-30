@@ -23,6 +23,11 @@
     "Ui.Native.Browser",
     "Ui.Native.Dom",
     "Ui.Utils.Env",
+    "Ui.App",
+    "Ui.Button",
+    "Ui.ButtonGroup",
+    "Ui.Calendar",
+    "Ui.Checkbox",
     "Ui"
   ],
   "dependencies": {

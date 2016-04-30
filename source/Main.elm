@@ -393,19 +393,19 @@ init =
         Showcase.init
           (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          (\_ -> Sub.none)
+          (Ui.Checkbox.subscribe Checkbox3Changed)
           (\_ -> Sub.none)
     , checkbox2 =
         Showcase.init
           (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          (\_ -> Sub.none)
+          (Ui.Checkbox.subscribe Checkbox2Changed)
           (\_ -> Sub.none)
     , checkbox =
         Showcase.init
           (\_-> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          (\_ -> Sub.none)
+          (Ui.Checkbox.subscribe CheckboxChanged)
           (\_ -> Sub.none)
     , textarea =
         Showcase.init
@@ -545,15 +545,15 @@ view model =
                      (emptyText)
                      (emptyText)
           , componentHeader "Calendar"
-          , Showcase.view Calendar Ui.Calendar.view calendar
+          , Showcase.view Calendar (Ui.Calendar.view "en_us") calendar
 
           , componentHeader "Tabs"
           -- , Showcase.view Tabs (Ui.Tabs.view tabsContents) tabs
 
           , componentHeader "Checkbox"
           , Showcase.view Checkbox Ui.Checkbox.view checkbox
-          , Showcase.view Checkbox2 Ui.Checkbox.toggleView checkbox2
-          , Showcase.view Checkbox3 Ui.Checkbox.radioView checkbox3
+          , Showcase.view Checkbox2 Ui.Checkbox.viewToggle checkbox2
+          , Showcase.view Checkbox3 Ui.Checkbox.viewRadio checkbox3
 
           , componentHeader "Chooser"
           , Showcase.view Chooser Ui.Chooser.view chooser
@@ -565,7 +565,7 @@ view model =
           , Showcase.view ColorPicker Ui.ColorPicker.view colorPicker
 
           , componentHeader "Date Picker"
-          , Showcase.view DatePicker Ui.DatePicker.view datePicker
+          , Showcase.view DatePicker (Ui.DatePicker.view "en_us") datePicker
 
           , componentHeader "Number Range"
           , Showcase.view NumberRange Ui.NumberRange.view numberRange
@@ -844,6 +844,9 @@ notify message model =
 gatherSubs model =
   Sub.batch [ Showcase.subscribe model.ratings
             , Showcase.subscribe model.calendar
+            , Showcase.subscribe model.checkbox
+            , Showcase.subscribe model.checkbox2
+            , Showcase.subscribe model.checkbox3
             , Sub.map ColorPanel (Showcase.subscriptions model.colorPanel)
             , Sub.map NumberRange (Showcase.subscriptions model.numberRange)
             , Sub.map Slider (Showcase.subscriptions model.slider)

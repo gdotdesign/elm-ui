@@ -136,25 +136,25 @@ update' action model =
     _ -> model
 
 {-| Renders a date picker. -}
-view : Model -> Html.Html Msg
-view model =
-  render model
+view : String -> Model -> Html.Html Msg
+view locale model =
+  render locale model
 
 -- Renders a date picker.
-render : Model -> Html.Html Msg
-render model =
+render : String -> Model -> Html.Html Msg
+render locale model =
   let
     actions =
       Ui.enabledActions model
         [ Dropdown.onWithDimensions "focus" Focus
         , onBlur Blur
         , Dropdown.onKeysWithDimensions [ (27, Close)
-                                                , (13, Toggle)
-                                                , (40, Increment)
-                                                , (38, Decrement)
-                                                , (39, Increment)
-                                                , (37, Decrement)
-                                                ]
+                                        , (13, Toggle)
+                                        , (40, Increment)
+                                        , (38, Decrement)
+                                        , (39, Increment)
+                                        , (37, Decrement)
+                                        ]
         ]
   in
     node "ui-date-picker" ([ classList [ ("dropdown-open", model.open)
@@ -166,7 +166,7 @@ render model =
       , Ui.icon "calendar" False []
       , Dropdown.view NoOp model.dropdownPosition
         [ node "ui-dropdown-overlay" [onClick Blur] []
-        , Html.App.map Calendar (Ui.Calendar.view model.calendar)
+        , Html.App.map Calendar (Ui.Calendar.view locale model.calendar)
         ]
       ]
 

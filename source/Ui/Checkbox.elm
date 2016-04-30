@@ -1,6 +1,6 @@
 module Ui.Checkbox exposing
-  ( Model, Msg, init, subscribe, update, setValue, view, toggleView
-  , radioView) -- where
+  ( Model, Msg, init, subscribe, update, view, render, viewToggle
+  , renderToggle, viewRadio, renderRadio, focus, setValue )
 
 {-| Checkbox component with three different views.
 
@@ -8,24 +8,31 @@ module Ui.Checkbox exposing
 @docs Model, Msg, init, subscribe, update
 
 # Views
-@docs view, toggleView, radioView
+@docs view, render
+
+# View Variations
+@docs viewRadio, viewToggle, renderRadio, renderToggle
 
 # Functions
-@docs setValue
+@docs focus, setValue
 -}
+
+-- where
+
 import Html.Attributes exposing (classList, tabindex)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
 
-import Json.Decode as JD
-import Json.Encode as JE
-import Ui.Helpers.Emitter as Emitter
-
 import Native.Uid
+
+import Task
 import Dict
 
+import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Dom as Dom
 import Ui
+
 
 {-| Representation of a checkbox:
   - **disabled** - Whether or not the checkbox is disabled
@@ -40,13 +47,17 @@ type alias Model =
   , uid : String
   }
 
-{-| Actions that a checkbox can make. -}
+
+{-| Messages that a checkbox can receive.
+-}
 type Msg
-  = Toggle
+  = Focus Never
+  | Toggle
+
 
 {-| Initiaizes a checkbox with the given value.
 
-    Checkbox.init False
+    checkbox = Ui.Checkbox.init False
 -}
 init : Bool -> Model
 init value =
@@ -56,78 +67,138 @@ init value =
   , value = value
   }
 
-{-| Provides a subscription for the changes of a checkbox. -}
-subscribe : (Bool -> a) -> Model -> Sub a
-subscribe action model =
-  Emitter.listen model.uid (Emitter.decode JD.bool False action)
 
-{-| Updates a checkbox. -}
-update : Msg -> Model -> (Model, Cmd Msg)
+{-| Subscribe to the changes of a checkbox.
+
+    Ui.Calendar.subscribe CheckboxChanged checkbox
+-}
+subscribe : (Bool -> a) -> Model -> Sub a
+subscribe msg model =
+  Emitter.listenBool model.uid msg
+
+
+{-| Updates a checkbox.
+
+    Ui.Checkbox.update msg checkbox
+-}
+update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
+    Focus _ ->
+      ( model, Cmd.none )
+
     Toggle ->
       let
-        value = not model.value
+        value =
+          not model.value
       in
-        ({ model | value = value }, Emitter.send model.uid (JE.bool value))
+        ( { model | value = value }, Emitter.sendBool model.uid value )
 
-{-| Sets the value of a checkbox to the given one. -}
-setValue : Bool -> Model -> Model
-setValue value model =
-  { model | value = value }
 
-{-| Renders a checkbox. -}
+{-| Lazily renders a checkbox.
+
+    Ui.Checkbox.view checkbox
+-}
 view : Model -> Html.Html Msg
 view model =
   render model
 
--- Render internal.
+
+{-| Renders a checkbox.
+
+    Ui.Checkbox.render checkbox.
+-}
 render : Model -> Html.Html Msg
 render model =
-  node "ui-checkbox"
+  node
+    "ui-checkbox"
     (attributes model)
-    [Ui.icon "checkmark" False []]
+    [ Ui.icon "checkmark" False [] ]
 
-{-| Renders a checkbox as a radio. -}
-radioView : Model -> Html.Html Msg
-radioView model =
-  radioRender model
 
--- Render radio internal.
-radioRender : Model -> Html.Html Msg
-radioRender model =
-  node "ui-checkbox-radio"
+{-| Lazily renders a checkbox as a radio.
+
+    Ui.Checkbox.viewRadio checkbox
+-}
+viewRadio : Model -> Html.Html Msg
+viewRadio model =
+  renderRadio model
+
+
+{-| Renders a checkbox as a radio.
+
+    Ui.Checkbox.renderRadio checkbox
+-}
+renderRadio : Model -> Html.Html Msg
+renderRadio model =
+  node
+    "ui-checkbox-radio"
     (attributes model)
     [ node "ui-checkbox-radio-circle" [] []
     ]
 
-{-| Renders a checkbox as a toggle. -}
-toggleView : Model -> Html.Html Msg
-toggleView model =
-  toggleRender model
 
--- Render toggle internal.
-toggleRender : Model -> Html.Html Msg
-toggleRender model =
-  node "ui-checkbox-toggle"
+{-| Lazily renders a checkbox as a toggle.
+
+    Ui.Checkbox.viewToggle checkbox
+-}
+viewToggle : Model -> Html.Html Msg
+viewToggle model =
+  renderToggle model
+
+
+{-| Renders a checkbox as a toggle.
+
+    Ui.Checkbox.renderToggle checkbox
+-}
+renderToggle : Model -> Html.Html Msg
+renderToggle model =
+  node
+    "ui-checkbox-toggle"
     (attributes model)
     [ node "ui-checkbox-toggle-bg" [] []
     , node "ui-checkbox-toggle-handle" [] []
     ]
 
--- Returns attributes for a checkbox
+
+{-| Sets the value of a checkbox to the given one.
+
+    Ui.Checkbox.setValue False checkbox
+-}
+setValue : Bool -> Model -> Model
+setValue value model =
+  { model | value = value }
+
+
+{-| Focuses a checkbox.
+
+    Cmd.map Checkbox (Ui.Checkbox.focus model)
+-}
+focus : Model -> Cmd Msg
+focus model =
+  Task.perform Focus Focus (Dom.focusUid model.uid)
+
+
+{-| Returns attributes for a checkbox.
+-}
 attributes : Model -> List (Html.Attribute Msg)
 attributes model =
   let
     actions =
-      Ui.enabledActions model
+      Ui.enabledActions
+        model
         [ onClick Toggle
-        , onKeys [ (13, Toggle)
-                 , (32, Toggle)
-                 ]
+        , onKeys
+            [ ( 13, Toggle )
+            , ( 32, Toggle )
+            ]
         ]
   in
-    [ classList [ ("disabled", model.disabled)
-                , ("readonly", model.readonly)
-                , ("checked", model.value) ]
-    ] ++ (Ui.tabIndex model) ++ actions
+    [ classList
+        [ ( "disabled", model.disabled )
+        , ( "readonly", model.readonly )
+        , ( "checked", model.value )
+        ]
+    ]
+      ++ (Ui.tabIndex model)
+      ++ actions

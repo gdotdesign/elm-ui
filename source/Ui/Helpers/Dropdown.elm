@@ -1,109 +1,154 @@
 module Ui.Helpers.Dropdown exposing (..)
 
--- where
-
 {-| Dropdown for other components.
 
 # Model
-@docs Dropdown
+@docs Dimensions, Dropdown
 
 # View
 @docs view
 
+# Decoder
+@docs decodeDimensions
+
+# Event Handlers
+@docs onKeysWithDimensions, onWithDimensions
+
 # Functions
 @docs open, close, toggle, openWithDimensions, toggleWithDimensions
 -}
-import Html.Events.Options exposing (preventDefaultOptions)
-import Html.Events.Extra exposing (onStop, keysDecoder)
+
+-- where
+
 import Html.Events.Geometry as Geometry exposing (decodeElementDimensions)
 import Html.Events exposing (defaultOptions, onWithOptions)
+import Html.Events.Options exposing (preventDefaultOptions)
+import Html.Events.Extra exposing (onStop, keysDecoder)
 import Html.Attributes exposing (classList)
 import Html exposing (node)
-
-import Debug exposing (log)
 
 import Ui.Native.Dom as Dom
 
 import Json.Decode as Json
 
+
+{-| Representation of the dimensions of a dropdown.
+-}
 type alias Dimensions =
   { dimensions : Geometry.ElementDimensions
   , dropdown : Geometry.ElementDimensions
   , window : Geometry.WindowSize
   }
 
-{-| Decodes dimensions for a element and its dropdown. -}
-decoder : Json.Decoder Dimensions
-decoder =
-  Json.object3 Dimensions
-    (Json.at ["target"] Geometry.decodeElementDimensions)
-    (Json.at ["target"] (Json.oneOf [ Dom.withClosest "ui-dropdown" decodeElementDimensions
-                                    , Dom.withSelector "ui-dropdown" decodeElementDimensions
-                                    ]))
+
+{-| Representation of a dropdown.
+-}
+type alias Dropdown a =
+  { a
+    | open : Bool
+    , dropdownPosition : String
+  }
+
+
+{-| Decodes dimensions for a element and its dropdown.
+-}
+decodeDimensions : Json.Decoder Dimensions
+decodeDimensions =
+  Json.object3
+    Dimensions
+    (Json.at [ "target" ] decodeElementDimensions)
+    (Json.at [ "target" ] (Dom.withNearest "ui-dropdown" decodeElementDimensions))
     Geometry.decodeWindowSize
 
-{-| Returns dimensions for an element and its dropdown. -}
-onWithDropdownDimensions : String
-                           -> (Dimensions -> msg)
-                           -> Html.Attribute msg
-onWithDropdownDimensions event msg =
+
+{-| Captures events with the dimensions of the dropdown.
+-}
+onWithDimensions : String -> (Dimensions -> msg) -> Html.Attribute msg
+onWithDimensions event msg =
   onWithOptions
     event
     defaultOptions
-    (Json.map msg decoder)
+    (Json.map msg decodeDimensions)
 
-{-| An event listener that will run the given actions on the associated keys. -}
-onKeysWithDropdownDimensions : List (Int, (Dimensions -> msg)) -> Html.Attribute msg
-onKeysWithDropdownDimensions mappings =
+
+{-| Captures keydown events with the dimensions of the dropdown which will call
+the given message associated with the given key.
+-}
+onKeysWithDimensions : List ( Int, Dimensions -> msg ) -> Html.Attribute msg
+onKeysWithDimensions mappings =
   onWithOptions
     "keydown"
     preventDefaultOptions
-    (Json.andThen (keysDecoder mappings) (\msg -> Json.map msg decoder))
+    (Json.andThen (keysDecoder mappings) (\msg -> Json.map msg decodeDimensions))
 
 
-{-| Represents a dropdown. -}
-type alias Dropdown a =
-  { a | open : Bool
-      , dropdownPosition : String }
-
-{-| Renders a dropdown. -}
-view : msg -> String -> List (Html.Html msg) -> (Html.Html msg)
+{-| Renders a dropdown.
+-}
+view : msg -> String -> List (Html.Html msg) -> Html.Html msg
 view noop position children =
-  node "ui-dropdown"
+  node
+    "ui-dropdown"
     [ onStop "mousedown" noop
-    , classList [("position-" ++ position, True)]
+    , classList [ ( "position-" ++ position, True ) ]
     ]
     children
 
-{-| Opens a component. -}
+
+{-| Opens a dropdown.
+-}
 open : Dropdown a -> Dropdown a
 open model =
   { model | open = True }
 
-{-| Closes a component. -}
+
+{-| Closes a dropdown.
+-}
 close : Dropdown a -> Dropdown a
 close model =
   { model | open = False }
 
-{-| Toggles a component. -}
+
+{-| Toggles a dropdown.
+-}
 toggle : Dropdown a -> Dropdown a
 toggle model =
   { model | open = not model.open }
 
-{-| Toggles a component. -}
+
+{-| Toggles a dropdown positioning it based on the given dimensions.
+-}
 toggleWithDimensions : Dimensions -> Dropdown a -> Dropdown a
 toggleWithDimensions dimensions model =
-  if model.open then close model
-  else openWithDimensions dimensions model
+  if model.open then
+    close model
+  else
+    openWithDimensions dimensions model
 
-{-| Opens a component. -}
+
+{-| Opens a dropdown positioning it based on the given dimensions.
+-}
 openWithDimensions : Dimensions -> Dropdown a -> Dropdown a
-openWithDimensions {dimensions,dropdown,window} model =
+openWithDimensions { dimensions, dropdown, window } model =
   let
-    bottom = dimensions.bottom + dropdown.height
-    right = dimensions.right + dropdown.width
-    topPosition = if bottom < window.height then "bottom" else "top"
-    leftPosition = if right < window.width then "right" else "left"
-    position = topPosition ++ "-" ++ leftPosition
+    bottom =
+      dimensions.bottom + dropdown.height
+
+    right =
+      dimensions.right + dropdown.width
+
+    topPosition =
+      if bottom < window.height then
+        "bottom"
+      else
+        "top"
+
+    leftPosition =
+      if right < window.width then
+        "right"
+      else
+        "left"
+
+    position =
+      topPosition ++ "-" ++ leftPosition
   in
     { model | open = True, dropdownPosition = position }

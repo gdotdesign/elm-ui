@@ -197,10 +197,10 @@ render model =
     actions =
       Ui.enabledActions model
         [ onInput Filter
-        , Dropdown.onWithDropdownDimensions "focus" Focus
+        , Dropdown.onWithDimensions "focus" Focus
         , onBlur Blur
-        , Dropdown.onWithDropdownDimensions "mousedown" Toggle
-        , Dropdown.onKeysWithDropdownDimensions
+        , Dropdown.onWithDimensions "mousedown" Toggle
+        , Dropdown.onKeysWithDimensions
           ([ (27, Close)
            , (13, Enter)
            , (40, Next)

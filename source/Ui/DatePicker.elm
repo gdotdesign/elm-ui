@@ -146,9 +146,9 @@ render model =
   let
     actions =
       Ui.enabledActions model
-        [ Dropdown.onWithDropdownDimensions "focus" Focus
+        [ Dropdown.onWithDimensions "focus" Focus
         , onBlur Blur
-        , Dropdown.onKeysWithDropdownDimensions [ (27, Close)
+        , Dropdown.onKeysWithDimensions [ (27, Close)
                                                 , (13, Toggle)
                                                 , (40, Increment)
                                                 , (38, Decrement)

@@ -20,7 +20,7 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     return faliure
   }
 
-  function elementFunctionDecoder(method, selector, decoder) {
+  function decodeElementFunction(method, selector, decoder) {
     return Json.customAndThen(valueDecoder)(function(value){
       if (value instanceof HTMLElement) {
         var element = value[method](selector);
@@ -36,13 +36,18 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
   }
 
   return {
-    elementFunctionDecoder: F3(elementFunctionDecoder),
+    decodeElementFunction: F3(decodeElementFunction),
     focusSelector: focusSelector
   }
 }();
 
 /* Polyfills */
 (function(){
+  Element.prototype.nearest = function(selector){
+    return this.closest(selector) || // parent
+           this.parentElement.querySelector(selector) // child or neighbor
+  }
+
   if (typeof Element.prototype.matches !== 'function') {
     Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.webkitMatchesSelector || function matches(selector) {
       var element = this;

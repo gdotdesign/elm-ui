@@ -95,8 +95,8 @@ decodeWindowSize =
     decoder =
       Json.object2
         WindowSize
-        ("innerWidth" := Json.float)
         ("innerHeight" := Json.float)
+        ("innerWidth" := Json.float)
   in
     Json.at [ "target", "ownerDocument", "defaultView" ] decoder
 

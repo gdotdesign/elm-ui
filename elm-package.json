@@ -16,6 +16,12 @@
     "Html.Events.Geometry",
     "Html.Events.Options",
     "Html.Events.Extra",
+    "Ui.Helpers.Drag",
+    "Ui.Helpers.Dropdown",
+    "Ui.Helpers.Emitter",
+    "Ui.Helpers.Intendable",
+    "Ui.Native.Browser",
+    "Ui.Native.Dom",
     "Ui.Utils.Env",
     "Ui"
   ],

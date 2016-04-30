@@ -48,6 +48,25 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
            this.parentElement.querySelector(selector) // child or neighbor
   }
 
+  /* Add dimensions property to HTMLElement so we can decode it, it's not
+     exposed so it won't conflict with anything hopefully. */
+  Object.defineProperty(Element.prototype, "dimensions", {
+    configurable: false,
+    enumerable: false,
+    writeable: false,
+    value: function() {
+      var rect = this.getBoundingClientRect()
+      /* Offset values with scroll positions. */
+      return { bottom: rect.bottom + window.pageYOffset,
+               right: rect.right + window.pageXOffset,
+               left: rect.left + window.pageXOffset,
+               top: rect.top + window.pageYOffset,
+               height: rect.height,
+               width: rect.width
+             }
+     }
+  })
+
   if (typeof Element.prototype.matches !== 'function') {
     Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.webkitMatchesSelector || function matches(selector) {
       var element = this;

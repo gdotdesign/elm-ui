@@ -52,7 +52,7 @@ decodeElementFunction function param decoder =
 -}
 withBoundingClientRect : Json.Decoder a -> Json.Decoder a
 withBoundingClientRect decoder =
-  decodeElementFunction "getBoundingClientRect" "" decoder
+  decodeElementFunction "dimensions" "" decoder
 
 
 {-| Finds the closest Element with the given selector of the decoded Elmenet.

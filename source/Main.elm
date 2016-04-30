@@ -84,7 +84,6 @@ type Msg
   | OpenModal
   | NoOp
   | Alert
-  | Tick Time.Time
   | PreviousPage
   | NextPage
   | ChooserChanged (Set.Set String)
@@ -104,6 +103,8 @@ type Msg
   | ButtonClicked String
   | Scrolled Bool
   | Loaded Bool
+  | Time2 Ui.Time.Msg
+  | Time Ui.Time.Msg
 
 type alias TaggerModel =
   { label : String, id : Int }
@@ -244,7 +245,7 @@ init =
         Showcase.init
           (\_ -> Ui.SearchInput.init 1000)
           Ui.SearchInput.update
-          (\_ -> Sub.none)
+          (Ui.SearchInput.subscribe SearchInputChanged)
           (\_ -> Sub.none)
     , notificationButton = Ui.IconButton.primary
                             "Show Notification"
@@ -686,6 +687,18 @@ update msg model =
 update' : Msg -> Model -> (Model, Cmd Msg)
 update' msg model =
   case msg of
+    Time act ->
+      let
+        (time, effect) = Ui.Time.update act model.time
+      in
+        ({ model | time = time }, Cmd.map Time effect)
+
+    Time2 act ->
+      let
+        (time2, effect) = Ui.Time.update act model.time2
+      in
+        ({ model | time2 = time2 }, Cmd.map Time effect)
+
     Tabs act ->
       let
         (tabs, effect) = Showcase.update act model.tabs
@@ -847,6 +860,10 @@ gatherSubs model =
             , Showcase.subscribe model.checkbox
             , Showcase.subscribe model.checkbox2
             , Showcase.subscribe model.checkbox3
+            , Showcase.subscribe model.searchInput
+            , Sub.map App Ui.App.subscriptions
+            , Sub.map Time Ui.Time.subscriptions
+            , Sub.map Time2 Ui.Time.subscriptions
             , Sub.map ColorPanel (Showcase.subscriptions model.colorPanel)
             , Sub.map NumberRange (Showcase.subscriptions model.numberRange)
             , Sub.map Slider (Showcase.subscriptions model.slider)

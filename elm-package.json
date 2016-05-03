@@ -28,6 +28,8 @@
     "Ui.ButtonGroup",
     "Ui.Calendar",
     "Ui.Checkbox",
+    "Ui.ColorPanel",
+    "Ui.ColorPicker",
     "Ui"
   ],
   "dependencies": {

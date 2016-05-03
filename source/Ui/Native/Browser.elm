@@ -5,12 +5,11 @@ module Ui.Native.Browser exposing (..)
 @docs openWindow, redirect, alert
 -}
 
+--where
+
 import Task exposing (Task)
 
 import Native.Browser
-
-
---where
 
 
 {-| Opens a new window with the given URL and return the given value.

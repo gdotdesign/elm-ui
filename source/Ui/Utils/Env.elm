@@ -5,12 +5,10 @@ module Ui.Utils.Env exposing (..)
 @docs get, getString
 -}
 
+-- where
+
 import Json.Decode as Json
 import Native.Env
-import Debug
-
-
--- where
 
 
 {-| Gets the value of the given environment variable with a decoder and a

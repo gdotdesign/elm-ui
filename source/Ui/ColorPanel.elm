@@ -1,19 +1,21 @@
 module Ui.ColorPanel exposing
-  (Model, Msg, init, update, view, handleMove, handleClick, setValue,
-   subscriptions, subscribe) -- where
+  (Model, Msg, init, subscribe, subscriptions, update, view, render, setValue)
 
 {-| Color panel component for selecting a colors **hue**, **saturation**,
 **value** and **alpha** components with draggable interfaces.
 
 # Model
-@docs Model, Msg, init, update
+@docs Model, Msg, init, update, subscribe, subscriptions
 
 # View
-@docs view
+@docs view, render
 
 # Functions
-@docs handleMove, handleClick, setValue
+@docs setValue
 -}
+
+-- where
+
 import Html.Events.Geometry exposing (Dimensions, onWithDimensions)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node, div, text)
@@ -21,18 +23,19 @@ import Html exposing (node, div, text)
 import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)
 import Color exposing (Color)
 
-import Json.Decode as JD
-
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui
 
+
 {-| Representation of a color panel:
-  - **readonly** - Whether or not the color panel is editable
+  - **alphaDrag** - The drag model of the alpha slider
+  - **hueDrag** - The drag model of the hue slider
+  - **drag** - The drag model of the value / saturation rectangle
   - **disabled** - Whether or not the color panel is disabled
-  - **drag** (internal) - The drag model of the value / saturation rectangle
-  - **alphaDrag** (internal) - The drag model of the alpha slider
-  - **hueDrag** (internal) - The drag model of the hue slider
+  - **readonly** - Whether or not the color panel is editable
+  - **uid** - The unique identifier of the color panel
+  - **value** - The current HSV color
 -}
 type alias Model =
   { alphaDrag : Drag.Model
@@ -44,78 +47,110 @@ type alias Model =
   , value : Hsv
   }
 
-{-| Actions that a color panel can make. -}
+
+{-| Messages that a color panel can receive.
+-}
 type Msg
   = LiftAlpha Dimensions
   | LiftRect Dimensions
   | LiftHue Dimensions
-  | Move (Float, Float)
+  | Move ( Float, Float )
   | Click Bool
-  | Tasks ()
+
 
 {-| Initializes a color panel with the given Elm color.
 
-    ColorPanel.init Color.blue
+    colorPanel = Ui.ColorPanel.init Color.blue
 -}
 init : Color -> Model
 init color =
   { value = Ext.Color.toHsv color
+  , uid = Native.Uid.uid ()
   , alphaDrag = Drag.init
   , hueDrag = Drag.init
   , drag = Drag.init
   , disabled = False
   , readonly = False
-  , uid = Native.Uid.uid ()
   }
 
+
+{-| Subscribe for the changes of a color panel.
+
+    ...
+    subscriptions =
+      \model ->
+        Ui.ColorPanel.subscribe
+          ColorPanelChanged
+          model.colorPanel
+    ...
+-}
+subscribe : (Hsv -> msg) -> Model -> Sub msg
+subscribe msg model =
+  Emitter.listen
+    model.uid
+    (Emitter.decode decodeHsv (Ext.Color.toHsv Color.black) msg)
+
+
+{-| Subscriptions for a color panel.
+
+    ...
+    subscriptions =
+      \model ->
+        Sub.map
+          ColorPanel
+          (Ui.ColorPanel.subscriptions model.colorPanel)
+    ...
+-}
 subscriptions : Model -> Sub Msg
 subscriptions model =
   let
     dragging =
-      model.alphaDrag.dragging ||
-      model.hueDrag.dragging ||
-      model.drag.dragging
+      model.alphaDrag.dragging
+        || model.hueDrag.dragging
+        || model.drag.dragging
   in
     Drag.subscriptions Move Click dragging
 
-{-| Provides a subscription for the changes of a checkbox. -}
-subscribe : (Hsv -> a) -> Model -> Sub a
-subscribe action model =
-  Emitter.listen
-    model.uid
-    (Emitter.decode decodeHsv (Ext.Color.toHsv Color.black) action)
 
-{-| Updates a color panel. -}
-update : Msg -> Model -> (Model, Cmd Msg)
+{-| Updates a color panel.
+
+    Ui.ColorPanel.update msg colorPanel
+-}
+update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
-    LiftRect (position,dimensions,size) ->
+    LiftRect ( position, dimensions, size ) ->
       { model | drag = Drag.lift dimensions position model.drag }
         |> handleMove position.left position.top
 
-    LiftAlpha (position,dimensions,size) ->
+    LiftAlpha ( position, dimensions, size ) ->
       { model | alphaDrag = Drag.lift dimensions position model.alphaDrag }
         |> handleMove position.left position.top
 
-    LiftHue (position,dimensions,size) ->
+    LiftHue ( position, dimensions, size ) ->
       { model | hueDrag = Drag.lift dimensions position model.hueDrag }
         |> handleMove position.left position.top
 
-    Move (x, y) ->
+    Move ( x, y ) ->
       handleMove x y model
 
     Click pressed ->
-      (handleClick pressed model, Cmd.none)
+      ( handleClick pressed model, Cmd.none )
 
-    Tasks _ ->
-      (model, Cmd.none)
 
-{-| Renders a color panel. -}
+{-| Lazily renders a color panel.
+
+    Ui.ColorPanel.view colorPanel
+-}
 view : Model -> Html.Html Msg
 view model =
   render model
 
--- Render internal
+
+{-| Renders a color panel.
+
+    Ui.ColorPanel.render colorPanel
+-}
 render : Model -> Html.Html Msg
 render model =
   let
@@ -138,37 +173,87 @@ render model =
       (toString (value * 100)) ++ "%"
 
     action act =
-      Ui.enabledActions model
+      Ui.enabledActions
+        model
         [ onWithDimensions "mousedown" False act ]
   in
-    node "ui-color-panel" [ classList [ ("disabled", model.disabled)
-                                      , ("readonly", model.readonly)
-                                      ]
-                          ]
-      [ div []
-        [ node "ui-color-panel-rect"
-            ([ style [ ("background-color", background )
-                     , ("cursor", if model.drag.dragging then "move" else "" )
-                     ]
-             ] ++ (action LiftRect))
-            [ renderHandle
-              (asPercent (1 - color.value))
-              (asPercent color.saturation) ]
-        , node "ui-color-panel-hue"
-            ([ style [("cursor", if model.hueDrag.dragging then "move" else "" )]
-            ] ++ (action LiftHue))
-            [ renderHandle (asPercent color.hue) "" ]
-        ]
-      , node "ui-color-panel-alpha"
-        ([ style [("cursor", if model.alphaDrag.dragging then "move" else "" )]
-        ] ++ (action LiftAlpha))
-        [ div [style [("background-image", gradient)]] []
-        , renderHandle "" (asPercent color.alpha)
-        ]
+    node
+      "ui-color-panel"
+      [ classList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+      ]
+      [ div
+          []
+          [ node
+              "ui-color-panel-rect"
+              ([ style
+                  [ ( "background-color", background )
+                  , ( "cursor"
+                    , if model.drag.dragging then
+                        "move"
+                      else
+                        ""
+                    )
+                  ]
+               ]
+                ++ (action LiftRect)
+              )
+              [ renderHandle
+                  (asPercent (1 - color.value))
+                  (asPercent color.saturation)
+              ]
+          , node
+              "ui-color-panel-hue"
+              ([ style
+                  [ ( "cursor"
+                    , if model.hueDrag.dragging then
+                        "move"
+                      else
+                        ""
+                    )
+                  ]
+               ]
+                ++ (action LiftHue)
+              )
+              [ renderHandle (asPercent color.hue) "" ]
+          ]
+      , node
+          "ui-color-panel-alpha"
+          ([ style
+              [ ( "cursor"
+                , if model.alphaDrag.dragging then
+                    "move"
+                  else
+                    ""
+                )
+              ]
+           ]
+            ++ (action LiftAlpha)
+          )
+          [ div [ style [ ( "background-image", gradient ) ] ] []
+          , renderHandle "" (asPercent color.alpha)
+          ]
       ]
 
-{-| Updates a color panel color by coordinates. -}
-handleMove : Float -> Float -> Model -> (Model, Cmd Msg)
+
+{-| Sets the vale of a color panel.
+
+    Ui.ColorPanel.setValue Color.black colorPanel
+-}
+setValue : Color -> Model -> Model
+setValue color model =
+  { model | value = Ext.Color.toHsv color }
+
+
+
+--------------------------------- PRIVATE --------------------------------------
+
+
+{-| Updates a color panel color by coordinates.
+-}
+handleMove : Float -> Float -> Model -> ( Model, Cmd Msg )
 handleMove x y model =
   let
     color =
@@ -182,77 +267,112 @@ handleMove x y model =
         model.value
   in
     if model.value == color then
-      (model, Cmd.none)
+      ( model, Cmd.none )
     else
-      ({ model | value = color }
-       , Emitter.send model.uid (encodeHsv model.value) )
+      ( { model | value = color }
+      , Emitter.send model.uid (encodeHsv model.value)
+      )
 
-{-| Updates a color panel, stopping the drags if the mouse isn't pressed. -}
+
+{-| Updates a color panel, stopping the drags if the mouse isn't pressed.
+-}
 handleClick : Bool -> Model -> Model
 handleClick value model =
   let
-    alphaDrag = Drag.handleClick value model.alphaDrag
-    hueDrag = Drag.handleClick value model.hueDrag
-    drag = Drag.handleClick value model.drag
+    alphaDrag =
+      Drag.handleClick value model.alphaDrag
+
+    hueDrag =
+      Drag.handleClick value model.hueDrag
+
+    drag =
+      Drag.handleClick value model.drag
   in
-    if model.alphaDrag == alphaDrag &&
-       model.hueDrag == hueDrag &&
-       model.drag == drag then
+    if
+      model.alphaDrag
+        == alphaDrag
+        && model.hueDrag
+        == hueDrag
+        && model.drag
+        == drag
+    then
       model
     else
-      { model | alphaDrag = alphaDrag
-              , hueDrag = hueDrag
-              , drag = drag  }
+      { model
+        | alphaDrag = alphaDrag
+        , hueDrag = hueDrag
+        , drag = drag
+      }
 
-{-| Sets the vale of a color panel. -}
-setValue : Color -> Model -> Model
-setValue color model =
-  { model | value = Ext.Color.toHsv color }
 
--- Handles the hue drag
+{-| Handles the hue drag.
+-}
 handleHue : Float -> Float -> Hsv -> Drag.Model -> Hsv
 handleHue x y color drag =
   let
-    { top } = Drag.relativePercentPosition x y drag
-    hue = clamp 0 1 top
+    { top } =
+      Drag.relativePercentPosition x y drag
+
+    hue =
+      clamp 0 1 top
   in
     if color.hue == hue then
       color
     else
       { color | hue = hue }
 
--- Handles the value / saturation drag
+
+{-| Handles the value / saturation drag.
+-}
 handleRect : Float -> Float -> Hsv -> Drag.Model -> Hsv
 handleRect x y color drag =
   let
-    { top, left } = Drag.relativePercentPosition x y drag
-    saturation = clamp 0 1 left
-    value = 1 - (clamp 0 1 top)
+    { top, left } =
+      Drag.relativePercentPosition x y drag
+
+    saturation =
+      clamp 0 1 left
+
+    value =
+      1 - (clamp 0 1 top)
   in
-    if color.saturation == saturation &&
-       color.value == value then
+    if
+      color.saturation
+        == saturation
+        && color.value
+        == value
+    then
       color
     else
       { color | saturation = saturation, value = value }
 
--- Handles the alpha drag
+
+{-| Handles the alpha drag.
+-}
 handleAlpha : Float -> Float -> Hsv -> Drag.Model -> Hsv
 handleAlpha x y color drag =
   let
-    { left } = Drag.relativePercentPosition x y drag
-    alpha = clamp 0 1 left
+    { left } =
+      Drag.relativePercentPosition x y drag
+
+    alpha =
+      clamp 0 1 left
   in
     if color.alpha == alpha then
       color
     else
       { color | alpha = alpha }
 
--- Renders a handle
+
+{-| Renders a handle
+-}
 renderHandle : String -> String -> Html.Html Msg
 renderHandle top left =
-  node "ui-color-panel-handle"
-    [ style [ ("top", top)
-            , ("left", left)
-            ]
+  node
+    "ui-color-panel-handle"
+    [ style
+        [ ( "top", top )
+        , ( "left", left )
+        ]
     ]
     []

@@ -10,13 +10,13 @@ module Ui.Native.Dom exposing (..)
 @docs withNearest
 -}
 
+-- where
+
 import Task exposing (Task)
+
 import Json.Decode as Json
 
 import Native.Dom
-
-
--- where
 
 
 {-| Focuses a DOM element with the given selector.

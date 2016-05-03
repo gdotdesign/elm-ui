@@ -21,10 +21,8 @@ module Ext.Date exposing (..)
 
 -- where
 
-import Native.DateTime
-
 import Time exposing (Time)
-
+import Native.DateTime
 import Array
 import Date
 

@@ -26,7 +26,9 @@ module Ui.Helpers.Drag exposing (..)
 -- where
 
 import Html.Events.Geometry exposing (MousePosition, ElementDimensions)
+
 import Mouse
+
 
 {-| Representation of a drag:
   - **mouseStartPosition** - The start position of the mouse
@@ -74,7 +76,7 @@ subscriptions : (( Float, Float ) -> msg) -> (Bool -> msg) -> Bool -> Sub msg
 subscriptions move click dragging =
   if dragging then
     Sub.batch
-      [ Mouse.moves (move << (\{x,y} -> (toFloat x, toFloat y)))
+      [ Mouse.moves (move << (\{ x, y } -> ( toFloat x, toFloat y )))
       , Mouse.ups (click << (\_ -> False))
       ]
   else

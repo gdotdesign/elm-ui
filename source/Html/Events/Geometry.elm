@@ -15,11 +15,11 @@ dimensions, mouse position and window size from events.
 
 -- where
 
-import Json.Decode as Json exposing ((:=))
-
 import Html.Events.Options exposing (stopPropagationOptions)
 import Html.Events exposing (onWithOptions)
 import Html
+
+import Json.Decode as Json exposing ((:=))
 
 import Ui.Native.Dom as Dom
 
@@ -58,7 +58,7 @@ type alias WindowSize =
 and WindowSize.
 -}
 type alias Dimensions =
-  (MousePosition, ElementDimensions, WindowSize)
+  ( MousePosition, ElementDimensions, WindowSize )
 
 
 {-| Decodes the mouse position from an event.

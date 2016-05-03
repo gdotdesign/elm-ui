@@ -30,6 +30,15 @@
     "Ui.Checkbox",
     "Ui.ColorPanel",
     "Ui.ColorPicker",
+    "Ui.Container",
+    "Ui.DatePicker",
+    "Ui.DropdownMenu",
+    "Ui.IconButton",
+    "Ui.Image",
+    "Ui.InplaceInput",
+    "Ui.Input",
+    "Ui.Loader",
+    "Ui.Modal",
     "Ui"
   ],
   "dependencies": {

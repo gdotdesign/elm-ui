@@ -34,7 +34,7 @@ type Msg
 
 {-| Initializes an image from an URL.
 
-    model = Ui.Image.init "http://some.url/image.png"
+    image = Ui.Image.init "http://some.url/image.png"
 -}
 init : String -> Model
 init url =
@@ -45,7 +45,7 @@ init url =
 
 {-| Updates an image.
 
-    Ui.Image.update model
+    Ui.Image.update image
 -}
 update : Msg -> Model -> Model
 update action model =

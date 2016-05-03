@@ -1,25 +1,26 @@
 module Ui.Loader exposing (Model, Msg, init, update, render, view, overlayView, barView, start, finish)
 
-{-| Loading component, it has a wait period before showing itself.
+{-| Loading component, it has a waiting period before showing itself.
 
 # Model
 @docs Model, Msg, init, update
 
 # View
-@docs render, view,
+@docs view, render
 
 # View Variations
-overlayView, barView
+@docs overlayView, barView
 
 # Functions
 @docs start, finish
 -}
 
+-- where
+
 import Html.Attributes exposing (classList, class)
 import Html exposing (node, div)
 
 import Task
-
 
 {-| Representation of a loader:
   - **timeout** - The waiting perid in milliseconds
@@ -42,7 +43,7 @@ type Msg
 
 {-| Initializes a loader with the given timeout.
 
-    model = Ui.Loader.init 200
+    loader = Ui.Loader.init 200
 -}
 init : Float -> Model
 init timeout =
@@ -54,7 +55,7 @@ init timeout =
 
 {-| Updates a loader.
 
-    Ui.Loader.update msg model
+    Ui.Loader.update msg loader
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -65,13 +66,13 @@ update msg model =
       else
         ( model, Cmd.none )
 
-    _ ->
+    NoOp _ ->
       ( model, Cmd.none )
 
 
 {-| Lazily renders a loader.
 
-    Ui.Loader.view model
+    Ui.Loader.view loader
 -}
 view : String -> List (Html.Html msg) -> Model -> Html.Html msg
 view kind content model =
@@ -80,7 +81,7 @@ view kind content model =
 
 {-| Lazily renders a loader as an overlay.
 
-    Ui.Loader.overlayView model
+    Ui.Loader.overlayView loader
 -}
 overlayView : Model -> Html.Html msg
 overlayView model =
@@ -89,7 +90,7 @@ overlayView model =
 
 {-| Lazily renders a loader as a bar.
 
-    Ui.Loader.barView model
+    Ui.Loader.barView loader
 -}
 barView : Model -> Html.Html msg
 barView model =
@@ -98,7 +99,7 @@ barView model =
 
 {-| Rendes a loader.
 
-    Ui.Loader.render kind contents model
+    Ui.Loader.render kind contents loader
 -}
 render : String -> List (Html.Html msg) -> Model -> Html.Html msg
 render kind content model =
@@ -113,6 +114,8 @@ render kind content model =
 
 
 {-| Finishes the loading process.
+
+    Ui.Loader.finish loader
 -}
 finish : Model -> Model
 finish model =
@@ -120,6 +123,8 @@ finish model =
 
 
 {-| Starts the loading process.
+
+    Ui.Loader.finish start
 -}
 start : Model -> ( Model, Cmd Msg )
 start model =

@@ -1,4 +1,10 @@
-module Ui.IconButton exposing (Model, init, render, view, primary, primarySmall, primaryBig, secondaryBig, secondarySmall, secondary, warningBig, warningSmall, warning, successBig, successSmall, success, dangerBig, dangerSmall, danger)
+module Ui.IconButton exposing
+  (Model, init, render, view
+  , primary, primarySmall, primaryBig
+  , secondary, secondaryBig, secondarySmall
+  , warning, warningBig, warningSmall
+  , success, successBig, successSmall
+  , danger, dangerBig, dangerSmall)
 
 {-| Button with an icon either on the left or right side.
 
@@ -44,7 +50,7 @@ type alias Model =
 
 {-| Initializes an icon button with a glyph and text.
 
-    IconButton.init "android-download" "Download"
+    iconButton = Ui.IconButton.init "android-download" "Download"
 -}
 init : String -> String -> Model
 init glyph text =

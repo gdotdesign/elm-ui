@@ -1,4 +1,5 @@
-module Ui.Input exposing (Model, Msg, init, subscribe, update, view, render, setValue, focus)
+module Ui.Input exposing
+  (Model, Msg, init, subscribe, update, view, render, setValue, focus)
 
 {-| Component for single line text based input (wrapper for the input HTML tag).
 
@@ -11,6 +12,8 @@ module Ui.Input exposing (Model, Msg, init, subscribe, update, view, render, set
 # Functions
 @docs setValue, focus
 -}
+
+-- where
 
 import Html.Events exposing (onInput)
 import Html exposing (node)
@@ -62,7 +65,7 @@ type Msg
 
 {-| Initializes an input with a default value and a placeholder.
 
-    model = Ui.Input.init "value" "Placeholder..."
+    input = Ui.Input.init "value" "Placeholder..."
 -}
 init : String -> String -> Model
 init value placeholder =
@@ -89,7 +92,7 @@ subscribe msg model =
 
 {-| Updates an input.
 
-    Ui.Input.update msg model
+    Ui.Input.update msg input
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -103,7 +106,7 @@ update msg model =
 
 {-| Lazily renders an input.
 
-    Ui.Input.view model
+    Ui.Input.view input
 -}
 view : Model -> Html.Html Msg
 view model =
@@ -112,7 +115,7 @@ view model =
 
 {-| Renders an input.
 
-    Ui.Input.render model
+    Ui.Input.render input
 -}
 render : Model -> Html.Html Msg
 render model =
@@ -140,7 +143,7 @@ render model =
 
 {-| Sets the value of an input.
 
-    Ui.Input.setValue "new value" model
+    Ui.Input.setValue "new value" input
 -}
 setValue : String -> Model -> Model
 setValue value model =
@@ -149,7 +152,7 @@ setValue value model =
 
 {-| Focuses an input.
 
-    Cmd.map Input (Ui.Input.focus model)
+    Cmd.map Input (Ui.Input.focus input)
 -}
 focus : Model -> Cmd Msg
 focus model =

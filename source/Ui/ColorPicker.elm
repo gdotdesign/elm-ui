@@ -1,8 +1,8 @@
 module Ui.ColorPicker exposing
   (Model, Msg, init, subscribe, subscriptions, update, view, render, setValue)
 
-{-| An input component that displays a color panel (in a dropdown) when focused,
-allowing the user to manipulate the color via the color panel.
+{-| An input component that displays a **Ui.ColorPanel** (in a dropdown) when focused,
+allowing the user to manipulate the selected color.
 
 # Model
 @docs Model, Msg, init, subscribe, subscriptions, update

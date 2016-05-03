@@ -68,9 +68,15 @@ init color =
   , uid = Native.Uid.uid ()
   }
 
-subscriptions : Sub Msg
-subscriptions =
-  Drag.subscriptions Move Click
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  let
+    dragging =
+      model.alphaDrag.dragging ||
+      model.hueDrag.dragging ||
+      model.drag.dragging
+  in
+    Drag.subscriptions Move Click dragging
 
 {-| Provides a subscription for the changes of a checkbox. -}
 subscribe : (Hsv -> a) -> Model -> Sub a

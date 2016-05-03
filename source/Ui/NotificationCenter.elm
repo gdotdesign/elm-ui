@@ -15,7 +15,7 @@ virtual-dom to fix "keys" concept.
 # Functions
 @docs notify
 -}
-import Html.Attributes exposing (classList, style)
+import Html.Attributes exposing (classList, style, id)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
 
@@ -123,7 +123,8 @@ renderNotification address model =
         _ -> ""
   in
     node "ui-notification"
-      [ classList [(model.class, True)]
+      [ id (toString model.id)
+      , classList [(model.class, True)]
       , onClick (address (Hide model.id))
       , style [ ("animation-duration", duration)
               , (prefix ++ "animation-duration", duration)

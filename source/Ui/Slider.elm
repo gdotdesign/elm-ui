@@ -73,9 +73,9 @@ subscribe : (Float -> msg) -> Model -> Sub msg
 subscribe msg model =
   Emitter.listenFloat model.uid msg
 
-subscriptions : Sub Msg
-subscriptions =
-  Drag.subscriptions Move Click
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Drag.subscriptions Move Click model.drag.dragging
 
 {-| Updates a slider. -}
 update : Msg -> Model -> (Model, Cmd Msg)

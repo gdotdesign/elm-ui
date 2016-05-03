@@ -374,19 +374,19 @@ init =
           (\_ -> Ui.ColorPicker.init Color.yellow)
           Ui.ColorPicker.update
           (\_ -> Sub.none)
-          (\_ -> Ui.ColorPicker.subscriptions)
+          (\model -> Ui.ColorPicker.subscriptions model)
     , colorPanel =
         Showcase.init
           (\_-> Ui.ColorPanel.init Color.blue)
           Ui.ColorPanel.update
           (\_ -> Sub.none)
-          (\_ -> Ui.ColorPanel.subscriptions)
+          (\model -> Ui.ColorPanel.subscriptions model)
     , numberRange =
         Showcase.init
           (\_-> Ui.NumberRange.init 0)
           Ui.NumberRange.update
           (\_ -> Sub.none)
-          (\_ -> Ui.NumberRange.subscriptions)
+          (\model -> Ui.NumberRange.subscriptions model)
     , buttonGroup = { enabled = buttonGroup
                     , disabled = { buttonGroup | disabled = True }
                     }
@@ -432,7 +432,7 @@ init =
           (\_ -> Ui.Slider.init 50)
           Ui.Slider.update
           (\_ -> Sub.none)
-          (\_ -> Ui.Slider.subscriptions)
+          (\model -> Ui.Slider.subscriptions model)
     , menu = Ui.DropdownMenu.init
     , modal = Ui.Modal.init
     , loader = { loader | shown = True }

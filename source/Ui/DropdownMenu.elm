@@ -20,9 +20,10 @@ import Html.Events.Extra exposing (onStop)
 import Html.Attributes exposing (style, classList)
 import Html.Events exposing (onWithOptions)
 import Html exposing (node)
-import Json.Decode as Json
 
-import Ui.Helpers.Emitter as Emitter
+import Json.Decode as Json
+import Mouse
+
 import Ui.Native.Dom as Dom
 
 {-| Represents dimensions for a dropdown menu. -}
@@ -61,10 +62,7 @@ type Msg
 
 subscriptions : Sub Msg
 subscriptions =
-  let
-    decoder = Emitter.decode (Json.bool) False
-  in
-    Emitter.listen "mouse-click" (decoder Click)
+  Mouse.downs (Click << (\_ -> False))
 
 {-| Initializes a dropdown. -}
 init : Model
@@ -90,7 +88,7 @@ view address element children model =
     ]
     [ element
     , node "ui-dropdown-menu-items"
-      [ onStop "mouseup" (address NoOp)
+      [ onStop "mousedown" (address NoOp)
       , classList [("open", model.open)]
       , style [ ("top", (toString model.top) ++ "px")
               , ("left", (toString model.left) ++ "px")

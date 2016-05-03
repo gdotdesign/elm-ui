@@ -70,8 +70,8 @@ init color =
 subscribe model =
   Ui.ColorPanel.subscribe model.colorPanel
 
-subscriptions =
-  Sub.map ColorPanel Ui.ColorPanel.subscriptions
+subscriptions model =
+  Sub.map ColorPanel (Ui.ColorPanel.subscriptions model.colorPanel)
 
 {-| Updates a color picker. -}
 update : Msg -> Model -> (Model, Cmd Msg)

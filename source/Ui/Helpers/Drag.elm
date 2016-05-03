@@ -26,11 +26,7 @@ module Ui.Helpers.Drag exposing (..)
 -- where
 
 import Html.Events.Geometry exposing (MousePosition, ElementDimensions)
-
-import Json.Encode as JE
-import Json.Decode as JD
-
-import Ui.Helpers.Emitter as Emitter
+import Mouse
 
 {-| Representation of a drag:
   - **mouseStartPosition** - The start position of the mouse
@@ -74,19 +70,15 @@ init =
 {-| Creates subscriptions for a drag with the message for mouse move and
 mouse click.
 -}
-subscriptions : (( Float, Float ) -> msg) -> (Bool -> msg) -> Sub msg
-subscriptions move click =
-  let
-    decoder =
-      Emitter.decode (JD.tuple2 (,) JD.float JD.float) ( 0, 0 )
-
-    decoder2 =
-      Emitter.decode (JD.bool) False
-  in
+subscriptions : (( Float, Float ) -> msg) -> (Bool -> msg) -> Bool -> Sub msg
+subscriptions move click dragging =
+  if dragging then
     Sub.batch
-      [ Emitter.listen "mouse-move" (decoder move)
-      , Emitter.listen "mouse-click" (decoder2 click)
+      [ Mouse.moves (move << (\{x,y} -> (toFloat x, toFloat y)))
+      , Mouse.ups (click << (\_ -> False))
       ]
+  else
+    Sub.none
 
 
 {-| Calculates the difference between the start position and the given position.

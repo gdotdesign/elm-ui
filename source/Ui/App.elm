@@ -16,10 +16,10 @@ module Ui.App exposing (Model, Msg, init, subscribe, subscriptions, update, view
 
 -- where
 
-import Html.Events.Extra exposing (onScroll, onMouseMove)
 import Html.Attributes exposing (name, content, style)
 import Html.Events.Geometry exposing (MousePosition)
 import Html.Events exposing (onMouseDown, onMouseUp)
+import Html.Events.Extra exposing (onScroll)
 import Html exposing (node, text)
 
 import Time exposing (Time)
@@ -48,9 +48,7 @@ type alias Model =
 {-| Messages that an application can receive.
 -}
 type Msg
-  = MouseMove MousePosition
-  | Click Bool
-  | Tick Time
+  = Tick Time
   | Scrolled
   | Loaded
 
@@ -106,12 +104,6 @@ update msg model =
     Tick now ->
       ( model, Ui.Time.updateTime now )
 
-    MouseMove { top, left } ->
-      ( model, Emitter.send "mouse-move" (JE.list [ JE.float left, JE.float top ]) )
-
-    Click pressed ->
-      ( model, Emitter.send "mouse-click" (JE.bool pressed) )
-
 
 {-| Lazily renders an application.
 
@@ -140,9 +132,6 @@ render address model children =
           )
         ]
     , onScroll (address Scrolled)
-    , onMouseMove (\pos -> address (MouseMove pos))
-    , onMouseUp (address (Click False))
-    , onMouseDown (address (Click True))
     ]
     ([ Ui.stylesheetLink "/main.css" (address Loaded)
      , node "title" [] [ text model.title ]

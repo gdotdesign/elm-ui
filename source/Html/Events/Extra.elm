@@ -8,16 +8,12 @@ module Html.Events.Extra exposing (..)
 # Keyboard Related
 @docs onEnter, onEnterPreventDefault, onKeys, keysDecoder
 
-# Mouse Related
-@docs onMouseMove
-
 # Miscellaneous
 @docs onScroll, onTransitionEnd, onLoad
 -}
 
 -- where
 
-import Html.Events.Geometry exposing (MousePosition, decodeMousePosition)
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
 import Html.Events exposing (on, keyCode, onWithOptions)
 import Html
@@ -127,14 +123,6 @@ events for things like script, link or image tags.
 onLoad : msg -> Html.Attribute msg
 onLoad msg =
   on "load" (Json.succeed msg)
-
-
-{-| Capture [mousemove](https://developer.mozilla.org/en-US/docs/Web/Events/mousemove)
-events.
--}
-onMouseMove : (MousePosition -> msg) -> Html.Attribute msg
-onMouseMove msg =
-  on "mousemove" (Json.map msg decodeMousePosition)
 
 
 {-| A decoder which succeeds when a specific key is pressed from the given list.

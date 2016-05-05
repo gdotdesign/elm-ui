@@ -17,6 +17,7 @@ import Html.App
 
 import Debug exposing (log)
 
+import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
 import Ui.NotificationCenter
 import Ui.DropdownMenu
@@ -95,6 +96,7 @@ type Msg
   -- | TaggerAddFailed String
   | CalendarChanged Time.Time
   | SearchInputChanged String
+  | TextAreaChanged String
   | BreadcrumbClicked String
   | Checkbox2Changed Bool
   | Checkbox3Changed Bool
@@ -105,6 +107,9 @@ type Msg
   | Loaded Bool
   | Time2 Ui.Time.Msg
   | Time Ui.Time.Msg
+  | Saved String
+  | TLoaded String
+  | Failed String
 
 type alias TaggerModel =
   { label : String, id : Int }
@@ -407,7 +412,7 @@ init =
         Showcase.init
           (\_ -> Ui.Textarea.init "Test" "Placeholder")
           Ui.Textarea.update
-          (\_ -> Sub.none)
+          (Ui.Textarea.subscribe TextAreaChanged)
           (\_ -> Sub.none)
     , numberPad =
         Showcase.init
@@ -676,12 +681,18 @@ update msg model =
     Alert ->
       { model | clicked = True }
 
+    TLoaded value ->
+      { model | textarea = Showcase.updateModels (\txta -> Ui.Textarea.setValue value txta) model.textarea}
+
     _ ->
       model
 
 update' : Msg -> Model -> (Model, Cmd Msg)
 update' msg model =
   case msg of
+    TextAreaChanged value ->
+      (model, Task.perform Failed Saved (LocalStorage.setItem "textarea" value))
+
     Time act ->
       let
         (time, effect) = Ui.Time.update act model.time
@@ -856,6 +867,7 @@ gatherSubs model =
             , Showcase.subscribe model.checkbox2
             , Showcase.subscribe model.checkbox3
             , Showcase.subscribe model.searchInput
+            , Showcase.subscribe model.textarea
             , Sub.map App Ui.App.subscriptions
             , Sub.map Time Ui.Time.subscriptions
             , Sub.map Time2 Ui.Time.subscriptions
@@ -868,7 +880,7 @@ gatherSubs model =
 
 main =
   Html.App.program
-    { init = (init, Cmd.none)
+    { init = (init, Task.perform Failed TLoaded (LocalStorage.getItem "textarea"))
     , view = view
     , update = update'
     , subscriptions = \model -> gatherSubs model

@@ -1,77 +1,75 @@
-Elm.Native.LocalStorage = {};
-Elm.Native.LocalStorage.make = function(elm) {
-  elm.Native = elm.Native || {};
-  elm.Native.LocalStorage = elm.Native.LocalStorage || {};
-  if (elm.Native.LocalStorage.values) {return elm.Native.LocalStorage.values; }
-
-  var Task = Elm.Native.Task.make(elm);
-
+var _gdotdesign$elm_ui$Native_LocalStorage = function() {
+  var Scheduler = _elm_lang$core$Native_Scheduler
   var isChromeApp = window.chrome && window.chrome.storage
 
   /* Gets a value from the localStorage as a result. */
   function get(key){
-    if(isChromeApp) {
-      return Task.asyncFunction(function(callback){
+    return Scheduler.nativeBinding(function(callback){
+
+      if(isChromeApp) {
         chrome.storage.local.get(key, function(data){
           if(data[key]) {
-            callback(Task.succeed(data[key]))
+            callback(Scheduler.succeed(data[key]))
           } else {
-            callback(Task.fail("Key does not exsists in local storage!"))
+            callback(Scheduler.fail("Key does not exsists in local storage!"))
           }
         })
-      })
-    } else {
-      result = window.localStorage.getItem(key);
-      if(result) {
-        return Task.succeed(result);
       } else {
-        return Task.fail("Key does not exsists in local storage!");
+        var result = window.localStorage.getItem(key)
+        if(result) {
+          callback(Scheduler.succeed(result))
+        } else {
+          callback(Scheduler.fail("Key does not exsists in local storage!"))
+        }
       }
-    }
+
+    })
   }
 
   /* Sets a value to the localStoraget as a result. */
   function set(key, value){
-    if(isChromeApp) {
-      return Task.asyncFunction(function(callback){
+    return Scheduler.nativeBinding(function(callback){
+
+      if(isChromeApp) {
         obj = {}
         obj[key] = value
         chrome.storage.local.set(obj,function(){
-          callback(Task.succeed(""))
+          callback(Scheduler.succeed(""))
         })
-      })
-    } else {
-      try {
-        window.localStorage.setItem(key, value);
-        return Task.succeed(value);
-      } catch (e) {
-        return Task.fail("Could not write to local storage!")
+      } else {
+        try {
+          window.localStorage.setItem(key, value)
+          return callback(Scheduler.succeed(value))
+        } catch (e) {
+          return callback(Scheduler.fail("Could not write to local storage!"))
+        }
       }
-    }
+
+    })
   }
 
   /* Removes a value from the localStorage as a result. */
   function remove(key) {
-    if(isChromeApp) {
-      return Task.asyncFunction(function(callback){
+    return Scheduler.nativeBinding(function(callback){
+      if(isChromeApp) {
         chrome.storage.local.remove(key,function(){
-          callback(Task.succeed(""))
+          callback(Scheduler.succeed(""))
         })
-      })
-    } else {
-      try {
-        window.localStorage.removeItem(key);
-        return Task.succeed(key);
-      } catch (e) {
-        return Task.fail("Could not delete given key from local storage!");
+      } else {
+        try {
+          window.localStorage.removeItem(key)
+          return callback(Scheduler.succeed(key))
+        } catch (e) {
+          return callback(Scheduler.fail("Could not delete given key from local storage!"))
+        }
       }
-    }
+    })
   }
 
   /* Interface. */
-  return elm.Native.LocalStorage.values = {
+  return {
     remove: remove,
     set: F2(set),
     get: get
-  };
-};
+  }
+}()

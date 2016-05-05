@@ -97,3 +97,11 @@ render address renderFn model =
       , td [] [ Html.App.map Readonly (renderFn model.readonly) ]
       , td [] [ Html.App.map Disabled (renderFn model.disabled) ]
       ])
+
+updateModels : (component -> component) -> Model component msg parentMsg -> Model component msg parentMsg
+updateModels fn model =
+  { model
+  | enabled = fn model.enabled
+  , disabled = fn model.disabled
+  , readonly = fn model.readonly
+  }

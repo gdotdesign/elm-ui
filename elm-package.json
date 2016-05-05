@@ -20,6 +20,7 @@
     "Ui.Helpers.Dropdown",
     "Ui.Helpers.Emitter",
     "Ui.Helpers.Intendable",
+    "Ui.Native.LocalStorage",
     "Ui.Native.Browser",
     "Ui.Native.Dom",
     "Ui.Utils.Env",

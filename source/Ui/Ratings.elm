@@ -1,4 +1,5 @@
-module Ui.Ratings exposing (Model, Msg, init, subscribe, update, view, setValue, valueAsStars)
+module Ui.Ratings exposing
+  (Model, Msg, init, subscribe, update, view, render, setValue, valueAsStars)
 
 {-| A simple star rating component.
 
@@ -6,10 +7,10 @@ module Ui.Ratings exposing (Model, Msg, init, subscribe, update, view, setValue,
 @docs Model, Msg, init, subscribe, update
 
 # View
-@docs view
+@docs view, render
 
 # Functions
-@docs setValue, setAndSendValue, valueAsStars
+@docs setValue, valueAsStars
 -}
 
 -- where
@@ -22,7 +23,6 @@ import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
 
-import Native.Browser
 import Native.Uid
 
 import Ui.Helpers.Emitter as Emitter
@@ -30,7 +30,7 @@ import Ui
 
 
 {-| Representation of a ratings component:
-  - **hoverValue** (internal) - The transient value of the component
+  - **hoverValue** - The transient value of the component
   - **clearable** - Whether or not the component is clearable
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
@@ -64,7 +64,7 @@ type Msg
 value.
 
     -- 1 out of 10 star rating
-    Ratings.init 10 0.1
+    ratings = Ui.Ratings.init 10 0.1
 -}
 init : Int -> Float -> Model
 init size value =
@@ -82,7 +82,7 @@ init size value =
 
     ...
     subscriptions =
-      \model -> Ui.Ratings.subscribe Ratings model.ratings
+      \model -> Ui.Ratings.subscribe RatingsChanged model.ratings
     ...
 -}
 subscribe : (Float -> msg) -> Model -> Sub msg
@@ -125,6 +125,8 @@ update msg model =
 
 
 {-| Lazily renders a ratings component.
+
+    Ui.Ratings.view ratings
 -}
 view : Model -> Html.Html Msg
 view model =
@@ -132,6 +134,8 @@ view model =
 
 
 {-| Renders a ratings component.
+
+    Ui.Ratings.render ratings
 -}
 render : Model -> Html.Html Msg
 render model =
@@ -165,6 +169,8 @@ render model =
 
 
 {-| Sets the value of a ratings component.
+
+    Ui.Ratings.setValue 8 ratings
 -}
 setValue : Float -> Model -> Model
 setValue value' model =
@@ -186,6 +192,19 @@ setValue value' model =
       }
 
 
+{-| Returns the value of a ratings component as number of stars.
+
+    Ui.NumberRange.valueAsStars 10 ratings
+-}
+valueAsStars : Float -> Model -> Int
+valueAsStars value model =
+  round (value * (toFloat model.size))
+
+
+
+----------------------------------- PRIVATE ------------------------------------
+
+
 {-| Sets the given value and sends it to the value address.
 -}
 setAndSendValue : Float -> Model -> ( Model, Cmd Msg )
@@ -205,13 +224,6 @@ setAndSendValue value model =
 sendValue : Model -> Cmd Msg
 sendValue model =
   Emitter.sendFloat model.uid model.value
-
-
-{-| Returns the value of a ratings component as number of stars.
--}
-valueAsStars : Float -> Model -> Int
-valueAsStars value model =
-  round (value * (toFloat model.size))
 
 
 {-| Calculates the value for the given star (index).

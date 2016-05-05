@@ -41,6 +41,8 @@
     "Ui.Modal",
     "Ui.NumberPad",
     "Ui.NumberRange",
+    "Ui.Pager",
+    "Ui.Ratings",
     "Ui"
   ],
   "dependencies": {

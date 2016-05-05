@@ -1,7 +1,4 @@
-module Ui.Pager exposing
-  (Model, Msg, init, update, view, select)
-
--- where
+module Ui.Pager exposing (Model, Msg, init, update, view, render, select)
 
 {-| Pager Component.
 
@@ -9,22 +6,27 @@ module Ui.Pager exposing
 @docs Model, Msg, init, update
 
 # View
-@docs view
+@docs view, render
 
 # Functions
 @docs select
 -}
-import Html.Attributes exposing (style, classList)
+
+-- where
+
 import Html.Events.Extra exposing (onTransitionEnd)
+import Html.Attributes exposing (style, classList)
 import Html exposing (node)
+
 import List.Extra
 
+
 {-| Representation of a pager:
-  - **left** (internal) - Pages at the left side
-  - **center** (internal) - Pages at the center
-  - **active** (internal) - The active page
+  - **center** - Pages at the center
+  - **left** - Pages at the left side
   - **height** - The height of the pager
   - **width** - The width of the pager
+  - **active** - The active page
 -}
 type alias Model =
   { center : List Int
@@ -34,12 +36,18 @@ type alias Model =
   , active : Int
   }
 
-{-| Actions that a pager can take. -}
-type Msg
-  = End Int
-  | Active Int
 
-{-| Initailizes a pager with the given page as active. -}
+{-| Messages that a pager can receive.
+-}
+type Msg
+  = Active Int
+  | End Int
+
+
+{-| Initailizes a pager with the given page as active.
+
+    pager = Ui.Pager.init 0
+-}
 init : Int -> Model
 init active =
   { height = "100vh"
@@ -49,7 +57,11 @@ init active =
   , left = []
   }
 
-{-| Updates a pager. -}
+
+{-| Updates a pager.
+
+    Ui.Pager.update msg pager
+-}
 update : Msg -> Model -> Model
 update action model =
   case action of
@@ -59,48 +71,59 @@ update action model =
     Active page ->
       { model | center = [], active = page }
 
-{-| Renders a pager. -}
+
+{-| Lazily renders a pager.
+
+    Ui.Pager.view Pager pages pager
+-}
 view : (Msg -> msg) -> List (Html.Html msg) -> Model -> Html.Html msg
 view address pages model =
   render address pages model
 
--- Render internal
+
+{-| Renders a pager.
+
+    Ui.Pager.render Pager pages pager
+-}
 render : (Msg -> msg) -> List (Html.Html msg) -> Model -> Html.Html msg
 render address pages model =
   let
     updatedPage page =
       let
-        index = Maybe.withDefault -1 (List.Extra.elemIndex page pages)
+        index =
+          Maybe.withDefault -1 (List.Extra.elemIndex page pages)
 
         attributes =
           if List.member index model.left then
-            [ classList [("animating", True)]
-            , style [("left", "-100%")]
+            [ classList [ ( "animating", True ) ]
+            , style [ ( "left", "-100%" ) ]
             , onTransitionEnd (address (End index))
             ]
           else if List.member index model.center then
-            [ style [("left", "0%")]
-            , classList [("animating", True)]
+            [ style [ ( "left", "0%" ) ]
+            , classList [ ( "animating", True ) ]
             , onTransitionEnd (address (Active index))
             ]
           else if index == model.active then
-            [ style [("left", "0%")] ]
+            [ style [ ( "left", "0%" ) ] ]
           else
-            [ style [("left", "100%")] ]
+            [ style [ ( "left", "100%" ) ] ]
       in
-        node "ui-page" attributes [page]
+        node "ui-page" attributes [ page ]
   in
     node
       "ui-pager"
-      [ style [ ("width", model.width)
-              , ("height", model.height)
-              ]
+      [ style
+          [ ( "width", model.width )
+          , ( "height", model.height )
+          ]
       ]
       (List.map updatedPage pages)
 
+
 {-| Selects the page with the given index.
 
-    select 0 pager -- Selects the first page
+    Ui.Pager.select 0 pager -- Selects the first page
 -}
 select : Int -> Model -> Model
 select page model =
@@ -112,6 +135,6 @@ select page model =
       model.active == page
   in
     if canAnimate && not isSamePage then
-      { model | left = [model.active], center = [page] }
+      { model | left = [ model.active ], center = [ page ] }
     else
       model

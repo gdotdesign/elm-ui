@@ -1,8 +1,6 @@
 module Ui.Slider exposing
   ( Model, Msg, init, subscribe, subscriptions, update, view, setValue)
 
--- where
-
 {-| Simple slider component.
 
 # Model
@@ -14,10 +12,14 @@ module Ui.Slider exposing
 # Functions
 @docs setValue
 -}
+
+-- where
+
 import Html.Events.Geometry exposing (onWithDimensions, Dimensions)
 import Html.Events.Extra exposing (onKeys)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
+import Html.Lazy
 
 import Native.Uid
 import Dict
@@ -104,7 +106,7 @@ update action model =
 {-| Lazily renders a slider. -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 {-| Renders a slider. -}
 render :Model -> Html.Html Msg

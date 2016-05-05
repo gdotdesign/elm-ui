@@ -25,6 +25,7 @@ module Ui.IconButton exposing
 -- where
 
 import Html exposing (node, text)
+import Html.Lazy
 
 import Ui.Button exposing (attributes)
 import Ui
@@ -94,35 +95,35 @@ render msg model =
 -}
 view : msg -> Model -> Html.Html msg
 view msg model =
-  render msg model
+  Html.Lazy.lazy2 render msg model
 
 
 {-| Lazily renders a "medium primary" icon button with the given text, glyph and size.
 -}
 primary : String -> String -> String -> msg -> Html.Html msg
 primary text glyph side msg =
-  render msg (model text "medium" "primary" glyph side)
+  Html.Lazy.lazy2 render msg (model text "medium" "primary" glyph side)
 
 
 {-| Lazily renders a "small primary" icon button with the given text, glyph and size.
 -}
 primarySmall : String -> String -> String -> msg -> Html.Html msg
 primarySmall text glyph side msg =
-  render msg (model text "small" "primary" glyph side)
+  Html.Lazy.lazy2 render msg (model text "small" "primary" glyph side)
 
 
 {-| Lazily renders a "big primary" icon button with the given text, glyph and size.
 -}
 primaryBig : String -> String -> String -> msg -> Html.Html msg
 primaryBig text glyph side msg =
-  render msg (model text "big" "primary" glyph side)
+  Html.Lazy.lazy2 render msg (model text "big" "primary" glyph side)
 
 
 {-| Lazily renders a "medium danger" icon button with the given text, glyph and size.
 -}
 danger : String -> String -> String -> msg -> Html.Html msg
 danger text glyph side msg =
-  render msg (model text "medium" "danger" glyph side)
+  Html.Lazy.lazy2 render msg (model text "medium" "danger" glyph side)
 
 
 {-| Lazily renders a "small danger" icon button with the given text, glyph and size.
@@ -136,70 +137,70 @@ dangerSmall text glyph side msg =
 -}
 dangerBig : String -> String -> String -> msg -> Html.Html msg
 dangerBig text glyph side msg =
-  render msg (model text "big" "danger" glyph side)
+  Html.Lazy.lazy2 render msg (model text "big" "danger" glyph side)
 
 
 {-| Lazily renders a "medium secondary" icon button with the given text, glyph and size.
 -}
 secondary : String -> String -> String -> msg -> Html.Html msg
 secondary text glyph side msg =
-  render msg (model text "medium" "secondary" glyph side)
+  Html.Lazy.lazy2 render msg (model text "medium" "secondary" glyph side)
 
 
 {-| Lazily renders a "small secondary" icon button with the given text, glyph and size.
 -}
 secondarySmall : String -> String -> String -> msg -> Html.Html msg
 secondarySmall text glyph side msg =
-  render msg (model text "small" "secondary" glyph side)
+  Html.Lazy.lazy2 render msg (model text "small" "secondary" glyph side)
 
 
 {-| Lazily renders a "big secondary" icon button with the given text, glyph and size.
 -}
 secondaryBig : String -> String -> String -> msg -> Html.Html msg
 secondaryBig text glyph side msg =
-  render msg (model text "big" "secondary" glyph side)
+  Html.Lazy.lazy2 render msg (model text "big" "secondary" glyph side)
 
 
 {-| Lazily renders a "medium success" icon button with the given text, glyph and size.
 -}
 success : String -> String -> String -> msg -> Html.Html msg
 success text glyph side msg =
-  render msg (model text "medium" "success" glyph side)
+  Html.Lazy.lazy2 render msg (model text "medium" "success" glyph side)
 
 
 {-| Lazily renders a "small success" icon button with the given text, glyph and size.
 -}
 successSmall : String -> String -> String -> msg -> Html.Html msg
 successSmall text glyph side msg =
-  render msg (model text "small" "success" glyph side)
+  Html.Lazy.lazy2 render msg (model text "small" "success" glyph side)
 
 
 {-| Lazily renders a "big success" icon button with the given text, glyph and size.
 -}
 successBig : String -> String -> String -> msg -> Html.Html msg
 successBig text glyph side msg =
-  render msg (model text "big" "success" glyph side)
+  Html.Lazy.lazy2 render msg (model text "big" "success" glyph side)
 
 
 {-| Lazily renders a "medium warning" icon button with the given text, glyph and size.
 -}
 warning : String -> String -> String -> msg -> Html.Html msg
 warning text glyph side msg =
-  render msg (model text "medium" "warning" glyph side)
+  Html.Lazy.lazy2 render msg (model text "medium" "warning" glyph side)
 
 
 {-| Lazily renders a "small warning" icon button with the given text, glyph and size.
 -}
 warningSmall : String -> String -> String -> msg -> Html.Html msg
 warningSmall text glyph side msg =
-  render msg (model text "small" "warning" glyph side)
+  Html.Lazy.lazy2 render msg (model text "small" "warning" glyph side)
 
 
 {-| Lazily renders a "big warning" icon button with the given text, glyph and size.
 -}
 warningBig : String -> String -> String -> msg -> Html.Html msg
 warningBig text glyph side msg =
-  render msg (model text "big" "warning" glyph side)
+  Html.Lazy.lazy2 render msg (model text "big" "warning" glyph side)
 
 
 {-| Generates a model from the given arguments.

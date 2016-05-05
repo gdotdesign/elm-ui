@@ -23,6 +23,7 @@ import Html.Events.Extra exposing (onKeys, onEnterPreventDefault, onStop)
 import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onInput, onBlur)
 import Html exposing (node, input)
+import Html.Lazy
 
 import Ext.Number exposing (toFixed)
 import Result
@@ -188,7 +189,7 @@ update msg model =
 -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 {-| Renders a number range.

@@ -14,6 +14,7 @@ current value of the input when it has settled after the given timeout.
 
 import Html.Attributes exposing (classList)
 import Html exposing (node)
+import Html.Lazy
 import Html.App
 
 import Time exposing (Time)
@@ -136,7 +137,7 @@ update msg model =
 -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 

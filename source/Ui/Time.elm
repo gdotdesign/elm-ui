@@ -26,6 +26,7 @@ import Json.Encode as JE
 
 import Html.Attributes exposing (title)
 import Html exposing (text, node)
+import Html.Lazy
 
 import Ui.Helpers.Emitter as Emitter
 
@@ -94,7 +95,7 @@ update msg model =
 -}
 view : Model -> Html.Html msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 {-| Renders a time component.

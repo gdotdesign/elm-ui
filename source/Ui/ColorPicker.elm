@@ -19,6 +19,7 @@ focused, allowing the user to manipulate the selected color.
 import Html.Attributes exposing (classList, style)
 import Html.Events exposing (onBlur, onClick)
 import Html exposing (node, div, text)
+import Html.Lazy
 import Html.App
 
 import Ext.Color exposing (Hsv)
@@ -134,7 +135,7 @@ update action model =
 -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 {-| Renders a color picker.

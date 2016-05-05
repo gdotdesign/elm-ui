@@ -23,6 +23,7 @@ import Html.Attributes exposing (classList, tabindex)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
+import Html.Lazy
 
 import Native.Uid
 
@@ -101,7 +102,7 @@ update action model =
 -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 {-| Renders a checkbox.
@@ -122,7 +123,7 @@ render model =
 -}
 viewRadio : Model -> Html.Html Msg
 viewRadio model =
-  renderRadio model
+  Html.Lazy.lazy renderRadio model
 
 
 {-| Renders a checkbox as a radio.
@@ -144,7 +145,7 @@ renderRadio model =
 -}
 viewToggle : Model -> Html.Html Msg
 viewToggle model =
-  renderToggle model
+  Html.Lazy.lazy renderToggle model
 
 
 {-| Renders a checkbox as a toggle.

@@ -21,6 +21,7 @@ module Ui.Calendar exposing
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)
 import Html exposing (node, text, span)
+import Html.Lazy
 
 import Date.Format exposing (isoDateFormat, format)
 import Date.Config.Configs as DateConfigs
@@ -114,7 +115,7 @@ update msg model =
 -}
 view : String -> Model -> Html.Html Msg
 view locale model =
-  render locale model
+  Html.Lazy.lazy2 render locale model
 
 
 

@@ -20,6 +20,7 @@ module Ui.Loader exposing
 
 import Html.Attributes exposing (classList, class)
 import Html exposing (node, div)
+import Html.Lazy
 
 import Task
 
@@ -77,7 +78,7 @@ update msg model =
 -}
 view : String -> List (Html.Html msg) -> Model -> Html.Html msg
 view kind content model =
-  render kind content model
+  Html.Lazy.lazy3 render kind content model
 
 
 {-| Lazily renders a loader as an overlay.

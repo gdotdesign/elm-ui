@@ -34,6 +34,7 @@ import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
+import Html.Lazy
 
 import Ui
 
@@ -71,7 +72,7 @@ init disabled text kind size =
 -}
 view : msg -> Model -> Html.Html msg
 view msg model =
-  render msg model
+  Html.Lazy.lazy2 render msg model
 
 
 {-| Renders a button.
@@ -88,105 +89,105 @@ render msg model =
 -}
 primaryBig : String -> msg -> Html.Html msg
 primaryBig title msg =
-  render msg (init False title "primary" "big")
+  Html.Lazy.lazy2 render msg (init False title "primary" "big")
 
 
 {-| Renders a **small primary** button with the given text.
 -}
 primarySmall : String -> msg -> Html.Html msg
 primarySmall title msg =
-  render msg (init False title "primary" "small")
+  Html.Lazy.lazy2 render msg (init False title "primary" "small")
 
 
 {-| Renders a **medium primary** (normal) button with the given text.
 -}
 primary : String -> msg -> Html.Html msg
 primary title msg =
-  render msg (init False title "primary" "medium")
+  Html.Lazy.lazy2 render msg (init False title "primary" "medium")
 
 
 {-| Renders a **big secondary** button with the given text.
 -}
 secondaryBig : String -> msg -> Html.Html msg
 secondaryBig title msg =
-  render msg (init False title "secondary" "big")
+  Html.Lazy.lazy2 render msg (init False title "secondary" "big")
 
 
 {-| Renders a **small secondary** button with the given text.
 -}
 secondarySmall : String -> msg -> Html.Html msg
 secondarySmall title msg =
-  render msg (init False title "secondary" "small")
+  Html.Lazy.lazy2 render msg (init False title "secondary" "small")
 
 
 {-| Renders a **medium secondary** (normal) button with the given text.
 -}
 secondary : String -> msg -> Html.Html msg
 secondary title msg =
-  render msg (init False title "secondary" "medium")
+  Html.Lazy.lazy2 render msg (init False title "secondary" "medium")
 
 
 {-| Renders a **big warning** button with the given text.
 -}
 warningBig : String -> msg -> Html.Html msg
 warningBig title msg =
-  render msg (init False title "warning" "big")
+  Html.Lazy.lazy2 render msg (init False title "warning" "big")
 
 
 {-| Renders a **small warning** button with the given text.
 -}
 warningSmall : String -> msg -> Html.Html msg
 warningSmall title msg =
-  render msg (init False title "warning" "small")
+  Html.Lazy.lazy2 render msg (init False title "warning" "small")
 
 
 {-| Renders a **medium warning** (normal) button with the given text.
 -}
 warning : String -> msg -> Html.Html msg
 warning title msg =
-  render msg (init False title "warning" "medium")
+  Html.Lazy.lazy2 render msg (init False title "warning" "medium")
 
 
 {-| Renders a **big success** button with the given text.
 -}
 successBig : String -> msg -> Html.Html msg
 successBig title msg =
-  render msg (init False title "success" "big")
+  Html.Lazy.lazy2 render msg (init False title "success" "big")
 
 
 {-| Renders a **small success** button with the given text.
 -}
 successSmall : String -> msg -> Html.Html msg
 successSmall title msg =
-  render msg (init False title "success" "small")
+  Html.Lazy.lazy2 render msg (init False title "success" "small")
 
 
 {-| Renders a **medium success** (normal) button with the given text.
 -}
 success : String -> msg -> Html.Html msg
 success title msg =
-  render msg (init False title "success" "medium")
+  Html.Lazy.lazy2 render msg (init False title "success" "medium")
 
 
 {-| Renders a **big danger** button with the given text.
 -}
 dangerBig : String -> msg -> Html.Html msg
 dangerBig title msg =
-  render msg (init False title "danger" "big")
+  Html.Lazy.lazy2 render msg (init False title "danger" "big")
 
 
 {-| Renders a **small danger** button with the given text.
 -}
 dangerSmall : String -> msg -> Html.Html msg
 dangerSmall title msg =
-  render msg (init False title "danger" "small")
+  Html.Lazy.lazy2 render msg (init False title "danger" "small")
 
 
 {-| Renders a **medium danger** (normal) button with the given text.
 -}
 danger : String -> msg -> Html.Html msg
 danger title msg =
-  render msg (init False title "danger" "medium")
+  Html.Lazy.lazy2 render msg (init False title "danger" "medium")
 
 
 {-| Creates the attributes for a button that contains events, tabindex and

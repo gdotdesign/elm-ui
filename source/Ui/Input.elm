@@ -17,6 +17,7 @@ module Ui.Input exposing
 
 import Html.Events exposing (onInput)
 import Html exposing (node)
+import Html.Lazy
 import Html.Attributes
   exposing
     ( value
@@ -110,7 +111,7 @@ update msg model =
 -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 {-| Renders an input.

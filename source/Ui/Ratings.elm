@@ -22,6 +22,7 @@ import Html.Events exposing (onClick, onMouseEnter, onMouseLeave)
 import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
+import Html.Lazy
 
 import Native.Uid
 
@@ -130,7 +131,7 @@ update msg model =
 -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 {-| Renders a ratings component.

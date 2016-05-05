@@ -21,6 +21,7 @@ import Html.Attributes exposing (value, placeholder, readonly, classList
                                 , disabled)
 import Html.Events exposing (onFocus, onBlur, onClick, onInput)
 import Html exposing (span, text, node, input, Html)
+import Html.Lazy
 
 import Set exposing (Set)
 import String
@@ -173,7 +174,7 @@ update' action model =
 {-| Renders a chooser. -}
 view : Model -> Html.Html Msg
 view  model =
-  render  model
+  Html.Lazy.lazy render  model
 
 -- Renders a chooser.
 render : Model -> Html.Html Msg

@@ -13,6 +13,7 @@ module Ui.ButtonGroup exposing (Model, init, view, render)
 
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
+import Html.Lazy
 
 import Ui.Button
 
@@ -52,7 +53,7 @@ init items =
 -}
 view : Model msg -> Html.Html msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 

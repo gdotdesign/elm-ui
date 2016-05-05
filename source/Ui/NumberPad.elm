@@ -21,6 +21,7 @@ import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
+import Html.Lazy
 
 import Number.Format exposing (prettyInt)
 import String
@@ -125,7 +126,7 @@ update msg model =
 -}
 view : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
 view viewModel address model =
-  render viewModel address model
+  Html.Lazy.lazy3 render viewModel address model
 
 
 {-| Renders a number pad.

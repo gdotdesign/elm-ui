@@ -20,6 +20,7 @@ import Html.Events exposing (onBlur, onClick)
 import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node, div, text)
+import Html.Lazy
 import Html.App
 
 import Date.Format exposing (isoDateFormat, format)
@@ -170,7 +171,7 @@ update action model =
 -}
 view : String -> Model -> Html.Html Msg
 view locale model =
-  render locale model
+  Html.Lazy.lazy2 render locale model
 
 
 {-| Renders a date picker.

@@ -22,6 +22,7 @@ import Html.Events.Geometry exposing (MousePosition)
 import Html.Events exposing (onMouseDown, onMouseUp)
 import Html.Events.Extra exposing (onScroll)
 import Html exposing (node, text)
+import Html.Lazy
 
 import Time exposing (Time)
 import Json.Decode as JD
@@ -112,7 +113,7 @@ update msg model =
 -}
 view : (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 view address model children =
-  render address model children
+  Html.Lazy.lazy3 render address model children
 
 
 

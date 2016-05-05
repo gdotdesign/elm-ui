@@ -18,6 +18,7 @@ module Ui.InplaceInput exposing
 import Html.Events.Extra exposing (onEnter, onKeys)
 import Html exposing (node, div, text)
 import Html.Events exposing (onClick)
+import Html.Lazy
 import Html.App
 
 import Native.Uid
@@ -133,7 +134,7 @@ update action model =
 -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 {-| Renders an inplace input.

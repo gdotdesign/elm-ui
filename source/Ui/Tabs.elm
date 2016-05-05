@@ -9,16 +9,18 @@ module Ui.Tabs exposing (Model, Msg, init, update, render, view)
 @docs render, view
 -}
 
+-- where
+
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node, text)
+import Html.Lazy
 
 import List.Extra
 
 import Ui
 
--- where
 
 {-| Representation of a tabs component:
   - **readonly** - Whether or not the component is readonly
@@ -70,7 +72,7 @@ update action model =
 -}
 view : List ( String, Html.Html msg ) -> (Msg -> msg) -> Model -> Html.Html msg
 view contents address model =
-  render contents address model
+  Html.Lazy.lazy3 render contents address model
 
 
 {-| Renders a tabs component.

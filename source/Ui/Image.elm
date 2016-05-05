@@ -14,6 +14,7 @@ module Ui.Image exposing (Model, Msg, init, update, render, view)
 import Html.Attributes exposing (src, classList)
 import Html.Events.Extra exposing (onLoad)
 import Html exposing (node, img)
+import Html.Lazy
 
 
 {-| Representation of an image:
@@ -60,7 +61,7 @@ update action model =
 -}
 view : Model -> Html.Html Msg
 view model =
-  render model
+  Html.Lazy.lazy render model
 
 
 {-| Renders an image.

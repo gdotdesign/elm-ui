@@ -17,6 +17,7 @@ module Ui.Pager exposing (Model, Msg, init, update, view, render, select)
 import Html.Events.Extra exposing (onTransitionEnd)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)
+import Html.Lazy
 
 import List.Extra
 
@@ -78,7 +79,7 @@ update action model =
 -}
 view : (Msg -> msg) -> List (Html.Html msg) -> Model -> Html.Html msg
 view address pages model =
-  render address pages model
+  Html.Lazy.lazy3 render address pages model
 
 
 {-| Renders a pager.

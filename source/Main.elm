@@ -194,11 +194,6 @@ init =
     pager = Ui.Pager.init 0
     loader = Ui.Loader.init 0
 
-    numberPadViewModel =
-      { bottomLeft = text ""
-      , bottomRight = text ""
-      }
-
     -- datePicker =
     --  { datePickerOptions | format = "%Y %B %e." }
 
@@ -549,7 +544,7 @@ view model =
           , Showcase.view Calendar (Ui.Calendar.view "en_us") calendar
 
           , componentHeader "Tabs"
-          -- , Showcase.view Tabs (Ui.Tabs.view tabsContents) tabs
+          , Showcase.view2 Tabs (Ui.Tabs.view tabsContents) tabs
 
           , componentHeader "Checkbox"
           , Showcase.view Checkbox Ui.Checkbox.view checkbox
@@ -602,8 +597,8 @@ view model =
           , componentHeader "Inplace Input"
           , Showcase.view InplaceInput Ui.InplaceInput.view inplaceInput
 
-          -- , componentHeader "Number Pad"
-          -- , Showcase.view numberPadViewFn numberPad
+          , componentHeader "Number Pad"
+          , Showcase.view2 NumberPad (Ui.NumberPad.view { bottomLeft = text "", bottomRight = text "" }) numberPad
 
           , componentHeader "Pager"
           , tr []

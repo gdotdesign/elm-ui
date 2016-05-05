@@ -39,6 +39,7 @@
     "Ui.Input",
     "Ui.Loader",
     "Ui.Modal",
+    "Ui.NumberPad",
     "Ui"
   ],
   "dependencies": {

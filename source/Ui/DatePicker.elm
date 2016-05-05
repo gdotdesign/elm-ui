@@ -1,8 +1,8 @@
 module Ui.DatePicker exposing
   (Model, Msg, init, update, subscribe, subscriptions, view, render, setValue)
 
-{-| An input component that displays a **Calendar** (in a dropdown) when focused,
-allowing the user to manipulate the selected date.
+{-| An input component that displays a **Calendar** (in a dropdown) when
+focused, allowing the user to manipulate the selected date.
 
 # Model
 @docs Model, Msg, init, subscribe, subscriptions, update

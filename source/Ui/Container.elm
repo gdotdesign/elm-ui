@@ -1,4 +1,7 @@
-module Ui.Container exposing (Model, view, render, row, rowStart, rowCenter, rowEnd, column, columnStart, columnCenter, columnEnd)
+module Ui.Container exposing
+  ( Model, view, render
+  , row, rowStart, rowCenter, rowEnd
+  , column, columnStart, columnCenter, columnEnd )
 
 {-| Flexbox container component.
 

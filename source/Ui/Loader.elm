@@ -1,4 +1,5 @@
-module Ui.Loader exposing (Model, Msg, init, update, render, view, overlayView, barView, start, finish)
+module Ui.Loader exposing
+  (Model, Msg, init, update, render, view, overlayView, barView, start, finish)
 
 {-| Loading component, it has a waiting period before showing itself.
 

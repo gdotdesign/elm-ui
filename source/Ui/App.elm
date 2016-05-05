@@ -1,4 +1,5 @@
-module Ui.App exposing (Model, Msg, init, subscribe, subscriptions, update, view, render)
+module Ui.App exposing
+  (Model, Msg, init, subscribe, subscriptions, update, view, render)
 
 {-| Base frame for a web/mobile application:
   - Provides subscriptions for **load** and **scroll** events

@@ -77,6 +77,14 @@ update action model =
       in
         ({ model | disabled = disabled }, Cmd.map Disabled effect)
 
+view2 : ((Msg msg) -> parentMsg) -> ((msg -> parentMsg) -> component -> Html.Html parentMsg) -> Model component msg parentMsg -> Html.Html parentMsg
+view2 address renderFn model =
+  (tr []
+    [ td [] [ (renderFn (address << Enabled) model.enabled) ]
+    , td [] [ (renderFn (address << Readonly) model.readonly) ]
+    , td [] [ (renderFn (address << Disabled) model.disabled) ]
+    ])
+
 view : ((Msg msg) -> parentMsg) -> (component -> Html.Html msg) -> Model component msg parentMsg -> Html.Html parentMsg
 view address renderFn model =
   render address renderFn model

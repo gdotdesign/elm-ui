@@ -74,4 +74,6 @@ selector of the decoded Element.
 -}
 withNearest : String -> Json.Decoder a -> Json.Decoder a
 withNearest selector decoder =
-  decodeElementFunction "nearest" selector decoder
+  Json.oneOf [ withClosest selector decoder
+             , Json.at ["parentNode"] (withSelector selector decoder)
+             ]

@@ -13,11 +13,8 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     })
   }
 
-  /* TODO: When fixed in *core* return an "Err Result" */
   function fail(msg){
-    var faliure = Json.fail(msg)
-    faliure._0 = {}
-    return faliure
+    return { ctor: 'Err' }
   }
 
   function decodeElementFunction(method, selector, decoder) {
@@ -43,11 +40,6 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
 
 /* Polyfills */
 (function(){
-  Element.prototype.nearest = function(selector){
-    return this.closest(selector) || // parent
-           this.parentElement.querySelector(selector) // child or neighbor
-  }
-
   /* Add dimensions property to HTMLElement so we can decode it, it's not
      exposed so it won't conflict with anything hopefully. */
   Object.defineProperty(Element.prototype, "dimensions", {

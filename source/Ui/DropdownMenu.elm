@@ -20,6 +20,7 @@ import Html.Events exposing (onWithOptions)
 import Html.Events.Extra exposing (onStop)
 import Html.Events.Geometry as Geometry
 import Html exposing (node)
+import Html.Lazy
 
 import Json.Decode as Json
 import Mouse
@@ -49,6 +50,11 @@ type alias Model =
       }
   }
 
+
+type alias ViewModel msg =
+  { element: Html.Html msg
+  , items:  List (Html.Html msg)
+  }
 
 {-| Representation of dimensions for a dropdown menu.
 -}
@@ -124,17 +130,27 @@ update action model =
 
     Ui.DropdownMenu.view
       address
-      triggerElement
-      children
+      { element: triggerElement, items: items }
       dropdownMenu
 -}
-view : (Msg -> msg) -> Html.Html msg -> List (Html.Html msg) -> Model -> Html.Html msg
-view address element children model =
+view : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
+view viewModel address model =
+  Html.Lazy.lazy3 render viewModel address model
+
+
+{-| Renders a dropdown menu
+-}
+render : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
+render viewModel address model =
   node
     "ui-dropdown-menu"
-    [ openHandler "ui-dropdown-menu" "ui-dropdown-menu-items" "mouseup" (address << Toggle)
+    [ openHandler
+        "ui-dropdown-menu"
+        "ui-dropdown-menu-items"
+        "mouseup"
+        (address << Toggle)
     ]
-    [ element
+    [ viewModel.element
     , node
         "ui-dropdown-menu-items"
         [ onStop "mousedown" (address NoOp)
@@ -144,7 +160,7 @@ view address element children model =
             , ( "left", (toString model.left) ++ "px" )
             ]
         ]
-        children
+        viewModel.items
     ]
 
 

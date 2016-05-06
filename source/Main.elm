@@ -117,7 +117,7 @@ type alias TaggerModel =
 type alias Model =
   { app : Ui.App.Model
   , notifications : Ui.NotificationCenter.Model Msg
-  , dropdownMenu : { content : Html.Html Msg
+  , dropdownMenu : { element : Html.Html Msg
                    , items : List (Html.Html Msg)
                    }
   , pagerControls : Html.Html Msg
@@ -264,7 +264,7 @@ init =
           , Ui.IconButton.primary "Next Page" "chevron-right" "right" NextPage
           ]
     , dropdownMenu =
-      { content = Ui.IconButton.secondary
+      { element = Ui.IconButton.secondary
                     "Open" "chevron-down" "right" NoOp
       , items =
         [ Ui.DropdownMenu.item
@@ -539,9 +539,8 @@ view model =
 
           , componentHeader "Dropdown Menu"
           , tableRow ( Ui.DropdownMenu.view
+                       dropdownMenu
                        DropdownMenu
-                       dropdownMenu.content
-                       dropdownMenu.items
                        model.menu)
                      (emptyText)
                      (emptyText)

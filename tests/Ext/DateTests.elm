@@ -1,4 +1,4 @@
-module Ext.DateTests where
+module Ext.DateTests exposing (..)
 
 import ElmTest exposing (..)
 

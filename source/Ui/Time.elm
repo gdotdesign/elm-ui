@@ -1,4 +1,5 @@
-module Ui.Time exposing (Model, Msg, init, subscriptions, update, view, render, updateTime)
+module Ui.Time exposing
+  (Model, Msg, init, subscriptions, update, view, render, updateTime)
 
 {-| A component that displays time with a formatting function (defaults to
 relative time like: 10 minutes ago).
@@ -13,16 +14,11 @@ relative time like: 10 minutes ago).
 @docs updateTime
 -}
 
--- where
-
 import Date.Config.Configs as DateConfigs
 import Date.Format exposing (format)
 import Time exposing (Time)
 import Ext.Date
 import Date
-
-import Json.Decode as JD
-import Json.Encode as JE
 
 import Html.Attributes exposing (title)
 import Html exposing (text, node)
@@ -55,7 +51,7 @@ type Msg
 
 {-| Initializes a time component.
 
-    model = Ui.Time.init (Date.fromString '2016-05-28')
+    time = Ui.Time.init (Date.fromString '2016-05-28')
 -}
 init : Date.Date -> Model
 init date =
@@ -80,7 +76,7 @@ subscriptions =
 
 {-| Updates a time component.
 
-    Ui.Time.update msg model
+    Ui.Time.update msg time
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -91,7 +87,7 @@ update msg model =
 
 {-| Lazily renders a time component.
 
-    Ui.Time.view model
+    Ui.Time.view time
 -}
 view : Model -> Html.Html msg
 view model =
@@ -100,7 +96,7 @@ view model =
 
 {-| Renders a time component.
 
-    Ui.Time.render model
+    Ui.Time.render time
 -}
 render : Model -> Html.Html msg
 render model =
@@ -124,4 +120,4 @@ the **now** value.
 -}
 updateTime : Time -> Cmd msg
 updateTime now =
-  Emitter.send "time-tick" (JE.float now)
+  Emitter.sendFloat "time-tick" now

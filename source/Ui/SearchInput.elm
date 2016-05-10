@@ -1,16 +1,18 @@
-module Ui.SearchInput exposing (Model, Msg, init, subscribe, update, view, setValue)
+module Ui.SearchInput exposing
+  (Model, Msg, init, subscribe, update, view, render, setValue)
 
 {-| A input component for handling searches. The component will send the
 current value of the input when it has settled after the given timeout.
 
 # Model
-@docs Model, Msg, init, subscribe, update, setValue
+@docs Model, Msg, init, subscribe, update
 
 # View
-@docs view
--}
+@docs view, render
 
--- where
+# Functions
+@docs setValue
+-}
 
 import Html.Attributes exposing (classList)
 import Html exposing (node)
@@ -31,12 +33,13 @@ import Native.Uid
 
 
 {-| Representation of a search input:
-  - **timeout** - The duration after which the input is considered settled
+  - **input** - The model of the input component
+  - **timestamp** - The timestamp of the last edit
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
   - **value** - The current value of the input
-  - **timestamp** (internal) - The timestamp of the last edit
-  - **input** (internal) - The model of the input component
+  - **timeout** - The duration after which the input is considered settled
+  - **uid** - The unique identifier of the input
 -}
 type alias Model =
   { input : Ui.Input.Model
@@ -49,7 +52,7 @@ type alias Model =
   }
 
 
-{-| Actions that a search input can make.
+{-| Messages that an search input can receive.
 -}
 type Msg
   = Input Ui.Input.Msg
@@ -59,25 +62,25 @@ type Msg
 
 {-| Initializes a search input with the given timeout.
 
-    SearchInput.init 1000
+    searchInput = Ui.SearchInput.init 1000 "Placeholder..."
 -}
-init : Time -> Model
-init timeout =
-  { input = Ui.Input.init "" "Search..."
+init : Time -> String -> Model
+init timeout placeholder =
+  { input = Ui.Input.init "" placeholder
+  , uid = Native.Uid.uid ()
   , timeout = timeout
   , disabled = False
   , readonly = False
   , timestamp = 0
   , value = ""
-  , uid = Native.Uid.uid ()
   }
 
 
-{-| Subscribe to the changes of an input.
+{-| Subscribe to the changes of a search input.
 
     ...
     subscriptions =
-      \model -> Ui.Input.subscribe InputChanged model.input
+      \model -> Ui.SearchInput.subscribe SearchInputChanged model.searchInput
     ...
 -}
 subscribe : (String -> msg) -> Model -> Sub msg
@@ -86,6 +89,8 @@ subscribe msg model =
 
 
 {-| Updates a search input.
+
+    Ui.SearchInput.update msg searchInput
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -133,7 +138,9 @@ update msg model =
       ( model, Cmd.none )
 
 
-{-| Renders a search input.
+{-| Lazily renders a search input.
+
+    Ui.SearchInput.view searchInput
 -}
 view : Model -> Html.Html Msg
 view model =
@@ -141,7 +148,9 @@ view model =
 
 
 
-{- Renders a search input.
+{-| Renders a search input.
+
+    Ui.SearchInput.render searchInput
 -}
 render : Model -> Html.Html Msg
 render { input, disabled, readonly } =
@@ -161,6 +170,8 @@ render { input, disabled, readonly } =
 
 
 {-| Sets the value of the model.
+
+    Ui.SearchInput.setValue "new value" searchInput
 -}
 setValue : String -> Model -> Model
 setValue value model =

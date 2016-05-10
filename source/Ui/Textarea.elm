@@ -1,4 +1,5 @@
-module Ui.Textarea exposing (Model, Msg, init, subscribe, update, view, render, setValue, focus)
+module Ui.Textarea exposing
+  (Model, Msg, init, subscribe, update, view, render, setValue, focus)
 
 {-| Textarea which uses a mirror object to render the contents the same way,
 thus creating an automatically growing textarea.
@@ -12,8 +13,6 @@ thus creating an automatically growing textarea.
 # Functions
 @docs setValue, focus
 -}
-
--- where
 
 import Html.Events.Extra exposing (onEnterPreventDefault, onStop)
 import Html exposing (node, textarea, text, br)
@@ -68,7 +67,7 @@ type Msg
 
 {-| Initializes a textarea with a default value and a placeholder.
 
-    model = Ui.Textarea.init "default value" "Placeholder..."
+    textarea = Ui.Textarea.init "default value" "Placeholder..."
 -}
 init : String -> String -> Model
 init value placeholder =
@@ -95,7 +94,7 @@ subscribe msg model =
 
 {-| Updates a textarea.
 
-    Ui.Textarea.update msg model
+    Ui.Textarea.update msg textarea
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -109,7 +108,7 @@ update msg model =
 
 {-| Lazily renders a textarea.
 
-    Ui.Textarea.view model
+    Ui.Textarea.view textarea
 -}
 view : Model -> Html.Html Msg
 view model =
@@ -118,7 +117,7 @@ view model =
 
 {-| Renders a textarea.
 
-    Ui.Textarea.render model
+    Ui.Textarea.render textarea
 -}
 render : Model -> Html.Html Msg
 render model =
@@ -162,7 +161,7 @@ render model =
 
 {-| Sets the value of the given textarea.
 
-    Ui.Textarea.setValue "new value" model
+    Ui.Textarea.setValue "new value" textarea
 -}
 setValue : String -> Model -> Model
 setValue value model =
@@ -171,11 +170,14 @@ setValue value model =
 
 {-| Focuses a textarea.
 
-    Cmd.map Textarea (Ui.Textarea.focus model)
+    Cmd.map Textarea (Ui.Textarea.focus textarea)
 -}
 focus : Model -> Cmd Msg
 focus model =
   Task.perform Tasks Tasks (Dom.focusUid model.uid)
+
+
+----------------------------------- PRIVATE ------------------------------------
 
 
 {-| Processes the value for the mirror object.

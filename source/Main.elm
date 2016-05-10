@@ -243,7 +243,7 @@ init =
           handleClickIndetity -}
     , searchInput =
         Showcase.init
-          (\_ -> Ui.SearchInput.init 1000)
+          (\_ -> Ui.SearchInput.init 1000 "Search")
           Ui.SearchInput.update
           (Ui.SearchInput.subscribe SearchInputChanged)
           (\_ -> Sub.none)

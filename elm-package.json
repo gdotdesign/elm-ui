@@ -44,6 +44,11 @@
     "Ui.NumberRange",
     "Ui.Pager",
     "Ui.Ratings",
+    "Ui.SearchInput",
+    "Ui.Slider",
+    "Ui.Tabs",
+    "Ui.Textarea",
+    "Ui.Time",
     "Ui"
   ],
   "dependencies": {

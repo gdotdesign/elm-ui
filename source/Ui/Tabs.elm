@@ -3,17 +3,15 @@ module Ui.Tabs exposing (Model, Msg, init, update, render, view)
 {-| A component for tabbed content.
 
 # Model
-@docs Model, Msg, init, update,
+@docs Model, Msg, init, update
 
 # View
-@docs render, view
+@docs view, render
 -}
 
--- where
-
 import Html.Attributes exposing (classList)
-import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onKeys)
+import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
@@ -42,7 +40,7 @@ type Msg
 
 {-| Initializes a tabs component with the index of the selected tab.
 
-    model = Ui.Tabs.init 0
+    tabs = Ui.Tabs.init 0
 -}
 init : Int -> Model
 init selected =
@@ -54,7 +52,7 @@ init selected =
 
 {-| Updates a tabs component.
 
-    Ui.Tabs.update msg model
+    Ui.Tabs.update msg tabs
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
@@ -68,7 +66,7 @@ update action model =
     Ui.Tabs.render
       [("title", content), ("title", content)]
       Tabs
-      model
+      tabs
 -}
 view : List ( String, Html.Html msg ) -> (Msg -> msg) -> Model -> Html.Html msg
 view contents address model =
@@ -80,11 +78,16 @@ view contents address model =
     Ui.Tabs.render
       [("title", content), ("title", content)]
       Tabs
-      model
+      tabs
 -}
 render : List ( String, Html.Html msg ) -> (Msg -> msg) -> Model -> Html.Html msg
 render contents address model =
   let
+    tabs =
+      List.indexedMap
+        (renderTabHandle address model)
+        contents
+
     activeTab =
       List.Extra.getAt contents model.selected
         |> Maybe.map snd
@@ -97,9 +100,12 @@ render contents address model =
           , ( "readonly", model.readonly )
           ]
       ]
-      [ node "ui-tab-handles" [] (List.indexedMap (renderTabHandle address model) contents)
+      [ node "ui-tab-handles" [] tabs
       , node "ui-tabs-content" [] [ activeTab ]
       ]
+
+
+----------------------------------- PRIVATE ------------------------------------
 
 
 {-| Renders a tab handle.

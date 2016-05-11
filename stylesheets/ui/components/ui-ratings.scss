@@ -36,14 +36,20 @@ ui-ratings {
   }
 
   // Readonly state
-  &.readonly:focus {
-    color: $focus-readonly;
+  &.readonly {
+    @extend %readonly;
+
     outline: none;
+
+    > * { pointer-events: none; }
+
+    &:focus { color: $focus; }
   }
 
   // Disabled state
   &.disabled {
     @extend %disabled;
+
     color: $disabled;
     opacity: 1;
   }

@@ -35,16 +35,12 @@ ui-checkbox {
   }
 
   // Focused & readonly
-  &.readonly:focus {
-    @extend %focused-readonly;
-
-    ui-icon {
-      color: $focus-readonly;
-    }
+  &.readonly {
+    @extend %readonly;
   }
 
   // Focused not readonly
-  &:focus:not(.readonly) {
+  &:focus {
     @extend %focused;
 
     ui-icon {
@@ -101,17 +97,13 @@ ui-checkbox-radio {
     }
   }
 
-  // Focused & readonly
-  &.readonly:focus {
-    @extend %focused-readonly;
-
-    ui-checkbox-radio-circle {
-      background: $focus-readonly;
-    }
+  // Readonly
+  &.readonly {
+    @extend %readonly;
   }
 
-  // Focused not readonly
-  &:focus:not(.readonly) {
+  // Focused
+  &:focus {
     @extend %focused;
 
     ui-checkbox-radio-circle {
@@ -206,21 +198,12 @@ ui-checkbox-toggle {
   }
 
   // Focused & readonly
-  &.readonly:focus {
-    outline: none;
-
-    ui-checkbox-toggle-bg {
-      @extend %focused-readonly;
-    }
-
-    ui-checkbox-toggle-handle {
-      transition: all 200ms;
-      background: $focus-readonly;
-    }
+  &.readonly {
+    @extend %readonly;
   }
 
   // Focused not readonly
-  &:focus:not(.readonly) {
+  &:focus {
     outline: none;
 
     ui-checkbox-toggle-bg {

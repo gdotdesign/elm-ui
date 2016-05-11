@@ -95,6 +95,8 @@ ui-calendar {
 
   // Readonly state
   &.readonly {
+    cursor: $readonly-cursor;
+
     ui-icon {
       display: none;
     }

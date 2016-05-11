@@ -19,12 +19,12 @@ ui-textarea {
     top: 0;
   }
 
-  &:not(.disabled):not(.readonly) textarea:focus + ui-textarea-background {
+  &:not(.disabled) textarea:focus + ui-textarea-background {
     @extend %focused;
   }
 
-  &.readonly textarea:focus + ui-textarea-background {
-    @extend %focused-readonly;
+  &.readonly textarea {
+    @extend %readonly;
   }
 
   &.disabled {

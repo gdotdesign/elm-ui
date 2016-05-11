@@ -14,8 +14,8 @@ ui-input {
       @extend %focused;
     }
 
-    &[readonly]:focus {
-      @extend %focused-readonly;
+    &[readonly] {
+      cursor: $readonly-cursor;
     }
   }
 }

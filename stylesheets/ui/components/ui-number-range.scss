@@ -49,7 +49,7 @@ ui-number-range {
   // Readonly state
   &.readonly {
     input:not([type]):focus {
-      @extend %focused-readonly;
+      @extend %readonly;
     }
   }
 

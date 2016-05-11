@@ -1,7 +1,7 @@
 ui-header {
   @include colors($color-header);
 
-  border-bottom: 2px solid $color-header-border;
+  border-bottom: 1px solid $color-header-border;
   text-shadow: 0 1px 0 rgba(#000, 0.2);
   position: relative;
   line-height: 60px;

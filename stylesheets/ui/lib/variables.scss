@@ -8,13 +8,13 @@ $color-header: $primary !default;
 $color-header-border: dampen-inverse($primary, 20%);
 
 // Calulated colors
-$background: #F7F7F7 !default;
+$background: #F5F5F5 !default;
 $secondary: #5D7889 !default;
 $input: #FDFDFD !default;
 
 // Border
 $border-radius: 2px !default;
-$border: 1px solid #EAEAEA !default;
+$border: 1px solid #E2E2E2 !default;
 
 // Disabled
 $disabled: desaturate(dampen($input, 15%), 60%) !default;

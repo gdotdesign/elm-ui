@@ -14,12 +14,14 @@ ui-slider {
 
   // Bar background
   ui-slider-bar {
+    @extend %focused-idle;
     @include border;
 
+    border-radius: $border-radius;
     position: relative;
     background: $input;
     display: block;
-    height: 12px;
+    height: 24px;
     flex: 1;
   }
 
@@ -27,48 +29,39 @@ ui-slider {
   ui-slider-progress {
     border-radius: $border-radius;
     background: $primary;
-
     position: absolute;
-    bottom: 0;
-    left: 0;
-    top: 0;
+    bottom: 3px;
+    left: 3px;
+    top: 3px;
   }
 
   // Handle
   ui-slider-handle {
-    @include border;
-
-    box-shadow: 0 2px 2px rgba(#000, 0.1);
+    border-left: 3px solid $input;
+    background: $secondary;
     position: absolute;
-    margin-left: -6px;
-    background: $input;
+    margin-left: -5px;
     width: 12px;
-    bottom: 3px;
-    top: 3px;
+    bottom: 10px;
+    top: 10px;
     left: 0;
   }
 
   // Normal State
   &:not(.readonly):not(.disabled) {
-    cursor: pointer;
+    cursor: col-resize;
   }
 
   // Focused state
-  &.readonly:focus {
-    outline: none;
-
-    ui-slider-handle {
-      border: 2px solid $input;
-      background: $focus-readonly;
-    }
+  &.readonly {
+    @extend %readonly;
   }
 
-  &:not(.readonly):focus {
+  &:focus {
     outline: none;
 
-    ui-slider-handle {
-      border: 2px solid $input;
-      background: $focus;
+    ui-slider-bar {
+      @extend %focused;
     }
   }
 

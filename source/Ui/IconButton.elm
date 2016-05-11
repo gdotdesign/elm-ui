@@ -27,6 +27,9 @@ module Ui.IconButton exposing
 import Html exposing (node, text)
 import Html.Lazy
 
+import Svg.Attributes exposing (cx, cy, r, viewBox)
+import Svg exposing (svg, circle)
+
 import Ui.Button exposing (attributes)
 import Ui
 
@@ -86,7 +89,10 @@ render msg model =
     node
       "ui-icon-button"
       (attributes msg model)
-      children
+      ([ svg [ viewBox "0 0 100 100" ]
+         [ circle [cx "50", cy "50", r "50"] []
+         ]
+       ] ++ children)
 
 
 {-| Lazily renders an icon button.

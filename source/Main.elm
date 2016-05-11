@@ -501,6 +501,8 @@ view model =
       , Ui.Modal.view  Modal modalView model.modal
       , Ui.Layout.centerDefault
         [ Ui.Header.title [] [text "Elm-UI Kitchen Sink"]
+        , Ui.spacer
+        , Ui.Header.iconItem "Github" NoOp "social-github" "right"
         ]
         [ node "kitchen-sink" []
           (infos ++ [ table []

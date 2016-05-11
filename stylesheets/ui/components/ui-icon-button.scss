@@ -1,6 +1,10 @@
 ui-icon-button {
   @extend ui-button;
 
+  ui-icon {
+  	z-index: 1;
+  }
+
   ui-icon + span:not(:empty) {
     margin-left: 0.625em;
   }

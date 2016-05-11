@@ -53,15 +53,7 @@ ui-header-separator {
   overflow: hidden;
   font-weight: 600;
   cursor: pointer;
-
-  &:hover {
-    color: $focus;
-  }
-
-  &:focus {
-    color: $focus;
-    outline: none;
-  }
+  font-size: 20px;
 }
 
 ui-header-item {

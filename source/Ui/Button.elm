@@ -36,6 +36,9 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
+import Svg.Attributes exposing (cx, cy, r, viewBox)
+import Svg exposing (svg, circle)
+
 import Ui
 
 
@@ -82,7 +85,9 @@ render msg model =
   node
     "ui-button"
     (attributes msg model)
-    [ node "span" [] [ text model.text ] ]
+    [ svg [ viewBox "0 0 100 100" ]
+      [ circle [cx "50", cy "50", r "50"] [] ]
+    , node "span" [] [ text model.text ] ]
 
 
 {-| Renders a **big primary** button with the given text.

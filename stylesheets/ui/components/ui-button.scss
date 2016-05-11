@@ -17,25 +17,27 @@ ui-button {
 
   // Types
   &:not(.disabled) {
-    @each $type, $type-color in (
-        secondary $secondary,
-        primary $primary,
-        success $success,
-        warning $warning,
-        danger $danger) {
+    @each $type, $type-color, $font-color in (
+        secondary $secondary #FFF,
+        primary $primary #FFF,
+        success $success #FFF,
+        warning $warning #FFF,
+        danger $danger #FFF) {
       &.ui-button-#{$type} {
-        @include colors($type-color);
+        background: $type-color;
+        color: $font-color;
 
         &:focus, &:hover {
-          @include colors(dampen($type-color, 10%));
+          background: dampen($type-color, 15%);
 
           &:before {
-            border-color: dampen($type-color, 20%);
+            box-shadow: 0 0 3px 1px rgba($type-color, 0.5);
+            border-color: rgba($type-color, 0.4);
           }
         }
 
         &:active {
-          @include colors(dampen-inverse($type-color, 25%));
+          background: dampen-inverse($type-color, 15%);
         }
       }
     }

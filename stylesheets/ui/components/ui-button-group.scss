@@ -4,10 +4,6 @@ ui-button-group {
     border-radius: 0;
 
     &:focus:before {
-      border-right: 0;
-      border-left: 0;
-      right: 0;
-      left: 0;
     }
 
     // Add separator line

@@ -42,10 +42,40 @@ ui-pager {
   }
 }
 
+ui-layout-footer {
+  min-height: 30px;
+  background: #000;
+}
+
+ui-layout {
+  flex-direction: column;
+  display: flex;
+
+  ui-layout-main {
+    display: block;
+    flex: 1;
+  }
+
+  ui-layout-center {
+    width: 1170px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  &.ui-layout-center-default,
+  &.ui-layout-default {
+    ui-layout-main {
+      padding: 40px 0;
+    }
+
+    ui-header,
+    ui-layout-footer {
+      flex: 0 0 auto;
+    }
+  }
+}
+
 kitchen-sink {
-  display: block;
-  margin: 0 auto;
-  width: 1031px;
   padding-top: 40px;
 
   table {
@@ -53,7 +83,7 @@ kitchen-sink {
     border-collapse: collapse;
 
     td {
-      border: 1px solid $secondary;
+      border: $border;
       padding: 10px;
 
       &[colspan='3'] {

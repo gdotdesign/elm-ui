@@ -1,7 +1,8 @@
 ui-header {
-  @include colors(desaturate($background, 0%));
+  @include colors($color-header);
 
-  border-bottom: $border;
+  border-bottom: 2px solid $color-header-border;
+  text-shadow: 0 1px 0 rgba(#000, 0.2);
   position: relative;
   line-height: 60px;
   padding: 0 20px;
@@ -41,7 +42,7 @@ ui-header-title {
 }
 
 ui-header-separator {
-  background: dampen($background, 10%);
+  background: dampen($color-header, 10%);
   height: 40px;
   width: 2px;
 }

@@ -38,6 +38,8 @@ import Ui.Chooser
 import Ui.Ratings
 import Ui.Button
 -- import Ui.Tagger
+import Ui.Layout
+import Ui.Header
 import Ui.Slider
 import Ui.Loader
 import Ui.Pager
@@ -280,8 +282,7 @@ init =
         ]
     }
     , infos =
-      [ Ui.title [] [text "Elm-UI Kitchen Sink"]
-      , Ui.textBlock "An opinionated UI library for the web in Elm, following
+      [ Ui.textBlock "An opinionated UI library for the web in Elm, following
                       the Elm Architecture."
       , node "p" []
         [ Ui.IconButton.primaryBig
@@ -498,142 +499,147 @@ view model =
     Ui.App.view App model.app
       [ Ui.NotificationCenter.view Notis model.notifications
       , Ui.Modal.view  Modal modalView model.modal
-      , node "kitchen-sink" []
-        (infos ++ [ table []
-          [ tr [] [ td [] [text "Active"]
-                  , td [] [text "Readonly"]
-                  , td [] [text "Disabled"]
-                  ]
+      , Ui.Layout.centerDefault
+        [ Ui.Header.title [] [text "Elm-UI Kitchen Sink"]
+        ]
+        [ node "kitchen-sink" []
+          (infos ++ [ table []
+            [ tr [] [ td [] [text "Active"]
+                    , td [] [text "Readonly"]
+                    , td [] [text "Disabled"]
+                    ]
 
-          , componentHeader "Button"
-          , tr []
-            [ td [colspan 2]
-              [ Ui.Container.row [] (buttons ++ clicked) ]
-            , td [] disabledButton
-            ]
-
-          , componentHeader "Icon Button"
-          , tr []
-            [ td [colspan 2]
-              [ Ui.Container.row [] iconButtons
+            , componentHeader "Button"
+            , tr []
+              [ td [colspan 2]
+                [ Ui.Container.row [] (buttons ++ clicked) ]
+              , td [] disabledButton
               ]
-            , td [] disabledIconButton
-            ]
-          , componentHeader "Button Group"
-          , tableRow (Ui.ButtonGroup.view buttonGroup.enabled)
-                     (emptyText)
-                     (Ui.ButtonGroup.view buttonGroup.disabled)
 
-          , componentHeader "Ratings"
-          , Showcase.view Ratings Ui.Ratings.view ratings
-
-          , componentHeader "NotificationCenter"
-          , tableRow (notificationButton)
-                     (emptyText)
-                     (emptyText)
-
-          , componentHeader "Modal"
-          , tableRow (modalButton)
-                     (emptyText)
-                     (emptyText)
-
-          , componentHeader "Dropdown Menu"
-          , tableRow ( Ui.DropdownMenu.view
-                       dropdownMenu
-                       DropdownMenu
-                       model.menu)
-                     (emptyText)
-                     (emptyText)
-          , componentHeader "Calendar"
-          , Showcase.view Calendar (Ui.Calendar.view "en_us") calendar
-
-          , componentHeader "Tabs"
-          , Showcase.view2 Tabs (Ui.Tabs.view tabsContents) tabs
-
-          , componentHeader "Checkbox"
-          , Showcase.view Checkbox Ui.Checkbox.view checkbox
-          , Showcase.view Checkbox2 Ui.Checkbox.viewToggle checkbox2
-          , Showcase.view Checkbox3 Ui.Checkbox.viewRadio checkbox3
-
-          , componentHeader "Chooser"
-          , Showcase.view Chooser Ui.Chooser.view chooser
-
-          , componentHeader "Color Panel"
-          , Showcase.view ColorPanel Ui.ColorPanel.view colorPanel
-
-          , componentHeader "Color Picker"
-          , Showcase.view ColorPicker Ui.ColorPicker.view colorPicker
-
-          , componentHeader "Date Picker"
-          , Showcase.view DatePicker (Ui.DatePicker.view "en_us") datePicker
-
-          , componentHeader "Number Range"
-          , Showcase.view NumberRange Ui.NumberRange.view numberRange
-
-          , componentHeader "Slider"
-          , Showcase.view Slider Ui.Slider.view slider
-
-          --, componentHeader "Tagger"
-          --, Showcase.view Ui.Tagger.view tagger
-
-          , componentHeader "Time"
-          , tableRow
-              (Ui.Time.view model.time)
-              (Ui.Time.view model.time2)
-              emptyText
-
-          , componentHeader "Loader"
-          , tableRow
-              (Ui.Loader.barView model.loader)
-              (div [class "loader-container"]
-                [ Ui.Loader.overlayView model.loader ])
-              emptyText
-
-          , componentHeader "Input"
-          , Showcase.view Input Ui.Input.view input
-
-          , componentHeader "Search Input"
-          , Showcase.view SearchInput Ui.SearchInput.view searchInput
-
-          , componentHeader "Autogrow Textarea"
-          , Showcase.view TextArea Ui.Textarea.view textarea
-
-          , componentHeader "Inplace Input"
-          , Showcase.view InplaceInput Ui.InplaceInput.view inplaceInput
-
-          , componentHeader "Number Pad"
-          , Showcase.view2 NumberPad (Ui.NumberPad.view { bottomLeft = text "", bottomRight = text "" }) numberPad
-
-          , componentHeader "Pager"
-          , tr []
-            [ td [colspan 3]
-              [ Ui.Pager.view Pager pagerContents pager
+            , componentHeader "Icon Button"
+            , tr []
+              [ td [colspan 2]
+                [ Ui.Container.row [] iconButtons
+                ]
+              , td [] disabledIconButton
               ]
-            ]
-          , tr []
-            [ td [colspan 3]
-              [ pagerControls ]
-            ]
+            , componentHeader "Button Group"
+            , tableRow (Ui.ButtonGroup.view buttonGroup.enabled)
+                       (emptyText)
+                       (Ui.ButtonGroup.view buttonGroup.disabled)
 
-          , componentHeader "Breadcrumbs"
-          , tr []
-            [ td [colspan 3]
-              [ Ui.breadcrumbs (node "span" [] [text "/"])
-                [ ("First", Just (BreadcrumbClicked "First"))
-                , ("Second", Just (BreadcrumbClicked "Second"))
-                , ("Third", Nothing)
+            , componentHeader "Ratings"
+            , Showcase.view Ratings Ui.Ratings.view ratings
+
+            , componentHeader "NotificationCenter"
+            , tableRow (notificationButton)
+                       (emptyText)
+                       (emptyText)
+
+            , componentHeader "Modal"
+            , tableRow (modalButton)
+                       (emptyText)
+                       (emptyText)
+
+            , componentHeader "Dropdown Menu"
+            , tableRow ( Ui.DropdownMenu.view
+                         dropdownMenu
+                         DropdownMenu
+                         model.menu)
+                       (emptyText)
+                       (emptyText)
+            , componentHeader "Calendar"
+            , Showcase.view Calendar (Ui.Calendar.view "en_us") calendar
+
+            , componentHeader "Tabs"
+            , Showcase.view2 Tabs (Ui.Tabs.view tabsContents) tabs
+
+            , componentHeader "Checkbox"
+            , Showcase.view Checkbox Ui.Checkbox.view checkbox
+            , Showcase.view Checkbox2 Ui.Checkbox.viewToggle checkbox2
+            , Showcase.view Checkbox3 Ui.Checkbox.viewRadio checkbox3
+
+            , componentHeader "Chooser"
+            , Showcase.view Chooser Ui.Chooser.view chooser
+
+            , componentHeader "Color Panel"
+            , Showcase.view ColorPanel Ui.ColorPanel.view colorPanel
+
+            , componentHeader "Color Picker"
+            , Showcase.view ColorPicker Ui.ColorPicker.view colorPicker
+
+            , componentHeader "Date Picker"
+            , Showcase.view DatePicker (Ui.DatePicker.view "en_us") datePicker
+
+            , componentHeader "Number Range"
+            , Showcase.view NumberRange Ui.NumberRange.view numberRange
+
+            , componentHeader "Slider"
+            , Showcase.view Slider Ui.Slider.view slider
+
+            --, componentHeader "Tagger"
+            --, Showcase.view Ui.Tagger.view tagger
+
+            , componentHeader "Time"
+            , tableRow
+                (Ui.Time.view model.time)
+                (Ui.Time.view model.time2)
+                emptyText
+
+            , componentHeader "Loader"
+            , tableRow
+                (Ui.Loader.barView model.loader)
+                (div [class "loader-container"]
+                  [ Ui.Loader.overlayView model.loader ])
+                emptyText
+
+            , componentHeader "Input"
+            , Showcase.view Input Ui.Input.view input
+
+            , componentHeader "Search Input"
+            , Showcase.view SearchInput Ui.SearchInput.view searchInput
+
+            , componentHeader "Autogrow Textarea"
+            , Showcase.view TextArea Ui.Textarea.view textarea
+
+            , componentHeader "Inplace Input"
+            , Showcase.view InplaceInput Ui.InplaceInput.view inplaceInput
+
+            , componentHeader "Number Pad"
+            , Showcase.view2 NumberPad (Ui.NumberPad.view { bottomLeft = text "", bottomRight = text "" }) numberPad
+
+            , componentHeader "Pager"
+            , tr []
+              [ td [colspan 3]
+                [ Ui.Pager.view Pager pagerContents pager
                 ]
               ]
+            , tr []
+              [ td [colspan 3]
+                [ pagerControls ]
+              ]
+
+            , componentHeader "Breadcrumbs"
+            , tr []
+              [ td [colspan 3]
+                [ Ui.breadcrumbs (node "span" [] [text "/"])
+                  [ ("First", Just (BreadcrumbClicked "First"))
+                  , ("Second", Just (BreadcrumbClicked "Second"))
+                  , ("Third", Nothing)
+                  ]
+                ]
+              ]
+            , componentHeader "Image"
+            , tr []
+              [ td []
+                [ Html.App.map Image (Ui.Image.view model.image) ]
+              , td [] []
+              , td [] []
+              ]
             ]
-          , componentHeader "Image"
-          , tr []
-            [ td []
-              [ Html.App.map Image (Ui.Image.view model.image) ]
-            , td [] []
-            , td [] []
-            ]
-          ]
-        ])
+          ])
+        ]
+        []
       ]
 
 update : Msg -> Model -> Model

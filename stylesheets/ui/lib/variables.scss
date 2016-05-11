@@ -1,23 +1,26 @@
 // Types
-$primary: #0278AE !default;
-$success: #43A047 !default;
-$warning: #E07800 !default;
-$danger: #F44336 !default;
+$primary: #158DD8 !default;
+$success: #4DC151 !default;
+$warning: #FF9730 !default;
+$danger: #E04141 !default;
+
+$color-header: $primary !default;
+$color-header-border: dampen-inverse($primary, 20%);
 
 // Calulated colors
-$background: mix($primary, #FCFCFC, 1%) !default;
-$secondary: mix($primary, #F6F6F6, 2%) !default;
-$input: mix($primary, #FFF, 1%) !default;
+$background: #F7F7F7 !default;
+$secondary: #5D7889 !default;
+$input: #FDFDFD !default;
 
 // Border
 $border-radius: 2px !default;
-$border: 1px solid rgba(#000, 0.1) !default;
+$border: 1px solid #EAEAEA !default;
 
 // Disabled
 $disabled: desaturate(dampen($input, 15%), 60%) !default;
 
 // Focus
-$focus: dampen($primary, 30%) !default;
+$focus: #00C0FF !default;
 $focus-readonly: dampen($warning, 30%) !default;
 $focus-shadow: 0 0 0 1px $focus inset,
 							 0 0 4px rgba($focus, 0.5),

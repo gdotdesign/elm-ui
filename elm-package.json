@@ -21,6 +21,7 @@
     "Ui.Helpers.Emitter",
     "Ui.Helpers.Intendable",
     "Ui.Native.LocalStorage",
+    "Ui.Native.Scrolls",
     "Ui.Native.Browser",
     "Ui.Native.Dom",
     "Ui.Utils.Env",
@@ -55,6 +56,7 @@
     "elm-lang/virtual-dom": "1.0.0 <= v < 2.0.0",
     "elm-lang/mouse": "1.0.0 <= v < 2.0.0",
     "elm-lang/html": "1.0.0 <= v < 2.0.0",
+    "elm-lang/dom": "1.0.0 <= v < 2.0.0",
     "elm-lang/core": "4.0.0 <= v < 5.0.0",
     "elm-community/elm-test": "1.0.0 <= v < 2.0.0",
     "elm-lang/svg": "1.0.0 <= v < 2.0.0"

@@ -2,7 +2,7 @@ module Ui.App exposing
   (Model, Msg, init, subscribe, subscriptions, update, view, render)
 
 {-| Base frame for a web/mobile application:
-  - Provides subscriptions for **load** and **scroll** events
+  - Provides subscription for **load** event
   - Provides periodic updates to **Ui.Time**
   - Sets the viewport to be mobile friendly
   - Sets the title of the application
@@ -51,7 +51,6 @@ type alias Model =
 -}
 type Msg
   = Tick Time
-  | Scrolled
   | Loaded
 
 
@@ -69,14 +68,11 @@ init title =
 
 {-| Subscribes to changes for an application.
 
-    Ui.App.subscribe ScrollMsg LoadMsg app
+    Ui.App.subscribe LoadMsg app
 -}
-subscribe : (Bool -> a) -> (Bool -> a) -> Model -> Sub a
-subscribe scrollMsg loadMsg model =
-  Sub.batch
-    [ Emitter.listenBool (model.uid ++ "-scroll") scrollMsg
-    , Emitter.listenBool (model.uid ++ "-load") loadMsg
-    ]
+subscribe : (Bool -> a) -> Model -> Sub a
+subscribe loadMsg model =
+  Emitter.listenBool (model.uid ++ "-load") loadMsg
 
 
 {-| Subscriptions for an application.
@@ -100,9 +96,6 @@ update msg model =
       , Emitter.sendBool (model.uid ++ "-load") True
       )
 
-    Scrolled ->
-      ( model, Emitter.sendBool (model.uid ++ "-scroll") True )
-
     Tick now ->
       ( model, Ui.Time.updateTime now )
 
@@ -114,7 +107,6 @@ update msg model =
 view : (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 view address model children =
   Html.Lazy.lazy3 render address model children
-
 
 
 {-| Renders an application.
@@ -133,7 +125,6 @@ render address model children =
               "hidden"
           )
         ]
-    , onScroll (address Scrolled)
     ]
     ([ Ui.stylesheetLink "/main.css" (address Loaded)
      , node "title" [] [ text model.title ]

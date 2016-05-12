@@ -19,6 +19,7 @@ import Debug exposing (log)
 
 import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
+import Ui.Native.Scrolls as Scrolls
 import Ui.NotificationCenter
 import Ui.DropdownMenu
 import Ui.InplaceInput
@@ -105,7 +106,6 @@ type Msg
   | CheckboxChanged Bool
   | RatingsChanged Float
   | ButtonClicked String
-  | Scrolled Bool
   | Loaded Bool
   | Time2 Ui.Time.Msg
   | Time Ui.Time.Msg
@@ -659,9 +659,6 @@ update msg model =
     Pager act ->
       { model | pager = Ui.Pager.update act model.pager }
 
-    Scrolled _ ->
-      { model | menu = Ui.DropdownMenu.close model.menu }
-
     CloseMenu ->
       { model | menu = Ui.DropdownMenu.close model.menu }
 
@@ -875,6 +872,7 @@ gatherSubs model =
             , Showcase.subscribe model.checkbox3
             , Showcase.subscribe model.searchInput
             , Showcase.subscribe model.textarea
+            , Scrolls.scrolls CloseMenu
             , Sub.map App Ui.App.subscriptions
             , Sub.map Time Ui.Time.subscriptions
             , Sub.map Time2 Ui.Time.subscriptions

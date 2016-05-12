@@ -3,7 +3,7 @@ module Ui.App exposing
 
 {-| Ui.App is the starting point of any Elm-UI application, it has multiple
 responsibilities:
-  - Loads the CSS file and provides a subscription to hanlde loaded state
+  - Loads the CSS file and provides a subscription to handle loaded state
   - Schedules updates for the **Ui.Time** component
   - Sets the **viewport meta tag** to be mobile friendly
   - Sets the **title** of the window

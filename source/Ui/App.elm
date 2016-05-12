@@ -1,32 +1,28 @@
 module Ui.App exposing
-  (Model, Msg, init, subscribe, subscriptions, update, view, render)
+  (Model, Msg, init, subscribe, subscriptions, update, view, render, setTitle)
 
-{-| Base frame for a web/mobile application:
-  - Provides subscription for **load** event
-  - Provides periodic updates to **Ui.Time**
-  - Sets the viewport to be mobile friendly
-  - Sets the title of the application
-  - Loads the stylesheet
+{-| Ui.App is the starting point of any Elm-UI application, it has multiple
+responsibilities:
+  - Loads the CSS file and provides a subscription to hanlde loaded state
+  - Schedules updates for the **Ui.Time** component
+  - Sets the **viewport meta tag** to be mobile friendly
+  - Sets the **title** of the window
 
 # Model
 @docs Model, Msg, update, init, subscribe, subscriptions
 
 # View
 @docs view, render
+
+# Functions
+@docs setTitle
 -}
 
--- where
-
 import Html.Attributes exposing (name, content, style)
-import Html.Events.Geometry exposing (MousePosition)
-import Html.Events exposing (onMouseDown, onMouseUp)
-import Html.Events.Extra exposing (onScroll)
 import Html exposing (node, text)
 import Html.Lazy
 
 import Time exposing (Time)
-import Json.Decode as JD
-import Json.Encode as JE
 
 import Native.Uid
 
@@ -38,7 +34,7 @@ import Ui
 {-| Representation of an application:
   - **title** - The title of the application (and the window)
   - **loaded** - Whether or not the application is loaded
-  - **uid** - The unique ID of the application
+  - **uid** - The unique identifier of the application
 -}
 type alias Model =
   { title : String
@@ -56,7 +52,7 @@ type Msg
 
 {-| Initializes an application with the given title.
 
-    app = App.init "My Application"
+    app = Ui.App.init "My Application"
 -}
 init : String -> Model
 init title =
@@ -137,3 +133,12 @@ render address model children =
      ]
       ++ children
     )
+
+
+{-| Sets the title of the application
+
+    Ui.App.setTitle "New Title" model.app
+-}
+setTitle : String -> Model -> Model
+setTitle title model =
+  { model | title = title }

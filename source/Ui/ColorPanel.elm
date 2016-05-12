@@ -207,32 +207,12 @@ render model =
               ]
           , node
               "ui-color-panel-hue"
-              ([ style
-                  [ ( "cursor"
-                    , if model.hueDrag.dragging then
-                        "move"
-                      else
-                        ""
-                    )
-                  ]
-               ]
-                ++ (action LiftHue)
-              )
+              (action LiftHue)
               [ renderHandle (asPercent color.hue) "" ]
           ]
       , node
           "ui-color-panel-alpha"
-          ([ style
-              [ ( "cursor"
-                , if model.alphaDrag.dragging then
-                    "move"
-                  else
-                    ""
-                )
-              ]
-           ]
-            ++ (action LiftAlpha)
-          )
+          (action LiftAlpha)
           [ div [ style [ ( "background-image", gradient ) ] ] []
           , renderHandle "" (asPercent color.alpha)
           ]

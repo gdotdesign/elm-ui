@@ -66,7 +66,8 @@ ui-button {
     outline: none;
 
     svg {
-      transform: translate(-50%, -50%) scale(1.2);
+      transition: 320ms cubic-bezier(0.215, 0.61, 0.355, 1);
+      transform: translate(-50%, -50%) scale(1.5);
       opacity: 0.3;
     }
   }
@@ -76,7 +77,7 @@ ui-button {
   }
 
   svg {
-    transition: 320ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    transition: 200ms opacity;
     pointer-events: none;
     position: absolute;
     content: '';

@@ -59,7 +59,9 @@ init =
   { mouseStartPosition = { left = 0, top = 0 }
   , dragging = False
   , dimensions =
-      { height = 0
+      { scrollLeft = 0
+      , scrollTop = 0
+      , height = 0
       , bottom = 0
       , width = 0
       , right = 0
@@ -96,8 +98,8 @@ diff left top model =
 -}
 relativePosition : Float -> Float -> Model -> Point
 relativePosition left top model =
-  { left = left - model.dimensions.left
-  , top = top - model.dimensions.top
+  { left = left - (model.dimensions.left + model.dimensions.scrollLeft)
+  , top = top - (model.dimensions.top + model.dimensions.scrollTop)
   }
 
 

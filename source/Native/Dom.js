@@ -48,13 +48,14 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     writeable: false,
     value: function() {
       var rect = this.getBoundingClientRect()
-      /* Offset values with scroll positions. */
-      return { bottom: rect.bottom + window.pageYOffset,
-               right: rect.right + window.pageXOffset,
-               left: rect.left + window.pageXOffset,
-               top: rect.top + window.pageYOffset,
+      return { scrollLeft: window.pageXOffset,
+               scrollTop: window.pageYOffset,
+               bottom: rect.bottom,
                height: rect.height,
-               width: rect.width
+               width: rect.width,
+               right: rect.right,
+               left: rect.left,
+               top: rect.top
              }
      }
   })

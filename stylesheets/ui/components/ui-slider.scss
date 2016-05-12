@@ -21,14 +21,16 @@ ui-slider {
     position: relative;
     background: $input;
     display: block;
-    height: 24px;
+    height: 18px;
     flex: 1;
   }
 
   // Progress bar
   ui-slider-progress {
+    border-right: 5px solid transparent;
     border-radius: $border-radius;
-    background: $primary;
+    background-clip: content-box;
+    background-color: $primary;
     position: absolute;
     bottom: 3px;
     left: 3px;
@@ -37,13 +39,15 @@ ui-slider {
 
   // Handle
   ui-slider-handle {
-    border-left: 3px solid $input;
-    background: $secondary;
+    box-shadow: 0 0 4px rgba(#000, 0.5);
+    border-radius: $border-radius;
+    background: rgba(#666, 0.5);
+    border: 2px solid $input;
     position: absolute;
-    margin-left: -5px;
-    width: 12px;
-    bottom: 10px;
-    top: 10px;
+    margin-left: -4px;
+    width: 8px;
+    bottom: 3px;
+    top: 3px;
     left: 0;
   }
 
@@ -72,6 +76,10 @@ ui-slider {
     ui-slider-bar,
     ui-slider-handle {
       border-color: $disabled;
+    }
+
+    ui-slider-handle {
+      border-left-color: $input;
     }
 
     ui-slider-progress {

@@ -26,10 +26,12 @@ import Ui.Native.Dom as Dom
 
 {-| Represents a HTMLElements dimensions, specifically the ClientRect object
 returned by [getBoundingClientRect](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect)
-function.
+function with scroll position additions.
 -}
 type alias ElementDimensions =
-  { height : Float
+  { scrollLeft : Float
+  , scrollTop : Float
+  , height : Float
   , width : Float
   , bottom : Float
   , right : Float
@@ -76,8 +78,10 @@ decodeMousePosition =
 decodeElementDimensions : Json.Decoder ElementDimensions
 decodeElementDimensions =
   Dom.withBoundingClientRect
-    (Json.object6
+    (Json.object8
       ElementDimensions
+      ("scrollLeft" := Json.float)
+      ("scrollTop" := Json.float)
       ("height" := Json.float)
       ("width" := Json.float)
       ("bottom" := Json.float)

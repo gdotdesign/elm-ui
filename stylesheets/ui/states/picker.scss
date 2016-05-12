@@ -52,16 +52,12 @@
   }
 
   // Focused state
-  &:not(.readonly):focus {
+  &:focus {
     @extend %focused;
   }
 
   &.readonly {
-    cursor: default;
-
-    &:focus {
-      @extend %focused-readonly;
-    }
+    @extend %readonly;
 
     ui-dropdown {
       display: none;

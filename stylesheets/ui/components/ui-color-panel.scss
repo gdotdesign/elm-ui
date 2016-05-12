@@ -34,7 +34,7 @@ ui-color-panel {
     transform: translateX(-50%) translateY(-50%);
     box-shadow: 0 0 4px rgba(#000, 0.5);
     background: rgba(#666, 0.5);
-    border: 2px solid #FFF;
+    border: 2px solid $input;
     pointer-events: none;
     position: absolute;
     border-radius: 50%;
@@ -42,11 +42,21 @@ ui-color-panel {
     width: 16px;
   }
 
+  &.readonly {
+    @extend %readonly;
+  }
+
   &:not(.readonly) {
-    ui-color-panel-hue,
-    ui-color-panel-rect,
-    ui-color-panel-alpha {
+    ui-color-panel-rect {
       cursor: pointer;
+    }
+
+    ui-color-panel-hue {
+      cursor: row-resize;
+    }
+
+    ui-color-panel-alpha {
+      cursor: col-resize;
     }
   }
 
@@ -90,7 +100,7 @@ ui-color-panel {
 
   // Alpha
   ui-color-panel-alpha {
-    background-color: dampen($secondary, 5%);
+    background-color: dampen($background, 10%);
     background-image: linear-gradient(45deg, $background 25%, transparent 25%, transparent 75%, $background 75%, $background),
                       linear-gradient(45deg, $background 25%, transparent 25%, transparent 75%, $background 75%, $background);
     background-position: 0 0, 10px 10px;

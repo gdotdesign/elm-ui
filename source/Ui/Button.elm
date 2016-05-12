@@ -7,9 +7,10 @@ module Ui.Button exposing
   , dangerBig, dangerSmall, danger)
 
 {-| Basic button component that implements:
-  - 5 different types (primary, secondary, warning, danger, success)
-  - 3 different sizes (small, medium, big)
-  - disabled state
+  - **5 different types** (primary, secondary, warning, danger, success)
+  - **3 different sizes** (small, medium, big)
+  - **focus state** with animation
+  - **disabled state**
 
 # Model
 @docs Model, init
@@ -27,8 +28,6 @@ module Ui.Button exposing
 # Functions
 @docs attributes
 -}
-
--- where
 
 import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)

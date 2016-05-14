@@ -29,6 +29,7 @@ var _gdotdesign$elm_ui$Native_Browser = function() {
   /* Interface */
   return {
     openWindow: F2(openWindow),
+    location: window.location,
     redirect: F2(redirect),
     prefix: vendorPrefix,
     alert: F2(alert)

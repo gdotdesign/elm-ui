@@ -1,14 +1,21 @@
-module Ui.Native.Browser exposing (..)
+module Ui.Native.Browser exposing
+  (Location, location, Prefix(..), prefix, openWindow, redirect, alert)
 
 {-| Browser related helper functions.
 
+# Window
 @docs openWindow, redirect, alert
 
 # Vendor Prefix
 @docs Prefix, prefix
+
+# Location
+@docs Location, location
 -}
 
+import Json.Decode as Json exposing ((:=))
 import Task exposing (Task)
+import String
 
 import Native.Browser
 
@@ -21,6 +28,62 @@ type Prefix
   | MS
   | O
   | Unknown
+
+
+{-| Location model.
+-}
+type alias Location =
+  { pathname : String
+  , hostname : String
+  , protocol : String
+  , search : String
+  , host : String
+  , hash : String
+  , port' : Int
+  }
+
+
+{-| The current location object.
+-}
+location : Location
+location =
+  Json.decodeValue decodeLocation Native.Browser.location
+    |> Result.withDefault emptyLocation
+
+
+{-| Empty location model.
+-}
+emptyLocation : Location
+emptyLocation =
+  { pathname = ""
+  , hostname = ""
+  , protocol = ""
+  , search = ""
+  , host = ""
+  , hash = ""
+  , port' = 0
+  }
+
+
+{-| Decodes a location object.
+-}
+decodeLocation : Json.Decoder Location
+decodeLocation =
+  let
+    convertPort port' =
+      String.toInt port'
+        |> Result.withDefault 0
+        |> Json.succeed
+  in
+    Json.object7
+      Location
+      ("pathname" := Json.string)
+      ("hostname" := Json.string)
+      ("protocol" := Json.string)
+      ("search" := Json.string)
+      ("host" := Json.string)
+      ("hash" := Json.string)
+      ("port" := Json.string `Json.andThen` convertPort)
 
 
 {-| Opens a new window with the given URL and return the given value.

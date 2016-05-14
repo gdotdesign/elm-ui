@@ -27,6 +27,7 @@ import Time exposing (Time)
 import Native.Uid
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Browser as Browser
 import Ui.Time
 import Ui
 
@@ -111,28 +112,35 @@ view address model children =
 -}
 render : (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 render address model children =
-  node
-    "ui-app"
-    [ style
-        [ ( "visibility"
-          , if model.loaded then
-              ""
-            else
-              "hidden"
-          )
-        ]
-    ]
-    ([ Ui.stylesheetLink "/main.css" (address Loaded)
-     , node "title" [] [ text model.title ]
-     , node
-        "meta"
-        [ content "initial-scale=1.0, user-scalable=no"
-        , name "viewport"
-        ]
-        []
-     ]
-      ++ children
-    )
+  let
+    location = Browser.location
+    stylesheet =
+      case location.protocol of
+        "file:" -> "main.css"
+        _ -> "/main.css"
+  in
+    node
+      "ui-app"
+      [ style
+          [ ( "visibility"
+            , if model.loaded then
+                ""
+              else
+                "hidden"
+            )
+          ]
+      ]
+      ([ Ui.stylesheetLink stylesheet (address Loaded)
+       , node "title" [] [ text model.title ]
+       , node
+          "meta"
+          [ content "initial-scale=1.0, user-scalable=no"
+          , name "viewport"
+          ]
+          []
+       ]
+        ++ children
+      )
 
 
 {-| Sets the title of the application

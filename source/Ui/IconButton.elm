@@ -134,7 +134,7 @@ danger text glyph side msg =
 -}
 dangerSmall : String -> String -> String -> msg -> Html.Html msg
 dangerSmall text glyph side msg =
-  render msg (model text "small" "danger" glyph side)
+  Html.Lazy.lazy2 render msg (model text "small" "danger" glyph side)
 
 
 {-| Lazily renders a "big danger" icon button with the given text, glyph and size.

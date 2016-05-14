@@ -71,10 +71,10 @@ type Msg
 -}
 init : Date.Date -> Model
 init date =
-  { dropdownPosition = "bottom"
-  , closeOnSelect = False
-  , calendar = Ui.Calendar.init date
+  { calendar = Ui.Calendar.init date
+  , dropdownPosition = "bottom"
   , format = isoDateFormat
+  , closeOnSelect = False
   , disabled = False
   , readonly = False
   , open = False

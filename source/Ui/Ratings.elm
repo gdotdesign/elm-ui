@@ -56,7 +56,6 @@ type Msg
   | Increment
   | Decrement
   | Click Int
-  | Tasks ()
 
 
 {-| Initializes a ratings component with the given number of stars and initial
@@ -118,9 +117,6 @@ update msg model =
 
     Click index ->
       setAndSendValue (calculateValue index model) model
-
-    Tasks _ ->
-      ( model, Cmd.none )
 
 
 {-| Lazily renders a ratings component.

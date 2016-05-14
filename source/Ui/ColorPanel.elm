@@ -50,10 +50,10 @@ type alias Model =
 {-| Messages that a color panel can receive.
 -}
 type Msg
-  = LiftAlpha Dimensions
+  = Move ( Float, Float )
+  | LiftAlpha Dimensions
   | LiftRect Dimensions
   | LiftHue Dimensions
-  | Move ( Float, Float )
   | Click Bool
 
 

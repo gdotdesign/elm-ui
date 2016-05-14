@@ -14,8 +14,6 @@ focused, allowing the user to manipulate the selected color.
 @docs setValue
 -}
 
---  where
-
 import Html.Attributes exposing (classList, style)
 import Html.Events exposing (onBlur, onClick)
 import Html exposing (node, div, text)

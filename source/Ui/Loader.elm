@@ -24,8 +24,8 @@ import Task
 
 {-| Representation of a loader:
   - **timeout** - The waiting perid in milliseconds
-  - **shown** - Whether or not the loader is shown
   - **loading** - Whether or not the loading is started
+  - **shown** - Whether or not the loader is shown
 -}
 type alias Model =
   { timeout : Float
@@ -37,8 +37,8 @@ type alias Model =
 {-| Messages that a loader can receive.
 -}
 type Msg
-  = Show ()
-  | NoOp ()
+  = Show
+  | NoOp
 
 
 {-| Initializes a loader with the given timeout.
@@ -60,13 +60,13 @@ init timeout =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Show _ ->
+    Show ->
       if model.loading then
         ( { model | shown = True }, Cmd.none )
       else
         ( model, Cmd.none )
 
-    NoOp _ ->
+    NoOp ->
       ( model, Cmd.none )
 
 
@@ -124,11 +124,13 @@ finish model =
 
 {-| Starts the loading process.
 
-    Ui.Loader.finish start
+    Ui.Loader.start loader
 -}
 start : Model -> ( Model, Cmd Msg )
 start model =
-  ( { model | loading = True }, Task.perform Show NoOp (Task.succeed ()) )
+  ( { model | loading = True }
+  , Task.perform (\_-> NoOp) (\_-> Show) (Task.succeed ())
+  )
 
 
 {-| Renders loading rectangles.

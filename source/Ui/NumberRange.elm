@@ -1,6 +1,6 @@
 module Ui.NumberRange exposing
   ( Model, Msg, init, subscribe, subscriptions, update, view, render
-  , focus, setValue, increment, decrement )
+  , setValue, increment, decrement )
 
 {-| This is a component allows the user to change a number value by
 dragging or by using the keyboard, also traditional editing is enabled by
@@ -13,7 +13,7 @@ double clicking on the component.
 @docs view, render
 
 # Functions
-@docs focus, setValue, increment, decrement
+@docs setValue, increment, decrement
 -}
 
 import Html.Events.Geometry as Geometry exposing (Dimensions, onWithDimensions)
@@ -74,7 +74,6 @@ type Msg
   | Click Bool
   | Increment
   | Decrement
-  | Tasks ()
   | Edit
   | Blur
   | Save
@@ -177,9 +176,6 @@ update msg model =
       , Cmd.none
       )
 
-    Tasks _ ->
-      ( model, Cmd.none )
-
 
 {-| Lazily renders a number range.
 
@@ -241,15 +237,6 @@ render model =
           ]
       ]
       [ inputElement ]
-
-
-{-| Focuses the component.
-
-    Ui.NumberRange.focus numberRange
--}
-focus : Model -> Cmd Msg
-focus model =
-  Task.perform Tasks Tasks (Native.Browser.focusUid model.uid)
 
 
 {-| Sets the value of a number range.

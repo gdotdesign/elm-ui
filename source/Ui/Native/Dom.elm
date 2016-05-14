@@ -3,7 +3,7 @@ module Ui.Native.Dom exposing (..)
 {-| Helper functions and tasks for DOM related activities.
 
 # Focusing
-@docs focusSelector, focusUid
+@docs focusSelector, focusComponent
 
 # Decoder Queries
 @docs decodeElementFunction, withBoundingClientRect, withClosest, withSelector
@@ -26,13 +26,13 @@ focusSelector selector =
   Native.Dom.focusSelector selector
 
 
-{-| Focuses a DOM element with the given uid attribute.
+{-| Focuses a UI component that have a uid field.
 
-    Ui.Native.Browser.focusUid 'xxxx-xxx-xxx-xxxx'
+    Ui.Native.Browser.focusUid NoOp 'xxxx-xxx-xxx-xxxx'
 -}
-focusUid : String -> Task Never Never
-focusUid uid =
-  focusSelector ("[uid='" ++ uid ++ "']")
+focusComponent : msg -> { a | uid: String } -> Cmd msg
+focusComponent msg { uid } =
+  Task.perform (\_-> msg) (\_ -> msg) (focusSelector ("[uid='" ++ uid ++ "']"))
 
 
 {-| This function allows decoders to call JavaScript functions on objects

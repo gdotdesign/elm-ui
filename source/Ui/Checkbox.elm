@@ -1,6 +1,6 @@
 module Ui.Checkbox exposing
   ( Model, Msg, init, subscribe, update, view, render, viewToggle
-  , renderToggle, viewRadio, renderRadio, focus, setValue )
+  , renderToggle, viewRadio, renderRadio, setValue )
 
 {-| Checkbox component with three different views.
 
@@ -14,7 +14,7 @@ module Ui.Checkbox exposing
 @docs viewRadio, viewToggle, renderRadio, renderToggle
 
 # Functions
-@docs focus, setValue
+@docs setValue
 -}
 
 import Html.Attributes exposing (classList, tabindex)
@@ -29,7 +29,6 @@ import Task
 import Dict
 
 import Ui.Helpers.Emitter as Emitter
-import Ui.Native.Dom as Dom
 import Ui
 
 
@@ -50,8 +49,7 @@ type alias Model =
 {-| Messages that a checkbox can receive.
 -}
 type Msg
-  = Focus Never
-  | Toggle
+  = Toggle
 
 
 {-| Initiaizes a checkbox with the given value.
@@ -83,9 +81,6 @@ subscribe msg model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
-    Focus _ ->
-      ( model, Cmd.none )
-
     Toggle ->
       let
         value =
@@ -167,15 +162,6 @@ renderToggle model =
 setValue : Bool -> Model -> Model
 setValue value model =
   { model | value = value }
-
-
-{-| Focuses a checkbox.
-
-    Cmd.map Checkbox (Ui.Checkbox.focus model)
--}
-focus : Model -> Cmd Msg
-focus model =
-  Task.perform Focus Focus (Dom.focusUid model.uid)
 
 
 {-| Returns attributes for a checkbox.

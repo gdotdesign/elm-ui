@@ -1,5 +1,5 @@
 module Ui.Input exposing
-  (Model, Msg, init, subscribe, update, view, render, setValue, focus)
+  (Model, Msg, init, subscribe, update, view, render, setValue)
 
 {-| Component for single line text based input (wrapper for the input HTML tag).
 
@@ -10,7 +10,7 @@ module Ui.Input exposing
 @docs view, render
 
 # Functions
-@docs setValue, focus
+@docs setValue
 -}
 
 import Html.Events exposing (onInput)
@@ -59,7 +59,6 @@ type alias Model =
 -}
 type Msg
   = Input String
-  | Tasks ()
 
 
 {-| Initializes an input with a default value and a placeholder.
@@ -98,9 +97,6 @@ update msg model =
   case msg of
     Input value ->
       ( setValue value model, Emitter.sendString model.uid value )
-
-    Tasks _ ->
-      ( model, Cmd.none )
 
 
 {-| Lazily renders an input.
@@ -147,12 +143,3 @@ render model =
 setValue : String -> Model -> Model
 setValue value model =
   { model | value = value }
-
-
-{-| Focuses an input.
-
-    Cmd.map Input (Ui.Input.focus input)
--}
-focus : Model -> Cmd Msg
-focus model =
-  Task.perform Tasks Tasks (Native.Browser.focusUid model.uid)

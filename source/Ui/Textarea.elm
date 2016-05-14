@@ -1,5 +1,5 @@
 module Ui.Textarea exposing
-  (Model, Msg, init, subscribe, update, view, render, setValue, focus)
+  (Model, Msg, init, subscribe, update, view, render, setValue)
 
 {-| Textarea which uses a mirror object to render the contents the same way,
 thus creating an automatically growing textarea.
@@ -11,7 +11,7 @@ thus creating an automatically growing textarea.
 @docs view, render
 
 # Functions
-@docs setValue, focus
+@docs setValue
 -}
 
 import Html.Events.Extra exposing (onEnterPreventDefault, onStop)
@@ -36,7 +36,6 @@ import Task
 import List
 
 import Ui.Helpers.Emitter as Emitter
-import Ui.Native.Dom as Dom
 import Ui
 
 {-| Representation of a textarea:
@@ -61,7 +60,6 @@ type alias Model =
 -}
 type Msg
   = Input String
-  | Tasks Never
   | NoOp
 
 
@@ -167,14 +165,6 @@ setValue : String -> Model -> Model
 setValue value model =
   { model | value = value }
 
-
-{-| Focuses a textarea.
-
-    Cmd.map Textarea (Ui.Textarea.focus textarea)
--}
-focus : Model -> Cmd Msg
-focus model =
-  Task.perform Tasks Tasks (Dom.focusUid model.uid)
 
 
 ----------------------------------- PRIVATE ------------------------------------

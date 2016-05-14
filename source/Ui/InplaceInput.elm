@@ -23,6 +23,7 @@ import Native.Uid
 import String
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Dom as Dom
 import Ui.Container
 import Ui.Textarea
 import Ui.Button
@@ -58,6 +59,7 @@ type Msg
   | Close
   | Save
   | Edit
+  | NoOp
 
 
 {-| Initializes an inplace input with the given value and palceholder.
@@ -125,6 +127,9 @@ update action model =
     Close ->
       ( close model, Cmd.none )
 
+    NoOp ->
+      ( model, Cmd.none )
+
 
 {-| Lazily renders an inplace input.
 
@@ -155,12 +160,7 @@ render model =
 -}
 open : Model -> ( Model, Cmd Msg )
 open model =
-  let
-    effect =
-      Ui.Textarea.focus model.textarea
-        |> Cmd.map Textarea
-  in
-    ( { model | open = True }, effect )
+  ( { model | open = True }, Dom.focusComponent NoOp model.textarea )
 
 
 {-| Closes an inplace input.

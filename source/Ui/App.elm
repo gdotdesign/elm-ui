@@ -113,34 +113,32 @@ view address model children =
 render : (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 render address model children =
   let
-    location = Browser.location
+    location =
+      Browser.location
+
     stylesheet =
       case location.protocol of
         "file:" -> "main.css"
         _ -> "/main.css"
-  in
-    node
-      "ui-app"
-      [ style
-          [ ( "visibility"
-            , if model.loaded then
-                ""
-              else
-                "hidden"
-            )
-          ]
+
+    baseChildren =
+      [ Ui.stylesheetLink stylesheet (address Loaded)
+      , node "title" [] [ text model.title ]
+      , node
+        "meta"
+        [ content "initial-scale=1.0, user-scalable=no"
+        , name "viewport"
+        ]
+        []
       ]
-      ([ Ui.stylesheetLink stylesheet (address Loaded)
-       , node "title" [] [ text model.title ]
-       , node
-          "meta"
-          [ content "initial-scale=1.0, user-scalable=no"
-          , name "viewport"
-          ]
-          []
-       ]
-        ++ children
-      )
+
+    actualChildren =
+      if model.loaded then
+        baseChildren ++ children
+      else
+        baseChildren
+  in
+    node "ui-app" [] actualChildren
 
 
 {-| Sets the title of the application

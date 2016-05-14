@@ -56,8 +56,8 @@ type alias Model =
 -}
 type Msg
   = Input Ui.Input.Msg
-  | Update Time ()
-  | Tasks ()
+  | Update Time
+  | NoOp
 
 
 {-| Initializes a search input with the given timeout.
@@ -95,7 +95,7 @@ subscribe msg model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Update time _ ->
+    Update time ->
       let
         value =
           model.input.value
@@ -128,13 +128,13 @@ update msg model =
 
         cmd =
           Task.perform
-            Tasks
-            (Update (justNow + model.timeout))
+            (\_ -> NoOp)
+            (\_ -> (Update (justNow + model.timeout)))
             (Process.sleep model.timeout)
       in
         ( updatedModel, cmd )
 
-    Tasks _ ->
+    NoOp ->
       ( model, Cmd.none )
 
 
@@ -169,7 +169,7 @@ render { input, disabled, readonly } =
       ]
 
 
-{-| Sets the value of the model.
+{-| Sets the value of a search input.
 
     Ui.SearchInput.setValue "new value" searchInput
 -}

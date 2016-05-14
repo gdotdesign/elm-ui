@@ -21,9 +21,9 @@ import Native.Dom
 
     Ui.Native.Browser.focusSelector 'input#comments'
 -}
-focusSelector : String -> Task Never Never
-focusSelector selector =
-  Native.Dom.focusSelector selector
+focusSelector : msg -> String -> Cmd msg
+focusSelector msg selector =
+  Task.perform (\_ -> msg) (\_ -> msg) (Native.Dom.focusSelector selector)
 
 
 {-| Focuses a UI component that have a uid field.
@@ -32,7 +32,7 @@ focusSelector selector =
 -}
 focusComponent : msg -> { a | uid: String } -> Cmd msg
 focusComponent msg { uid } =
-  Task.perform (\_-> msg) (\_ -> msg) (focusSelector ("[uid='" ++ uid ++ "']"))
+  focusSelector msg ("[uid='" ++ uid ++ "']")
 
 
 {-| This function allows decoders to call JavaScript functions on objects

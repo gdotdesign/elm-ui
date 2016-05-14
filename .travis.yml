@@ -8,7 +8,7 @@ install:
   - npm run elm-install
 node_js:
   - "4.2.4"
-  - "5.4"
+  - "6.1"
 script:
   - npm test
 sudo: required

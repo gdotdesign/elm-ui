@@ -14,8 +14,8 @@ relative time like: 10 minutes ago).
 @docs updateTime
 -}
 
-import Date.Config.Configs as DateConfigs
-import Date.Format exposing (format)
+import Date.Extra.Config.Configs as DateConfigs
+import Date.Extra.Format exposing (format)
 import Time exposing (Time)
 import Ext.Date
 import Date

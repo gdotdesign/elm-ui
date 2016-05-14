@@ -23,8 +23,8 @@ import Html.Events exposing (onMouseDown)
 import Html exposing (node, text, span)
 import Html.Lazy
 
-import Date.Format exposing (isoDateFormat, format)
-import Date.Config.Configs as DateConfigs
+import Date.Extra.Format exposing (isoDateFormat, format)
+import Date.Extra.Config.Configs as DateConfigs
 import Time exposing (Time)
 import Ext.Date
 import Date

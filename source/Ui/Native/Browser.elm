@@ -3,13 +3,24 @@ module Ui.Native.Browser exposing (..)
 {-| Browser related helper functions.
 
 @docs openWindow, redirect, alert
--}
 
---where
+# Vendor Prefix
+@docs Prefix, prefix
+-}
 
 import Task exposing (Task)
 
 import Native.Browser
+
+
+{-| A union of prefix tags.
+-}
+type Prefix
+  = Moz
+  | Webkit
+  | MS
+  | O
+  | Unknown
 
 
 {-| Opens a new window with the given URL and return the given value.
@@ -37,3 +48,27 @@ redirect url value =
 alert : String -> value -> value
 alert message value =
   Native.Browser.alert message value
+
+
+{-| The detected vendor prefix.
+
+    ```elm
+    displayValue : String
+    displayValue =
+        if Vendor.prefix == Vendor.Webkit
+        then "-webkit-flex"
+        else "flex"
+    ```
+-}
+prefix : Prefix
+prefix =
+  if Native.Browser.prefix == "webkit" then
+    Webkit
+  else if Native.Browser.prefix == "moz" then
+    Moz
+  else if Native.Browser.prefix == "ms" then
+    MS
+  else if Native.Browser.prefix == "o" then
+    O
+  else
+    Unknown

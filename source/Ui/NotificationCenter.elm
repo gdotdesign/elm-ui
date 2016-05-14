@@ -22,8 +22,9 @@ import Html exposing (node, text)
 import Json.Encode
 import List.Extra
 import Process
-import Vendor
 import Task
+
+import Ui.Native.Browser as Browser
 
 {-| Representation of a notification center:
   - **timeout** - The timeout of the notification before it's hidden
@@ -115,11 +116,11 @@ renderNotification address model =
       (toString model.duration) ++ "ms"
 
     prefix =
-      case Vendor.prefix of
-        Vendor.Webkit -> "-webkit-"
-        Vendor.Moz -> "-moz-"
-        Vendor.MS -> "-ms-"
-        Vendor.O -> "-o-"
+      case Browser.prefix of
+        Browser.Webkit -> "-webkit-"
+        Browser.Moz -> "-moz-"
+        Browser.MS -> "-ms-"
+        Browser.O -> "-o-"
         _ -> ""
   in
     node "ui-notification"

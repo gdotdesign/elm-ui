@@ -9,8 +9,6 @@ module Ui.ButtonGroup exposing (Model, init, view, render)
 @docs view, render
 -}
 
--- where
-
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
 import Html.Lazy
@@ -41,9 +39,9 @@ type alias Model msg =
 init : List ( String, msg ) -> Model msg
 init items =
   { disabled = False
-  , items = items
   , kind = "primary"
   , size = "medium"
+  , items = items
   }
 
 

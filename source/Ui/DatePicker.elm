@@ -23,8 +23,8 @@ import Html exposing (node, div, text)
 import Html.Lazy
 import Html.App
 
-import Date.Format exposing (isoDateFormat, format)
-import Date.Config.Configs as DateConfigs
+import Date.Extra.Format exposing (isoDateFormat, format)
+import Date.Extra.Config.Configs as DateConfigs
 import Time
 import Date
 

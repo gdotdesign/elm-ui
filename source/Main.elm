@@ -1,6 +1,6 @@
-import Date.Config.Configs as DateConfigs
+import Date.Extra.Config.Configs as DateConfigs
+import Date.Extra.Format
 import Maybe.Extra
-import Date.Format
 import List.Extra
 import Ext.Color
 import Ext.Date
@@ -847,9 +847,9 @@ update' msg model =
       in
         notify ("Chooser changed to: " ++ selected) model
     CalendarChanged time ->
-      notify ("Calendar changed to: " ++ (Date.Format.format dateConfig "%Y-%m-%d" (Date.fromTime time))) model
+      notify ("Calendar changed to: " ++ (Date.Extra.Format.format dateConfig "%Y-%m-%d" (Date.fromTime time))) model
     DatePickerChanged time ->
-      notify ("Date picker changed to: " ++ (Date.Format.format dateConfig "%Y-%m-%d" (Date.fromTime time))) model
+      notify ("Date picker changed to: " ++ (Date.Extra.Format.format dateConfig "%Y-%m-%d" (Date.fromTime time))) model
     RatingsChanged value ->
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
     -- TaggerAddFailed err ->

@@ -89,7 +89,7 @@ render contents address model =
         contents
 
     activeTab =
-      List.Extra.getAt contents model.selected
+      List.Extra.getAt model.selected contents
         |> Maybe.map snd
         |> Maybe.withDefault (text "")
   in

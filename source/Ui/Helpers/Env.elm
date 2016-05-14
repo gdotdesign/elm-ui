@@ -1,4 +1,4 @@
-module Ui.Utils.Env exposing (..)
+module Ui.Helpers.Env exposing (..)
 
 {-| Module for interacting with the environment variables.
 
@@ -12,7 +12,7 @@ import Native.Env
 {-| Gets the value of the given environment variable with a decoder and a
 default value.
 
-    case Ui.Utils.Env.get "token" Json.Decode.string of
+    case Ui.Helpers.Env.get "token" Json.Decode.string of
       Ok value -> value
       Err msg -> msg
 -}
@@ -23,7 +23,7 @@ get key decoder =
 
 {-| Gets a string value of the given environment varaible.
 
-    case Ui.Utils.Env.getString "token" of
+    case Ui.Helpers.Env.getString "token" of
       Ok value -> value
       Err msg -> msg
 -}

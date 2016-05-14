@@ -13,7 +13,14 @@ ui-modal-wrapper {
   position: relative;
 }
 
-ui-tagger {
+ui-tagger,
+ui-input,
+ui-search-input,
+ui-number-range,
+ui-date-picker,
+ui-color-picker,
+ui-color-panel,
+ui-chooser {
   width: 100%;
 }
 

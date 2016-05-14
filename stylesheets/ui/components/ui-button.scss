@@ -77,7 +77,7 @@ ui-button {
   }
 
   svg {
-    transition: 200ms opacity;
+    transition: 200ms opacity, 1ms 200ms transform;
     pointer-events: none;
     position: absolute;
     content: '';

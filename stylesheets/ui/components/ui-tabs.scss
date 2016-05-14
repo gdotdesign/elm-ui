@@ -3,36 +3,74 @@ ui-tabs {
   display: block;
 
   ui-tab-handles {
-    border-bottom: 2px solid $primary;
+    border-bottom: $border;
     display: flex;
   }
 
   ui-tabs-content {
+    @include colors($input);
+
+    border-radius: 0 0 $border-radius $border-radius;
+    position: relative;
     display: block;
     padding: 10px;
+    z-index: 1;
+
+    border: $border;
+    border-top: 0;
   }
 
   ui-tab-handle {
+    @include colors(#E2E2E2);
+
+    @extend %focused-idle;
+
+    box-shadow: 0 0 0 1px rgba($input, 0) inset,
+                0 0 0 2px rgba($focus, 0) inset,
+                0 0 10px rgba($focus, 0) inset;
     border-radius: $border-radius $border-radius 0 0;
     padding: 10px 20px;
-    transition: 200ms;
+    position: relative;
+    transition: 300ms;
     font-weight: 600;
+    z-index: 20;
+    top: 1px;
+
+    border: $border;
+    border-bottom: 0;
 
     + ui-tab-handle {
       margin-left: 5px;
     }
 
-    &:hover {
-      @include colors(dampen($secondary, 5%));
+    span {
+      position: relative;
+      z-index: 1
     }
 
-    &.selected {
-      @include colors($primary);
+    &.selected, &:focus {
+      @include colors($input);
+
+      &:after {
+        background: linear-gradient(rgba($input, 0), rgba($input, 1) 90%);
+      }
+    }
+
+    &:after {
+      background: linear-gradient(rgba(#E2E2E2, 0), rgba(#E2E2E2, 1) 90%);
+      position: absolute;
+      transition: 300ms;
+      height: 100%;
+      content: "";
+      bottom: 0;
+      right: 0;
+      left: 0;
     }
 
     &:focus {
-      @include colors($focus);
-
+      box-shadow: 0 0 0 1px $input inset,
+                  0 0 0 2px $focus inset,
+                  0 0 10px $focus inset;
       outline: none;
     }
   }
@@ -41,36 +79,12 @@ ui-tabs {
     cursor: pointer;
   }
 
-  &.readonly ui-tab-handle:focus {
-    @include colors($focus-readonly)
+  &.readonly {
+    @extend %readonly;
   }
 
   &.disabled {
+    @extend %disabled;
     opacity: 0.6;
-
-    &:before {
-      cursor: not-allowed;
-      position: absolute;
-      user-select: none;
-      content: '';
-      bottom: 0;
-      right: 0;
-      left: 0;
-      top: 0;
-    }
-
-    ui-tabs-content {
-      pointer-events: none;
-    }
-
-    ui-tab-handles {
-      border-bottom-color: $disabled;
-    }
-
-    ui-tab-handle {
-      &.selected {
-        @include colors($disabled);
-      }
-    }
   }
 }

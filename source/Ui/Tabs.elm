@@ -68,7 +68,10 @@ update action model =
       Tabs
       tabs
 -}
-view : List ( String, Html.Html msg ) -> (Msg -> msg) -> Model -> Html.Html msg
+view : List ( String, Html.Html msg )
+     -> (Msg -> msg)
+     -> Model
+     -> Html.Html msg
 view contents address model =
   Html.Lazy.lazy3 render contents address model
 
@@ -80,7 +83,10 @@ view contents address model =
       Tabs
       tabs
 -}
-render : List ( String, Html.Html msg ) -> (Msg -> msg) -> Model -> Html.Html msg
+render : List ( String, Html.Html msg )
+       -> (Msg -> msg)
+       -> Model
+       -> Html.Html msg
 render contents address model =
   let
     tabs =
@@ -130,4 +136,4 @@ renderTabHandle address model index ( title, contents ) =
            )
         ++ (Ui.tabIndex model)
       )
-      [ text title ]
+      [ node "span" [] [ text title ] ]

@@ -13,8 +13,6 @@ module Ui.InplaceInput exposing
 @docs open, close
 -}
 
--- where
-
 import Html.Events.Extra exposing (onEnter, onKeys)
 import Html exposing (node, div, text)
 import Html.Events exposing (onClick)

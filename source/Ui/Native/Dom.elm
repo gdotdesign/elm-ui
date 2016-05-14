@@ -10,8 +10,6 @@ module Ui.Native.Dom exposing (..)
 @docs withNearest
 -}
 
--- where
-
 import Task exposing (Task)
 
 import Json.Decode as Json

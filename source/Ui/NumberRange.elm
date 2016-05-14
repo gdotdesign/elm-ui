@@ -16,8 +16,6 @@ double clicking on the component.
 @docs focus, setValue, increment, decrement
 -}
 
--- where
-
 import Html.Events.Geometry as Geometry exposing (Dimensions, onWithDimensions)
 import Html.Events.Extra exposing (onKeys, onEnterPreventDefault, onStop)
 import Html.Attributes exposing (value, readonly, disabled, classList)

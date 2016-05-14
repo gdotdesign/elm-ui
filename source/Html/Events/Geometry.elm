@@ -13,8 +13,6 @@ dimensions, mouse position and window size from events.
 @docs onWithDimensions
 -}
 
--- where
-
 import Html.Events.Options exposing (stopPropagationOptions)
 import Html.Events exposing (onWithOptions)
 import Html

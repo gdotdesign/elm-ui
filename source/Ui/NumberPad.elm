@@ -15,8 +15,6 @@ numberic data.
 @docs setValue
 -}
 
--- where
-
 import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)

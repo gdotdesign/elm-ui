@@ -2,8 +2,6 @@ module Ui.Chooser exposing
   (Model, Item, Msg, init, update, close, toggleItem,
    getFirstSelected, view, updateData, selectFirst, setValue)
 
--- where
-
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
 

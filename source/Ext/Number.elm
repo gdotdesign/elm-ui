@@ -5,8 +5,6 @@ module Ext.Number exposing (..)
 @docs toFixed, remFloat, roundTo
 -}
 
--- where
-
 import Native.Number
 
 

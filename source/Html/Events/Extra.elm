@@ -12,8 +12,6 @@ module Html.Events.Extra exposing (..)
 @docs onScroll, onTransitionEnd, onLoad
 -}
 
--- where
-
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
 import Html.Events exposing (on, keyCode, onWithOptions)
 import Html

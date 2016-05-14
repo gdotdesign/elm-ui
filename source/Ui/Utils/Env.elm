@@ -5,8 +5,6 @@ module Ui.Utils.Env exposing (..)
 @docs get, getString
 -}
 
--- where
-
 import Json.Decode as Json
 import Native.Env
 

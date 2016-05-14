@@ -9,8 +9,6 @@ module Ui.Tagger exposing (Model, Msg, init, update, view)
 @docs view
 -}
 
--- where
-
 import Task exposing (Task)
 import String
 

@@ -6,8 +6,6 @@ module Ui.Native.LocalStorage exposing (..)
 @docs getItem, setItem, removeItem
 -}
 
--- where
-
 import Task exposing (Task)
 import Native.LocalStorage
 

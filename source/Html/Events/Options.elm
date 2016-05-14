@@ -6,8 +6,6 @@ module Html.Events.Options exposing (..)
 @docs preventDefaultOptions, stopPropagationOptions, stopOptions
 -}
 
--- where
-
 import Html.Events exposing (Options)
 
 

@@ -12,8 +12,6 @@ module Ui.Pager exposing (Model, Msg, init, update, view, render, select)
 @docs select
 -}
 
--- where
-
 import Html.Events.Extra exposing (onTransitionEnd)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node)

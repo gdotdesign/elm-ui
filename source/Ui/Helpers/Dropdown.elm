@@ -18,8 +18,6 @@ module Ui.Helpers.Dropdown exposing (..)
 @docs open, close, toggle, openWithDimensions, toggleWithDimensions
 -}
 
--- where
-
 import Html.Events.Geometry as Geometry exposing (decodeElementDimensions)
 import Html.Events exposing (defaultOptions, onWithOptions)
 import Html.Events.Options exposing (preventDefaultOptions)

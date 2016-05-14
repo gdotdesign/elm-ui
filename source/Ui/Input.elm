@@ -13,8 +13,6 @@ module Ui.Input exposing
 @docs setValue, focus
 -}
 
--- where
-
 import Html.Events exposing (onInput)
 import Html exposing (node)
 import Html.Lazy

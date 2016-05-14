@@ -22,8 +22,6 @@ module Ui.IconButton exposing
 @docs danger, dangerBig, dangerSmall
 -}
 
--- where
-
 import Html exposing (node, text)
 import Html.Lazy
 

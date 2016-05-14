@@ -14,8 +14,6 @@ module Ui.ColorPanel exposing
 @docs setValue
 -}
 
--- where
-
 import Html.Events.Geometry exposing (Dimensions, onWithDimensions)
 import Html.Attributes exposing (style, classList)
 import Html exposing (node, div, text)

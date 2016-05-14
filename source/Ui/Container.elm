@@ -18,8 +18,6 @@ module Ui.Container exposing
 @docs column, columnStart, columnEnd, columnCenter
 -}
 
--- where
-
 import Html.Attributes exposing (classList, style)
 import Html exposing (node)
 import Html.Lazy

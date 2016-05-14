@@ -9,8 +9,6 @@ module Ui.Image exposing (Model, Msg, init, update, render, view)
 @docs render, view
 -}
 
--- where
-
 import Html.Attributes exposing (src, classList)
 import Html.Events.Extra exposing (onLoad)
 import Html exposing (node, img)

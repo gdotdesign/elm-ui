@@ -1,5 +1,5 @@
 module Ui.NotificationCenter exposing
-  (Model, Msg, init, update, view, notify) -- where
+  (Model, Msg, init, update, view, notify)
 
 {-| Notification center for displaying messages to the user.
 
@@ -15,6 +15,7 @@ virtual-dom to fix "keys" concept.
 # Functions
 @docs notify
 -}
+
 import Html.Attributes exposing (classList, style, id)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)

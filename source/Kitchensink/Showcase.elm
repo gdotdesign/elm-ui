@@ -3,8 +3,6 @@ module Kitchensink.Showcase exposing (..)
 import Html exposing (tr, td)
 import Html.App
 
--- where
-
 type alias Partial a =
   { a | disabled : Bool
       , readonly : Bool }

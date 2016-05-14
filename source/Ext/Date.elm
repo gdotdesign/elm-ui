@@ -19,8 +19,6 @@ module Ext.Date exposing (..)
 @docs ago
 -}
 
--- where
-
 import Time exposing (Time)
 import Native.DateTime
 import Array

@@ -16,8 +16,6 @@ module Ui.Calendar exposing
 @docs setValue, nextDay, previousDay
 -}
 
--- where
-
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onMouseDown)
 import Html exposing (node, text, span)

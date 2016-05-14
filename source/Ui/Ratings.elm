@@ -13,8 +13,6 @@ module Ui.Ratings exposing
 @docs setValue, valueAsStars
 -}
 
--- where
-
 import Ext.Number exposing (roundTo)
 import Array
 

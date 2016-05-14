@@ -14,8 +14,6 @@ focused, allowing the user to manipulate the selected date.
 @docs setValue
 -}
 
--- where
-
 import Html.Events exposing (onBlur, onClick)
 import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)

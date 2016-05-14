@@ -13,8 +13,6 @@ module Ui.DropdownMenu exposing
 @docs close
 -}
 
--- where
-
 import Html.Attributes exposing (style, classList)
 import Html.Events exposing (onWithOptions)
 import Html.Events.Extra exposing (onStop)

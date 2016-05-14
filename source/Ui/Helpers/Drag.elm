@@ -23,8 +23,6 @@ module Ui.Helpers.Drag exposing (..)
 @docs diff, relativePosition, relativePercentPosition
 -}
 
--- where
-
 import Html.Events.Geometry exposing (MousePosition, ElementDimensions)
 
 import Mouse

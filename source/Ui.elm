@@ -13,8 +13,6 @@ module Ui exposing
 @docs tabIndex, enabledActions, iconAttributes
 -}
 
--- where
-
 import Html.Attributes exposing (classList, tabindex, rel, href, class)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onLoad)

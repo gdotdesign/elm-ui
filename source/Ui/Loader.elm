@@ -16,8 +16,6 @@ module Ui.Loader exposing
 @docs start, finish
 -}
 
--- where
-
 import Html.Attributes exposing (classList, class)
 import Html exposing (node, div)
 import Html.Lazy

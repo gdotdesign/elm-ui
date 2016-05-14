@@ -18,8 +18,6 @@ module Ext.Color exposing (..)
 @docs decodeHsv, encodeHsv
 -}
 
--- where
-
 import Ext.Number exposing (roundTo)
 
 import Color exposing (Color)

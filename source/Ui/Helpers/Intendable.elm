@@ -8,8 +8,6 @@ module Ui.Helpers.Intendable exposing (..)
 import List.Extra exposing (last, find, findIndex, splitAt)
 
 
--- where
-
 
 {-| Returns the first item of a list.
 -}

@@ -32,7 +32,7 @@ ui-notification-center {
   z-index: map-get($z-index, notifications);
   transform: translate3d(0, 0, 0);
   position: fixed;
-  right: 30px;
+  right: 20px;
   top: 20px;
 
   flex-direction: column;

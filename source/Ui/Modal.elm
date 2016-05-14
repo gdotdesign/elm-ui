@@ -13,8 +13,6 @@ module Ui.Modal exposing
 @docs open, close
 -}
 
--- where
-
 import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)

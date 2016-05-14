@@ -17,8 +17,6 @@ module Ui.Checkbox exposing
 @docs focus, setValue
 -}
 
--- where
-
 import Html.Attributes exposing (classList, tabindex)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onKeys)

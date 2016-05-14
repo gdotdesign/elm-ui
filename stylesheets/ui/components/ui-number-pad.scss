@@ -1,12 +1,17 @@
 ui-number-pad {
+  @extend %focused-idle;
+
+  @include colors($input);
+  @include border;
+
   transform: translate3d(0, 0, 0);
   flex-direction: column;
-  min-height: 300px;
+  min-height: 350px;
+  padding: 10px;
   display: flex;
 
   // Input like box to show the value
   ui-number-pad-value {
-    @extend %focused-idle;
     @include colors($input);
     @include border;
 
@@ -34,10 +39,10 @@ ui-number-pad {
 
     // Button
     ui-number-pad-button {
-      @include colors($secondary);
+      @include colors(dampen($background, 2.5%));
 
-      border-radius: $border-radius;
       width: calc((100% - 20px) / 3);
+      border-radius: $border-radius;
       margin-bottom: 10px;
       position: relative;
       transition: 200ms;
@@ -50,7 +55,7 @@ ui-number-pad {
       display: flex;
 
       &:hover {
-        @include colors(dampen($secondary, 7%));
+        @include colors(dampen($background, 10%));
       }
 
       // Last row no margin
@@ -93,7 +98,8 @@ ui-number-pad {
       pointer-events: none;
     }
 
-    ui-number-pad-value {
+    ui-number-pad-value,
+    ui-number-pad-button {
       border-color: $disabled;
       background: $disabled;
     }
@@ -101,25 +107,16 @@ ui-number-pad {
 
   // Readnoly state
   &.readonly {
+    @extend %readonly;
+
     ui-number-pad-button, ui-icon {
       pointer-events: none;
-    }
-
-    &:focus {
-      outline: none;
-
-      ui-number-pad-value {
-        box-shadow: $focus-shadow-readonly;
-      }
     }
   }
 
   // Normal state
-  &:not(.readonly):not(.disabled):focus {
+  &:not(.disabled):focus {
+    @extend %focused;
     outline: none;
-
-    ui-number-pad-value {
-      box-shadow: $focus-shadow;
-    }
   }
 }

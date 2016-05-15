@@ -17,9 +17,18 @@ import Json.Decode as Json
 import Native.Dom
 
 
+{-| Blurs the active element in the DOM.
+
+    Ui.Native.Dom.blur NoOp
+-}
+blur: msg -> Cmd msg
+blur msg =
+  Task.perform (\_ -> msg) (\_ -> msg) (Native.Dom.blur ())
+
+
 {-| Focuses a DOM element with the given selector.
 
-    Ui.Native.Browser.focusSelector 'input#comments'
+    Ui.Native.Dom.focusSelector 'input#comments'
 -}
 focusSelector : msg -> String -> Cmd msg
 focusSelector msg selector =
@@ -28,7 +37,7 @@ focusSelector msg selector =
 
 {-| Focuses a UI component that have a uid field.
 
-    Ui.Native.Browser.focusUid NoOp 'xxxx-xxx-xxx-xxxx'
+    Ui.Native.Dom.focusUid NoOp 'xxxx-xxx-xxx-xxxx'
 -}
 focusComponent : msg -> { a | uid: String } -> Cmd msg
 focusComponent msg { uid } =

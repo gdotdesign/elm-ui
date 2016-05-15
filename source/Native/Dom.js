@@ -13,6 +13,13 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     })
   }
 
+  function blur(){
+    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
+      if(document.activeElement) { document.activeElement.blur() }
+      return callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+    })
+  }
+
   function fail(msg){
     return { ctor: 'Err' }
   }
@@ -34,7 +41,8 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
 
   return {
     decodeElementFunction: F3(decodeElementFunction),
-    focusSelector: focusSelector
+    focusSelector: focusSelector,
+    blur: blur
   }
 }();
 

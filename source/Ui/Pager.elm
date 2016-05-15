@@ -106,7 +106,7 @@ render address pages model =
           else if index == model.active then
             [ style [ ( "left", "0%" ) ] ]
           else
-            [ style [ ( "left", "100%" ) ] ]
+            [ style [ ( "left", "100%" ), ("visibility", "hidden") ] ]
       in
         node "ui-page" attributes [ page ]
   in

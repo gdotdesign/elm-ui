@@ -20,6 +20,7 @@ import Debug exposing (log)
 import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
 import Ui.Native.Scrolls as Scrolls
+import Ui.Native.Dom as Dom
 import Ui.NotificationCenter
 import Ui.DropdownMenu
 import Ui.InplaceInput
@@ -112,6 +113,7 @@ type Msg
   | Saved String
   | TLoaded String
   | Failed String
+  | FocusChooser
 
 type alias TaggerModel =
   { label : String, id : Int }
@@ -319,7 +321,7 @@ init =
                     ]
                   }
     , buttons = [ Ui.Button.primaryBig "Primary" Alert
-                , Ui.Button.secondary "Secondary" NoOp
+                , Ui.Button.secondary "Secondary" FocusChooser
                 , Ui.Button.success "Success" NoOp
                 , Ui.Button.warning "Warning" NoOp
                 , Ui.Button.dangerSmall "Danger" NoOp
@@ -444,7 +446,7 @@ init =
         Showcase.init
           (\_ -> Ui.Chooser.init data "Select a country..." "")
           Ui.Chooser.update
-          (\_ -> Sub.none)
+          (Ui.Chooser.subscribe ChooserChanged)
           (\_ -> Sub.none)
     , app = Ui.App.init "Elm-UI Kitchen Sink"
     }
@@ -456,6 +458,8 @@ data =
   , { label = "French" ,                      value = "2" }
   , { label = "Italy"  ,                      value = "3" }
   , { label = "Russia" ,                      value = "4" }
+  , { label = "United States" ,               value = "6" }
+  , { label = "United Kingdom" ,              value = "7" }
   , { label = "Some very long named country", value = "5" }
   ]
 
@@ -852,8 +856,8 @@ update' msg model =
       notify ("Date picker changed to: " ++ (Date.Extra.Format.format dateConfig "%Y-%m-%d" (Date.fromTime time))) model
     RatingsChanged value ->
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
-    -- TaggerAddFailed err ->
-    --   notify err model
+    FocusChooser ->
+      (model, Dom.focusComponent NoOp model.chooser.enabled)
     _ ->
       (update msg model, Cmd.none)
 
@@ -872,6 +876,7 @@ gatherSubs model =
             , Showcase.subscribe model.checkbox3
             , Showcase.subscribe model.searchInput
             , Showcase.subscribe model.textarea
+            , Showcase.subscribe model.chooser
             , Scrolls.scrolls CloseMenu
             , Sub.map App Ui.App.subscriptions
             , Sub.map Time Ui.Time.subscriptions

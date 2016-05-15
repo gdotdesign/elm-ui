@@ -102,6 +102,7 @@ ui-chooser {
   // Empty state
   ui-dropdown {
     min-width: 100%;
+    padding: 5px;
 
     &:empty:before {
       content: 'No items to display!';
@@ -124,12 +125,12 @@ ui-chooser {
 
     // Hover state
     &:hover {
-      background: $secondary;
+      background: dampen($input, 5%);
     }
 
     // Intended state
     &.intended {
-      background: $secondary;
+      background: dampen($input, 5%);
       padding-right: 25px;
 
       // Chevron at the end

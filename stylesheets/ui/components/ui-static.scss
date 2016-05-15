@@ -46,18 +46,18 @@ ui-scrolled-panel {
     }
 
     &::-webkit-scrollbar-thumb {
-      background: dampen($background, 10%);
+      background: dampen($background, 15%);
       border-radius: $border-radius;
       border: 0;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-      background: dampen($background, 20%);
+      background: dampen($background, 25%);
     }
 
     &::-webkit-scrollbar-track {
       border-radius: $border-radius;
-      background: $secondary;
+      background: dampen($background, 5%);
       border: 0;
     }
 

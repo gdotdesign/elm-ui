@@ -284,13 +284,7 @@ init =
         ]
     }
     , infos =
-      [ Ui.textBlock "An opinionated UI library for the web in Elm, following
-                      the Elm Architecture."
-      , node "p" []
-        [ Ui.IconButton.primaryBig
-            "Get Started at Github" "social-github" "right"
-            (Open "https://github.com/gdotdesign/elm-ui") ]
-      , Ui.subTitle [] [text "Components"]
+      [ Ui.subTitle [] [text "Components"]
       , Ui.textBlock "The business logic for following components are
                       implemented fully in Elm, with minimal Native
                       bindings, following the Elm Architecture. Most
@@ -504,9 +498,20 @@ view model =
       [ Ui.NotificationCenter.view Notis model.notifications
       , Ui.Modal.view  Modal modalView model.modal
       , Ui.Layout.centerDefault
-        [ Ui.Header.title [] [text "Elm-UI Kitchen Sink"]
+        [ Ui.Header.icon "grid" False []
+        , Ui.Header.title [] [text "Elm-UI Kitchen Sink"]
         , Ui.spacer
-        , Ui.Header.iconItem "Github" NoOp "social-github" "right"
+        , Ui.Header.iconItem
+          "Github"
+          (Open "https://github.com/gdotdesign/elm-ui")
+          "social-github"
+          "right"
+        , Ui.Header.separator
+        , Ui.Header.iconItem
+          "Guide"
+          (Open "https://gdotdesign.gitbooks.io/elm-ui-guide/content/")
+          "bookmark"
+          "right"
         ]
         [ node "kitchen-sink" []
           (infos ++ [ table []

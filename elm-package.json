@@ -36,6 +36,7 @@
     "Ui.Container",
     "Ui.DatePicker",
     "Ui.DropdownMenu",
+    "Ui.Header",
     "Ui.IconButton",
     "Ui.Image",
     "Ui.InplaceInput",

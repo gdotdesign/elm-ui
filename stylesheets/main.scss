@@ -84,6 +84,7 @@ kitchen-sink {
   table {
     @include border;
     border-collapse: collapse;
+    width: 100%;
 
     td {
       border: $border;

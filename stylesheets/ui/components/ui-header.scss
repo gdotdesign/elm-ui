@@ -1,8 +1,10 @@
 ui-header {
   @include colors($color-header);
 
+  background: linear-gradient(dampen($color-header, 2%), $color-header);
   border-bottom: 1px solid $color-header-border;
   text-shadow: 0 1px 0 rgba(#000, 0.2);
+  box-shadow: 0 0 10px rgba(#000, 0.2);
   position: relative;
   line-height: 60px;
   padding: 0 20px;
@@ -10,13 +12,16 @@ ui-header {
   flex: 0 0 auto;
   height: 60px;
   z-index: 10;
+}
 
+ui-header,
+ui-header ui-layout-center {
   flex-direction: row;
   align-items: center;
   display: flex;
 
   > * + * {
-    margin-left: 20px;
+    margin-left: 10px;
   }
 }
 
@@ -31,7 +36,7 @@ ui-header-icon {
 ui-header-title {
   align-items: center;
   font-weight: 600;
-  font-size: 22px;
+  font-size: 20px;
   display: flex;
 
   div {
@@ -42,18 +47,27 @@ ui-header-title {
 }
 
 ui-header-separator {
-  background: dampen($color-header, 10%);
+  background: dampen-inverse($color-header, 10%);
   height: 40px;
   width: 2px;
 }
 
 %ui-header-item {
+  border-bottom: 5px solid trasparent;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: 120ms;
   overflow: hidden;
   font-weight: 600;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 18px;
+  padding: 0 15px;
+  height: 60px;
+
+  &:focus {
+    border-bottom: 5px solid $input;
+    outline: none;
+  }
 }
 
 ui-header-item {

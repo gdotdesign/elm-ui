@@ -7,6 +7,9 @@ $danger: #E04141 !default;
 $color-header: $primary !default;
 $color-header-border: dampen-inverse($primary, 20%);
 
+$color-sidebar: $primary !default;
+$color-sidebar-border: dampen-inverse($primary, 20%);
+
 // Calulated colors
 $background: #F5F5F5 !default;
 $secondary: #5D7889 !default;

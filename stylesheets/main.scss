@@ -45,41 +45,9 @@ ui-layout-footer {
   background: #000;
 }
 
-ui-layout {
-  flex-direction: column;
-  min-height: 100vh;
-  display: flex;
-
-  ui-layout-main {
-    display: block;
-    flex: 1;
-  }
-
-  ui-layout-center {
-    width: 1170px;
-    margin: 0 auto;
-    display: block;
-  }
-
-  &.ui-layout-center-default,
-  &.ui-layout-default {
-    ui-layout-main ui-layout-center {
-      padding: 40px 0;
-    }
-
-    ui-header ui-layout-center {
-      display: flex;
-    }
-
-    ui-header,
-    ui-layout-footer {
-      flex: 0 0 auto;
-    }
-  }
-}
-
 kitchen-sink {
-  padding-top: 40px;
+  display: block;
+  padding: 20px;
 
   table {
     @include border;

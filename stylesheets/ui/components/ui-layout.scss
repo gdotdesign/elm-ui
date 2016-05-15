@@ -1,0 +1,44 @@
+ui-layout {
+  min-height: 100vh;
+  display: flex;
+
+  ui-layout-main {
+    display: block;
+    flex: 1;
+  }
+
+  ui-layout-center {
+    margin: 0 auto;
+    display: block;
+    width: 1100px;
+  }
+
+  ui-layout-sidebar {
+    border-right: 1px solid $color-sidebar-border;
+    text-shadow: 0 1px 0 rgba(#000, 0.2);
+    background: $color-sidebar;
+    color: #FFF;
+  }
+
+  &.ui-layout-center-default,
+  &.ui-layout-default {
+    flex-direction: column;
+
+    ui-layout-main ui-layout-center {
+      padding: 40px 0;
+    }
+
+    ui-header {
+      padding: 0;
+
+      ui-layout-center {
+        display: flex;
+      }
+    }
+
+    ui-header,
+    ui-layout-footer {
+      flex: 0 0 auto;
+    }
+  }
+}

@@ -6,11 +6,7 @@ ui-header {
   text-shadow: 0 1px 0 rgba(#000, 0.2);
   box-shadow: 0 0 10px rgba(#000, 0.2);
   position: relative;
-  line-height: 60px;
-  padding: 0 20px;
-  display: block;
   flex: 0 0 auto;
-  height: 60px;
   z-index: 10;
 }
 
@@ -19,6 +15,10 @@ ui-header ui-layout-center {
   flex-direction: row;
   align-items: center;
   display: flex;
+
+  line-height: 60px;
+  padding: 0 20px;
+  height: 60px;
 
   > * + * {
     margin-left: 10px;

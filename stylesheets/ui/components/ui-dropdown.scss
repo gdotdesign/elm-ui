@@ -20,30 +20,32 @@ ui-dropdown {
   visibility: hidden;
   opacity: 0;
 
-  // Top Left Position
-  &.position-top-left,
-  &.position-top-right {
-    transform: translateY(-10px);
-    bottom: calc(100% + 4px);
-  }
+  @media (min-width: 600px) {
+    // Top Left Position
+    &.position-top-left,
+    &.position-top-right {
+      transform: translateY(-10px);
+      bottom: calc(100% + 4px);
+    }
 
-  &.position-top-right,
-  &.position-bottom-right {
-    right: auto;
-    left: 0;
-  }
+    &.position-top-right,
+    &.position-bottom-right {
+      right: auto;
+      left: 0;
+    }
 
-  &.position-top-left,
-  &.position.bottom-left {
-    left: auto;
-    right: 0;
-  }
+    &.position-top-left,
+    &.position.bottom-left {
+      left: auto;
+      right: 0;
+    }
 
-  // Bottom Position
-  &.position-bottom-left,
-  &.position-bottom-right {
-    transform: translateY(10px);
-    top: calc(100% + 4px);
+    // Bottom Position
+    &.position-bottom-left,
+    &.position-bottom-right {
+      transform: translateY(10px);
+      top: calc(100% + 4px);
+    }
   }
 }
 

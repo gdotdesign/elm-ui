@@ -183,6 +183,7 @@ render locale model =
       Ui.enabledActions
         model
         [ Dropdown.onWithDimensions "focus" Focus
+        , Dropdown.onWithDimensions "mousedown" Toggle
         , onBlur Blur
         , Dropdown.onKeysWithDimensions
             [ ( 27, Close )

@@ -9,7 +9,7 @@ module Html.Events.Extra exposing (..)
 @docs onEnter, onEnterPreventDefault, onKeys, keysDecoder
 
 # Miscellaneous
-@docs onScroll, onTransitionEnd, onLoad
+@docs onScroll, onTransitionEnd, onLoad, onError
 -}
 
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
@@ -86,6 +86,7 @@ onStop event msg =
   onWithOptions event stopOptions (Json.succeed msg)
 
 
+
 {-| Capture [scroll](https://developer.mozilla.org/en-US/docs/Web/Events/scroll)
 events.
 -}
@@ -121,6 +122,14 @@ events for things like script, link or image tags.
 onLoad : msg -> Html.Attribute msg
 onLoad msg =
   on "load" (Json.succeed msg)
+
+
+{-| Capture [error](https://developer.mozilla.org/en-US/docs/Web/Events/error)
+events for things like script, link or image tags.
+-}
+onError : msg -> Html.Attribute msg
+onError msg =
+  on "error" (Json.succeed msg)
 
 
 {-| A decoder which succeeds when a specific key is pressed from the given list.

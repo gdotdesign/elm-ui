@@ -71,8 +71,8 @@ module.exports = function(file, config, shouldFail) {
         }
       } else {
         var contents = [
+          `window.ENV = ${JSON.stringify(config)};`,
           fs.readFileSync('test.js', 'utf-8'),
-          `window.ENV = ${JSON.stringify(config)}`,
           'Elm.Main.fullscreen();'
         ].join('\n')
         callback(null, contents)

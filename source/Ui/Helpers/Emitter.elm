@@ -1,8 +1,8 @@
 effect module Ui.Helpers.Emitter
   where { command = MyCmd, subscription = MySub}
   exposing
-  ( send, sendString, sendFloat, sendInt, sendBool
-  , listen, listenString, listenFloat, listenInt, listenBool
+  ( send, sendString, sendFloat, sendInt, sendBool, sendNaked
+  , listen, listenString, listenFloat, listenInt, listenBool, listenNaked
   , decode)
 
 {-| This is a module for publishing and subscribing to arbritary data in
@@ -12,7 +12,7 @@ different channels that are identified by strings.
 @docs listen, listenString, listenFloat, listenInt, listenBool
 
 # Sending Data
-@docs send, sendString, sendFloat, sendInt, sendBool
+@docs send, sendString, sendFloat, sendInt, sendBool, sendNaked
 
 # Decodeing
 @docs decode
@@ -23,7 +23,6 @@ import Json.Decode exposing (Value)
 import Json.Encode as JE
 
 import Task exposing (Task)
-
 
 {-| Representation of a command.
 -}
@@ -45,6 +44,10 @@ send : String -> Value -> Cmd msg
 send id value =
   command (Send id value)
 
+
+sendNaked : String -> Cmd msg
+sendNaked id =
+  command (Send id JE.null)
 
 {-| Sends a string value to the given channel.
 
@@ -81,6 +84,10 @@ sendBool : String -> Bool -> Cmd msg
 sendBool id value =
   send id (JE.bool value)
 
+
+listenNaked : String -> msg -> Sub msg
+listenNaked id msg =
+  listen id (\_ -> msg)
 
 {-| Creates a subscription for the given channel.
 

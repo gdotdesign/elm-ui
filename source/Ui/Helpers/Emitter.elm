@@ -9,7 +9,7 @@ effect module Ui.Helpers.Emitter
 different channels that are identified by strings.
 
 # Listining
-@docs listen, listenString, listenFloat, listenInt, listenBool
+@docs listen, listenString, listenFloat, listenInt, listenBool, listenNaked
 
 # Sending Data
 @docs send, sendString, sendFloat, sendInt, sendBool, sendNaked
@@ -45,6 +45,11 @@ send id value =
   command (Send id value)
 
 
+{-| Sends a _naked message_ (without value) to the given channel. This is used
+generally to trigger actions.
+
+    Ui.Helpers.Emitter.send "channelId"
+-}
 sendNaked : String -> Cmd msg
 sendNaked id =
   command (Send id JE.null)
@@ -85,10 +90,6 @@ sendBool id value =
   send id (JE.bool value)
 
 
-listenNaked : String -> msg -> Sub msg
-listenNaked id msg =
-  listen id (\_ -> msg)
-
 {-| Creates a subscription for the given channel.
 
     Ui.Helpers.Emitter.listen "channelId" HandleValue
@@ -96,6 +97,15 @@ listenNaked id msg =
 listen : String -> (Value -> msg) -> Sub msg
 listen id tagger =
   subscription (Listen id tagger)
+
+
+{-| Creates a subscription for the given channel.
+
+    Ui.Helpers.Emitter.listenNaked "channelId" NakedMsg
+-}
+listenNaked : String -> msg -> Sub msg
+listenNaked id msg =
+  listen id (\_ -> msg)
 
 
 {-| Creates a subscription for the given string channel.

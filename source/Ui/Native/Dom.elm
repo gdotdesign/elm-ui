@@ -2,8 +2,8 @@ module Ui.Native.Dom exposing (..)
 
 {-| Helper functions and tasks for DOM related activities.
 
-# Focusing
-@docs focusSelector, focusComponent
+# Focusing / Bluring
+@docs focusSelector, focusComponent, blur
 
 # Decoder Queries
 @docs decodeElementFunction, withBoundingClientRect, withClosest, withSelector

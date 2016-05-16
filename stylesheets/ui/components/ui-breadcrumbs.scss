@@ -1,7 +1,7 @@
 ui-breadcrumbs {
-  @include colors(dampen($background, 2.5%));
+  @include colors(dampen($background, 5%));
 
-  border-bottom: 1px solid dampen($background, 5%);
+  border-bottom: 1px solid dampen($background, 10%);
   display: block;
   padding: 15px;
 

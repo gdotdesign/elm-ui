@@ -32,7 +32,7 @@ ui-loader {
 
   // Bar styles
   &.ui-loader-bar {
-    background: linear-gradient(90deg, $primary, $primary 49.9999%, $focus 50%, $focus);
+    background: linear-gradient(90deg, dampen($focus, 40%), dampen($focus, 40%) 49.9999%, $focus 50%, $focus);
     animation: ui-loader-bar 1s infinite linear;
     background-size: 200px 5px;
     height: 5px;

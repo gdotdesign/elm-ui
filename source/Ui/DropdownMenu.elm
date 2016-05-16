@@ -99,9 +99,12 @@ init =
           (Ui.DropdownMenu.subscriptions model.dropdownMenu)
     ...
 -}
-subscriptions : Sub Msg
-subscriptions =
-  Mouse.downs (Click << (\_ -> False))
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  if model.open then
+    Mouse.downs (Click << (\_ -> False))
+  else
+    Sub.none
 
 
 {-| Updates a dropdown menu.

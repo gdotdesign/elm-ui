@@ -1,5 +1,77 @@
 # Changelog
 
+## 0.2.0
+This version marks support for Elm 0.17 with many changes to make Elm-UI more
+accessible.
+
+### Major Change
+Because of the removal of Signals the way how components receive changes from sub
+components is changed from using a `valueAddress` to having a subscription of changes.
+
+Before
+```elm
+  ...
+  {- This made sure that we receive changes form
+     the input on the Changed action
+  -}
+  input = Ui.Input.initWithAddress Changed "value" "placeholder"
+  ...
+```
+
+Now
+```elm
+  ...
+  {- Initialize an input like normal. -}
+  input = Ui.Input.init "value" "placeholder"
+
+  ...
+
+  {- Subscribe to the changes with a subscription. -}
+  subscriptions: (\model -> Ui.Input.subscribe Changed model.input)
+  ...
+```
+
+This works because of the **Ui.Helpers.Emitter** module.
+
+### New Components
+- **Ui.Layout** - A component for rendering commonly used layouts
+
+### Changes
+- Signal related modules are removed (Ext.Signal)
+- All files are now formatted with **elm-format** (2 space indentation)
+- **Browser** native module have been separated into 3 modules:
+  - **Browser** - Browser related functions (alert, redirect, openWindow)
+  - **Dom** - DOM related related functions (focus, blur)
+  - **Number** - Number related functions (toFixed, rem)
+- **Ext.Color** - Added **encodeHsv** and **decodeHsv** functions
+- **Html.Extra** module have been cleaned up and separated into 3 modules:
+  - **Html.Events.Extra** - Extra event handlers
+  - **Html.Events.Geomtery** - Functions and decoders for getting HTML Element dimensions
+  - **Html.Events.Options** - Extra options for event handlers
+- **Storage.Local** module have been renamed to **Ui.Native.LocalStorage**
+- **Ui.Utils.Env**:
+  - Have been renamed to **Ui.Helpers.Env**
+  - **get** changed to return a result instead of requiring a default value
+  - Added **getString** to get string values easily
+- Removed **Ui.Helpers.Animation** module
+- Removed **Ui.Charts.Bar** module
+- Added **Ui.Helpers.Emitter** module (pub / sub) to send values to different channels
+- Added **Ui.Native.Browser** module to interface with it's native module
+- Added **Ui.Native.Dom** module to interface with it's native module
+- Added **Ui.Native.Scrolls** module to get the scroll events from window
+- **Ui.Tagger** - Simplified implementation
+- And many small changes...
+
+### Style Changes
+- Changed the all the colors
+- The cursor for readonly and disabled states are more "descriptive"
+- The readonly focus color is the same as the not readonly one
+- The style of **Ui.NumberPad** changed to be more in line with the theme
+- The style of **Ui.Tabs** changed to be more in line with the theme
+- The style of **Ui.Slider** changed to be more in line with the theme
+- The focus style of **Ui.Button** changed to show a "ripple effect"
+- And many small changes...
+
 ## 0.1.5
 
 ### Pull Requests Closed

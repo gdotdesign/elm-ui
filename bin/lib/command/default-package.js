@@ -2,7 +2,7 @@ module.exports = function() {
   return {
     "version": "1.0.0",
     "summary": "Elm-UI Project",
-    "repository": "https://github.com/user/project.git",
+    "repository": "https://github.com/gdotdesign/elm-ui.git",
     "license": "BSD3",
     "native-modules": true,
     "source-directories": [

@@ -19,6 +19,7 @@ module.exports = function() {
   }
 
   // Add dependencies
+  cwdPackage["repository"] = "https://github.com/gdotdesign/elm-ui.git"
   cwdPackage["source-directories"]
     .push(path.resolve(__dirname, "../../../source"))
 

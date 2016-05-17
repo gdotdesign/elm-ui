@@ -20,6 +20,7 @@ import Html.Attributes exposing (classList, class)
 import Html exposing (node, div)
 import Html.Lazy
 
+import Process
 import Task
 
 {-| Representation of a loader:
@@ -129,7 +130,7 @@ finish model =
 start : Model -> ( Model, Cmd Msg )
 start model =
   ( { model | loading = True }
-  , Task.perform (\_-> NoOp) (\_-> Show) (Task.succeed ())
+  , Task.perform (\_-> NoOp) (\_-> Show) (Process.sleep model.timeout)
   )
 
 

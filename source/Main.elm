@@ -38,7 +38,7 @@ import Ui.Textarea
 import Ui.Chooser
 import Ui.Ratings
 import Ui.Button
--- import Ui.Tagger
+import Ui.Tagger
 import Ui.Layout
 import Ui.Header
 import Ui.Slider
@@ -72,7 +72,7 @@ type Msg
   | Chooser (Showcase.Msg Ui.Chooser.Msg)
   | Ratings (Showcase.Msg Ui.Ratings.Msg)
   | Slider (Showcase.Msg Ui.Slider.Msg)
-  -- | Tagger (Showcase.Msg (Ui.Tagger.Msg TaggerModel String))
+  | Tagger (Showcase.Msg Ui.Tagger.Msg)
   | Input (Showcase.Msg Ui.Input.Msg)
   | Tabs (Showcase.Msg Ui.Tabs.Msg)
   | Image Ui.Image.Msg
@@ -80,7 +80,6 @@ type Msg
   | Pager Ui.Pager.Msg
   | App Ui.App.Msg
   | ShowNotification
-  | AppMsg String
   | EscIsDown Bool
   | Open String
   | CloseMenu
@@ -96,7 +95,8 @@ type Msg
   | ColorPickerChanged Ext.Color.Hsv
   | DatePickerChanged Time.Time
   | InplaceInputChanged String
-  -- | TaggerAddFailed String
+  | TaggerAdd String
+  | TaggerRemove String
   | CalendarChanged Time.Time
   | SearchInputChanged String
   | TextAreaChanged String
@@ -113,9 +113,6 @@ type Msg
   | TLoaded String
   | Failed String
   | FocusChooser
-
-type alias TaggerModel =
-  { label : String, id : Int }
 
 type alias Model =
   { app : Ui.App.Model
@@ -139,7 +136,6 @@ type alias Model =
     }
   , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Msg Msg
   , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Msg Msg
-  -- , tagger : Showcase.Model (Ui.Tagger.Model TaggerModel Int String) (Ui.Tagger.Msg TaggerModel String)
   , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Msg Msg
   , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Msg Msg
   , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Msg Msg
@@ -153,6 +149,7 @@ type alias Model =
   , ratings : Showcase.Model Ui.Ratings.Model Ui.Ratings.Msg Msg
   , chooser : Showcase.Model Ui.Chooser.Model Ui.Chooser.Msg Msg
   , slider : Showcase.Model Ui.Slider.Model Ui.Slider.Msg Msg
+  , tagger : Showcase.Model Ui.Tagger.Model Ui.Tagger.Msg Msg
   , input : Showcase.Model Ui.Input.Model Ui.Input.Msg Msg
   , tabs : Showcase.Model Ui.Tabs.Model Ui.Tabs.Msg Msg
   , tabsContents : List (String, Html.Html Msg)
@@ -163,47 +160,18 @@ type alias Model =
   , pager : Ui.Pager.Model
   , time2 : Ui.Time.Model
   , time : Ui.Time.Model
+  , taggerData : List Ui.Tagger.Tag
   , clicked : Bool
   }
 
 dateConfig =
   (DateConfigs.getConfig "en")
 
-removeLabel : TaggerModel -> Task.Task String TaggerModel
-removeLabel item =
-  if item.id == 0 then
-    Task.fail "Can't remove this item..."
-  else
-    Task.succeed item
-
-createLabel : String -> List TaggerModel -> Task.Task String TaggerModel
-createLabel label items =
-  let
-    id =
-      List.map .id items
-      |> List.maximum
-      |> Maybe.withDefault -1
-  in
-    if label == "xxx" then
-      Task.fail "xxx is not a valid label..."
-    else
-      Task.succeed { label = label, id = id + 1 }
-
-taggerData : List TaggerModel
-taggerData =
-  [ { label = "Pear", id = 2 }
-  , { label = "Apple", id = 1 }
-  , { label = "Orange", id = 0 }
-  ]
-
 init : Model
 init =
   let
     pager = Ui.Pager.init 0
     loader = Ui.Loader.init 0
-
-    -- datePicker =
-    --  { datePickerOptions | format = "%Y %B %e." }
 
     buttonGroup =
       Ui.ButtonGroup.init [("A", (ButtonClicked "A")),
@@ -228,22 +196,12 @@ init =
                      ,("Second", text "Second Tab")
                      ,("Third", text "Third Tab")
                      ]
-    {-, tagger =
+    , tagger =
         Showcase.init
-          (\_ ->
-            Ui.Tagger.initWithAddress
-              (forwardTo address TaggerAddFailed)
-              taggerData
-              "Add a tag..."
-              .label
-              .id
-              createLabel
-              removeLabel
-          )
-          (forwardTo address Tagger)
+          (\_ -> Ui.Tagger.init "Add a tag...")
           Ui.Tagger.update
-          handleMoveIdentity
-          handleClickIndetity -}
+          (Ui.Tagger.subscribe TaggerAdd TaggerRemove)
+          (\_ -> Sub.none)
     , searchInput =
         Showcase.init
           (\_ -> Ui.SearchInput.init 1000 "Search")
@@ -345,6 +303,10 @@ init =
                     , Ui.IconButton.dangerSmall
                         "Danger" "close" "right" NoOp
                     ]
+    , taggerData = [ { label = "Pear", id = "2" }
+                   , { label = "Apple", id = "1" }
+                   , { label = "Orange", id = "0" }
+                   ]
     , datePicker =
         Showcase.init
           (\_ -> Ui.DatePicker.init (Ext.Date.now ()))
@@ -485,8 +447,8 @@ view model =
     , checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea
     , numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons
     , disabledButton, disabledIconButton, modalView, infos, modalButton
-    , dropdownMenu, pagerControls, notificationButton
-    , pagerContents, searchInput, tabs, tabsContents
+    , dropdownMenu, pagerControls, notificationButton, tagger
+    , pagerContents, searchInput, tabs, tabsContents, taggerData
     } = model
 
     clicked =
@@ -510,6 +472,12 @@ view model =
           "Guide"
           (Open "https://gdotdesign.gitbooks.io/elm-ui-guide/content/")
           "bookmark"
+          "right"
+        , Ui.Header.separator
+        , Ui.Header.iconItem
+          "Examples"
+          (Open "https://github.com/gdotdesign/elm-ui-examples")
+          "clipboard"
           "right"
         ]
         [ node "kitchen-sink" []
@@ -587,8 +555,8 @@ view model =
             , componentHeader "Slider"
             , Showcase.view Slider Ui.Slider.view slider
 
-            --, componentHeader "Tagger"
-            --, Showcase.view Ui.Tagger.view tagger
+            , componentHeader "Tagger"
+            , Showcase.view Tagger (Ui.Tagger.view taggerData) tagger
 
             , componentHeader "Time"
             , tableRow
@@ -696,6 +664,16 @@ update msg model =
     TLoaded value ->
       { model | textarea = Showcase.updateModels (\txta -> Ui.Textarea.setValue value txta) model.textarea}
 
+    TaggerRemove id ->
+      { model | taggerData = List.filter (\item -> item.id /= id) model.taggerData }
+
+    TaggerAdd value ->
+      let
+        tag = { label = value, id = Native.Uid.uid () }
+      in
+        { model | taggerData = tag :: model.taggerData
+                , tagger = Showcase.updateModels (Ui.Tagger.setValue "") model.tagger }
+
     _ ->
       model
 
@@ -722,11 +700,11 @@ update' msg model =
         (tabs, effect) = Showcase.update act model.tabs
       in
         ({ model | tabs = tabs }, Cmd.map Tabs effect)
-    {-Tagger act ->
+    Tagger act ->
       let
         (tagger, effect) = Showcase.update act model.tagger
       in
-        ({ model | tagger = tagger }, Cmd.map Tagger effect) -}
+        ({ model | tagger = tagger }, Cmd.map Tagger effect)
     SearchInput act ->
       let
         (searchInput, effect) = Showcase.update act model.searchInput
@@ -887,6 +865,7 @@ gatherSubs model =
             , Showcase.subscribe model.searchInput
             , Showcase.subscribe model.textarea
             , Showcase.subscribe model.chooser
+            , Showcase.subscribe model.tagger
             , Scrolls.scrolls CloseMenu
             , Sub.map App Ui.App.subscriptions
             , Sub.map Time Ui.Time.subscriptions

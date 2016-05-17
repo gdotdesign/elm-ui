@@ -1,24 +1,29 @@
-module Ui.Tagger exposing (Model, Msg, init, update, view)
+module Ui.Tagger exposing
+  (Tag, Model, Msg, init, subscribe, update, view, render, setValue)
 
-{-| Component for managing (add / remove) tags
+{-| Component for displaying tags and handling it's events (adding / removing).
 
 # Model
-@docs Model, Msg, init, update
+@docs Model, Msg, init, subscribe, update
 
 # View
-@docs view
+@docs view, render
+
+# Functions
+@docs setValue
 -}
 
-import Task exposing (Task)
 import String
 
 import Html.Attributes exposing (classList)
-import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onKeys)
+import Html.Events exposing (onClick)
 import Html exposing (node, text)
+import Html.Lazy
 import Html.App
 
-import Native.Uid
+import Json.Decode as JD
+import Json.Encode as JE
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.IconButton
@@ -26,140 +31,127 @@ import Ui.Container
 import Ui.Input
 import Ui
 
+
+{-| Represents a tag:
+  - **label** - The label to display
+  - **id** - The identifier of the tag
+-}
+type alias Tag =
+  { label : String
+  , id : String
+  }
+
+
 {-| Representation of a tagger component:
-  - **failAddress** - The address to send failure messages to
-  - **label** - The function to generate label from a tag
-  - **removeable** - Whether or not a tag can be removed
+  - **input** - The model of the input field
+  - **removeable** - Whether or not tags can be removed
   - **disabled** - Whether or not the tagger is disabled
   - **readonly** - Whether or not the tagger is readonly
-  - **id** - The function to get the id of a tag
-  - **remove** - The Task to remove a tag
-  - **create** - The Task to create a tag
-  - **tags** - The list of tags
-  - **input** (interal) - The model of the input field
+  - **uid** - The unique identifier of the chooser
 -}
-type alias Model tag id err =
-  { create : String -> List tag -> Task err tag
-  , remove : tag -> Task err tag
-  , input : Ui.Input.Model
-  , label : tag -> String
-  , tags : List tag
+type alias Model =
+  { input : Ui.Input.Model
   , removeable : Bool
-  , id : tag -> id
   , disabled : Bool
   , readonly : Bool
   , uid : String
   }
 
-{-| Actions that a tagger can make. -}
-type Msg tag err
-  = Created tag
-  | Removed tag
-  | Error err
-  | Input Ui.Input.Msg
-  | Remove tag
-  | Tasks ()
+
+{-| Actions that a tagger can make.
+-}
+type Msg
+  = Input Ui.Input.Msg
+  | Remove String
   | Create
+
 
 {-| Initializes a tagger.
 
-    Tagger.init [tag1, tag2] "Add a tag..." .label .id createTask removeTask
+    tagger = Ui.Tagger.init "Add a tag..."
 -}
-init : List tag
-     -> String
-     -> (tag -> String)
-     -> (tag -> id)
-     -> (String -> List tag -> Task err tag)
-     -> (tag -> Task err tag)
-     -> Model tag id err
-init tags placeholder label id create remove =
+init : String -> Model
+init placeholder =
   { input = Ui.Input.init "" placeholder
-  , removeable = True
   , uid = Native.Uid.uid ()
+  , removeable = True
   , disabled = False
   , readonly = False
-  , create = create
-  , remove = remove
-  , label = label
-  , tags = tags
-  , id = id
   }
 
-{-| Updates a tagger. -}
-update : Msg tag err
-       -> Model tag id err
-       -> (Model tag id err, Cmd (Msg tag err))
+
+{-| Subscribe to the changes of a tagger.
+
+    Ui.Tagger.subscribe AddTag RemoveTag model.tagger
+-}
+subscribe : (String -> msg) -> (String -> msg) -> Model -> Sub msg
+subscribe create remove model =
+  Sub.batch
+    [ Emitter.listenString (model.uid ++ "-create") create
+    , Emitter.listenString (model.uid ++ "-remove") remove
+    ]
+
+
+{-| Updates a tagger.
+
+    Ui.Tagger.update msg tagger
+-}
+update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
     Input act ->
       let
-        (input, effect) = Ui.Input.update act model.input
+        ( input, effect ) =
+          Ui.Input.update act model.input
       in
-        ({ model | input = input }, Cmd.map Input effect)
+        ( { model | input = input }, Cmd.map Input effect )
 
     Create ->
       let
-        value = String.trim model.input.value
-
-        effect =
-          if String.isEmpty value then
-            Cmd.none
-          else
-            performCreateTask model
+        isEmpty =
+          String.trim model.input.value
+            |> String.isEmpty
       in
-        (model, effect)
+        if isEmpty then
+          ( model, Cmd.none )
+        else
+          ( model, Emitter.sendString (model.uid ++ "-create") model.input.value )
 
-    Created (Ok tag) ->
-      ({ model | tags = tag :: model.tags
-               , input = Ui.Input.setValue "" model.input }, Cmd.none)
+    Remove id ->
+      ( model, Emitter.sendString (model.uid ++ "-remove") id )
 
-    Remove tag ->
-      let
-        effect =
-          performRemoveTask tag model
-      in
-        (model, effect)
 
-    Removed (Ok removedtag) ->
-      let
-        id = model.id removedtag
-        tags = List.filter (\tag -> (model.id tag) /= id) model.tags
-      in
-        ({ model | tags = tags }, Cmd.none)
+{-| Lazily renders a tagger.
 
-    Error err ->
-      (model, Emitter.send model.uid err)
+    Ui.Tagger.view [tag1, tag2] tagger
+-}
+view : List Tag -> Model -> Html.Html Msg
+view tags model =
+  Html.Lazy.lazy2 render tags model
 
-    Tasks _ ->
-      (model, Cmd.none)
 
-performRemoveTask tag model =
-  Task.perform Removed Error (model.remove tag)
+{-| Renders a tagger.
 
-performCreateTask model =
-  let
-    task = model.create model.input.value model.tags
-  in
-    Task.perform Created Error task
-
-{-| Renders a tagger. -}
-view: Model tag id err -> Html.Html (Msg tag err)
-view model =
-  render model
-
-{-| Render internal. -}
-render: Model tag id err -> Html.Html (Msg tag err)
-render model =
+    Ui.Tagger.render [tag1, tag2] tagger
+-}
+render : List Tag -> Model -> Html.Html Msg
+render tags model =
   let
     input =
       model.input
 
+    isEmpty =
+      String.trim input.value
+        |> String.isEmpty
+
     updatedInput =
-      { input | disabled = model.disabled
-              , readonly = model.readonly }
+      { input
+        | disabled = model.disabled
+        , readonly = model.readonly
+      }
 
     button =
-      { disabled = model.disabled || model.readonly
+      { disabled = model.disabled || model.readonly || isEmpty
       , kind = "primary"
       , size = "medium"
       , glyph = "plus"
@@ -168,36 +160,48 @@ render model =
       }
 
     classes =
-      classList [ ( "disabled", model.disabled )
-                , ( "readonly", model.readonly )
-                ]
+      classList
+        [ ( "disabled", model.disabled )
+        , ( "readonly", model.readonly )
+        ]
 
     actions =
-      Ui.enabledActions model
-        [ onKeys [ ( 13, Create )
-                 ]
+      Ui.enabledActions
+        model
+        [ onKeys
+            [ ( 13, Create )
+            ]
         ]
   in
-    node "ui-tagger" (classes :: actions)
+    node
+      "ui-tagger"
+      (classes :: actions)
       [ Ui.Container.row
-        []
-        [ Html.App.map Input (Ui.Input.view updatedInput)
-        , Ui.IconButton.view Create button
-        ]
-      , node "ui-tagger-tags"
-        []
-        (List.map (rendertag model) model.tags)
+          []
+          [ Html.App.map Input (Ui.Input.view updatedInput)
+          , Ui.IconButton.view Create button
+          ]
+      , node
+          "ui-tagger-tags"
+          []
+          (List.map (rendertag model) tags)
       ]
 
-{-| Renders a tag. -}
-rendertag : Model tag id err
-           -> tag
-           -> Html.Html (Msg tag err)
+
+{-| Sets the value of a taggers input.
+
+    Ui.Tagger.setValue "" tagger
+-}
+setValue : String -> Model -> Model
+setValue value model =
+  { model | input = Ui.Input.setValue value model.input }
+
+
+{-| Renders a tag.
+-}
+rendertag : Model -> Tag -> Html.Html Msg
 rendertag model tag =
   let
-    label =
-      model.label tag
-
     icon =
       if (model.disabled || model.readonly) && model.removeable then
         text ""
@@ -205,11 +209,15 @@ rendertag model tag =
         Ui.icon
           "android-close"
           True
-          ([ onClick (Remove tag)
-           , onKeys [ (13, Remove tag) ]
-           ] ++ (Ui.tabIndex model))
+          ([ onClick (Remove tag.id)
+           , onKeys [ ( 13, Remove tag.id ) ]
+           ]
+            ++ (Ui.tabIndex model)
+          )
   in
-    node "ui-tagger-tag" []
-      [ text label
+    node
+      "ui-tagger-tag"
+      []
+      [ text tag.label
       , icon
       ]

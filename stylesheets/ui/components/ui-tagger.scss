@@ -23,7 +23,7 @@ ui-tagger {
 
   // Tag
   ui-tagger-tag {
-    @include colors($secondary);
+    @include colors(dampen($background, 7.5%));
 
     border-radius: $border-radius;
     display: inline-flex;

@@ -21,7 +21,7 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
-import Number.Format exposing (prettyInt)
+import Numeral exposing (format)
 import String
 import Dict
 
@@ -139,7 +139,7 @@ render viewModel address model =
   let
     value =
       if model.format then
-        prettyInt ',' model.value
+        format "0,0" (toFloat model.value)
       else
         toString model.value
 

@@ -62,7 +62,7 @@ ui-loader {
     > div {
       animation: ui-loader-rects $duration infinite;
       display: inline-block;
-      background: $primary;
+      background: $focus;
       height: 10px;
       width: 4px;
 

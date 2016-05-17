@@ -1,6 +1,5 @@
 import Date.Extra.Config.Configs as DateConfigs
 import Date.Extra.Format
-import Maybe.Extra
 import List.Extra
 import Ext.Color
 import Ext.Date
@@ -850,7 +849,7 @@ update' msg model =
         selected =
           Ui.Chooser.getFirstSelected model.chooser.enabled
           |> Maybe.map (\value -> List.Extra.find (\item -> item.value == value) data)
-          |> Maybe.Extra.join
+          |> joinMaybe
           |> Maybe.map .label
           |> Maybe.withDefault ""
       in
@@ -865,6 +864,12 @@ update' msg model =
       (model, Dom.focusComponent NoOp model.chooser.enabled)
     _ ->
       (update msg model, Cmd.none)
+
+joinMaybe : Maybe (Maybe a) -> Maybe a
+joinMaybe mx =
+  case mx of
+    Just x -> x
+    Nothing -> Nothing
 
 notify : String -> Model -> (Model, Cmd Msg)
 notify message model =

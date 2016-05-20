@@ -16,7 +16,8 @@ try {
 
 // Renders an .elm file.
 var render = function(file, callback) {
-  var arguments = `${file} --output test.js --yes`.split(' ')
+  var filename = `test-${+Date.now()}.js`
+  var arguments = `${file} --output ${filename} --yes`.split(' ')
   var result = ''
   var command
   var regexp
@@ -49,17 +50,17 @@ var render = function(file, callback) {
   }
 
   command.on('close', function() {
-    if (result.match('Successfully generated test.js')) {
-      callback(null, '')
+    if (result.match('Successfully generated test')) {
+      callback(null, '', filename)
     } else {
-      callback(result.replace(regexp, "\n"), '')
+      callback(result.replace(regexp, "\n"), '', filename)
     }
   })
 }
 
 module.exports = function(file, config, shouldFail) {
   return function(callback) {
-    render(file, function(error, result) {
+    render(file, function(error, result, filename) {
       if (error) {
         var prettyError =
           renderError('You have errors in of your Elm file(s):', error)
@@ -72,11 +73,11 @@ module.exports = function(file, config, shouldFail) {
       } else {
         var contents = [
           `window.ENV = ${JSON.stringify(config)};`,
-          fs.readFileSync('test.js', 'utf-8'),
+          fs.readFileSync(filename, 'utf-8'),
           'Elm.Main.fullscreen();'
         ].join('\n')
         callback(null, contents)
-        fs.unlink('test.js')
+        fs.unlink(filename)
       }
     })
   }

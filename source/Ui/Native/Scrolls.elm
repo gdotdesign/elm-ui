@@ -8,11 +8,10 @@ effect module Ui.Native.Scrolls
 @docs scrolls
 -}
 
-import Dict
+import Task exposing (Task)
 import Dom.LowLevel as Dom
 import Json.Decode as Json
 import Process
-import Task exposing (Task)
 
 
 {-| Subscribe to scrolls anywhere on screen.

@@ -106,6 +106,10 @@ view address model children =
   Html.Lazy.lazy3 render address model children
 
 
+startLocation : Browser.Location
+startLocation =
+  Browser.location ()
+
 {-| Renders an application.
 
     Ui.App.render App app [text "Hello there!"]
@@ -113,11 +117,8 @@ view address model children =
 render : (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 render address model children =
   let
-    location =
-      Browser.location
-
     stylesheet =
-      case location.protocol of
+      case startLocation.protocol of
         "file:" -> "main.css"
         _ -> "/main.css"
 

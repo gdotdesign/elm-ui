@@ -19,7 +19,6 @@ import String
 
 import Native.Browser
 
-
 {-| A union of prefix tags.
 -}
 type Prefix
@@ -45,9 +44,9 @@ type alias Location =
 
 {-| The current location object.
 -}
-location : Location
-location =
-  Json.decodeValue decodeLocation Native.Browser.location
+location : () -> Location
+location _ =
+  Json.decodeValue decodeLocation (Native.Browser.location ())
     |> Result.withDefault emptyLocation
 
 

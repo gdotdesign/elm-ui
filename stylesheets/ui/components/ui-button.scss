@@ -4,6 +4,7 @@ ui-button {
   // Styling
   border-radius: $border-radius;
   position: relative;
+  user-select: none;
   padding: 0 1.25em;
   font-weight: 600;
   overflow: hidden;

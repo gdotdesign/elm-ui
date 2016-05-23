@@ -290,6 +290,7 @@ init =
             , glyph = "paper-airplane"
             , size = "medium"
             , disabled = True
+            , readonly = False
             }
         ]
     , disabledButton =
@@ -299,6 +300,7 @@ init =
             , kind = "danger"
             , size = "medium"
             , disabled = True
+            , readonly = False
             }
         ]
     , iconButtons =

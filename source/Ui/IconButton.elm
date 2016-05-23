@@ -34,6 +34,7 @@ import Ui
 
 {-| Representation of an icon button:
   - **disabled** - Whether or not the icon button is disabled
+  - **readonly** - Whether or not the icon button is readonly
   - **glyph** - The glyph to use form IonIcons
   - **text** - The text of the icon button
   - **kind** - The type of the icon button
@@ -42,6 +43,7 @@ import Ui
 -}
 type alias Model =
   { disabled : Bool
+  , readonly : Bool
   , glyph : String
   , text : String
   , kind : String
@@ -57,6 +59,7 @@ type alias Model =
 init : String -> String -> Model
 init glyph text =
   { disabled = False
+  , readonly = False
   , kind = "primary"
   , size = "medium"
   , glyph = glyph
@@ -212,6 +215,7 @@ warningBig text glyph side msg =
 model : String -> String -> String -> String -> String -> Model
 model text size kind glyph side =
   { disabled = False
+  , readonly = False
   , glyph = glyph
   , kind = kind
   , size = size

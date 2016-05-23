@@ -152,6 +152,7 @@ render tags model =
 
     button =
       { disabled = model.disabled || model.readonly || isEmpty
+      , readonly = False
       , kind = "primary"
       , size = "medium"
       , glyph = "plus"

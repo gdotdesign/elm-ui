@@ -188,6 +188,7 @@ form model =
           [ Ui.Button.view
               Save
               { disabled = disabled
+              , readonly = False
               , kind = "primary"
               , text = "Save"
               , size = "medium"

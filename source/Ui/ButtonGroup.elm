@@ -18,6 +18,7 @@ import Ui.Button
 
 {-| Representation of a button group:
   - **disabled** - Whether or not the button group is disabled
+  - **readonly** - Whether or not the button group is readonly
   - **items** - The label and action for each button
   - **kind** - The type of the buttons
   - **size** - The size of the buttons
@@ -25,6 +26,7 @@ import Ui.Button
 type alias Model msg =
   { items : List ( String, msg )
   , disabled : Bool
+  , readonly : Bool
   , kind : String
   , size : String
   }
@@ -39,6 +41,7 @@ type alias Model msg =
 init : List ( String, msg ) -> Model msg
 init items =
   { disabled = False
+  , readonly = False
   , kind = "primary"
   , size = "medium"
   , items = items
@@ -75,6 +78,7 @@ renderButton model ( label, action ) =
   Ui.Button.view
     action
     { disabled = model.disabled
+    , readonly = model.readonly
     , kind = model.kind
     , size = model.size
     , text = label

@@ -14,7 +14,7 @@ ui-button {
   // Ellipsis for Text
   span {
     @include ellipsis;
-    z-index: 1;
+    z-index: 2;
   }
 
   // Children are not clickable
@@ -27,7 +27,8 @@ ui-button {
         primary $primary #FFF,
         success $success #FFF,
         warning $warning #FFF,
-        danger $danger #FFF) {
+        danger $danger #FFF,
+        input $input #333) {
       &.ui-button-#{$type} {
         background: $type-color;
         color: $font-color;
@@ -35,6 +36,14 @@ ui-button {
         &:hover {
           background: dampen($type-color, 15%);
         }
+      }
+    }
+
+    &.ui-button-input {
+      border: $border;
+
+      &:hover, &:focus, &:active {
+        border-color: transparent !important;
       }
     }
   }
@@ -56,10 +65,28 @@ ui-button {
     font-size: 12px;
   }
 
+  // Readonly state
+  &.readonly {
+    @extend %readonly;
+  }
+
   // Disabled state
   &.disabled {
     @extend %disabled;
     @include colors($disabled);
+
+    &:active svg {
+      opacity: 0;
+    }
+
+    svg {
+      transition: 0;
+    }
+
+    &:focus svg {
+      transform: translate(-50%, -50%) scale(0);
+      transition: 0;
+    }
   }
 
   // Focused state
@@ -85,6 +112,7 @@ ui-button {
     transform: translate(-50%, -50%) scale(0);
     opacity: 0;
     width: 100%;
+    z-index: 1;
     left: 50%;
     top: 50%;
   }

@@ -93,7 +93,7 @@ init value =
   , editing = False
   , inputValue = ""
   , value = value
-  , affix = "px"
+  , affix = ""
   , min =
       -(1 / 0)
       -- Minus Infinity

@@ -22,9 +22,7 @@ import Html.Lazy
 
 import Json.Decode as Json
 import Json.Encode as JE
-
 import List.Extra
-import Debug exposing (log)
 
 {-| Representation of a pager:
   - **center** - Pages at the center
@@ -70,7 +68,7 @@ init active =
 -}
 update : Msg -> Model -> Model
 update action model =
-  case log "a" action of
+  case action of
     End page ->
       { model | left = [] }
 

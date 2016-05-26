@@ -3,7 +3,7 @@ module.exports = function() {
     <head>
     </head>
     <body>
-      <script src='main.js' type='application/javascript'>
+      <script src='/main.js' type='application/javascript'>
       </script>
     </body>
   </html>`

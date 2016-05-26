@@ -2,9 +2,6 @@ module Ui.Pager exposing (Model, Msg, init, update, view, render, select)
 
 {-| Pager Component.
 
-TODO: Removed when NoOp events decoder issue is fixed:
-https://github.com/elm-lang/virtual-dom/issues/12
-
 # Model
 @docs Model, Msg, init, update
 
@@ -45,7 +42,6 @@ type alias Model =
 type Msg
   = Active Int
   | End Int
-  | NoOp
 
 
 {-| Initailizes a pager with the given page as active.
@@ -74,10 +70,6 @@ update action model =
 
     Active page ->
       { model | center = [], active = page }
-
-    NoOp ->
-      model
-
 
 {-| Lazily renders a pager.
 
@@ -113,11 +105,9 @@ render address pages model =
             ]
           else if index == model.active then
             [ style [ ( "left", "0%" ) ]
-            , onTransitionEnd (decoder (address NoOp))
             ]
           else
             [ style [ ( "left", "100%" ), ("visibility", "hidden") ]
-            , onTransitionEnd (decoder (address NoOp))
             ]
       in
         node "ui-page" ((property "_page" (JE.string (toString index)) ) :: attributes) [ page ]

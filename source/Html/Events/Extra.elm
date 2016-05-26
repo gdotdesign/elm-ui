@@ -98,9 +98,9 @@ onScroll msg =
 {-| Capture [transitionend](https://developer.mozilla.org/en-US/docs/Web/Events/transitionend)
 events.
 -}
-onTransitionEnd : msg -> Html.Attribute msg
-onTransitionEnd msg =
-  on "transitionend" (Json.succeed msg)
+onTransitionEnd : Json.Decoder msg -> Html.Attribute msg
+onTransitionEnd decoder =
+  on "transitionend" decoder
 
 
 {-| Capture [keydown](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)

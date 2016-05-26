@@ -2,6 +2,9 @@ module Ui.Pager exposing (Model, Msg, init, update, view, render, select)
 
 {-| Pager Component.
 
+TODO: Removed when NoOp events decoder issue is fixed:
+https://github.com/elm-lang/virtual-dom/issues/12
+
 # Model
 @docs Model, Msg, init, update
 
@@ -12,13 +15,16 @@ module Ui.Pager exposing (Model, Msg, init, update, view, render, select)
 @docs select
 -}
 
+import Html.Attributes exposing (style, classList, property)
 import Html.Events.Extra exposing (onTransitionEnd)
-import Html.Attributes exposing (style, classList)
 import Html exposing (node)
 import Html.Lazy
 
-import List.Extra
+import Json.Decode as Json
+import Json.Encode as JE
 
+import List.Extra
+import Debug exposing (log)
 
 {-| Representation of a pager:
   - **center** - Pages at the center
@@ -41,6 +47,7 @@ type alias Model =
 type Msg
   = Active Int
   | End Int
+  | NoOp
 
 
 {-| Initailizes a pager with the given page as active.
@@ -63,12 +70,15 @@ init active =
 -}
 update : Msg -> Model -> Model
 update action model =
-  case action of
+  case log "a" action of
     End page ->
       { model | left = [] }
 
     Active page ->
       { model | center = [], active = page }
+
+    NoOp ->
+      model
 
 
 {-| Lazily renders a pager.
@@ -87,28 +97,32 @@ view address pages model =
 render : (Msg -> msg) -> List (Html.Html msg) -> Model -> Html.Html msg
 render address pages model =
   let
-    updatedPage page =
+    renderPage index page =
       let
-        index =
-          Maybe.withDefault -1 (List.Extra.elemIndex page pages)
+        decoder msg =
+          Json.at ["target", "_page"] (Json.succeed msg)
 
         attributes =
           if List.member index model.left then
             [ classList [ ( "animating", True ) ]
             , style [ ( "left", "-100%" ) ]
-            , onTransitionEnd (address (End index))
+            , onTransitionEnd (decoder (address (End index)))
             ]
           else if List.member index model.center then
             [ style [ ( "left", "0%" ) ]
             , classList [ ( "animating", True ) ]
-            , onTransitionEnd (address (Active index))
+            , onTransitionEnd (decoder (address (Active index)))
             ]
           else if index == model.active then
-            [ style [ ( "left", "0%" ) ] ]
+            [ style [ ( "left", "0%" ) ]
+            , onTransitionEnd (decoder (address NoOp))
+            ]
           else
-            [ style [ ( "left", "100%" ), ("visibility", "hidden") ] ]
+            [ style [ ( "left", "100%" ), ("visibility", "hidden") ]
+            , onTransitionEnd (decoder (address NoOp))
+            ]
       in
-        node "ui-page" attributes [ page ]
+        node "ui-page" ((property "_page" (JE.string (toString index)) ) :: attributes) [ page ]
   in
     node
       "ui-pager"
@@ -117,7 +131,7 @@ render address pages model =
           , ( "height", model.height )
           ]
       ]
-      (List.map updatedPage pages)
+      (List.indexedMap renderPage pages)
 
 
 {-| Selects the page with the given index.

@@ -32,6 +32,7 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui
 
+import Native.Uid
 
 {-| Representation of a number range:
   - **startValue** - The value when the dragging starts

@@ -1,5 +1,5 @@
 module Ui.DropdownMenu exposing
-  (Model, Msg, init, subscriptions, update, view, item, close)
+  (Model, Msg, Dimensions, init, subscriptions, update, view, item, close, openHandler)
 
 {-| Dropdown menu that is always visible on the screen.
 

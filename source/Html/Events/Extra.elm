@@ -9,7 +9,7 @@ module Html.Events.Extra exposing (..)
 @docs onEnter, onEnterPreventDefault, onKeys, keysDecoder
 
 # Miscellaneous
-@docs onScroll, onTransitionEnd, onLoad, onError
+@docs onScroll, onTransitionEnd, onLoad, onError, onWheel
 -}
 
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
@@ -20,6 +20,12 @@ import Json.Decode as Json exposing ((:=))
 
 import Dict
 
+{-| Capture [wheel](https://developer.mozilla.org/en-US/docs/Web/Events/wheel)
+events.
+-}
+onWheel : Json.Decoder data -> (data -> msg) -> Html.Attribute msg
+onWheel decoder action =
+  on "wheel" (Json.map action decoder)
 
 {-| Capture [keyup](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
 events that have the enter key pressed, additionally if the first agrument is

@@ -6,6 +6,9 @@ module Ui.DropdownMenu exposing
 # Model
 @docs Model, Msg, init, subscriptions, update
 
+# Dimensions
+@docs Dimensions, openHandler
+
 # View
 @docs view, item
 

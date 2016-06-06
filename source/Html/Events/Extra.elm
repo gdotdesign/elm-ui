@@ -9,7 +9,7 @@ module Html.Events.Extra exposing (..)
 @docs onEnter, onEnterPreventDefault, onKeys, keysDecoder
 
 # Miscellaneous
-@docs onScroll, onTransitionEnd, onLoad, onError, onWheel
+@docs onScroll, onTransitionEnd, onLoad, onError, onWheel, decodeDelta
 -}
 
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
@@ -19,6 +19,11 @@ import Html
 import Json.Decode as Json exposing ((:=))
 
 import Dict
+
+{-| Decodes delta value from wheel events. -}
+decodeDelta : Json.Decoder Float
+decodeDelta =
+  Json.at ["deltaY"] Json.float
 
 {-| Capture [wheel](https://developer.mozilla.org/en-US/docs/Web/Events/wheel)
 events.

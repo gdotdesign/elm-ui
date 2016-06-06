@@ -3,6 +3,7 @@ var serve = require('koa-static')
 var koaRouter = require('koa-router')
 var path = require('path')
 var app = require('koa')()
+var fs = require('fs')
 
 var renderHtml = require('../render/html')
 var renderElm = require('../render/elm')
@@ -34,9 +35,19 @@ module.exports = function(options) {
     }
   })
 
-  router.get('/main.js', function*(next) {
-    this.type = 'text/javascript'
-    this.body = yield renderElm(path.resolve('source/Main.elm'), config)
+  router.get('*', function*(next){
+    var file = this.request.url.slice(1)
+    var isJs = file.match(/\.js$/)
+    var name = file.replace(/\.js$/, '')
+    var filePath = path.resolve(`source/${name}.elm`)
+    var haveElmFile = fs.existsSync(filePath)
+
+    if(isJs && haveElmFile){
+      this.type = 'text/javascript'
+      this.body = yield renderElm(filePath, config)
+    } else {
+      yield next
+    }
   })
 
   router.get('/main.css', function*(next) {

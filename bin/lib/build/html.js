@@ -8,7 +8,7 @@ module.exports = function() {
 	return function(callback) {
 		console.log('Building HTML...')
 
-		fs.writeFileSync(destination, renderHtml())
+		fs.writeFileSync(destination, renderHtml(path.resolve('public/index.html')))
 
 		callback(null, null)
 	}

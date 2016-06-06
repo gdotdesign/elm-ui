@@ -45,7 +45,8 @@ module.exports = function(options) {
   })
 
   router.get('*', function*(next) {
-    this.body = renderHtml()
+    this.type = 'text/html'
+    this.body = renderHtml(path.resolve('public/index.html'))
   })
 
   app

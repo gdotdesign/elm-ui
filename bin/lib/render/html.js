@@ -1,10 +1,5 @@
-module.exports = function() {
-  return `<html>
-    <head>
-    </head>
-    <body>
-      <script src='/main.js' type='application/javascript'>
-      </script>
-    </body>
-  </html>`
+var fs = require('fs')
+
+module.exports = function(path) {
+  return fs.readFileSync(path)
 }

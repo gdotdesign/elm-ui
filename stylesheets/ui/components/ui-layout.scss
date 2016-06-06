@@ -20,6 +20,12 @@ ui-layout {
     color: #FFF;
   }
 
+  &.ui-layout-center-default {
+    ui-header {
+      padding: 0;
+    }
+  }
+
   &.ui-layout-center-default,
   &.ui-layout-default {
     flex-direction: column;
@@ -29,8 +35,6 @@ ui-layout {
     }
 
     ui-header {
-      padding: 0;
-
       ui-layout-center {
         display: flex;
       }

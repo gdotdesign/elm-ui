@@ -1,15 +1,13 @@
-module Ui.App exposing
-  (Model, Msg, init, subscribe, subscriptions, update, view, render, setTitle)
+module Ui.App exposing (Model, Msg, init, subscriptions, update, view, render, setTitle)
 
 {-| Ui.App is the starting point of any Elm-UI application, it has multiple
 responsibilities:
-  - Loads the CSS file and provides a subscription to handle loaded state
   - Schedules updates for the **Ui.Time** component
   - Sets the **viewport meta tag** to be mobile friendly
   - Sets the **title** of the window
 
 # Model
-@docs Model, Msg, update, init, subscribe, subscriptions
+@docs Model, Msg, update, init, subscriptions
 
 # View
 @docs view, render
@@ -34,12 +32,10 @@ import Ui
 
 {-| Representation of an application:
   - **title** - The title of the application (and the window)
-  - **loaded** - Whether or not the application is loaded
   - **uid** - The unique identifier of the application
 -}
 type alias Model =
   { title : String
-  , loaded : Bool
   , uid : String
   }
 
@@ -48,7 +44,6 @@ type alias Model =
 -}
 type Msg
   = Tick Time
-  | Loaded
 
 
 {-| Initializes an application with the given title.
@@ -58,18 +53,8 @@ type Msg
 init : String -> Model
 init title =
   { uid = Native.Uid.uid ()
-  , loaded = False
   , title = title
   }
-
-
-{-| Subscribes to changes for an application.
-
-    Ui.App.subscribe LoadMsg app
--}
-subscribe : (Bool -> a) -> Model -> Sub a
-subscribe loadMsg model =
-  Emitter.listenBool (model.uid ++ "-load") loadMsg
 
 
 {-| Subscriptions for an application.
@@ -88,11 +73,6 @@ subscriptions =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Loaded ->
-      ( { model | loaded = True }
-      , Emitter.sendBool (model.uid ++ "-load") True
-      )
-
     Tick now ->
       ( model, Ui.Time.updateTime now )
 
@@ -106,40 +86,23 @@ view address model children =
   Html.Lazy.lazy3 render address model children
 
 
-startLocation : Browser.Location
-startLocation =
-  Browser.location ()
-
 {-| Renders an application.
 
     Ui.App.render App app [text "Hello there!"]
 -}
 render : (Msg -> msg) -> Model -> List (Html.Html msg) -> Html.Html msg
 render address model children =
-  let
-    stylesheet =
-      case startLocation.protocol of
-        "file:" -> "main.css"
-        _ -> "/main.css"
-
-    baseChildren =
-      [ Ui.stylesheetLink stylesheet (address Loaded)
-      , node "title" [] [ text model.title ]
-      , node
+  node
+    "ui-app"
+    []
+    ([ node "title" [] [ text model.title ]
+    , node
         "meta"
         [ content "initial-scale=1.0, user-scalable=no"
         , name "viewport"
         ]
         []
-      ]
-
-    actualChildren =
-      if model.loaded then
-        baseChildren ++ children
-      else
-        baseChildren
-  in
-    node "ui-app" [] actualChildren
+    ] ++ children)
 
 
 {-| Sets the title of the application

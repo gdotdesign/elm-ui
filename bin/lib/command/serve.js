@@ -16,6 +16,7 @@ module.exports = function(options) {
   var router = new koaRouter({prefix: options.prefix})
 
   browserSync.watch("source/**/*.elm").on("change", browserSync.reload)
+  browserSync.watch("public/**/*.html").on("change", browserSync.reload)
 
   browserSync.watch("stylesheets/**/*.scss", function(event, file) {
     if (event === "change") {

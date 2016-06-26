@@ -20,6 +20,7 @@ import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
 import Ui.Native.Scrolls as Scrolls
 import Ui.Native.Dom as Dom
+
 import Ui.NotificationCenter
 import Ui.DropdownMenu
 import Ui.InplaceInput
@@ -30,6 +31,7 @@ import Ui.ColorPicker
 import Ui.DatePicker
 import Ui.ColorPanel
 import Ui.IconButton
+import Ui.FileInput
 import Ui.NumberPad
 import Ui.Container
 import Ui.Calendar
@@ -67,6 +69,7 @@ type Msg {- Showcase models -}
   | TextArea (Showcase.Msg Ui.Textarea.Msg)
   | Calendar (Showcase.Msg Ui.Calendar.Msg)
   | Checkbox (Showcase.Msg Ui.Checkbox.Msg)
+  | FileInput (Showcase.Msg Ui.FileInput.Msg)
   | Chooser (Showcase.Msg Ui.Chooser.Msg)
   | Ratings (Showcase.Msg Ui.Ratings.Msg)
   | Slider (Showcase.Msg Ui.Slider.Msg)
@@ -113,7 +116,6 @@ type Msg {- Showcase models -}
   | Failed String
   | Saved String
 
-
 type alias Model =
   {- Cache -}
   { tabsContents : List ( String, Html.Html Msg )
@@ -145,6 +147,7 @@ type alias Model =
   , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Msg Msg
   , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Msg Msg
   , numberPad : Showcase.Model Ui.NumberPad.Model Ui.NumberPad.Msg Msg
+  , fileInput : Showcase.Model Ui.FileInput.Model Ui.FileInput.Msg Msg
   , checkbox3 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg Msg
   , checkbox2 : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg Msg
   , checkbox : Showcase.Model Ui.Checkbox.Model Ui.Checkbox.Msg Msg
@@ -348,6 +351,12 @@ init =
           (\_ -> Sub.none)
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 320
+    , fileInput =
+        Showcase.init
+          (\_ -> Ui.FileInput.init "image/*")
+          Ui.FileInput.update
+          (\_ -> Sub.none)
+          (\_ -> Sub.none)
     , input =
         Showcase.init
           (\_ -> Ui.Input.init "" "Type here...")
@@ -485,7 +494,12 @@ view model =
     emptyText =
       text ""
 
-    { chooser, colorPanel, datePicker, colorPicker, numberRange, slider, checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea, numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons, disabledButton, disabledIconButton, modalView, infos, modalButton, dropdownMenu, pagerControls, notificationButton, tagger, pagerContents, searchInput, tabs, tabsContents, taggerData } =
+    { chooser, colorPanel, datePicker, colorPicker, numberRange, slider,
+      checkbox, checkbox2, checkbox3, calendar, inplaceInput, textarea,
+      numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons,
+      disabledButton, disabledIconButton, modalView, infos, modalButton,
+      dropdownMenu, pagerControls, notificationButton, tagger, pagerContents,
+      searchInput, tabs, tabsContents, taggerData, fileInput } =
       model
 
     clicked =
@@ -621,6 +635,8 @@ view model =
                       , Showcase.view InplaceInput Ui.InplaceInput.view inplaceInput
                       , componentHeader "Number Pad"
                       , Showcase.view2 NumberPad (Ui.NumberPad.view { bottomLeft = text "", bottomRight = text "" }) numberPad
+                      , componentHeader "FileInput"
+                      , Showcase.view FileInput Ui.FileInput.view fileInput
                       , componentHeader "Pager"
                       , tr
                           []
@@ -844,6 +860,13 @@ update' msg model =
           Showcase.update act model.datePicker
       in
         ( { model | datePicker = datePicker }, Cmd.map DatePicker effect )
+
+    FileInput act ->
+      let
+        ( fileInput, effect ) =
+          Showcase.update act model.fileInput
+      in
+        ( { model | fileInput = fileInput }, Cmd.map FileInput effect )
 
     Calendar act ->
       let

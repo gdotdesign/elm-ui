@@ -1,0 +1,47 @@
+ui-file-input {
+  border: $border-radius;
+  background: $input;
+  border: $border;
+  display: flex;
+  padding: 20px;
+
+  ui-file-input-info {
+    display: block;
+    min-width: 0;
+    height: 70px;
+    flex: 1;
+
+    > * {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+
+  ui-file-input-no-file {
+    height: 70px;
+    display: flex;
+    font-size: 20px;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+  }
+
+  ui-file-input-size,
+  ui-file-input-type {
+    font-size: 14px;
+    display: block;
+  }
+
+  ui-button {
+    margin-left: 20px;
+    flex: 0 0 auto;
+    height: auto;
+  }
+
+  ui-file-input-name {
+    margin-bottom: 5px;
+    font-size: 20px;
+    display: block;
+  }
+}

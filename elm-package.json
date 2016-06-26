@@ -38,6 +38,7 @@
     "Ui.Header",
     "Ui.IconButton",
     "Ui.Image",
+    "Ui.FileInput",
     "Ui.InplaceInput",
     "Ui.Input",
     "Ui.Layout",

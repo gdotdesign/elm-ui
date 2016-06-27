@@ -3,6 +3,60 @@ ui-file-input {
   background: $input;
   border: $border;
   display: flex;
+  height: 36px;
+
+  div {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+    line-height: 36px;
+    padding: 0 10px;
+    cursor: pointer;
+    flex: 1;
+
+    &:hover {
+      color: $focus;
+    }
+  }
+
+  ui-button {
+    border-radius: 0 $border-radius $border-radius 0;
+    position: relative;
+    border: $border;
+    right: -1px;
+    top: -1px;
+  }
+
+  &.disabled, &.readonly {
+    div {
+      pointer-events: none;
+    }
+  }
+
+  &.readonly {
+    cursor: $readonly-cursor;
+  }
+
+  &.disabled {
+    @extend %disabled;
+
+    div {
+      background: $disabled;
+    }
+
+    ui-button {
+      border-left: 0;
+      right: 0;
+    }
+  }
+}
+
+ui-file-input-details {
+  border: $border-radius;
+  background: $input;
+  border: $border;
+  display: flex;
   padding: 20px;
 
   ui-file-input-info {

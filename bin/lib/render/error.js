@@ -3,7 +3,12 @@ var ansi_up = require('ansi_up')
 var htmlErrorContent = `
 <html>
   <style>
+    body {
+      all: unset;
+    }
+
     div.elm-error {
+      all: unset;
       overflow-y: scroll;
       font-family: sans;
       position: fixed;

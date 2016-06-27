@@ -1,5 +1,5 @@
 module Ui.FileInput exposing
-  (Model, Msg, init, update, view, render)
+  (Model, Msg, init, update, view, render, viewDetails, renderDetails)
 
 {-| Component for selecting a file.
 
@@ -8,17 +8,23 @@ module Ui.FileInput exposing
 
 # View
 @docs view, render
+
+# View Variations
+@docs viewDetails, renderDetails
 -}
 
 import Numeral exposing (format)
 import Task
 import Http
 
+import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
+import Html.Events exposing (onClick)
 import Html.Lazy
 
 import Ui.Native.FileManager as FileManager exposing (File)
 import Ui.Button
+import Ui
 
 
 {-| Representation of a file input:
@@ -88,10 +94,54 @@ view model =
 -}
 render : Model -> Html.Html Msg
 render model =
-  node "ui-file-input"
+  let
+    label =
+      Maybe.map .name model.file
+        |> Maybe.withDefault "Not file is selected!"
+
+    attributes =
+      Ui.enabledActions
+        model
+        [ onClick Browse ]
+  in
+    node "ui-file-input"
+      [ classList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+      ]
+      [ div attributes [ text label ]
+      , Ui.Button.view
+          Browse
+          { text = "Browse"
+          , kind = "primary"
+          , readonly = model.readonly
+          , disabled = model.disabled
+          , size = "medium"
+          }
+      ]
+
+
+{-| Renders a file input lazily showing the details of the file.
+
+    Ui.FileInput.renderDetails fileInput
+-}
+viewDetails : Model -> Html.Html Msg
+viewDetails model =
+  Html.Lazy.lazy renderDetails model
+
+
+{-| Renders a file input showing the details of the file.
+
+    Ui.FileInput.renderDetails fileInput
+-}
+renderDetails : Model -> Html.Html Msg
+renderDetails model =
+  node "ui-file-input-details"
     []
     [ renderFileStatus model
-    , Ui.Button.view Browse
+    , Ui.Button.view
+        Browse
         { text = "Browse"
         , kind = "primary"
         , readonly = model.readonly

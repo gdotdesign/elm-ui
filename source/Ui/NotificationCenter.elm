@@ -18,12 +18,11 @@ virtual-dom to fix "keys" concept.
 import Html.Attributes exposing (classList, style, id)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
-
+import Html.Keyed
 import Json.Encode
 import List.Extra
 import Process
 import Task
-
 import Ui.Native.Browser as Browser
 
 
@@ -104,7 +103,8 @@ notify contents model =
       { model | notifications = model.notifications ++ [ notification ] }
   in
     ( updatedModel
-    , performTask (AutoHide notification.id) (Process.sleep model.timeout) )
+    , performTask (AutoHide notification.id) (Process.sleep model.timeout)
+    )
 
 
 
@@ -130,7 +130,7 @@ performTask msg task =
 -}
 render : (Msg -> a) -> Model a -> Html.Html a
 render address model =
-  node
+  Html.Keyed.node
     "ui-notification-center"
     []
     (List.map (renderNotification address) model.notifications)
@@ -138,7 +138,7 @@ render address model =
 
 {-| Renders a notification.
 -}
-renderNotification : (Msg -> a) -> Notification a -> Html.Html a
+renderNotification : (Msg -> a) -> Notification a -> ( String, Html.Html a )
 renderNotification address model =
   let
     duration =
@@ -160,18 +160,20 @@ renderNotification address model =
 
         _ ->
           ""
+
+    html =
+      node
+        "ui-notification"
+        [ classList [ ( model.class, True ) ]
+        , onClick (address (Hide model.id))
+        , style
+            [ ( "animation-duration", duration )
+            , ( prefix ++ "animation-duration", duration )
+            ]
+        ]
+        [ node "div" [] [ model.contents ] ]
   in
-    node
-      "ui-notification"
-      [ id (toString model.id)
-      , classList [ ( model.class, True ) ]
-      , onClick (address (Hide model.id))
-      , style
-          [ ( "animation-duration", duration )
-          , ( prefix ++ "animation-duration", duration )
-          ]
-      ]
-      [ node "div" [] [ model.contents ] ]
+    ( toString model.id, html )
 
 
 {-| Initiliazes a notification with the given contents and model.

@@ -4,7 +4,7 @@ var path = require('path')
 var fs = require('fs')
 
 module.exports = function(config, shouldFail) {
-  var destination = path.resolve('dist/main.js')
+  var destination = path.resolve('dist/Main.js')
   var source = path.resolve('source/Main.elm')
 
   return function(callback) {

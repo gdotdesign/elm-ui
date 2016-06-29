@@ -30,6 +30,7 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
     reader.addEventListener('load', function(event){
       callback(_elm_lang$core$Native_Scheduler.succeed(event.target.result))
     })
+    return reader
   }
 
   function readAsString(file) {
@@ -76,7 +77,7 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
               } else {
                 callback(_elm_lang$core$Native_Scheduler.succeed(""))
               }
-            };
+            }
             writer.truncate(0)
           })
         })

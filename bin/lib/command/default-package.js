@@ -10,6 +10,6 @@ module.exports = function() {
     ],
     "exposed-modules": [],
     "dependencies": {},
-    "elm-version": "0.16.0 <= v < 0.17.0"
+    "elm-version": "0.17.0 <= v < 0.18.0"
   }
 }

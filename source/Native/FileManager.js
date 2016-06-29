@@ -49,19 +49,35 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
     return file.data
   }
 
-  function open(accept){
-    input.accept = accept
-    input.value = ''
-    input.click()
-    // Make sure that previous callbacks are not called
-    input.removeEventListener('change', input.callback)
-
-    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
-      var onChange = function(){
-        callback(_elm_lang$core$Native_Scheduler.succeed(createFile(input.files[0])))
-      }
-      input.addEventListener('change', onChange)
+  function openMultiple(accept){
+    input.multiple = true
+    return open(accept, function(callback){
+      var filesArray = Array.prototype.slice.call(input.files)
+      var filesObjects = filesArray.map(function(file) { return createFile(file) })
+      var files = _elm_lang$core$Native_List.fromArray(filesObjects)
+      callback(_elm_lang$core$Native_Scheduler.succeed(files))
     })
+  }
+
+  function openSingle(accept){
+    input.multiple = false
+
+    return open(accept, function(callback){
+      var file = createFile(input.files[0])
+      callback(_elm_lang$core$Native_Scheduler.succeed(file))
+    })
+  }
+
+  function open(accept, mainCallback){
+    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
+      input.accept = accept
+      input.value = ''
+      // Make sure that previous callbacks are not called
+      input.removeEventListener('change', input.callback)
+      input.callback = function(){ mainCallback(callback) }
+      input.addEventListener('change', input.callback)
+      input.click()
+    });
   }
 
   function downloadFunc(name,mimeType,data){
@@ -92,7 +108,8 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
     readAsDataURL: readAsDataURL,
     readAsString: readAsString,
     download: F3(downloadFunc),
+    openMultiple: openMultiple,
+    openSingle: openSingle,
     toFormData: toFormData,
-    open: open
   }
 }()

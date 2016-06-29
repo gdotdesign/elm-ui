@@ -1,5 +1,13 @@
-module Ui.Native.FileManager exposing
-  (File, readAsString, readAsDataURL, toFormData, open, download)
+module Ui.Native.FileManager
+  exposing
+    ( File
+    , readAsString
+    , readAsDataURL
+    , toFormData
+    , openSingle
+    , openMultiple
+    , download
+    )
 
 {-| Low level functions for managing [Files](https://developer.mozilla.org/en/docs/Web/API/File).
 
@@ -15,7 +23,6 @@ module Ui.Native.FileManager exposing
 
 import Http
 import Task exposing (Task)
-
 import Native.FileManager
 
 
@@ -66,13 +73,22 @@ toFormData key file =
   Http.stringData key (Native.FileManager.toFormData file)
 
 
-{-| Opens a file browser for selecting a file.
+{-| Opens a file browser for selecting a single file.
 
-    task = FileManager.open "image/*"
+    task = FileManager.openSingle "image/*"
 -}
-open : String -> Task Never File
-open accept =
-  Native.FileManager.open accept
+openSingle : String -> Task Never File
+openSingle accept =
+  Native.FileManager.openSingle accept
+
+
+{-| Opens a file browser for selecting multiple files.
+
+    task = FileManager.openMultiple "image/*"
+-}
+openMultiple : String -> Task Never (List File)
+openMultiple accept =
+  Native.FileManager.openMultiple accept
 
 
 {-| Downloads the given data with the given name and mime type.

@@ -1,12 +1,15 @@
 # Changelog
 
 ## 0.2.0
-This version marks support for Elm 0.17 with many changes to make Elm-UI more
-accessible.
+This version marks support for Elm 0.17 with many changes to make Elm-UI more accessible.
 
-### Major Change
-Because of the removal of Signals the way how components receive changes from sub
-components is changed from using a `valueAddress` to having a subscription of changes.
+## Breaking Changes
+
+### Index.html
+The index.html is now served from `public` directory to make it more accessible and allow people to easily add CSS and third party JavaScript to their applications.
+
+### Singals Removal
+Because of the removal of Signals the way how components receive changes from sub components is changed from using a `valueAddress` to having a subscription of changes.
 
 Before
 ```elm
@@ -33,6 +36,7 @@ Now
 
 This works because of the **Ui.Helpers.Emitter** module.
 
+## Log
 ### New Components
 - **Ui.Layout** - A component for rendering commonly used layouts
 

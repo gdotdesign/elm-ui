@@ -70,7 +70,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     Browse ->
-      ( model, Task.perform (\_ -> Debug.crash "") Selected (FileManager.open model.accept) )
+      ( model, Task.perform (\_ -> Debug.crash "") Selected (FileManager.openSingle model.accept) )
 
     Selected file ->
       ( { model | file = Just file }, Cmd.none )

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.2
+Bugfix release.
+
 ## 0.2.0
 This version marks support for Elm 0.17 with many changes to make Elm-UI more accessible.
 

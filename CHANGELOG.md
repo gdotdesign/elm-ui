@@ -59,6 +59,7 @@ This works because of the **Ui.Helpers.Emitter** module.
 - Added **Ui.Native.Browser** module to interface with it's native module
 - Added **Ui.Native.Dom** module to interface with it's native module
 - Added **Ui.Native.Scrolls** module to get the scroll events from window
+- Added **Ui.Native.FileManager** module to manage files
 - **Ui.Tagger** - Simplified implementation
 - And many small changes...
 

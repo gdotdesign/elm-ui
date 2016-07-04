@@ -46,6 +46,19 @@ ui-button {
         border-color: transparent !important;
       }
     }
+
+    // Focused state
+    &:focus {
+      svg {
+        transition: 320ms cubic-bezier(0.215, 0.61, 0.355, 1);
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.3;
+      }
+    }
+
+    &:active svg {
+      opacity: 0.6;
+    }
   }
 
   // Big size
@@ -70,6 +83,10 @@ ui-button {
     @extend %readonly;
   }
 
+  &:focus {
+    outline: none;
+  }
+
   // Disabled state
   &.disabled {
     @extend %disabled;
@@ -87,21 +104,6 @@ ui-button {
       transform: translate(-50%, -50%) scale(0);
       transition: 0;
     }
-  }
-
-  // Focused state
-  &:focus {
-    outline: none;
-
-    svg {
-      transition: 320ms cubic-bezier(0.215, 0.61, 0.355, 1);
-      transform: translate(-50%, -50%) scale(1.5);
-      opacity: 0.3;
-    }
-  }
-
-  &:active svg {
-    opacity: 0.6;
   }
 
   svg {

@@ -270,7 +270,7 @@ renderCell date model =
       Ext.Date.isSameMonth date model.date
 
     value =
-      Ext.Date.isSameDate date model.value
+      model.selectable && (Ext.Date.isSameDate date model.value)
 
     click =
       if

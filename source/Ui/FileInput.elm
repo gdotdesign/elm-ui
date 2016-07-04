@@ -138,7 +138,11 @@ viewDetails model =
 renderDetails : Model -> Html.Html Msg
 renderDetails model =
   node "ui-file-input-details"
-    []
+    [ classList
+        [ ( "disabled", model.disabled )
+        , ( "readonly", model.readonly )
+        ]
+    ]
     [ renderFileStatus model
     , Ui.Button.view
         Browse

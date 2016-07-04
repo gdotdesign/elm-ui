@@ -41,10 +41,6 @@ ui-file-input {
   &.disabled {
     @extend %disabled;
 
-    div {
-      background: $disabled;
-    }
-
     ui-button {
       border-left: 0;
       right: 0;
@@ -97,5 +93,20 @@ ui-file-input-details {
     margin-bottom: 5px;
     font-size: 20px;
     display: block;
+  }
+
+  &.readonly {
+    cursor: $readonly-cursor;
+  }
+
+  &.disabled {
+    @extend %disabled;
+  }
+
+  &.disabled, &.readonly {
+    ui-file-input-info,
+    ui-file-input-no-file {
+      pointer-events: none;
+    }
   }
 }

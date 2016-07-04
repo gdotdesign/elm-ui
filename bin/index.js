@@ -57,9 +57,13 @@ program
 
 program
   .command('build')
+  .option('-m, --main [file]', 'main file to compile')
   .description('Builds final files')
   .action(function(env, opts) {
-    elmUi.build(options())
+    elmUi.build({
+      env: program.env,
+      main: env.main
+    })
   })
 
 program.parse(process.argv)

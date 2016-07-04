@@ -20,18 +20,18 @@ var formatError = function(error) {
 
 module.exports = function(options) {
   var destination = path.resolve('dist')
-  var config = readConfig(options);
+  var config = readConfig(options)
 
   // Ensure destination
   if (!fs.existsSync(destination)) {
-    fs.mkdirSync(destination);
+    fs.mkdirSync(destination)
   }
 
   // Build things with async
   async.series([
     buildPublic(),
     buildHtml(),
-    buildElm(config,true),
+    buildElm(options.main || 'Main', config, true),
     buildCSS(true)
   ], function(error, results) {
     if (error) {

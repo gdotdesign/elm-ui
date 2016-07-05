@@ -194,11 +194,14 @@ render locale model =
             , ( 37, Decrement )
             ]
         ]
+
+    open =
+      model.open && not model.disabled && not model.readonly
   in
     node
       "ui-date-picker"
       ([ classList
-          [ ( "dropdown-open", model.open )
+          [ ( "dropdown-open", open )
           , ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]

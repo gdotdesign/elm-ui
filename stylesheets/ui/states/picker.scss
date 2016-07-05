@@ -58,19 +58,11 @@
 
   &.readonly {
     @extend %readonly;
-
-    ui-dropdown {
-      display: none;
-    }
   }
 
   // Disabled state
   &.disabled {
     @extend %disabled;
     background: $disabled;
-
-    ui-dropdown {
-      display: none;
-    }
   }
 }

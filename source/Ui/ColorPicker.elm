@@ -156,11 +156,14 @@ render model =
             , ( 13, Toggle )
             ]
         ]
+
+    open =
+      model.open && not model.disabled && not model.readonly
   in
     node
       "ui-color-picker"
       ([ classList
-          [ ( "dropdown-open", model.open )
+          [ ( "dropdown-open", open )
           , ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]

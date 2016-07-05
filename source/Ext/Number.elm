@@ -2,6 +2,7 @@ module Ext.Number exposing (..)
 
 {-| Utility functions for numbers.
 
+# Functions
 @docs toFixed, remFloat, roundTo
 -}
 

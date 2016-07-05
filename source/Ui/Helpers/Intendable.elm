@@ -2,6 +2,7 @@ module Ui.Helpers.Intendable exposing (..)
 
 {-| Helper functions for intending list items.
 
+# Functions
 @docs first, index, select, next, nextItem, previous, previousItem
 -}
 

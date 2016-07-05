@@ -87,7 +87,7 @@ decodeLocation =
 
 {-| Opens a new window with the given URL and return the given value.
 
-    Ui.Native.Browser.openWindow 'asd' value
+    Ui.Native.Browser.openWindow "url" value
 -}
 openWindow : String -> value -> value
 openWindow url value =
@@ -96,7 +96,7 @@ openWindow url value =
 
 {-| Replace the current page with the given URL and return the given value.
 
-    Ui.Native.Browser.redirect 'http://elm-lang.org' value
+    Ui.Native.Browser.redirect "http://elm-lang.org" value
 -}
 redirect : String -> value -> value
 redirect url value =
@@ -105,7 +105,7 @@ redirect url value =
 
 {-| Shows an alert dialog with the given text and returns the given value.
 
-    Ui.Native.Browser.alert 'Hey there!' value
+    Ui.Native.Browser.alert "Hey there!"" value
 -}
 alert : String -> value -> value
 alert message value =
@@ -117,7 +117,7 @@ alert message value =
     ```elm
     displayValue : String
     displayValue =
-        if Vendor.prefix == Vendor.Webkit
+        if Ui.Browser.prefix == Ui.Browser.Webkit
         then "-webkit-flex"
         else "flex"
     ```

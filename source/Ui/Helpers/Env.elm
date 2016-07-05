@@ -2,6 +2,7 @@ module Ui.Helpers.Env exposing (..)
 
 {-| Module for interacting with the environment variables.
 
+# Functions
 @docs get, getString
 -}
 

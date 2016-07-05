@@ -1,6 +1,6 @@
 module Ui.Native.LocalStorage exposing (..)
 
-{-| Native bindings for the localStorage interface using tasks.
+{-| Native bindings for the `localStorage` interface using tasks.
 
 # Functions
 @docs getItem, setItem, removeItem
@@ -12,10 +12,7 @@ import Native.LocalStorage
 
 {-| Gets the value of the item from the given key.
 
-    Task.perform
-      Failed
-      Succeeded
-      (Ui.Native.LocalStorage.getItem "key")
+    task = Ui.Native.LocalStorage.getItem "key"
 -}
 getItem : String -> Task String String
 getItem key =
@@ -24,10 +21,7 @@ getItem key =
 
 {-| Sets the value of the item from given key to the given value.
 
-    Task.perform
-      Failed
-      Succeeded
-      (Ui.Native.LocalStorage.setItem "key" "value")
+    task = Ui.Native.LocalStorage.setItem "key" "value"
 -}
 setItem : String -> String -> Task String String
 setItem key value =
@@ -36,10 +30,7 @@ setItem key value =
 
 {-| Removes the item with the given key.
 
-    Task.perform
-      Failed
-      Succeeded
-      (Ui.Native.LocalStorage.remove "key")
+    task = Ui.Native.LocalStorage.remove "key"
 -}
 removeItem : String -> Task String String
 removeItem key =

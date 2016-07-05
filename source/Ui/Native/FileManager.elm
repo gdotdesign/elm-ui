@@ -11,6 +11,9 @@ module Ui.Native.FileManager
 
 {-| Low level functions for managing [Files](https://developer.mozilla.org/en/docs/Web/API/File).
 
+# Types
+@docs File
+
 # Reading
 @docs readAsString, readAsDataURL
 
@@ -18,12 +21,12 @@ module Ui.Native.FileManager
 @docs toFormData
 
 # Open / Download
-@docs open, download
+@docs openSingle, openMultiple, download
 -}
 
-import Http
 import Task exposing (Task)
 import Native.FileManager
+import Http
 
 
 {-| The type of the files content.
@@ -33,14 +36,14 @@ type Data
 
 
 {-| Representation of a file:
-  - **name** - The name of the file
-  - **mimeType** - The mime type of the file
-  - **size** - The size of the file
   - **data** - The file data (native File object)
+  - **mimeType** - The mime type of the file
+  - **name** - The name of the file
+  - **size** - The size of the file
 -}
 type alias File =
-  { name : String
-  , mimeType : String
+  { mimeType : String
+  , name : String
   , size : Float
   , data : Data
   }

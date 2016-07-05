@@ -116,10 +116,10 @@ onTransitionEnd decoder =
 
 {-| Capture [keydown](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
 events that will call the given action when a specific key
-is pressed from the give list
+is pressed from the give list.
 
-    onKeys [ (13, Enter)
-           , (27, Esc)
+    onKeys [ ( 13, Enter )
+           , ( 27, Esc )
            ]
 -}
 onKeys : List ( Int, msg ) -> Html.Attribute msg
@@ -145,7 +145,7 @@ onError msg =
 
 {-| A decoder which succeeds when a specific key is pressed from the given list.
 
-    on "keydown" [(13, Enter)]
+    on "keydown" [ ( 13, Enter ) ]
 -}
 keysDecoder : List ( Int, msg ) -> Json.Decoder msg
 keysDecoder mappings =

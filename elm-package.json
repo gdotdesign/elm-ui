@@ -21,6 +21,7 @@
     "Ui.Helpers.Env",
     "Ui.Helpers.Intendable",
     "Ui.Native.LocalStorage",
+    "Ui.Native.FileManager",
     "Ui.Native.Scrolls",
     "Ui.Native.Browser",
     "Ui.Native.Dom",

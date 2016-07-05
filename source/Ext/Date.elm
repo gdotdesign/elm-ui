@@ -68,7 +68,7 @@ daysInMonth date =
 
 {-| Return the dates in the month of the given date.
 
-    datesInMonth (createDate 2015 1 1) -- [2015-01-01,2015-02-02,...]
+    datesInMonth (createDate 2015 1 1) -- [ 2015-01-01, 2015-02-02, ... ]
 -}
 datesInMonth : Date.Date -> List Date.Date
 datesInMonth date =

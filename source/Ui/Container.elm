@@ -38,7 +38,7 @@ type alias Model =
 {-| Lazily renders a container.
 
     Ui.Container.view
-      { direction = "row", align = "start", compact = "false" }
+      { direction = "row", align = "start", compact = False }
       attributes
       children
 -}
@@ -50,7 +50,7 @@ view model attributes children =
 {-| Renders a container.
 
     Ui.Container.render
-      { direction = "row", align = "start", compact = "false" }
+      { direction = "row", align = "start", compact = False }
       attributes
       children
 -}

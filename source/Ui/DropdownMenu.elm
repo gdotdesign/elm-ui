@@ -1,5 +1,5 @@
 module Ui.DropdownMenu exposing
-  (Model, Msg, Dimensions, init, subscriptions, update, view, item, close, openHandler)
+  (Model, ViewModel, Msg, Dimensions, init, subscriptions, update, view, item, close, openHandler)
 
 {-| Dropdown menu that is always visible on the screen.
 
@@ -10,7 +10,7 @@ module Ui.DropdownMenu exposing
 @docs Dimensions, openHandler
 
 # View
-@docs view, item
+@docs ViewModel, view, item
 
 # Functions
 @docs close
@@ -26,6 +26,7 @@ import Html.Lazy
 import Json.Decode as Json
 import Mouse
 
+import Ui.Native.Scrolls as Scrolls
 import Ui.Native.Dom as Dom
 
 
@@ -52,6 +53,7 @@ type alias Model =
   }
 
 
+{-| The view model for a dropdown menu. -}
 type alias ViewModel msg =
   { element: Html.Html msg
   , items:  List (Html.Html msg)
@@ -105,7 +107,9 @@ init =
 subscriptions : Model -> Sub Msg
 subscriptions model =
   if model.open then
-    Mouse.downs (Click << (\_ -> False))
+    Sub.batch [ Mouse.downs (Click << (\_ -> False))
+              , Scrolls.scrolls (Click False)
+              ]
   else
     Sub.none
 

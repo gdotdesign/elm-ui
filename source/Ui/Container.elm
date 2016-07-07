@@ -25,7 +25,7 @@ import Html.Lazy
 
 {-| Representation of a container:
   - **direction** - Either "row" or "column"
-  - **align** - Either "start", "center" or "end"
+  - **align** - Either "start", "center", "space-between", "space-around" or "end"
   - **compact** - Whether or not to have spacing between the children
 -}
 type alias Model =
@@ -120,7 +120,7 @@ columnEnd attributes children =
 rowOptions : Model
 rowOptions =
   { direction = "row"
-  , align = "stretch"
+  , align = "start"
   , compact = False
   }
 
@@ -130,7 +130,7 @@ rowOptions =
 columnOptions : Model
 columnOptions =
   { direction = "column"
-  , align = "stretch"
+  , align = "start"
   , compact = False
   }
 

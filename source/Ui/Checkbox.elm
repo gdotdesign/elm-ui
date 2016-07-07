@@ -100,7 +100,7 @@ view model =
 
 {-| Renders a checkbox.
 
-    Ui.Checkbox.render checkbox.
+    Ui.Checkbox.render checkbox
 -}
 render : Model -> Html.Html Msg
 render model =

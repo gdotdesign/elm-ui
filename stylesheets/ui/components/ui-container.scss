@@ -25,6 +25,14 @@ ui-container {
     justify-content: center;
   }
 
+  &.align-space-between {
+    justify-content: space-between;
+  }
+
+  &.align-space-around {
+    justify-content: space-around;
+  }
+
   &.align-end {
     justify-content: flex-end;
   }

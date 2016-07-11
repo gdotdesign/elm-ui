@@ -45,6 +45,7 @@
     "Ui.Layout",
     "Ui.Loader",
     "Ui.Modal",
+    "Ui.NotificationCenter",
     "Ui.NumberPad",
     "Ui.NumberRange",
     "Ui.Pager",

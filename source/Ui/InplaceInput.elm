@@ -1,5 +1,5 @@
 module Ui.InplaceInput exposing
-  (Model, Msg, init, subscribe, update, view, render, open, close)
+  (Model, Msg, init, subscribe, update, view, render, setValue, open, close)
 
 {-| Inplace editing textarea / input component.
 
@@ -10,7 +10,7 @@ module Ui.InplaceInput exposing
 @docs view, render
 
 # Functions
-@docs open, close
+@docs open, close, setValue
 -}
 
 import Html.Events.Extra exposing (onEnter, onKeys)
@@ -215,3 +215,13 @@ display model =
 isEmpty : Model -> Bool
 isEmpty model =
   String.isEmpty (String.trim model.textarea.value)
+
+
+{-| Sets the value of an inplace input.
+
+    Ui.InplaceInput.setValue "new value" inplaceInput
+-}
+setValue : String -> Model -> Model
+setValue value model =
+  { model | textarea = Ui.Textarea.setValue value model.textarea
+          , value = value }

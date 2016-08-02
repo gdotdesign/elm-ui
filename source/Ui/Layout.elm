@@ -2,6 +2,7 @@ module Ui.Layout exposing (..)
 
 {-| Module that provides most commonly used layouts.
 
+# Views
 @docs sidebar, default, centerDefault
 -}
 

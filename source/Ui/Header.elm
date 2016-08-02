@@ -31,23 +31,25 @@ view attributes children =
 
 {-| Renders a header icon element.
 
-    Ui.Header.icon "social-github" OpenGithub []
+    Ui.Header.icon "social-github" OpenGithub
 -}
-icon : String -> Bool -> List (Html.Attribute msg) -> Html.Html msg
-icon glyph clickable attributes =
-  node "ui-header-icon" (Ui.iconAttributes glyph clickable attributes) []
+icon : String -> msg -> Html.Html msg
+icon glyph msg =
+  node "ui-header-icon"
+    ((Ui.iconAttributes glyph True []) ++ (itemAttributes msg))
+    []
 
 
 {-| Renders a header title element.
 
-    Ui.Header.title "Elm-UI Rocks!"
+    Ui.Header.title "Elm-UI Rocks!" Home
 -}
-title : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
-title attributes children =
+title : String -> msg -> Html.Html msg
+title content msg =
   node
     "ui-header-title"
-    attributes
-    [ node "div" [] children ]
+    [ onClick msg ]
+    [ node "div" [] [text content] ]
 
 
 {-| Renders a header separator element.

@@ -28,9 +28,20 @@ ui-header ui-layout-center {
 ui-header-icon {
   @extend ui-icon;
 
-  font-size: 32px;
-  flex: 0 0 32px;
-  width: 32px;
+  font-size: 24px;
+  flex: 0 0 40px;
+  height: 59px;
+  width: 40px;
+
+  &.clickable:hover {
+    color: white;
+  }
+
+  &:focus {
+    background: dampen($color-header, 10%);
+    outline: none;
+    color: white;
+  }
 }
 
 ui-header-title {
@@ -61,7 +72,7 @@ ui-header-separator {
   cursor: pointer;
   font-size: 18px;
   padding: 0 15px;
-  height: 60px;
+  height: 59px;
 
   &:focus {
     background: dampen($color-header, 10%);

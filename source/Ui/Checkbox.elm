@@ -17,9 +17,9 @@ module Ui.Checkbox exposing
 @docs setValue
 -}
 
-import Html.Attributes exposing (classList, tabindex)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
+import Html.Events exposing (onClick)
 import Html exposing (node)
 import Html.Lazy
 

@@ -13,7 +13,7 @@ module Ui exposing
 @docs tabIndex, enabledActions, iconAttributes
 -}
 
-import Html.Attributes exposing (classList, tabindex, rel, href, class)
+import Html.Attributes exposing (classList, attribute, rel, href, class)
 import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onLoad)
 import Html exposing (node, text)
@@ -114,10 +114,11 @@ disabled.
 -}
 tabIndex : { a | disabled : Bool } -> List (Html.Attribute msg)
 tabIndex model =
+  -- # TODO: Use Html.Attributes.tabindex when the issue is fixed
   if model.disabled then
     []
   else
-    [ tabindex 0 ]
+    [ attribute "tabindex" "0" ]
 
 
 {-| Retruns the given attributes unless the model is disabled or readonly, in

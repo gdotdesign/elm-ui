@@ -514,8 +514,8 @@ view model =
       [ Ui.NotificationCenter.view Notis model.notifications
       , Ui.Modal.view Modal modalView model.modal
       , Ui.Layout.centerDefault
-          [ Ui.Header.icon "grid" False []
-          , Ui.Header.title [] [ text "Elm-UI Kitchen Sink" ]
+          [ Ui.Header.icon "grid" NoOp
+          , Ui.Header.title "Elm-UI Kitchen Sink" NoOp
           , Ui.spacer
           , Ui.Header.iconItem
               "Github"

@@ -1,4 +1,5 @@
 var generatePackage = require('./generate-package')
+var githubInstall = require('./github-install')
 var child_process = require('child_process')
 var spawn = child_process.spawn
 var _ = require('underscore')
@@ -18,6 +19,8 @@ module.exports = function() {
   spawn(elmPackageExecutable, ['install', '--yes'], {
     stdio: 'inherit'
   }).on('close', function(code) {
-    process.exit(code)
+  	githubInstall(function(){
+    	process.exit(code)
+  	})
   })
 }

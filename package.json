@@ -28,6 +28,7 @@
     "pty.js": "0.3.0"
   },
   "dependencies": {
+    "semver-resolver": "0.4.0",
     "gulp-gh-pages": "0.5.4",
     "browser-sync": "2.12.8",
     "autoprefixer": "6.3.6",

@@ -1,5 +1,140 @@
 //download.js v4.1, by dandavis; 2008-2015. [CCBY2] see http://danml.com/download.html for tests/usage
-(function(q,k){"function"==typeof define&&define.amd?define([],k):"object"==typeof exports?module.exports=k():q.download=k()})(this,function(){return function k(b,c,e){function r(n){var a=n.split(/[:;,]/);n=a[1];var a=("base64"==a[2]?atob:decodeURIComponent)(a.pop()),b=a.length,d=0,c=new Uint8Array(b);for(d;d<b;++d)c[d]=a.charCodeAt(d);return new g([c],{type:n})}function l(a,b){if("download"in d)return d.href=a,d.setAttribute("download",m),d.className="download-js-link",d.innerHTML="downloading...",h.body.appendChild(d),setTimeout(function(){d.click(),h.body.removeChild(d),!0===b&&setTimeout(function(){f.URL.revokeObjectURL(d.href)},250)},66),!0;if("undefined"!=typeof safari)return a="data:"+a.replace(/^data:([\w\/\-\+]+)/,"application/octet-stream"),!window.open(a)&&confirm("Displaying New Document\n\nUse Save As... to download, then click back to return to this page.")&&(location.href=a),!0;var c=h.createElement("iframe");h.body.appendChild(c),b||(a="data:"+a.replace(/^data:([\w\/\-\+]+)/,"application/octet-stream")),c.src=a,setTimeout(function(){h.body.removeChild(c)},333)}var f=window,a=e||"application/octet-stream";e=!c&&!e&&b;var h=document,d=h.createElement("a"),p=function(a){return String(a)},g=f.Blob||f.MozBlob||f.WebKitBlob||p,m=c||"download",g=g.call?g.bind(f):Blob;"true"===String(this)&&(b=[b,a],a=b[0],b=b[1]);if(e&&2048>e.length&&(m=e.split("/").pop().split("?")[0],d.href=e,-1!==d.href.indexOf(e)))return a=new XMLHttpRequest,a.open("GET",e,!0),a.responseType="blob",a.onload=function(a){k(a.target.response,m,"application/octet-stream")},a.send(),a;if(/^data\:[\w+\-]+\/[\w+\-]+[,;]/.test(b))return navigator.msSaveBlob?navigator.msSaveBlob(r(b),m):l(b);c=b instanceof g?b:new g([b],{type:a});if(navigator.msSaveBlob)return navigator.msSaveBlob(c,m);if(f.URL)l(f.URL.createObjectURL(c),!0);else{if("string"==typeof c||c.constructor===p)try{return l("data:"+a+";base64,"+f.btoa(c))}catch(n){return l("data:"+a+","+encodeURIComponent(c))}a=new FileReader,a.onload=function(a){l(this.result)},a.readAsDataURL(c)}return!0}});
+window.download = function(data, strFileName, strMimeType) {
+  var self = window, // this script is only for browsers anyway...
+    defaultMime = "application/octet-stream", // this default mime also triggers iframe downloads
+    mimeType = strMimeType || defaultMime,
+    payload = data,
+    url = !strFileName && !strMimeType && payload,
+    anchor = document.createElement("a"),
+    toString = function(a){return String(a);},
+    myBlob = (self.Blob || self.MozBlob || self.WebKitBlob || toString),
+    fileName = strFileName || "download",
+    blob,
+    reader;
+    myBlob= myBlob.call ? myBlob.bind(self) : Blob ;
+
+  if(String(this)==="true"){ //reverse arguments, allowing download.bind(true, "text/xml", "export.xml") to act as a callback
+    payload=[payload, mimeType];
+    mimeType=payload[0];
+    payload=payload[1];
+  }
+
+
+  if(url && url.length< 2048){ // if no filename and no mime, assume a url was passed as the only argument
+    fileName = url.split("/").pop().split("?")[0];
+    anchor.href = url; // assign href prop to temp anchor
+      if(anchor.href.indexOf(url) !== -1){ // if the browser determines that it's a potentially valid url path:
+          var ajax=new XMLHttpRequest();
+          ajax.open( "GET", url, true);
+          ajax.responseType = 'blob';
+          ajax.onload= function(e){
+        download(e.target.response, fileName, defaultMime);
+      };
+          setTimeout(function(){ ajax.send();}, 0); // allows setting custom ajax headers using the return:
+        return ajax;
+    } // end if valid url?
+  } // end if url?
+
+
+  //go ahead and download dataURLs right away
+  if(/^data\:[\w+\-]+\/[\w+\-]+[,;]/.test(payload)){
+
+    if(payload.length > (1024*1024*1.999) && myBlob !== toString ){
+      payload=dataUrlToBlob(payload);
+      mimeType=payload.type || defaultMime;
+    }else{
+      return navigator.msSaveBlob ?  // IE10 can't do a[download], only Blobs:
+        navigator.msSaveBlob(dataUrlToBlob(payload), fileName) :
+        saver(payload) ; // everyone else can save dataURLs un-processed
+    }
+
+  }//end if dataURL passed?
+
+  blob = payload instanceof myBlob ?
+    payload :
+    new myBlob([payload], {type: mimeType}) ;
+
+
+  function dataUrlToBlob(strUrl) {
+    var parts= strUrl.split(/[:;,]/),
+    type= parts[1],
+    decoder= parts[2] == "base64" ? atob : decodeURIComponent,
+    binData= decoder( parts.pop() ),
+    mx= binData.length,
+    i= 0,
+    uiArr= new Uint8Array(mx);
+
+    for(i;i<mx;++i) uiArr[i]= binData.charCodeAt(i);
+
+    return new myBlob([uiArr], {type: type});
+   }
+
+  function saver(url, winMode){
+
+    if ('download' in anchor) { //html5 A[download]
+      anchor.href = url;
+      anchor.setAttribute("download", fileName);
+      anchor.className = "download-js-link";
+      anchor.innerHTML = "downloading...";
+      anchor.style.display = "none";
+      document.body.appendChild(anchor);
+      setTimeout(function() {
+        anchor.click();
+        document.body.removeChild(anchor);
+        if(winMode===true){setTimeout(function(){ self.URL.revokeObjectURL(anchor.href);}, 250 );}
+      }, 66);
+      return true;
+    }
+
+    // handle non-a[download] safari as best we can:
+    if(/(Version)\/(\d+)\.(\d+)(?:\.(\d+))?.*Safari\//.test(navigator.userAgent)) {
+      url=url.replace(/^data:([\w\/\-\+]+)/, defaultMime);
+      if(!window.open(url)){ // popup blocked, offer direct download:
+        if(confirm("Displaying New Document\n\nUse Save As... to download, then click back to return to this page.")){ location.href=url; }
+      }
+      return true;
+    }
+
+    //do iframe dataURL download (old ch+FF):
+    var f = document.createElement("iframe");
+    document.body.appendChild(f);
+
+    if(!winMode){ // force a mime that will download:
+      url="data:"+url.replace(/^data:([\w\/\-\+]+)/, defaultMime);
+    }
+    f.src=url;
+    setTimeout(function(){ document.body.removeChild(f); }, 333);
+
+  }//end saver
+
+
+
+
+  if (navigator.msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
+    return navigator.msSaveBlob(blob, fileName);
+  }
+
+  if(self.URL){ // simple fast and modern way using Blob and URL:
+    saver(self.URL.createObjectURL(blob), true);
+  }else{
+    // handle non-Blob()+non-URL browsers:
+    if(typeof blob === "string" || blob.constructor===toString ){
+      try{
+        return saver( "data:" +  mimeType   + ";base64,"  +  self.btoa(blob)  );
+      }catch(y){
+        return saver( "data:" +  mimeType   + "," + encodeURIComponent(blob)  );
+      }
+    }
+
+    // Blob but not URL support:
+    reader=new FileReader();
+    reader.onload=function(e){
+      saver(this.result);
+    };
+    reader.readAsDataURL(blob);
+  }
+  return true;
+}
 
 var _gdotdesign$elm_ui$Native_FileManager = function() {
   var isChromeApp = window.chrome && window.chrome.fileSystem

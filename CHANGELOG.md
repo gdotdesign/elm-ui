@@ -24,6 +24,7 @@ There are a few caveats though:
   in a future release)
 * Only those projects can be installed from github that has tags (that
   conform to semantic versioning)
+* Added git as an command dependency
 
 You can read more about it from [this blog post]()
 

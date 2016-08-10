@@ -8,11 +8,9 @@ var fs = require('fs')
 var renderHtml = require('../render/html')
 var renderElm = require('../render/elm')
 var renderCSS = require('../render/css')
-
 var readConfig = require('./read-config')
 
 module.exports = function(options) {
-  var config = readConfig(options)
   var router = new koaRouter({prefix: options.prefix})
 
   browserSync.watch("source/**/*.elm").on("change", browserSync.reload)
@@ -45,7 +43,7 @@ module.exports = function(options) {
 
     if(isJs && haveElmFile){
       this.type = 'text/javascript'
-      this.body = yield renderElm(filePath, config)
+      this.body = yield renderElm(filePath, readConfig(options))
     } else {
       yield next
     }

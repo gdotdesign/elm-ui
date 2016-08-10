@@ -26,6 +26,7 @@ import Json.Decode as JD
 import Json.Encode as JE
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui.IconButton
 import Ui.Container
 import Ui.Input
@@ -73,7 +74,7 @@ type Msg
 init : String -> Model
 init placeholder =
   { input = Ui.Input.init "" placeholder
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , removeable = True
   , disabled = False
   , readonly = False

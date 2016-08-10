@@ -24,6 +24,7 @@ import Color exposing (Color)
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
+import Ui.Native.Uid as Uid
 import Ui
 
 
@@ -64,7 +65,7 @@ type Msg
 init : Color -> Model
 init color =
   { value = Ext.Color.toHsv color
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , alphaDrag = Drag.init
   , hueDrag = Drag.init
   , drag = Drag.init

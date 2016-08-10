@@ -28,9 +28,8 @@ import Ext.Date
 import Date
 import List
 
-import Native.Uid
-
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui.Container
 import Ui
 
@@ -67,7 +66,7 @@ type Msg
 -}
 init : Date.Date -> Model
 init date =
-  { uid = Native.Uid.uid ()
+  { uid = Uid.uid ()
   , selectable = True
   , disabled = False
   , readonly = False

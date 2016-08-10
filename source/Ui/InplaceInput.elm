@@ -19,11 +19,11 @@ import Html.Events exposing (onClick)
 import Html.Lazy
 import Html.App
 
-import Native.Uid
 import String
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Dom as Dom
+import Ui.Native.Uid as Uid
 import Ui.Container
 import Ui.Textarea
 import Ui.Button
@@ -69,7 +69,7 @@ type Msg
 init : String -> String -> Model
 init value placholder =
   { textarea = Ui.Textarea.init value placholder
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , disabled = False
   , readonly = False
   , required = True

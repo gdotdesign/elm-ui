@@ -20,6 +20,7 @@ import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
 import Ui.Native.Scrolls as Scrolls
 import Ui.Native.Dom as Dom
+import Ui.Native.Uid as Uid
 
 import Ui.NotificationCenter
 import Ui.DropdownMenu
@@ -732,7 +733,7 @@ update msg model =
     TaggerAdd value ->
       let
         tag =
-          { label = value, id = Native.Uid.uid () }
+          { label = value, id = Uid.uid () }
       in
         { model
           | taggerData = tag :: model.taggerData

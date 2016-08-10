@@ -29,13 +29,12 @@ import Html.Attributes
     , attribute
     )
 
-import Native.Uid
-
 import String
 import Task
 import List
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui
 
 {-| Representation of a textarea:
@@ -70,7 +69,7 @@ type Msg
 init : String -> String -> Model
 init value placeholder =
   { placeholder = placeholder
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , enterAllowed = True
   , disabled = False
   , readonly = False

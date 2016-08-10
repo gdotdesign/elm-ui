@@ -24,6 +24,7 @@
     "Ui.Native.FileManager",
     "Ui.Native.Scrolls",
     "Ui.Native.Browser",
+    "Ui.Native.Uid",
     "Ui.Native.Dom",
     "Ui.App",
     "Ui.Button",

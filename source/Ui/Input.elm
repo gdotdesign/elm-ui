@@ -28,10 +28,8 @@ import Html.Attributes
     , attribute
     )
 
-import Native.Browser
-import Native.Uid
-
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 
 import String
 import Task
@@ -68,7 +66,7 @@ type Msg
 init : String -> String -> Model
 init value placeholder =
   { placeholder = placeholder
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , disabled = False
   , readonly = False
   , value = value

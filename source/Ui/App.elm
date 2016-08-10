@@ -22,10 +22,9 @@ import Html.Lazy
 
 import Time exposing (Time)
 
-import Native.Uid
-
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Browser as Browser
+import Ui.Native.Uid as Uid
 import Ui.Time
 import Ui
 
@@ -52,7 +51,7 @@ type Msg
 -}
 init : String -> Model
 init title =
-  { uid = Native.Uid.uid ()
+  { uid = Uid.uid ()
   , title = title
   }
 

@@ -41,6 +41,7 @@ import List
 import Ui.Helpers.Intendable as Intendable
 import Ui.Helpers.Dropdown as Dropdown
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui
 
 
@@ -119,7 +120,7 @@ init data placeholder value =
     { render = (\item -> span [] [ text item.label ])
     , dropdownPosition = "bottom"
     , placeholder = placeholder
-    , uid = Native.Uid.uid ()
+    , uid = Uid.uid ()
     , closeOnSelect = False
     , deselectable = False
     , selected = selected

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 (Unreleased)
+# 0.3.0 (Unreleased)
 This is the release comes with may improvements to the workflow and coincides
 with the release of the official website that provides guides and documentation.
 
@@ -33,10 +33,10 @@ You can read more about it from [this blog post]()
   no server restarts are necessary
 * TODO other changes
 
-## 0.2.2
+# 0.2.2
 Bugfix release.
 
-## 0.2.0
+# 0.2.0
 This version marks support for Elm 0.17 with many changes to make Elm-UI more accessible.
 
 ## Breaking Changes
@@ -113,20 +113,20 @@ This works because of the **Ui.Helpers.Emitter** module.
 - The focus style of **Ui.Button** changed to show a "ripple effect"
 - And many small changes...
 
-## 0.1.5
+# 0.1.5
 
-### Pull Requests Closed
+## Pull Requests Closed
 - [Changing mgold's elm-date-format dependency for more powerful rluiten…](https://github.com/gdotdesign/elm-ui/pull/17)
 - [Fix typo in README](https://github.com/gdotdesign/elm-ui/pull/15)
 - [Fix typo in documentation](https://github.com/gdotdesign/elm-ui/pull/14)
 - [Fix documentation for iconAttributes](https://github.com/gdotdesign/elm-ui/pull/13)
 - [Tabs +1](https://github.com/gdotdesign/elm-ui/issues/20)
 
-### New Components
+## New Components
 - **Ui.Tabs** - A component to handle tabbed contents
 - **Ui.scrolledPanel** - A static component for scrollable content (scrollbar styled for Chrome)
 
-### Changes
+## Changes
 - Now using **elm-date-extra** for date formatting instead of **elm-date-format**
 - Unified how values are set for components with **setValue**:
   - **Ui.Chooser.select** renamed to **Ui.Chooser.setValue**
@@ -140,41 +140,41 @@ This works because of the **Ui.Helpers.Emitter** module.
   - Added **Ui.Header.item**
   - Added **Ui.Header.iconItem**
 
-### CLI
+## CLI
 - Added **docs** command to generate Elm documentation.
 - Added **start** alias for **server** command.
 - Environment data and Elm app initialization is now bundled into JS file
 
-### Ui.Container
+## Ui.Container
 - **render** function is now exposed
 
-### Ui.Input
+## Ui.Input
 - Added **focus** function to focus a **Ui.Input** component
 
-### Ui.Textarea
+## Ui.Textarea
 - Added **focus** function to focus a **Ui.Textarea** component
 
-### Ui.Tags
+## Ui.Tags
 - Added ability to tab to the remove icons
 
-### Html.Extra
+## Html.Extra
 - Added **onWheel** event handler
 - Added **deltaDecoder** to decode wheel deltas
 
-### Native.Browser
+## Native.Browser
 - Changed how DOM elements are accessed internally
 - Added **haveSelector** function to check for an element in the DOM
 - Added **atElement** decoder which tries to find the first child element with the given selector
 - Added **closest** decoder which tries to find the closest element with the given selector
 - Added **focusTask** to focus an element with the given selector as a Task
 
-### Native.LocalStorage
+## Native.LocalStorage
 - Changed it to use Task instead of Result
 - Added support for [chrome.storage](https://developer.chrome.com/extensions/storage) storage.
 
-## 0.1.3
+# 0.1.3
 
-### New Components
+## New Components
 - **Ui.ButtonGroup** - A component for handling multiple buttons together
 - **Ui.Tagger** - A component for managing tags on an entity
 - **Ui.Time** - A component for displaying relative time
@@ -183,7 +183,7 @@ This works because of the **Ui.Helpers.Emitter** module.
 - **Ui.breadcrumbs** - A component for displaying breadcrumbs navigation
 - **Ui.headerIcon** - Added to be used in specifically in **Ui.header**
 
-### Component Changes
+## Component Changes
 - **Ui.text** is now **Ui.textBlock** to avoid collision with **Html.text**
 - Added remaining variations to **Ui.Container**
 - Providing a placeholder for **Ui.Icon** is now mandatory
@@ -191,7 +191,7 @@ This works because of the **Ui.Helpers.Emitter** module.
   to be more consistent with the other components
 - Changed the default colors for **success, danger** and **warning**
 
-### Fixes
+## Fixes
 - Fixed an issue with Safari slowness #5
 - Fixed an issue that prevented Elm-UI from working in Safari
 - Fixed **Ui.Choosers closeOnSelect** behavior when pressing the **enter key**

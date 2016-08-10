@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.3.0 (Unreleased)
+This is the release comes with may improvements to the workflow and coincides
+with the release of the official website that provides guides and documentation.
+
+## Breaking Changes
+
+### Removing `elm-ui.json`
+The `elm-ui.json` file was created in order to use Elm-UI without it being in
+the official repository, this caused some confusion for people, but there was
+no other way around it, this is now however changed so the file became unecessary,
+(you can read more about it below) so make sure after you upgrade to remove
+it from your projects.
+
+### Installing packages
+A custom package resolver and installer has been implemented that has mostly
+the same functionality as the official installer (`elm-package`) and the added
+functionality to **install packages directly from Github**, that means that Elm-UI
+can be installed as any other standard package (from the CLI).
+
+There are a few caveats though:
+* The used Elm version is not checked when installing a package (will be added
+  in a future release)
+* Only those projects can be installed from github that has tags (that
+  conform to semantic versioning)
+
+You can read more about it from [this blog post]()
+
+## Log
+### Changes
+* The environment files are always read when compiling an file, so there are
+  no server restarts are necessary
+* TODO other changes
+
 ## 0.2.2
 Bugfix release.
 

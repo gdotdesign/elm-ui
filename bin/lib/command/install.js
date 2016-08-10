@@ -1,11 +1,12 @@
 var SemverResolver = require('semver-resolver').SemverResolver
 var exec = require('child_process').exec
+var extract = require('extract-zip')
 var request = require('request')
-var unzip = require('unzipper')
 var semver = require('semver')
 var colors = require('colors')
 var async = require('async')
 var path = require('path')
+var tmp = require('tmp')
 var fs = require('fs')
 
 // Installs a package directly from github...
@@ -23,15 +24,26 @@ installExternalPackage = function(package, ref) {
       var config = JSON.parse(body)
       var packagePath = path.resolve('elm-stuff/packages/' + package)
 
+      var tmpobj = tmp.fileSync()
+
       request
         .get(archiveUrl)
-        .pipe(unzip.Extract({ path: packagePath }))
-        .on('close', function(){
-          var files = fs.readdirSync(packagePath)
-          fs.renameSync(path.resolve(packagePath, files[0]),
-                        path.resolve(packagePath, ref))
-          console.log(' ●'.green, package + ' - ' + ref)
-          callback()
+        .pipe(fs.createWriteStream(tmpobj.name))
+        .on('finish', function(){
+          extract(tmpobj.name, { dir: packagePath }, function(error){
+            if(error) {
+              console.log(' ✘'.red, package + ' - ' + ref)
+              console.log('   ▶', error)
+              callback(true)
+            } else {
+              var repo = package.split('/').pop()
+              fs.renameSync(path.resolve(packagePath, repo + '-' + ref),
+                            path.resolve(packagePath, ref))
+              console.log(' ●'.green, package + ' - ' + ref)
+              callback()
+            }
+            tmpobj.removeCallback()
+          })
         })
     })
   }
@@ -106,11 +118,15 @@ module.exports = function(){
       return installExternalPackage(package, deps[package])
     })
   	console.log('Starting downloads...\n')
-    async.parallel(installs, function(){
-      fs.writeFileSync(path.resolve('elm-stuff/exact-dependencies.json'), JSON.stringify(deps, null, '  '))
-      console.log('\nPackages configured successfully!')
+    async.parallel(installs, function(error){
+      if(error) {
+        console.log('\nSome packages failed to install!')
+      } else {
+        fs.writeFileSync(path.resolve('elm-stuff/exact-dependencies.json'), JSON.stringify(deps, null, '  '))
+        console.log('\nPackages configured successfully!')
+      }
     })
   }, function(){
     console.log('error', arguments)
-})
+  })
 }

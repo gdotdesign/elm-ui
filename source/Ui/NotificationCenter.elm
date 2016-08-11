@@ -2,9 +2,6 @@ module Ui.NotificationCenter exposing (Model, Msg, init, update, view, notify)
 
 {-| Notification center for displaying messages to the user.
 
-TODO: Refactor this into something that doesn't use animations, or wait for
-virtual-dom to fix "keys" concept.
-
 # Models
 @docs Model, Msg, init, update
 

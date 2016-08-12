@@ -28,11 +28,10 @@
     "pty.js": "0.3.0"
   },
   "dependencies": {
-    "semver-resolver": "0.4.0",
+    "elm-github-install": "0.1.0",
     "gulp-gh-pages": "0.5.4",
     "browser-sync": "2.12.8",
     "autoprefixer": "6.3.6",
-    "extract-zip": "1.5.0",
     "koa-static": "2.0.0",
     "koa-router": "5.4.0",
     "underscore": "1.8.3",
@@ -42,12 +41,9 @@
     "uglify-js": "2.6.2",
     "request": "2.74.0",
     "ansi_up": "1.3.0",
-    "colors": "1.1.2",
-    "semver": "5.3.0",
     "async": "1.5.2",
     "gulp": "3.9.1",
     "elm": "0.17.1",
-    "tmp": "0.0.28",
     "koa": "1.2.0",
     "ncp": "2.0.0"
   },

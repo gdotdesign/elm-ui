@@ -6,6 +6,7 @@ ui-inplace-input {
 
   // Mimic textarea white space
   > div {
+    word-break: break-word;
     white-space: pre-wrap;
   }
 }

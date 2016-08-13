@@ -24,18 +24,15 @@ import Time exposing (Time)
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Browser as Browser
-import Ui.Native.Uid as Uid
 import Ui.Time
 import Ui
 
 
 {-| Representation of an application:
   - **title** - The title of the application (and the window)
-  - **uid** - The unique identifier of the application
 -}
 type alias Model =
   { title : String
-  , uid : String
   }
 
 
@@ -51,8 +48,7 @@ type Msg
 -}
 init : String -> Model
 init title =
-  { uid = Uid.uid ()
-  , title = title
+  { title = title
   }
 
 

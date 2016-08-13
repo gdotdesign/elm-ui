@@ -285,7 +285,7 @@ render model =
       )
       ([ input
           ([ placeholder model.placeholder
-           , attribute "uid" model.uid
+           , attribute "id" model.uid
            , disabled model.disabled
            , readonly isReadOnly
            , value val

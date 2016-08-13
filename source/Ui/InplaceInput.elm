@@ -18,11 +18,12 @@ import Html exposing (node, div, text)
 import Html.Events exposing (onClick)
 import Html.Lazy
 import Html.App
+import Task
+import Dom
 
 import String
 
 import Ui.Helpers.Emitter as Emitter
-import Ui.Native.Dom as Dom
 import Ui.Native.Uid as Uid
 import Ui.Container
 import Ui.Textarea
@@ -59,7 +60,8 @@ type Msg
   | Close
   | Save
   | Edit
-  | NoOp
+  | NotFound Dom.Error
+  | NoOp ()
 
 
 {-| Initializes an inplace input with the given value and palceholder.
@@ -127,7 +129,7 @@ update action model =
     Close ->
       ( close model, Cmd.none )
 
-    NoOp ->
+    _ ->
       ( model, Cmd.none )
 
 
@@ -160,7 +162,8 @@ render model =
 -}
 open : Model -> ( Model, Cmd Msg )
 open model =
-  ( { model | open = True }, Dom.focusComponent NoOp model.textarea )
+  ( { model | open = True },
+    Task.perform NotFound NoOp (Dom.focus model.textarea.uid) )
 
 
 {-| Closes an inplace input.

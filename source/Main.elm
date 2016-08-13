@@ -10,6 +10,7 @@ import Task
 import Date
 import Time
 import Set
+import Dom
 
 import Html.Attributes exposing (style, classList, class, colspan, href)
 import Html.Events exposing (onClick)
@@ -19,7 +20,6 @@ import Html.App
 import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
 import Ui.Native.Scrolls as Scrolls
-import Ui.Native.Dom as Dom
 import Ui.Native.Uid as Uid
 
 import Ui.NotificationCenter
@@ -106,6 +106,8 @@ type Msg {- Showcase models -}
   | Open String
   | CloseMenu
   | Alert
+  | NotFound Dom.Error
+  | NoOp2 ()
   | NoOp {- Component related. -}
   | TaggerRemove String
   | TaggerAdd String
@@ -965,7 +967,7 @@ update' msg model =
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
 
     FocusChooser ->
-      ( model, Dom.focusComponent NoOp model.chooser.enabled )
+      ( model, Task.perform NotFound NoOp2 (Dom.focus model.chooser.enabled.uid) )
 
     _ ->
       ( update msg model, Cmd.none )

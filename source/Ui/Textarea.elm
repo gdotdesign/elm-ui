@@ -121,7 +121,7 @@ render model =
   let
     base =
       [ placeholder model.placeholder
-      , attribute "uid" model.uid
+      , attribute "id" model.uid
       , readonly model.readonly
       , disabled model.disabled
       , value model.value

@@ -4,8 +4,8 @@ module Ui.Native.FileManager
     , readAsString
     , readAsDataURL
     , toFormData
-    , openSingle
-    , openMultiple
+    , openSingleDecoder
+    , openMultipleDecoder
     , download
     )
 
@@ -21,10 +21,11 @@ module Ui.Native.FileManager
 @docs toFormData
 
 # Open / Download
-@docs openSingle, openMultiple, download
+@docs openSingleDecoder, openMultipleDecoder, download
 -}
 
 import Task exposing (Task)
+import Json.Decode as Json
 import Native.FileManager
 import Http
 
@@ -80,18 +81,18 @@ toFormData key file =
 
     task = FileManager.openSingle "image/*"
 -}
-openSingle : String -> Task Never File
-openSingle accept =
-  Native.FileManager.openSingle accept
+openSingleDecoder : String -> Json.Decoder (Task Never File)
+openSingleDecoder accept =
+  Native.FileManager.openSingleDecoder accept
 
 
-{-| Opens a file browser for selecting multiple files.
+{-| Opens a file browser for selecting a multiple files.
 
-    task = FileManager.openMultiple "image/*"
+    task = FileManager.openSingle "image/*"
 -}
-openMultiple : String -> Task Never (List File)
-openMultiple accept =
-  Native.FileManager.openMultiple accept
+openMultipleDecoder : String -> Json.Decoder (Task Never (List File))
+openMultipleDecoder accept =
+  Native.FileManager.openMultipleDecoder accept
 
 
 {-| Downloads the given data with the given name and mime type.

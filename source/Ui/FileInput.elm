@@ -14,12 +14,13 @@ module Ui.FileInput exposing
 -}
 
 import Numeral exposing (format)
-import Task
+import Task exposing (Task)
+import Json.Decode as Json
 import Http
 
 import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
-import Html.Events exposing (onClick)
+import Html.Events exposing (on)
 import Html.Lazy
 
 import Ui.Native.FileManager as FileManager exposing (File)
@@ -44,9 +45,10 @@ type alias Model =
 {-| Messages that a file input can receive.
 -}
 type Msg
-  = Browse
+  = Open (Task Never File)
   | Selected File
   | Clear
+  | NoOp
 
 
 {-| Initializes a file input with the given accept value.
@@ -69,14 +71,17 @@ init accept =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Browse ->
-      ( model, Task.perform (\_ -> Debug.crash "") Selected (FileManager.openSingle model.accept) )
+    Open task ->
+      ( model, Task.perform (\_ -> Debug.crash "") Selected task )
 
     Selected file ->
       ( { model | file = Just file }, Cmd.none )
 
     Clear ->
       ( { model | file = Nothing }, Cmd.none )
+
+    NoOp ->
+      ( model, Cmd.none )
 
 
 {-| Renders a file input lazily.
@@ -95,6 +100,9 @@ view model =
 render : Model -> Html.Html Msg
 render model =
   let
+    decoder =
+      Json.map Open (FileManager.openSingleDecoder model.accept)
+
     label =
       Maybe.map .name model.file
         |> Maybe.withDefault "Not file is selected!"
@@ -102,17 +110,17 @@ render model =
     attributes =
       Ui.enabledActions
         model
-        [ onClick Browse ]
+        [ on "click" decoder ]
   in
     node "ui-file-input"
-      [ classList
+      ([ classList
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-      ]
-      [ div attributes [ text label ]
+      ] ++ attributes)
+      [ div [] [ text label ]
       , Ui.Button.view
-          Browse
+          NoOp
           { text = "Browse"
           , kind = "primary"
           , readonly = model.readonly
@@ -137,22 +145,31 @@ viewDetails model =
 -}
 renderDetails : Model -> Html.Html Msg
 renderDetails model =
-  node "ui-file-input-details"
-    [ classList
-        [ ( "disabled", model.disabled )
-        , ( "readonly", model.readonly )
-        ]
-    ]
-    [ renderFileStatus model
-    , Ui.Button.view
-        Browse
+  let
+    decoder =
+      Json.map Open (FileManager.openSingleDecoder model.accept)
+
+    attributes =
+      Ui.enabledActions
+        model
+        [ on "click" decoder ]
+  in
+    node "ui-file-input-details"
+      ([ classList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+      ] ++ attributes)
+      [ renderFileStatus model
+      , Ui.Button.view
+        NoOp
         { text = "Browse"
         , kind = "primary"
         , readonly = model.readonly
         , disabled = model.disabled
         , size = "medium"
         }
-    ]
+      ]
 
 
 

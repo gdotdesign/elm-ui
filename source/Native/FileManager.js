@@ -139,17 +139,23 @@ window.download = function(data, strFileName, strMimeType) {
 var _gdotdesign$elm_ui$Native_FileManager = function() {
   var isChromeApp = window.chrome && window.chrome.fileSystem
 
-  var input = document.createElement('input')
 
-  input.style.width = '1px'
-  input.style.height = '1px'
-  input.style.position = 'absolute'
-  input.style.left = '-1px'
-  input.style.top = '-1px'
-  input.type = 'file'
-  input.callback = null
+  function createInput(){
+    var input = document.createElement('input')
 
-  document.body.appendChild(input)
+    input.style.width = '1px'
+    input.style.height = '1px'
+    input.style.position = 'absolute'
+    input.style.left = '-1px'
+    input.style.top = '-1px'
+    input.type = 'file'
+    input.callback = null
+
+    document.body.appendChild(input)
+
+    return input;
+  }
+
 
   function createFile(file) {
     return {
@@ -184,37 +190,6 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
     return file.data
   }
 
-  function openMultiple(accept){
-    input.multiple = true
-    return open(accept, function(callback){
-      var filesArray = Array.prototype.slice.call(input.files)
-      var filesObjects = filesArray.map(function(file) { return createFile(file) })
-      var files = _elm_lang$core$Native_List.fromArray(filesObjects)
-      callback(_elm_lang$core$Native_Scheduler.succeed(files))
-    })
-  }
-
-  function openSingle(accept){
-    input.multiple = false
-
-    return open(accept, function(callback){
-      var file = createFile(input.files[0])
-      callback(_elm_lang$core$Native_Scheduler.succeed(file))
-    })
-  }
-
-  function open(accept, mainCallback){
-    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
-      input.accept = accept
-      input.value = ''
-      // Make sure that previous callbacks are not called
-      input.removeEventListener('change', input.callback)
-      input.callback = function(){ mainCallback(callback) }
-      input.addEventListener('change', input.callback)
-      input.click()
-    });
-  }
-
   function downloadFunc(name,mimeType,data){
     if(isChromeApp){
       return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
@@ -239,12 +214,47 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
     }
   }
 
+  var Json = _elm_lang$core$Native_Json
+  var valueDecoder = Json.decodePrimitive("value")
+
+  function openMultipleDecoder(accept){
+    return Json.customAndThen(valueDecoder)(function(_){
+      var input = createInput()
+      input.accept = accept
+      input.multiple = false
+      input.click()
+      var task = _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
+        input.addEventListener('change', function(){
+          var filesArray = Array.prototype.slice.call(input.files)
+          var filesObjects = filesArray.map(function(file) { return createFile(file) })
+          var files = _elm_lang$core$Native_List.fromArray(filesObjects)
+          callback(_elm_lang$core$Native_Scheduler.succeed(files))
+        })
+      })
+      return _elm_lang$core$Result$Ok(task)
+    })
+  }
+
+  function openSingleDecoder(accept){
+    return Json.customAndThen(valueDecoder)(function(_){
+      var input = createInput()
+      input.accept = accept
+      input.click()
+      var task = _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
+        input.addEventListener('change', function(){
+          callback(_elm_lang$core$Native_Scheduler.succeed(createFile(input.files[0])))
+        })
+      })
+      return _elm_lang$core$Result$Ok(task)
+    })
+  }
+
   return {
     readAsDataURL: readAsDataURL,
     readAsString: readAsString,
     download: F3(downloadFunc),
-    openMultiple: openMultiple,
-    openSingle: openSingle,
+    openMultipleDecoder: openMultipleDecoder,
+    openSingleDecoder: openSingleDecoder,
     toFormData: toFormData,
   }
 }()

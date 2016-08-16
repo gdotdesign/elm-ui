@@ -73,7 +73,9 @@ module.exports = function(file, config, shouldFail) {
       } else {
         var contents = [
           `window.ENV = ${JSON.stringify(config)};`,
-          fs.readFileSync(filename, 'utf-8'),
+          fs.readFileSync(filename, 'utf-8')
+            // NOTICE: This is a fix for in elm-lang/core scheduler
+            .replace('setTimeout(work, 0);', 'requestAnimationFrame(work);'),
         ].join('\n')
         callback(null, contents)
         fs.unlink(filename)

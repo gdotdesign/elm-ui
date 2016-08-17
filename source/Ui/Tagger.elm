@@ -186,7 +186,7 @@ render tags model =
       , node
           "ui-tagger-tags"
           []
-          (List.map (rendertag model) tags)
+          (List.map (renderTag model) tags)
       ]
 
 
@@ -201,11 +201,11 @@ setValue value model =
 
 {-| Renders a tag.
 -}
-rendertag : Model -> Tag -> Html.Html Msg
-rendertag model tag =
+renderTag : Model -> Tag -> Html.Html Msg
+renderTag model tag =
   let
     icon =
-      if (model.disabled || model.readonly) && model.removeable then
+      if model.disabled || model.readonly || not model.removeable then
         text ""
       else
         Ui.icon

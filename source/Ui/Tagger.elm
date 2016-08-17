@@ -4,7 +4,7 @@ module Ui.Tagger exposing
 {-| Component for displaying tags and handling it's events (adding / removing).
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, Tag, init, subscribe, update
 
 # View
 @docs view, render

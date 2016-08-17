@@ -54,6 +54,7 @@
     "Ui.SearchInput",
     "Ui.Slider",
     "Ui.Tabs",
+    "Ui.Tagger",
     "Ui.Textarea",
     "Ui.Time",
     "Ui"

@@ -20,6 +20,7 @@
     "Ui.Helpers.Emitter",
     "Ui.Helpers.Env",
     "Ui.Helpers.Intendable",
+    "Ui.Helpers.Ripple",
     "Ui.Native.LocalStorage",
     "Ui.Native.FileManager",
     "Ui.Native.Scrolls",

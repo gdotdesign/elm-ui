@@ -1,6 +1,10 @@
-module Ui.Header exposing (view, icon, title, separator, item, iconItem)
+module Ui.Header exposing
+  (Title, Icon, IconItem, Item, view, icon, title, separator, item, iconItem)
 
 {-| Static elements for creating application headers.
+
+# Models
+@docs Title, Icon, IconItem, Item
 
 # View
 @docs view
@@ -18,16 +22,19 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 
 import Ui.Helpers.Ripple as Ripple
-
 import Ui
 
 
+{-| Representation of a header title.
+-}
 type alias Title msg =
   { action : Maybe msg
   , text : String
   }
 
 
+{-| Representation of a header icon.
+-}
 type alias Icon msg =
   { action : Maybe msg
   , glyph : String
@@ -35,6 +42,8 @@ type alias Icon msg =
   }
 
 
+{-| Representation of a header icon item.
+-}
 type alias IconItem msg =
   { action : Maybe msg
   , glyph : String
@@ -43,43 +52,53 @@ type alias IconItem msg =
   }
 
 
+{-| Representation of a header item.
+-}
 type alias Item msg =
   Title msg
 
 
-{-| Renders a header element.
+{-| Renders a header element with the given children.
 
-    Ui.Header.view [] [ text "Hello" ]
+    Ui.Header.view
+      [ Ui.Header.title { text = "Yo!", action = Nothing } ]
 -}
-view : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
-view attributes children =
-  node "ui-header" attributes children
+view : List (Html.Html msg) -> Html.Html msg
+view children =
+  node "ui-header" [] children
 
 
-{-| Renders a header icon element.
+{-| Renders a header icon element which can also trigger
+an action if specified.
 
-    Ui.Header.icon "social-github" OpenGithub
+    Ui.Header.icon
+      { glyph = "social-github"
+      , action = Just OpenGithub
+      }
 -}
 icon : Icon msg -> Html.Html msg
 icon model =
   node "ui-header-icon"
-    ( (Ui.iconAttributes model.glyph True []) ++
-      (itemAttributes model) ++
-      [style [("font-size", (toString model.size) ++ "px")]]
+    ((Ui.iconAttributes model.glyph True [])
+      ++ (itemAttributes model)
+      ++ [ style [ ( "font-size", (toString model.size) ++ "px" ) ] ]
     )
     [ Ripple.view ]
 
 
-{-| Renders a header title element.
+{-| Renders a header title element which can also trigger
+an action if specified.
 
-    Ui.Header.title "Elm-UI Rocks!" Home
+    Ui.Header.title
+      { text = "Elm-UI Rocks!"
+      , action = Just Home
+      }
 -}
 title : Title msg -> Html.Html msg
 title model =
-  node
-    "ui-header-title"
+  node "ui-header-title"
     (itemAttributes model)
-    [ node "div" [] [text model.text]
+    [ node "div" [] [ text model.text ]
     , Ripple.view
     ]
 
@@ -93,9 +112,13 @@ separator =
   node "ui-header-separator" [] []
 
 
-{-| Renders a header navigation item.
+{-| Renders a header navigation item which can also trigger
+an action if specified.
 
-    Ui.Header.item "Github" OpenGithub
+    Ui.Header.item
+      { text = "Github",
+      , action = Just OpenGithub
+      }
 -}
 item : Item msg -> Html.Html msg
 item model =
@@ -106,9 +129,15 @@ item model =
     ]
 
 
-{-| Renders an header navigation item with an icon.
+{-| Renders an header navigation item with an icon which can also trigger
+an action if specified.
 
-    Ui.Header.iconItem "Github" OpenGithub "social-github" "left"
+    Ui.Header.iconItem
+      { text = "Github"
+      , action = Just OpenGithub
+      , glyph = "social-github"
+      , side = "left"
+      }
 -}
 iconItem : IconItem msg -> Html.Html msg
 iconItem model =
@@ -144,5 +173,6 @@ itemAttributes { action } =
           , ( 32, msg )
           ]
       ]
+
     _ ->
       []

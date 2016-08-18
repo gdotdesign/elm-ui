@@ -1,9 +1,9 @@
 ui-header {
   @include colors($color-header);
 
-  background: linear-gradient(dampen($color-header, 2%), $color-header);
-  text-shadow: 0 1px 0 rgba(#000, 0.2);
-  box-shadow: 0 0 10px rgba(#000, 0.2);
+  background: linear-gradient(dampen($color-header, 3%), $color-header);
+  box-shadow: 0 2px 3px 0 rgba(#000, 0.1), 0 0 10px rgba(#000, 0.2);
+  text-shadow: 0 1px 0 rgba(#000, 0.3);
   position: relative;
   padding: 0 20px;
   flex: 0 0 auto;
@@ -39,8 +39,8 @@ ui-header {
 %interactive {
   @extend %ripple;
 
-  border-left: 1px solid transparent;
   border-right: 1px solid transparent;
+  border-left: 1px solid transparent;
   position: relative;
   transition: 220ms;
   cursor: pointer;
@@ -51,8 +51,8 @@ ui-header {
   }
 
   &:focus {
-    transition: 220ms 100ms;
     border-color: rgba(black, 0.4);
+    transition: 220ms 100ms;
   }
 }
 

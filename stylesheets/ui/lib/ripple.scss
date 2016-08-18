@@ -22,7 +22,6 @@
   }
 
   svg {
-    background: red;
     transition: 200ms opacity, 1ms 200ms transform;
     transform: translate(-50%, -50%) scale(0);
     pointer-events: none;

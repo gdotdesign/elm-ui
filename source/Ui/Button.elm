@@ -35,9 +35,7 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
-import Svg.Attributes exposing (cx, cy, r, viewBox)
-import Svg exposing (svg, circle)
-
+import Ui.Helpers.Ripple as Ripple
 import Ui
 
 
@@ -87,8 +85,7 @@ render msg model =
   node
     "ui-button"
     (attributes msg model)
-    [ svg [ viewBox "0 0 100 100" ]
-      [ circle [cx "50", cy "50", r "50"] [] ]
+    [ Ripple.view
     , node "span" [] [ text model.text ] ]
 
 

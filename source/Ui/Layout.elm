@@ -1,57 +1,68 @@
 module Ui.Layout exposing (..)
 
-{-| Module that provides most commonly used layouts.
+{-| Module that provides flexbox layouts for most common use cases.
+
+# Models
+@docs Content
 
 # Views
-@docs sidebar, default, centerDefault
+@docs sidebar, app, website
 -}
 
-import Html.Attributes exposing (class)
 import Html exposing (node)
 
-import Ui.Header
+
+{-| Alias for list of Html elements.
+-}
+type alias Content msg =
+  List (Html.Html msg)
 
 
 {-| Layout with a sidebar on the left side.
 
-    Ui.Layout.sidebar sidebarContent mainContent
+    Ui.Layout.sidebar [ text "sidebar" ] [ text "content" ]
 -}
-sidebar : List (Html.Html msg) -> List (Html.Html msg) -> Html.Html msg
+sidebar : Content msg -> Content msg -> Html.Html msg
 sidebar sidebarContent mainContent =
-  node
-    "ui-layout"
-    [ class "ui-layout-sidebar" ]
-    [ node "ui-layout-sidebar" [] sidebarContent
-    , node "ui-layout-main" [] mainContent
+  node "ui-layout-sidebar"
+    []
+    [ node "ui-layout-sidebar-bar" [] sidebarContent
+    , node "ui-layout-sidebar-content" [] mainContent
     ]
 
 
-{-| Layout with header, content and footer, where the content fills the empty
-space (sticky footer).
+{-| Single page app layout with the a sidebar and a toolbar.
 
-    Ui.Layout.default headerContent mainContent footerContent
+    Ui.Layout.app
+      [ text "sidebar" ]
+      [ text "toolbar" ]
+      [ text "content" ]
 -}
-default : List (Html.Html msg) -> List (Html.Html msg) -> List (Html.Html msg) -> Html.Html msg
-default headerContent mainContent footerContent =
-  node
-    "ui-layout"
-    [ class "ui-layout-default" ]
-    [ Ui.Header.view [] headerContent
-    , node "ui-layout-main" [] mainContent
-    , node "ui-layout-footer" [] footerContent
+app : Content msg -> Content msg -> Content msg -> Html.Html msg
+app sidebarContent toolbarContent mainContent =
+  node "ui-layout-app"
+    []
+    [ node "ui-layout-app-sidebar" [] sidebarContent
+    , node "ui-layout-app-wrapper"
+        []
+        [ node "ui-layout-app-toolbar" [] toolbarContent
+        , node "ui-layout-app-content" [] mainContent
+        ]
     ]
 
 
-{-| Same as the default layout but content is centered in all three parts.
+{-| Website layout with a header and a sticky footer.
 
-    Ui.Layout.centerDefault headerContent mainContent footerContent
+    Ui.Layout.website
+      [ text "header" ]
+      [ text "content" ]
+      [ text "footer" ]
 -}
-centerDefault : List (Html.Html msg) -> List (Html.Html msg) -> List (Html.Html msg) -> Html.Html msg
-centerDefault headerContent mainContent footerContent =
-  node
-    "ui-layout"
-    [ class "ui-layout-center-default" ]
-    [ Ui.Header.view [] [ node "ui-layout-center" [] headerContent ]
-    , node "ui-layout-main" [] [ node "ui-layout-center" [] mainContent ]
-    , node "ui-layout-footer" [] [ node "ui-layout-center" [] footerContent ]
+website : Content msg -> Content msg -> Content msg -> Html.Html msg
+website headerContent mainContent footerContent =
+  node "ui-layout-website"
+    []
+    [ node "ui-layout-website-header" [] headerContent
+    , node "ui-layout-website-content" [] mainContent
+    , node "ui-layout-website-footer" [] footerContent
     ]

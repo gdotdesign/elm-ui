@@ -1,13 +1,12 @@
 ui-button {
+  @extend %ripple;
   @include inline-flex-center;
 
   // Styling
   border-radius: $border-radius;
-  position: relative;
   user-select: none;
   padding: 0 1.25em;
   font-weight: 600;
-  overflow: hidden;
   cursor: pointer;
   height: 2.25em;
 
@@ -45,19 +44,6 @@ ui-button {
       &:hover, &:focus, &:active {
         border-color: transparent !important;
       }
-    }
-
-    // Focused state
-    &:focus {
-      svg {
-        transition: 320ms cubic-bezier(0.215, 0.61, 0.355, 1);
-        transform: translate(-50%, -50%) scale(1.5);
-        opacity: 0.3;
-      }
-    }
-
-    &:active svg {
-      opacity: 0.6;
     }
   }
 
@@ -104,18 +90,5 @@ ui-button {
       transform: translate(-50%, -50%) scale(0);
       transition: 0;
     }
-  }
-
-  svg {
-    transition: 200ms opacity, 1ms 200ms transform;
-    pointer-events: none;
-    position: absolute;
-    content: '';
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0;
-    width: 100%;
-    z-index: 1;
-    left: 50%;
-    top: 50%;
   }
 }

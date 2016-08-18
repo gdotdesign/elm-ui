@@ -1,0 +1,37 @@
+%ripple {
+  position: relative;
+  overflow: hidden;
+
+  &:focus {
+    svg {
+      transition: 320ms cubic-bezier(0.215, 0.61, 0.355, 1);
+      transform: translate(-50%, -50%) scale(1.5);
+      opacity: 0.3;
+    }
+  }
+
+  &:active svg {
+    opacity: 0.6;
+  }
+
+  > *,
+  &:before,
+  &:after {
+    position: relative;
+    z-index: 2;
+  }
+
+  svg {
+    background: red;
+    transition: 200ms opacity, 1ms 200ms transform;
+    transform: translate(-50%, -50%) scale(0);
+    pointer-events: none;
+    position: absolute;
+    content: '';
+    width: 100%;
+    opacity: 0;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+  }
+}

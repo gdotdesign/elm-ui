@@ -1,48 +1,52 @@
-ui-layout {
+%ui-layout-base {
   min-height: 100vh;
   display: flex;
+}
 
-  ui-layout-main {
+ui-layout-sidebar {
+  @extend %ui-layout-base;
+
+  ui-layout-sidebar-bar {
+    flex: 0 0 auto;
+  }
+
+  ui-layout-sidebar-content {
     display: block;
     flex: 1;
   }
+}
 
-  ui-layout-center {
-    margin: 0 auto;
-    display: block;
-    width: 1100px;
+ui-layout-app {
+  @extend %ui-layout-base;
+
+  ui-layout-app-sidebar,
+  ui-layout-app-toolbar {
+    flex: 0 0 auto;
   }
 
-  ui-layout-sidebar {
-    border-right: 1px solid $color-sidebar-border;
-    text-shadow: 0 1px 0 rgba(#000, 0.2);
-    background: $color-sidebar;
-    color: #FFF;
-  }
-
-  &.ui-layout-center-default {
-    ui-header {
-      padding: 0;
-    }
-  }
-
-  &.ui-layout-center-default,
-  &.ui-layout-default {
+  ui-layout-app-wrapper {
     flex-direction: column;
+    display: flex;
+    height: 100vh;
+    flex: 1;
+  }
 
-    ui-layout-main ui-layout-center {
-      padding: 40px 0;
-    }
+  ui-layout-app-content {
+    display: block;
+    flex: 1;
+  }
+}
 
-    ui-header {
-      ui-layout-center {
-        display: flex;
-      }
-    }
+ui-layout-website {
+  @extend %ui-layout-base;
+  flex-direction: column;
 
-    ui-header,
-    ui-layout-footer {
-      flex: 0 0 auto;
-    }
+  ui-layout-website-header,
+  ui-layout-website-footer {
+    flex: 0 0 auto;
+  }
+
+  ui-layout-website-content {
+    flex: 1;
   }
 }

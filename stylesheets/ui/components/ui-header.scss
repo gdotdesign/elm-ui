@@ -2,17 +2,13 @@ ui-header {
   @include colors($color-header);
 
   background: linear-gradient(dampen($color-header, 2%), $color-header);
-  border-bottom: 1px solid $color-header-border;
   text-shadow: 0 1px 0 rgba(#000, 0.2);
   box-shadow: 0 0 10px rgba(#000, 0.2);
   position: relative;
   padding: 0 20px;
   flex: 0 0 auto;
   z-index: 10;
-}
 
-ui-header,
-ui-header ui-layout-center {
   flex-direction: row;
   align-items: center;
   display: flex;
@@ -21,39 +17,42 @@ ui-header ui-layout-center {
   height: 60px;
 
   > * + * {
-    margin-left: 10px;
+    margin-left: 5px;
   }
 }
 
-ui-header-icon {
-  @extend ui-icon;
+%ui-header-item {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 17px;
+  height: inherit;
 
-  font-size: 24px;
-  flex: 0 0 40px;
-  height: 59px;
-  width: 40px;
+  &[interactive] {
+    @extend %interactive;
+  }
+}
 
-  &.clickable:hover {
-    color: white;
+%interactive {
+  @extend %ripple;
+
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  position: relative;
+  transition: 220ms;
+  cursor: pointer;
+
+  &:focus,
+  &:hover {
+    outline: none;
   }
 
   &:focus {
-    background: dampen($color-header, 10%);
-    outline: none;
-    color: white;
-  }
-}
-
-ui-header-title {
-  align-items: center;
-  font-weight: 600;
-  font-size: 20px;
-  display: flex;
-
-  div {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    transition: 220ms 100ms;
+    border-color: rgba(black, 0.4);
   }
 }
 
@@ -63,21 +62,24 @@ ui-header-separator {
   width: 2px;
 }
 
-%ui-header-item {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: 120ms;
-  overflow: hidden;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 18px;
-  padding: 0 15px;
-  height: 59px;
+ui-header-icon {
+  justify-content: center;
+  align-items: center;
+  height: inherit;
+  padding: 0 17px;
+  flex: 0 0 auto;
+  display: flex;
+  color: white;
 
-  &:focus {
-    background: dampen($color-header, 10%);
-    outline: none;
+  &[interactive] {
+    @extend %interactive
   }
+}
+
+ui-header-title {
+  @extend %ui-header-item;
+
+  font-size: 20px;
 }
 
 ui-header-item {
@@ -89,6 +91,6 @@ ui-header-icon-item {
 
   ui-icon + span,
   span + ui-icon {
-    margin-left: 10px;
+    margin-left: 12px;
   }
 }

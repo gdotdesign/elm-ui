@@ -10,6 +10,7 @@ module Html.Events.Extra exposing (..)
 
 # Miscellaneous
 @docs onScroll, onTransitionEnd, onLoad, onError, onWheel, decodeDelta
+@docs unobtrusiveClick
 -}
 
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
@@ -19,6 +20,25 @@ import Html
 import Json.Decode as Json exposing ((:=))
 
 import Dict
+
+{-|
+-}
+unobtrusiveClick : msg -> Html.Attribute msg
+unobtrusiveClick msg =
+  let
+    result (ctrlKey, button) =
+      if ctrlKey || button == 1 then
+        Json.fail "Control key or middle mouse button is pressed!"
+      else
+        Json.succeed msg
+
+    decoder =
+      Json.object2 (,)
+        ("ctrlKey" := Json.bool)
+        ("button" := Json.int)
+      `Json.andThen` result
+  in
+    onWithOptions "click" stopOptions decoder
 
 {-| Decodes delta value from wheel events. -}
 decodeDelta : Json.Decoder Float

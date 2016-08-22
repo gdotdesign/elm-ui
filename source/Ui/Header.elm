@@ -29,6 +29,8 @@ import Ui
 -}
 type alias Title msg =
   { action : Maybe msg
+  , link : Maybe String
+  , target : String
   , text : String
   }
 
@@ -37,7 +39,9 @@ type alias Title msg =
 -}
 type alias Icon msg =
   { action : Maybe msg
+  , link : Maybe String
   , glyph : String
+  , target : String
   , size : Float
   }
 
@@ -46,7 +50,9 @@ type alias Icon msg =
 -}
 type alias IconItem msg =
   { action : Maybe msg
+  , link : Maybe String
   , glyph : String
+  , target : String
   , text : String
   , side : String
   }
@@ -79,11 +85,14 @@ an action if specified.
 icon : Icon msg -> Html.Html msg
 icon model =
   node "ui-header-icon"
-    ((Ui.iconAttributes model.glyph True [])
-      ++ (itemAttributes model)
+    ((itemAttributes model)
       ++ [ style [ ( "font-size", (toString model.size) ++ "px" ) ] ]
     )
-    [ Ripple.view ]
+    [ Ui.link model.action model.link model.target
+      [ Ripple.view
+      , Ui.icon model.glyph False []
+      ]
+    ]
 
 
 {-| Renders a header title element which can also trigger
@@ -98,8 +107,10 @@ title : Title msg -> Html.Html msg
 title model =
   node "ui-header-title"
     (itemAttributes model)
-    [ node "div" [] [ text model.text ]
-    , Ripple.view
+    [ Ui.link model.action model.link model.target
+      [ node "span" [] [ text model.text ]
+      , Ripple.view
+      ]
     ]
 
 
@@ -124,8 +135,10 @@ item : Item msg -> Html.Html msg
 item model =
   node "ui-header-item"
     (itemAttributes model)
-    [ text model.text
-    , Ripple.view
+    [ Ui.link model.action model.link model.target
+      [ node "span" [] [ text model.text ]
+      , Ripple.view
+      ]
     ]
 
 
@@ -156,23 +169,20 @@ iconItem model =
   in
     node "ui-header-icon-item"
       (itemAttributes model)
-      (children ++ [ Ripple.view ])
+      [ Ui.link model.action model.link model.target (Ripple.view :: children) ]
 
 
 {-| Returns attributes for an item.
 -}
-itemAttributes : { model | action : Maybe msg } -> List (Html.Attribute msg)
-itemAttributes { action } =
-  case action of
-    Just msg ->
-      [ tabindex 0
-      , onClick msg
-      , attribute "interactive" ""
-      , onKeys
-          [ ( 13, msg )
-          , ( 32, msg )
-          ]
-      ]
+itemAttributes : { model | action : Maybe msg, link : Maybe String } -> List (Html.Attribute msg)
+itemAttributes { action, link } =
+  if isJust action || isJust link then
+    [ attribute "interactive" ""]
+  else
+    []
 
-    _ ->
-      []
+
+isJust maybe =
+  case maybe of
+    Just _ -> True
+    _ -> False

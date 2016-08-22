@@ -22,17 +22,31 @@ ui-header {
 }
 
 %ui-header-item {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
   font-weight: 600;
-  cursor: pointer;
-  font-size: 18px;
-  padding: 0 17px;
   height: inherit;
+  font-size: 18px;
 
-  &[interactive] {
+  &[interactive] a {
     @extend %interactive;
+    cursor: pointer;
+  }
+
+  &:not([interactive]) {
+    svg {
+      display: none;
+    }
+  }
+
+  a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: inherit;
+    user-select: none;
+    overflow: hidden;
+    height: inherit;
+    padding: 0 17px;
+    display: block;
+    color: white;
   }
 }
 
@@ -63,16 +77,15 @@ ui-header-separator {
 }
 
 ui-header-icon {
-  justify-content: center;
-  align-items: center;
-  height: inherit;
-  padding: 0 17px;
-  flex: 0 0 auto;
-  display: flex;
-  color: white;
+  @extend %ui-header-item;
 
-  &[interactive] {
-    @extend %interactive
+  ui-icon {
+    justify-content: center;
+    align-items: center;
+    height: inherit;
+    flex: 0 0 auto;
+    display: flex;
+    color: white;
   }
 }
 

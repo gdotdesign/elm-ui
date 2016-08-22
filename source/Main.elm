@@ -520,31 +520,41 @@ view model =
           [ Ui.Header.view
             [ Ui.Header.icon
               { glyph = "grid"
-              , action = Just NoOp
+              , action = Nothing
+              , target = ""
+              , link = Nothing
               , size = 23
               }
             , Ui.Header.title
               { text = "Elm-UI Kitchen Sink"
-              , action = Just NoOp
+              , target = ""
+              , action = Nothing
+              , link = Nothing
               }
             , Ui.spacer
             , Ui.Header.iconItem
               { text = "Github"
-              , action = Just (Open "https://github.com/gdotdesign/elm-ui")
+              , action = Nothing
+              , link = Just "https://github.com/gdotdesign/elm-ui"
               , glyph = "social-github"
+              , target = "_blank"
               , side = "right"
               }
             , Ui.Header.separator
             , Ui.Header.iconItem
               { text = "Guide"
-              , action = Just (Open "https://gdotdesign.gitbooks.io/elm-ui-guide/content/")
+              , action = Nothing
               , glyph = "bookmark"
+              , link = Just "https://gdotdesign.gitbooks.io/elm-ui-guide/content/"
+              , target = "_blank"
               , side = "right"
               }
             , Ui.Header.separator
             , Ui.Header.iconItem
               { text = "Examples"
-              , action = Just (Open "https://github.com/gdotdesign/elm-ui-examples")
+              , action = Nothing
+              , link = Just "https://github.com/gdotdesign/elm-ui-examples"
+              , target = "_blank"
               , glyph = "clipboard"
               , side = "right"
               }

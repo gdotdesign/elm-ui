@@ -35,11 +35,6 @@ define([
         .then(assert.ok)
     })
 
-    bdd.it('should load main css', function() {
-      return app
-        .findByCssSelector('link[href="main.css"]')
-    })
-
     bdd.it('should set page title', function(){
       return app
         .getPageTitle()

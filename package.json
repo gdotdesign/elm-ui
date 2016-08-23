@@ -7,7 +7,7 @@
     "deploy": "gulp deploy",
     "predeploy": "npm run build",
     "build": "bin/index.js build",
-    "test": "nightwatch test2/tests -e chrome, firefox",
+    "test": "nightwatch test2/tests -e chrome,firefox",
     "elm-install": "bash elm-install.sh",
     "elm-docs": "elm-make --docs=documentation.json",
     "spec-sauce": "intern-runner config=specs/config-sauce",

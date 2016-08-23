@@ -1,0 +1,19 @@
+{
+  "custom_assertions_path" : "test2/assertions",
+  "page_objects_path" : "test2/page_objects",
+  "output_folder": false,
+
+  "test_settings" : {
+    "firefox" : {
+      "desiredCapabilities": {
+        "browserName": "firefox"
+      }
+    },
+
+    "chrome" : {
+      "desiredCapabilities": {
+        "browserName": "chrome"
+      }
+    }
+  }
+}

@@ -21,6 +21,8 @@ import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
 
+import Maybe.Extra exposing (isJust)
+
 import Ui.Helpers.Ripple as Ripple
 import Ui
 
@@ -199,9 +201,3 @@ itemAttributes { action, link } =
     [ attribute "interactive" ""]
   else
     []
-
-
-isJust maybe =
-  case maybe of
-    Just _ -> True
-    _ -> False

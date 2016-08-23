@@ -1,3 +1,4 @@
+// Header base view (bar)
 ui-header {
   @include colors($color-header);
 
@@ -17,6 +18,7 @@ ui-header {
   height: 60px;
 }
 
+// Header item
 %ui-header-item {
   font-weight: 600;
   height: inherit;
@@ -40,7 +42,7 @@ ui-header {
     font-size: inherit;
     user-select: none;
     height: inherit;
-    padding: 0 8px;
+    padding: 0 12px;
     display: block;
     color: white;
   }
@@ -51,18 +53,19 @@ ui-header {
 
   border-right: 1px solid transparent;
   border-left: 1px solid transparent;
+  transform: translate3d(0,0,0);
   position: relative;
   transition: 220ms;
   cursor: pointer;
 
-  &:focus,
-  &:hover {
-    outline: none;
-  }
-
   &:focus {
     border-color: rgba(black, 0.4);
     transition: 220ms 100ms;
+    outline: none;
+  }
+
+  &:active {
+    border-color: rgba(black, 0.6);
   }
 }
 
@@ -98,6 +101,14 @@ ui-header-item {
 
 ui-header-icon-item {
   @extend %ui-header-item;
+
+  ui-icon {
+    font-size: 20px;
+  }
+
+  a > * {
+    vertical-align: middle;
+  }
 
   ui-icon + span,
   span + ui-icon {

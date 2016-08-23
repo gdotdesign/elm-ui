@@ -14,9 +14,11 @@ module Ui exposing
 -}
 
 import Html.Attributes exposing (classList, attribute, rel, href, class, tabindex, target)
-import Html.Events exposing (onClick)
 import Html.Events.Extra exposing (onLoad, unobtrusiveClick, onKeys)
+import Html.Events exposing (onClick)
 import Html exposing (node, text)
+
+import Maybe.Extra exposing (isJust)
 
 
 {-| An icon component from Ionicons.
@@ -258,13 +260,9 @@ link msg url target' =
       case url of
         Just value ->
           [ href value
-          , target target']
+          , target target'
+          ]
         Nothing ->
           []
   in
     node "a" (tabIndex ++ hrefAttribute ++ attributes)
-
-isJust maybe =
-  case maybe of
-    Just _ -> True
-    _ -> False

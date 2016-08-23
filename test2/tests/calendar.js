@@ -53,5 +53,38 @@ module.exports = {
       .verify.containsText('@selected', "1")
       .click('@disabledCell')
       .verify.containsText('@selected', "1")
+  },
+
+  'Readonly calendar should not display chevrons': function(){
+    this.page
+      .verify.elementPresent('td:nth-child(2) ui-calendar')
+      .verify.hidden('td:nth-child(2) ui-calendar .ion-chevron-left')
+      .verify.hidden('td:nth-child(2) ui-calendar .ion-chevron-right')
+  },
+
+  'Readonly calendar cells should not be clickable': function(){
+    this.page
+      .verify.elementPresent('td:nth-child(2) ui-calendar')
+      .verify.containsText('td:nth-child(2) ui-calendar-cell.selected', "1")
+      .click('ui-calendar-cell:nth-of-type(20)')
+      .verify.containsText('td:nth-child(2) ui-calendar-cell.selected', "1")
+  },
+
+  'Disabled calendar icons should not be clickable': function(){
+    this.page
+      .verify.elementPresent('td:nth-child(3) ui-calendar')
+      .verify.containsText('ui-container div', '2015 - May')
+      .click('td:nth-child(3) ui-calendar .ion-chevron-left')
+      .verify.containsText('ui-container div', '2015 - May')
+      .click('td:nth-child(3) ui-calendar .ion-chevron-right')
+      .verify.containsText('ui-container div', '2015 - May')
+  },
+
+  'Disabled calendar cells should not be clickable': function(){
+    this.page
+      .verify.elementPresent('td:nth-child(3) ui-calendar')
+      .verify.containsText('td:nth-child(3) ui-calendar-cell.selected', "1")
+      .click('ui-calendar-cell:nth-of-type(20)')
+      .verify.containsText('td:nth-child(3) ui-calendar-cell.selected', "1")
   }
 }

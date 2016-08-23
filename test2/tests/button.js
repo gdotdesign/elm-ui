@@ -67,5 +67,10 @@ module.exports = {
       .setValue('@disabledButton','')
       .waitForElementNotPresent('clicked', 1000)
       .verify.elementNotPresent('clicked')
+  },
+
+  "Disabled button should have disabled state": function(){
+    this.page
+      .verify.cssProperty('@disabledButton', 'opacity', '0.6')
   }
 }

@@ -4,10 +4,10 @@ module.exports = {
     var page = client.page.page()
 
     page.navigate()
-      .assert.attributeEquals('meta[name=viewport]', 'content', 'initial-scale=1.0, user-scalable=no')
-      .assert.title('Elm-UI Kitchen Sink')
-      .assert.visible('@app')
-      .assert.elementPresent('title')
+      .verify.attributeEquals('meta[name=viewport]', 'content', 'initial-scale=1.0, user-scalable=no')
+      .verify.title('Elm-UI Kitchen Sink')
+      .verify.visible('@app')
+      .verify.elementPresent('title')
 
     client.end()
   }

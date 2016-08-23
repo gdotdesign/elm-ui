@@ -15,16 +15,13 @@ ui-header {
 
   line-height: 60px;
   height: 60px;
-
-  > * + * {
-    margin-left: 5px;
-  }
 }
 
 %ui-header-item {
   font-weight: 600;
   height: inherit;
   font-size: 18px;
+  margin: 0 2px;
 
   &[interactive] a {
     @extend %interactive;
@@ -42,9 +39,8 @@ ui-header {
     white-space: nowrap;
     font-size: inherit;
     user-select: none;
-    overflow: hidden;
     height: inherit;
-    padding: 0 17px;
+    padding: 0 8px;
     display: block;
     color: white;
   }
@@ -72,6 +68,7 @@ ui-header {
 
 ui-header-separator {
   background: dampen-inverse($color-header, 10%);
+  margin: 0 8px;
   height: 40px;
   width: 2px;
 }

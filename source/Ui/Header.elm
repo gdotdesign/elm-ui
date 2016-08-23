@@ -28,8 +28,8 @@ import Ui
 {-| Representation of a header title.
 -}
 type alias Title msg =
-  { action : Maybe msg
-  , link : Maybe String
+  { link : Maybe String
+  , action : Maybe msg
   , target : String
   , text : String
   }
@@ -38,10 +38,10 @@ type alias Title msg =
 {-| Representation of a header icon.
 -}
 type alias Icon msg =
-  { action : Maybe msg
-  , link : Maybe String
-  , glyph : String
+  { link : Maybe String
+  , action : Maybe msg
   , target : String
+  , glyph : String
   , size : Float
   }
 
@@ -49,10 +49,10 @@ type alias Icon msg =
 {-| Representation of a header icon item.
 -}
 type alias IconItem msg =
-  { action : Maybe msg
-  , link : Maybe String
-  , glyph : String
+  { link : Maybe String
+  , action : Maybe msg
   , target : String
+  , glyph : String
   , text : String
   , side : String
   }
@@ -67,19 +67,29 @@ type alias Item msg =
 {-| Renders a header element with the given children.
 
     Ui.Header.view
-      [ Ui.Header.title { text = "Yo!", action = Nothing } ]
+      [ Ui.Header.title
+        { action = Nothing
+        , target = "_self"
+        , link = Nothing
+        , text = "Yo!"
+        }
+      ]
 -}
 view : List (Html.Html msg) -> Html.Html msg
 view children =
   node "ui-header" [] children
 
 
-{-| Renders a header icon element which can also trigger
-an action if specified.
+{-| Renders a header icon element which can:
+- link to an other page if specified
+- trigger an action if specified
 
     Ui.Header.icon
-      { glyph = "social-github"
-      , action = Just OpenGithub
+      { action = Just OpenGithub
+      , glyph = "social-github"
+      , target = "_blank"
+      , link = Nothing
+      , size = 30
       }
 -}
 icon : Icon msg -> Html.Html msg
@@ -95,12 +105,15 @@ icon model =
     ]
 
 
-{-| Renders a header title element which can also trigger
-an action if specified.
+{-| Renders a header title element which can:
+- link to an other page if specified
+- trigger an action if specified
 
     Ui.Header.title
       { text = "Elm-UI Rocks!"
       , action = Just Home
+      , target = "_self"
+      , link = Nothing
       }
 -}
 title : Title msg -> Html.Html msg
@@ -123,12 +136,15 @@ separator =
   node "ui-header-separator" [] []
 
 
-{-| Renders a header navigation item which can also trigger
-an action if specified.
+{-| Renders a header navigation item which can:
+- link to an other page if specified
+- trigger an action if specified
 
     Ui.Header.item
-      { text = "Github",
-      , action = Just OpenGithub
+      { link = Just "https://www.github.com"
+      , target = "_blank"
+      , action = Nothing
+      , text = "Github"
       }
 -}
 item : Item msg -> Html.Html msg
@@ -142,13 +158,16 @@ item model =
     ]
 
 
-{-| Renders an header navigation item with an icon which can also trigger
-an action if specified.
+{-| Renders an header navigation item with an icon item which can:
+- link to an other page if specified
+- trigger an action if specified
 
     Ui.Header.iconItem
-      { text = "Github"
-      , action = Just OpenGithub
+      { action = Just OpenGithub
       , glyph = "social-github"
+      , target = "_self"
+      , text = "Github"
+      , link = Nothing
       , side = "left"
       }
 -}

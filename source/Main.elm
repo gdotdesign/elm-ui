@@ -520,10 +520,10 @@ view model =
           [ Ui.Header.view
             [ Ui.Header.icon
               { glyph = "grid"
-              , action = Nothing
+              , action = Just NoOp
               , target = ""
               , link = Nothing
-              , size = 23
+              , size = 32
               }
             , Ui.Header.title
               { text = "Elm-UI Kitchen Sink"

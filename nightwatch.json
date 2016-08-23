@@ -6,6 +6,7 @@
   "selenium": {
     "start_process": true,
     "server_path": "test2/vendor/selenium-server.jar",
+    "log_path": false,
     "cli_args": {
       "webdriver.chrome.driver": "test2/vendor/chromedriver"
     }

@@ -3,6 +3,14 @@
   "page_objects_path" : "test2/page_objects",
   "output_folder": false,
 
+  "selenium": {
+    "start_process": true,
+    "server_path": "test2/vendor/selenium-server.jar",
+    "cli_args": {
+      "webdriver.chrome.driver": "test2/vendor/chromedriver"
+    }
+  },
+
   "test_settings" : {
     "firefox" : {
       "desiredCapabilities": {

@@ -5,3 +5,5 @@ documentation.json
 npm-debug.log
 dist
 .env
+test2/vendor/chromedriver
+test2/vendor/selenium-server.jar

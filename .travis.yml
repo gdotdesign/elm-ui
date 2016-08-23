@@ -9,14 +9,19 @@ before_install:
   - sh -e /etc/init.d/xvfb start
   - sleep 3
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+  - wget http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.1.jar
+  - mv selenium-server-standalone-2.53.1.jar test2/vendor/selenium-server.jar
+  - wget http://chromedriver.storage.googleapis.com/2.23/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip -d test2/vendor/
+  - rm chromedriver_linux64.zip
 install:
   - npm install
   - npm run elm-install
+  - rm -rf elm-stuff/build-artifacts
 node_js:
   - "4.2.4"
   - "6.1"
 script:
-  - npm run selenium &
   - npm run build
   - npm run test
 sudo: required

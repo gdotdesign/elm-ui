@@ -20,7 +20,7 @@ module.exports = {
     this.page
       .verify.elementNotPresent('clicked')
       .click('@button')
-      .waitForElementVisible('clicked', 1000)
+      .waitForElementVisible('clicked')
       .verify.elementPresent('clicked')
   },
 
@@ -28,7 +28,7 @@ module.exports = {
     this.page
       .verify.elementNotPresent('clicked')
       .setValue('@button','')
-      .waitForElementVisible('clicked', 1000)
+      .waitForElementVisible('clicked')
       .verify.elementPresent('clicked')
   },
 
@@ -36,7 +36,7 @@ module.exports = {
     this.page
       .verify.elementNotPresent('clicked')
       .setValue('@button','')
-      .waitForElementVisible('clicked', 1000)
+      .waitForElementVisible('clicked')
       .verify.elementPresent('clicked')
   },
 
@@ -49,7 +49,7 @@ module.exports = {
     this.page
       .verify.elementNotPresent('clicked')
       .click('@disabledButton')
-      .waitForElementNotPresent('clicked', 1000)
+      .waitForElementNotPresent('clicked')
       .verify.elementNotPresent('clicked')
   },
 
@@ -57,7 +57,7 @@ module.exports = {
     this.page
       .verify.elementNotPresent('clicked')
       .setValue('@disabledButton','')
-      .waitForElementNotPresent('clicked', 1000)
+      .waitForElementNotPresent('clicked')
       .verify.elementNotPresent('clicked')
   },
 
@@ -65,7 +65,7 @@ module.exports = {
     this.page
       .verify.elementNotPresent('clicked')
       .setValue('@disabledButton','')
-      .waitForElementNotPresent('clicked', 1000)
+      .waitForElementNotPresent('clicked')
       .verify.elementNotPresent('clicked')
   },
 

@@ -9,6 +9,9 @@ module.exports = {
     checkbox: {
       selector: 'td ui-checkbox'
     },
+    checkedCheckbox: {
+      selector: 'td ui-checkbox.checked'
+    },
     disabledCheckbox: {
       selector: 'td ui-checkbox.disabled'
     },

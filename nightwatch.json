@@ -1,6 +1,7 @@
 {
   "custom_assertions_path" : "test2/assertions",
   "page_objects_path" : "test2/page_objects",
+  "globals_path": "test2/globals.json",
   "output_folder": false,
 
   "selenium": {

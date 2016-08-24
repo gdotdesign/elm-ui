@@ -18,23 +18,23 @@ module.exports = {
 
   'Enabled checkbox should toggle on click': function(){
     this.page
-      .verify.cssClassNotPresent('@checkbox', 'checked')
+      .waitForElementVisible('@checkbox')
       .click('@checkbox')
-      .verify.cssClassPresent('@checkbox', 'checked')
+      .waitForElementVisible('@checkedCheckbox')
   },
 
   'Enabled checkbox should toggle on enter': function(){
     this.page
-      .verify.cssClassNotPresent('@checkbox', 'checked')
+      .waitForElementVisible('@checkbox')
       .setValue('@checkbox', '')
-      .verify.cssClassPresent('@checkbox', 'checked')
+      .waitForElementVisible('@checkedCheckbox')
   },
 
   'Enabled checkbox should toggle on space': function(){
     this.page
-      .verify.cssClassNotPresent('@checkbox', 'checked')
+      .waitForElementVisible('@checkbox')
       .setValue('@checkbox', '')
-      .verify.cssClassPresent('@checkbox', 'checked')
+      .waitForElementVisible('@checkedCheckbox')
   },
 
   'Readonly checkbox should have tab index': function(){
@@ -44,23 +44,23 @@ module.exports = {
 
   'Readonly checkbox should not toggle on click': function(){
     this.page
-      .verify.cssClassNotPresent('@readonlyCheckbox', 'checked')
+      .waitForElementVisible('@readonlyCheckbox')
       .click('@readonlyCheckbox')
-      .verify.cssClassNotPresent('@readonlyCheckbox', 'checked')
+      .waitForElementVisible('@readonlyCheckbox')
   },
 
   'Readonly checkbox should not toggle on enter': function(){
     this.page
-      .verify.cssClassNotPresent('@readonlyCheckbox', 'checked')
+      .waitForElementVisible('@readonlyCheckbox')
       .setValue('@readonlyCheckbox', '')
-      .verify.cssClassNotPresent('@readonlyCheckbox', 'checked')
+      .waitForElementVisible('@readonlyCheckbox')
   },
 
   'Readonly checkbox should not toggle on space': function(){
     this.page
-      .verify.cssClassNotPresent('@readonlyCheckbox', 'checked')
+      .waitForElementVisible('@readonlyCheckbox')
       .setValue('@readonlyCheckbox', '')
-      .verify.cssClassNotPresent('@readonlyCheckbox', 'checked')
+      .waitForElementVisible('@readonlyCheckbox')
   },
 
   'Disabled checkbox should not have tab index': function(){
@@ -70,8 +70,8 @@ module.exports = {
 
   'Disabled checkbox should not toggle on click': function(){
     this.page
-      .verify.cssClassNotPresent('@disabledCheckbox', 'checked')
+      .waitForElementVisible('@disabledCheckbox')
       .click('@disabledCheckbox')
-      .verify.cssClassNotPresent('@disabledCheckbox', 'checked')
+      .waitForElementVisible('@disabledCheckbox')
   },
 }

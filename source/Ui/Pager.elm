@@ -21,6 +21,7 @@ import Json.Decode as Json
 import Json.Encode as JE
 import List.Extra
 
+
 {-| Representation of a pager:
   - **center** - Pages at the center
   - **left** - Pages at the left side
@@ -71,6 +72,7 @@ update action model =
     Active page ->
       { model | center = [], active = page }
 
+
 {-| Lazily renders a pager.
 
     Ui.Pager.view Pager pages pager
@@ -90,7 +92,7 @@ render address pages model =
     renderPage index page =
       let
         decoder msg =
-          Json.at ["target", "_page"] (Json.succeed msg)
+          Json.at [ "target", "_page" ] (Json.succeed msg)
 
         attributes =
           if List.member index model.left then
@@ -107,10 +109,10 @@ render address pages model =
             [ style [ ( "left", "0%" ) ]
             ]
           else
-            [ style [ ( "left", "100%" ), ("visibility", "hidden") ]
+            [ style [ ( "left", "100%" ), ( "visibility", "hidden" ) ]
             ]
       in
-        node "ui-page" ((property "_page" (JE.string (toString index)) ) :: attributes) [ page ]
+        node "ui-page" ((property "_page" (JE.string (toString index))) :: attributes) [ page ]
   in
     node
       "ui-pager"

@@ -17,12 +17,10 @@ import Numeral exposing (format)
 import Task exposing (Task)
 import Json.Decode as Json
 import Http
-
 import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
 import Html.Events exposing (on)
 import Html.Lazy
-
 import Ui.Native.FileManager as FileManager exposing (File)
 import Ui.Button
 import Ui
@@ -117,7 +115,9 @@ render model =
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-      ] ++ attributes)
+       ]
+        ++ attributes
+      )
       [ div [] [ text label ]
       , Ui.Button.view
           NoOp
@@ -159,16 +159,18 @@ renderDetails model =
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-      ] ++ attributes)
+       ]
+        ++ attributes
+      )
       [ renderFileStatus model
       , Ui.Button.view
-        NoOp
-        { text = "Browse"
-        , kind = "primary"
-        , readonly = model.readonly
-        , disabled = model.disabled
-        , size = "medium"
-        }
+          NoOp
+          { text = "Browse"
+          , kind = "primary"
+          , readonly = model.readonly
+          , disabled = model.disabled
+          , size = "medium"
+          }
       ]
 
 

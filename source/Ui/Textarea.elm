@@ -37,6 +37,7 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui
 
+
 {-| Representation of a textarea:
   - **placeholder** - The text to display when there is no value
   - **enterAllowed** - Whether or not to allow new lines when pressing enter

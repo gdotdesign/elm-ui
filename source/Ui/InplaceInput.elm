@@ -162,8 +162,9 @@ render model =
 -}
 open : Model -> ( Model, Cmd Msg )
 open model =
-  ( { model | open = True },
-    Task.perform NotFound NoOp (Dom.focus model.textarea.uid) )
+  ( { model | open = True }
+  , Task.perform NotFound NoOp (Dom.focus model.textarea.uid)
+  )
 
 
 {-| Closes an inplace input.
@@ -226,5 +227,7 @@ isEmpty model =
 -}
 setValue : String -> Model -> Model
 setValue value model =
-  { model | textarea = Ui.Textarea.setValue value model.textarea
-          , value = value }
+  { model
+    | textarea = Ui.Textarea.setValue value model.textarea
+    , value = value
+  }

@@ -34,10 +34,11 @@ icon glyph clickable attributes =
 
     Ui.iconAttributes "android-download" False [ onClick Download ]
 -}
-iconAttributes : String
-               -> Bool
-               -> List (Html.Attribute msg)
-               -> List (Html.Attribute msg)
+iconAttributes :
+  String
+  -> Bool
+  -> List (Html.Attribute msg)
+  -> List (Html.Attribute msg)
 iconAttributes glyph clickable attributes =
   let
     classes =
@@ -249,10 +250,11 @@ link msg url target' =
         Just action ->
           [ unobtrusiveClick action
           , onKeys
-            [ ( 13, action )
-            , ( 32, action )
-            ]
+              [ ( 13, action )
+              , ( 32, action )
+              ]
           ]
+
         Nothing ->
           []
 
@@ -262,6 +264,7 @@ link msg url target' =
           [ href value
           , target target'
           ]
+
         Nothing ->
           []
   in

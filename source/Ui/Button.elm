@@ -86,7 +86,8 @@ render msg model =
     "ui-button"
     (attributes msg model)
     [ Ripple.view
-    , node "span" [] [ text model.text ] ]
+    , node "span" [] [ text model.text ]
+    ]
 
 
 {-| Renders a **big primary** button with the given text.
@@ -197,8 +198,10 @@ danger title msg =
 {-| Creates the attributes for a button that contains events, tabindex and
 classes.
 -}
-attributes : msg -> { b | disabled : Bool, kind : String, size : String, readonly: Bool }
-           -> List (Html.Attribute msg)
+attributes :
+  msg
+  -> { b | disabled : Bool, kind : String, size : String, readonly : Bool }
+  -> List (Html.Attribute msg)
 attributes msg model =
   let
     actions =

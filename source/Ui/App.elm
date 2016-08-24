@@ -19,9 +19,7 @@ responsibilities:
 import Html.Attributes exposing (name, content, style)
 import Html exposing (node, text)
 import Html.Lazy
-
 import Time exposing (Time)
-
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Browser as Browser
 import Ui.Time
@@ -91,13 +89,15 @@ render address model children =
     "ui-app"
     []
     ([ node "title" [] [ text model.title ]
-    , node
+     , node
         "meta"
         [ content "initial-scale=1.0, user-scalable=no"
         , name "viewport"
         ]
         []
-    ] ++ children)
+     ]
+      ++ children
+    )
 
 
 {-| Sets the title of the application

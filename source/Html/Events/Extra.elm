@@ -21,12 +21,13 @@ import Json.Decode as Json exposing ((:=))
 
 import Dict
 
+
 {-|
 -}
 unobtrusiveClick : msg -> Html.Attribute msg
 unobtrusiveClick msg =
   let
-    result (ctrlKey, button) =
+    result ( ctrlKey, button ) =
       if ctrlKey || button == 1 then
         Json.fail "Control key or middle mouse button is pressed!"
       else
@@ -36,14 +37,17 @@ unobtrusiveClick msg =
       Json.object2 (,)
         ("ctrlKey" := Json.bool)
         ("button" := Json.int)
-      `Json.andThen` result
+        `Json.andThen` result
   in
     onWithOptions "click" stopOptions decoder
 
-{-| Decodes delta value from wheel events. -}
+
+{-| Decodes delta value from wheel events.
+-}
 decodeDelta : Json.Decoder Float
 decodeDelta =
-  Json.at ["deltaY"] Json.float
+  Json.at [ "deltaY" ] Json.float
+
 
 {-| Capture [wheel](https://developer.mozilla.org/en-US/docs/Web/Events/wheel)
 events.
@@ -51,6 +55,7 @@ events.
 onWheel : Json.Decoder data -> (data -> msg) -> Html.Attribute msg
 onWheel decoder action =
   on "wheel" (Json.map action decoder)
+
 
 {-| Capture [keyup](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
 events that have the enter key pressed, additionally if the first agrument is
@@ -115,7 +120,6 @@ onPreventDefault event msg =
 onStop : String -> msg -> Html.Attribute msg
 onStop event msg =
   onWithOptions event stopOptions (Json.succeed msg)
-
 
 
 {-| Capture [scroll](https://developer.mozilla.org/en-US/docs/Web/Events/scroll)

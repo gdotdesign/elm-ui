@@ -53,11 +53,13 @@ type alias Model =
   }
 
 
-{-| The view model for a dropdown menu. -}
+{-| The view model for a dropdown menu.
+-}
 type alias ViewModel msg =
-  { element: Html.Html msg
-  , items:  List (Html.Html msg)
+  { element : Html.Html msg
+  , items : List (Html.Html msg)
   }
+
 
 {-| Representation of dimensions for a dropdown menu.
 -}
@@ -107,9 +109,10 @@ init =
 subscriptions : Model -> Sub Msg
 subscriptions model =
   if model.open then
-    Sub.batch [ Mouse.downs (Click << (\_ -> False))
-              , Scrolls.scrolls (Click False)
-              ]
+    Sub.batch
+      [ Mouse.downs (Click << (\_ -> False))
+      , Scrolls.scrolls (Click False)
+      ]
   else
     Sub.none
 

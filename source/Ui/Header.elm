@@ -100,10 +100,12 @@ icon model =
     ((itemAttributes model)
       ++ [ style [ ( "font-size", (toString model.size) ++ "px" ) ] ]
     )
-    [ Ui.link model.action model.link model.target
-      [ Ripple.view
-      , Ui.icon model.glyph False []
-      ]
+    [ Ui.link model.action
+        model.link
+        model.target
+        [ Ripple.view
+        , Ui.icon model.glyph False []
+        ]
     ]
 
 
@@ -122,10 +124,12 @@ title : Title msg -> Html.Html msg
 title model =
   node "ui-header-title"
     (itemAttributes model)
-    [ Ui.link model.action model.link model.target
-      [ node "span" [] [ text model.text ]
-      , Ripple.view
-      ]
+    [ Ui.link model.action
+        model.link
+        model.target
+        [ node "span" [] [ text model.text ]
+        , Ripple.view
+        ]
     ]
 
 
@@ -153,10 +157,12 @@ item : Item msg -> Html.Html msg
 item model =
   node "ui-header-item"
     (itemAttributes model)
-    [ Ui.link model.action model.link model.target
-      [ node "span" [] [ text model.text ]
-      , Ripple.view
-      ]
+    [ Ui.link model.action
+        model.link
+        model.target
+        [ node "span" [] [ text model.text ]
+        , Ripple.view
+        ]
     ]
 
 
@@ -198,6 +204,6 @@ iconItem model =
 itemAttributes : { model | action : Maybe msg, link : Maybe String } -> List (Html.Attribute msg)
 itemAttributes { action, link } =
   if isJust action || isJust link then
-    [ attribute "interactive" ""]
+    [ attribute "interactive" "" ]
   else
     []

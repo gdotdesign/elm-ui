@@ -146,7 +146,6 @@ view model =
   Html.Lazy.lazy render model
 
 
-
 {-| Renders a search input.
 
     Ui.SearchInput.render searchInput

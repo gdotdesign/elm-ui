@@ -1,9 +1,20 @@
 effect module Ui.Helpers.Emitter
-  where { command = MyCmd, subscription = MySub}
+  where { command = MyCmd, subscription = MySub }
   exposing
-  ( send, sendString, sendFloat, sendInt, sendBool, sendNaked
-  , listen, listenString, listenFloat, listenInt, listenBool, listenNaked
-  , decode)
+    ( send
+    , sendString
+    , sendFloat
+    , sendInt
+    , sendBool
+    , sendNaked
+    , listen
+    , listenString
+    , listenFloat
+    , listenInt
+    , listenBool
+    , listenNaked
+    , decode
+    )
 
 {-| This is a module for publishing and subscribing to arbritary data in
 different channels that are identified by strings.
@@ -23,6 +34,7 @@ import Json.Decode exposing (Value)
 import Json.Encode as JE
 
 import Task exposing (Task)
+
 
 {-| Representation of a command.
 -}
@@ -53,6 +65,7 @@ generally to trigger actions.
 sendNaked : String -> Cmd msg
 sendNaked id =
   command (Send id JE.null)
+
 
 {-| Sends a string value to the given channel.
 

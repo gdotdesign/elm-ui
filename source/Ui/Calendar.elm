@@ -115,7 +115,6 @@ view locale model =
   Html.Lazy.lazy2 render locale model
 
 
-
 {-| Renders a calendar.
 
     Ui.Calendar.render "en_us" calendar

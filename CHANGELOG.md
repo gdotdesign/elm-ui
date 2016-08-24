@@ -23,7 +23,7 @@ You can read more about it here https://github.com/gdotdesign/elm-github-install
 * The environment files are always read when compiling an file, so there are
   no server restarts are necessary
 * Migrated specs from intern to nightwatchjs and they are running again on Travis on Chrome and Firefox
-* Removed Ui.Native.Dom in favor of the official Focus library
+* Removed focus related functions from Ui.Native.Dom in favor of the official Focus library
 * Added Ui.Helpers.Ripple - A module to add ripple effect when clicked
 * Added Ui.Native.Uid - A module to generate unique ids without tasks
 * Added Ui#link - A way to create unobtrusive links

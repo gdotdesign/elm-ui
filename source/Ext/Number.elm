@@ -1,6 +1,6 @@
 module Ext.Number exposing (..)
 
-{-| Utility functions for numbers.
+{-| This module provides utility functions for numbers.
 
 # Functions
 @docs toFixed, remFloat, roundTo

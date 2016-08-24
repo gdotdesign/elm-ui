@@ -114,7 +114,7 @@ update msg model =
     Input act ->
       let
         justNow =
-          Ext.Date.nowTime Nothing
+          Ext.Date.nowTime ()
 
         ( input, effect2 ) =
           Ui.Input.update act model.input

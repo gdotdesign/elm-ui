@@ -1,7 +1,7 @@
 module Ui.Native.Browser exposing
   (Location, location, Prefix(..), prefix, openWindow, redirect, alert)
 
-{-| Browser related helper functions.
+{-| This module provides browser related utility functions.
 
 # Window
 @docs openWindow, redirect, alert
@@ -114,13 +114,12 @@ alert message value =
 
 {-| The detected vendor prefix.
 
-    ```elm
     displayValue : String
     displayValue =
-        if Ui.Browser.prefix == Ui.Browser.Webkit
-        then "-webkit-flex"
-        else "flex"
-    ```
+      if Ui.Browser.prefix == Ui.Browser.Webkit then
+        "-webkit-flex"
+      else
+        "flex"
 -}
 prefix : Prefix
 prefix =

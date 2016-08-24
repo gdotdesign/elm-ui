@@ -77,18 +77,48 @@ toFormData key file =
   Http.stringData key (Native.FileManager.toFormData file)
 
 
-{-| Opens a file browser for selecting a single file.
+{-| Provides a decoder that will open a file browser and return a task for
+reading the chosen file.
 
-    task = FileManager.openSingle "image/*"
+    -- type
+    | Opened (Task Never File)
+    | GetFile File
+
+    -- update
+    Opened task ->
+      (model, Task.peform (\_ -> Debug.crash "") GetFile task
+
+    GetFile file ->
+      ({ model | file = file }, Cmd.none)
+
+    -- view
+    div
+      [ on "click" (Json.map Opened (Ui.Native.FileManager.openSingleDecoder "image/*")) ]
+      [ text "Open File" ]
 -}
 openSingleDecoder : String -> Json.Decoder (Task Never File)
 openSingleDecoder accept =
   Native.FileManager.openSingleDecoder accept
 
 
-{-| Opens a file browser for selecting a multiple files.
+{-| Provides a decoder that will open a file browser and return a task for
+reading the chosen files.
 
-    task = FileManager.openSingle "image/*"
+    -- type
+    | Opened (Task Never (List File))
+    | GetFiles (List File)
+
+    -- update
+    Opened task ->
+      (model, Task.peform (\_ -> Debug.crash "") GetFile task
+
+    GetFiles files ->
+      ({ model | files = files }, Cmd.none)
+
+    -- view
+    div
+      [ on "click" (Json.map Opened (Ui.Native.FileManager.openMultipleDecoder "image/*")) ]
+      [ text "Open Files" ]
 -}
 openMultipleDecoder : String -> Json.Decoder (Task Never (List File))
 openMultipleDecoder accept =

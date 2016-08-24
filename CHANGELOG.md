@@ -1,6 +1,4 @@
-# Changelog
-
-# 0.3.0 (Unreleased)
+# 0.3.0
 This is the release comes with may improvements to the workflow and coincides
 with the release of the official website that provides guides and documentation.
 
@@ -9,9 +7,9 @@ with the release of the official website that provides guides and documentation.
 ### Removing `elm-ui.json`
 The `elm-ui.json` file was created in order to use Elm-UI without it being in
 the official repository, this caused some confusion for people, but there was
-no other way around it, this is now however changed so the file became unecessary,
-(you can read more about it below) so make sure after you upgrade to remove
-it from your projects.
+no other way around it at the time, this is now however changed so the file
+became unnecessary, (you can read more about it below) so make sure
+that after you upgrade, to remove it from your projects.
 
 ### Installing packages
 A custom package resolver and installer has been implemented that has mostly
@@ -19,20 +17,24 @@ the same functionality as the official installer (`elm-package`) and the added
 functionality to **install packages directly from Github**, that means that Elm-UI
 can be installed as any other standard package (from the CLI).
 
-There are a few caveats though:
-* The used Elm version is not checked when installing a package (will be added
-  in a future release)
-* Only those projects can be installed from github that has tags (that
-  conform to semantic versioning)
-* Added git as an command dependency
+You can read more about it here https://github.com/gdotdesign/elm-github-install
 
-You can read more about it from [this blog post]()
-
-## Log
 ### Changes
 * The environment files are always read when compiling an file, so there are
   no server restarts are necessary
-* TODO other changes
+* Migrated specs from intern to nightwatchjs and they are running again on Travis on Chrome and Firefox
+* Removed Ui.Native.Dom in favor of the official Focus library
+* Added Ui.Helpers.Ripple - A module to add ripple effect when clicked
+* Added Ui.Native.Uid - A module to generate unique ids without tasks
+* Added Ui#link - A way to create unobtrusive links
+* Added Html.Events.Extra#unobtrusiveClick - A unobtrusive way to handle click
+  events on **a** tags
+* Ui.Header - It has been redesigned to use records instead of parameters
+* Ui.Layout - It has been redesigned to be more developer friendly and less
+  confusing
+* Ui.FileManager - The way to get files have been changed to use a Decoder and
+  a Task instead of just a Task
+* Ui.Tagger - Fixed a bug in where readonly tags would have "x" icon
 
 # 0.2.2
 Bugfix release.

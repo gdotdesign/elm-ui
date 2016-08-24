@@ -6,6 +6,15 @@ module.exports = {
   	app: {
   		selector: 'ui-app'
   	},
+    checkbox: {
+      selector: 'td ui-checkbox'
+    },
+    disabledCheckbox: {
+      selector: 'td ui-checkbox.disabled'
+    },
+    readonlyCheckbox: {
+      selector: 'td ui-checkbox.readonly'
+    },
   	disabledButton: {
   		selector: 'td ui-button.disabled'
   	},

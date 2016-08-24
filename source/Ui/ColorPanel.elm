@@ -218,7 +218,7 @@ render model =
       ]
 
 
-{-| Sets the vale of a color panel.
+{-| Sets the value of a color panel.
 
     Ui.ColorPanel.setValue Color.black colorPanel
 -}

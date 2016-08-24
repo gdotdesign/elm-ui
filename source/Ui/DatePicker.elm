@@ -163,7 +163,7 @@ update action model =
       ( model, Cmd.none )
 
 
-{-| Lazily renders a date picker.
+{-| Lazily renders a date picker in the given locale.
 
     Ui.DatePicker.view "en_us" model
 -}
@@ -172,7 +172,7 @@ view locale model =
   Html.Lazy.lazy2 render locale model
 
 
-{-| Renders a date picker.
+{-| Renders a date picker in the given locale.
 
     Ui.DatePicker.render "en_us" model
 -}

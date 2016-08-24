@@ -106,7 +106,7 @@ update msg model =
         )
 
 
-{-| Lazily renders a calendar.
+{-| Lazily renders a calendar in the given locale.
 
     Ui.Calendar.view "en_us" calendar
 -}
@@ -115,7 +115,7 @@ view locale model =
   Html.Lazy.lazy2 render locale model
 
 
-{-| Renders a calendar.
+{-| Renders a calendar in the given locale.
 
     Ui.Calendar.render "en_us" calendar
 -}

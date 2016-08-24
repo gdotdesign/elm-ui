@@ -19,7 +19,9 @@ responsibilities:
 import Html.Attributes exposing (name, content, style)
 import Html exposing (node, text)
 import Html.Lazy
+
 import Time exposing (Time)
+
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Browser as Browser
 import Ui.Time

@@ -4,13 +4,14 @@ module Ui.Button exposing
   , secondaryBig, secondarySmall, secondary
   , warningBig, warningSmall, warning
   , successBig, successSmall, success
-  , dangerBig, dangerSmall, danger)
+  , dangerBig, dangerSmall, danger )
 
 {-| Basic button component that implements:
   - **5 different types** (primary, secondary, warning, danger, success)
   - **3 different sizes** (small, medium, big)
   - **focus state** with animation
   - **disabled state**
+  - **readonly state**
 
 # Model
 @docs Model, init

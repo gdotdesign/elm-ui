@@ -1,15 +1,15 @@
 {
-  "custom_assertions_path" : "test2/assertions",
-  "page_objects_path" : "test2/page_objects",
-  "globals_path": "test2/globals.json",
+  "custom_assertions_path" : "spec/assertions",
+  "page_objects_path" : "spec/page_objects",
+  "globals_path": "spec/globals.json",
   "output_folder": false,
 
   "selenium": {
     "start_process": true,
-    "server_path": "test2/vendor/selenium-server.jar",
+    "server_path": "spec/vendor/selenium-server.jar",
     "log_path": false,
     "cli_args": {
-      "webdriver.chrome.driver": "test2/vendor/chromedriver"
+      "webdriver.chrome.driver": "spec/vendor/chromedriver"
     }
   },
 

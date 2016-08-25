@@ -39,9 +39,9 @@ import Task
   - **placeholder** - The text to display when there is no value
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
-  - **value** - The value
-  - **kind** - The type of the input
   - **uid** - The unique identifier of the input
+  - **kind** - The type of the input
+  - **value** - The value
 -}
 type alias Model =
   { placeholder : String

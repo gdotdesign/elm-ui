@@ -255,6 +255,8 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
     download: F3(downloadFunc),
     openMultipleDecoder: openMultipleDecoder,
     openSingleDecoder: openSingleDecoder,
+    identity: function(value){ return value },
+    identitiyTag: F2(function(tagger, value){ return tagger(value) }),
     toFormData: toFormData,
   }
 }()

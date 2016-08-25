@@ -17,6 +17,7 @@ import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
 import Html.App
 
+import Ui.Native.FileManager as FileManager exposing (File)
 import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
 import Ui.Native.Scrolls as Scrolls
@@ -100,6 +101,7 @@ type Msg {- Showcase models -}
   | CheckboxChanged Bool
   | RatingsChanged Float
   | ButtonClicked String {- Kitchensink related. -}
+  | FileChanged File
   | ShowNotification
   | EscIsDown Bool
   | FocusChooser
@@ -358,7 +360,7 @@ init =
         Showcase.init
           (\_ -> Ui.FileInput.init "image/*")
           Ui.FileInput.update
-          (\_ -> Sub.none)
+          (Ui.FileInput.subscribe FileChanged)
           (\_ -> Sub.none)
     , input =
         Showcase.init
@@ -662,6 +664,7 @@ view model =
                       , Showcase.view2 NumberPad (Ui.NumberPad.view { bottomLeft = text "", bottomRight = text "" }) numberPad
                       , componentHeader "FileInput"
                       , Showcase.view FileInput Ui.FileInput.view fileInput
+                      , Showcase.view FileInput Ui.FileInput.viewDetails fileInput
                       , componentHeader "Pager"
                       , tr
                           []
@@ -965,6 +968,9 @@ update' msg model =
     ColorPanelChanged value ->
       notify ("Color panel changed to: " ++ (Ext.Color.toCSSRgba value)) model
 
+    FileChanged value ->
+      notify ("File input changed to: " ++ (value.name)) model
+
     ShowNotification ->
       notify "Test Notification" model
 
@@ -1025,6 +1031,7 @@ gatherSubs model =
     , Showcase.subscribe model.textarea
     , Showcase.subscribe model.chooser
     , Showcase.subscribe model.tagger
+    , Showcase.subscribe model.fileInput
     , Scrolls.scrolls CloseMenu
     , Sub.map App Ui.App.subscriptions
     , Sub.map Time Ui.Time.subscriptions

@@ -1,10 +1,11 @@
 module Ui.FileInput exposing
-  (Model, Msg, init, update, view, render, viewDetails, renderDetails)
+  ( Model, Msg, init, update, subscribe, view, render, viewDetails
+  , renderDetails )
 
 {-| Component for selecting a file.
 
 # Model
-@docs Model, Msg, init, update
+@docs Model, Msg, init, update, subscribe
 
 # View
 @docs view, render
@@ -17,11 +18,15 @@ import Numeral exposing (format)
 import Task exposing (Task)
 import Json.Decode as Json
 import Http
+
 import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
 import Html.Events exposing (on)
 import Html.Lazy
+
 import Ui.Native.FileManager as FileManager exposing (File)
+import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui.Button
 import Ui
 
@@ -30,13 +35,15 @@ import Ui
   - **readonly** - Whether or not the date picker is readonly
   - **disabled** - Whether or not the date picker is disabled
   - **accept** - The mime types that the file input accepts
+  - **uid** - The unique identifier of the file input
   - **file** - (Maybe) The selected file
 -}
 type alias Model =
-  { readonly : Bool
+  { file : Maybe File
   , disabled : Bool
-  , file : Maybe File
+  , readonly : Bool
   , accept : String
+  , uid : String
   }
 
 
@@ -55,11 +62,27 @@ type Msg
 -}
 init : String -> Model
 init accept =
-  { readonly = False
+  { uid = Uid.uid ()
+  , readonly = False
   , disabled = False
   , accept = accept
   , file = Nothing
   }
+
+
+{-| Subscribe to the changes of a file input.
+
+    ...
+    subscriptions =
+      \model ->
+        Ui.FileInput.subscribe
+          FileInputChanged
+          model.fileInput
+    ...
+-}
+subscribe : (File -> msg) -> Model -> Sub msg
+subscribe msg model =
+  Emitter.listenFile model.uid msg
 
 
 {-| Updates a file input.
@@ -73,7 +96,7 @@ update msg model =
       ( model, Task.perform (\_ -> Debug.crash "") Selected task )
 
     Selected file ->
-      ( { model | file = Just file }, Cmd.none )
+      ( { model | file = Just file }, Emitter.sendFile model.uid file )
 
     Clear ->
       ( { model | file = Nothing }, Cmd.none )
@@ -98,17 +121,14 @@ view model =
 render : Model -> Html.Html Msg
 render model =
   let
-    decoder =
-      Json.map Open (FileManager.openSingleDecoder model.accept)
-
     label =
       Maybe.map .name model.file
-        |> Maybe.withDefault "Not file is selected!"
+        |> Maybe.withDefault "No file is selected!"
 
     attributes =
       Ui.enabledActions
         model
-        [ on "click" decoder ]
+        [ on "click" (FileManager.openSingleDecoder model.accept Open) ]
   in
     node "ui-file-input"
       ([ classList
@@ -121,10 +141,10 @@ render model =
       [ div [] [ text label ]
       , Ui.Button.view
           NoOp
-          { text = "Browse"
-          , kind = "primary"
-          , readonly = model.readonly
+          { readonly = model.readonly
           , disabled = model.disabled
+          , kind = "primary"
+          , text = "Browse"
           , size = "medium"
           }
       ]
@@ -146,13 +166,10 @@ viewDetails model =
 renderDetails : Model -> Html.Html Msg
 renderDetails model =
   let
-    decoder =
-      Json.map Open (FileManager.openSingleDecoder model.accept)
-
     attributes =
       Ui.enabledActions
         model
-        [ on "click" decoder ]
+        [ on "click" (FileManager.openSingleDecoder model.accept Open) ]
   in
     node "ui-file-input-details"
       ([ classList
@@ -165,10 +182,10 @@ renderDetails model =
       [ renderFileStatus model
       , Ui.Button.view
           NoOp
-          { text = "Browse"
-          , kind = "primary"
-          , readonly = model.readonly
+          { readonly = model.readonly
           , disabled = model.disabled
+          , kind = "primary"
+          , text = "Browse"
           , size = "medium"
           }
       ]
@@ -186,9 +203,15 @@ renderFileStatus model =
     Just file ->
       node "ui-file-input-info"
         []
-        [ node "ui-file-input-name" [] [ text file.name ]
-        , node "ui-file-input-size" [] [ text ("Size: " ++ (format "0.0b" file.size)) ]
-        , node "ui-file-input-type" [] [ text ("Type: " ++ file.mimeType) ]
+        [ node "ui-file-input-name"
+            []
+            [ text file.name ]
+        , node "ui-file-input-size"
+            []
+            [ text ("Size: " ++ (format "0.0b" file.size)) ]
+        , node "ui-file-input-type"
+            []
+            [ text ("Type: " ++ file.mimeType) ]
         ]
 
     Nothing ->

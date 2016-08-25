@@ -93,12 +93,12 @@ reading the chosen file.
 
     -- view
     div
-      [ on "click" (Json.map Opened (Ui.Native.FileManager.openSingleDecoder "image/*")) ]
+      [ on "click" (Ui.Native.FileManager.openSingleDecoder "image/*" Opened) ]
       [ text "Open File" ]
 -}
-openSingleDecoder : String -> Json.Decoder (Task Never File)
-openSingleDecoder accept =
-  Native.FileManager.openSingleDecoder accept
+openSingleDecoder : String -> (Task Never File -> msg) -> Json.Decoder msg
+openSingleDecoder accept msg =
+  Json.map msg (Native.FileManager.openSingleDecoder accept)
 
 
 {-| Provides a decoder that will open a file browser and return a task for
@@ -117,12 +117,12 @@ reading the chosen files.
 
     -- view
     div
-      [ on "click" (Json.map Opened (Ui.Native.FileManager.openMultipleDecoder "image/*")) ]
+      [ on "click" (Ui.Native.FileManager.openMultipleDecoder "image/*" Opened) ]
       [ text "Open Files" ]
 -}
-openMultipleDecoder : String -> Json.Decoder (Task Never (List File))
-openMultipleDecoder accept =
-  Native.FileManager.openMultipleDecoder accept
+openMultipleDecoder : String -> (Task Never (List File) -> msg) -> Json.Decoder msg
+openMultipleDecoder accept msg =
+  Json.map msg (Native.FileManager.openMultipleDecoder accept)
 
 
 {-| Downloads the given data with the given name and mime type.

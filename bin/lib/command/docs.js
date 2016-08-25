@@ -1,9 +1,9 @@
+var which = require('npm-which')(process.cwd())
 var spawn = require('child_process').spawn
 var path = require('path')
 
 // Find the elm-make executable
-var elmExecutable =
-  path.resolve(__dirname, '../../../node_modules/elm/binwrappers/elm-make')
+var elmExecutable = which.sync('elm-make')
 
 module.exports = function() {
   // Generate documentation

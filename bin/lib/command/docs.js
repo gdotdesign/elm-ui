@@ -1,4 +1,4 @@
-var which = require('npm-which')(process.cwd())
+var which = require('npm-which')(__dirname)
 var spawn = require('child_process').spawn
 var path = require('path')
 

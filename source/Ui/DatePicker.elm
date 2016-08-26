@@ -67,7 +67,7 @@ type Msg
 
 {-| Initializes a date picker with the given date.
 
-    datePicker = Ui.DatePicker.init (Ext.Date.create 2016 5 28)
+    datePicker = Ui.DatePicker.init (Ext.Date.create 1980 5 17)
 -}
 init : Date.Date -> Model
 init date =
@@ -222,7 +222,7 @@ render locale model =
 
 {-| Sets the value of a date picker
 
-    Ui.DatePicker.setValue (Ext.Date.create 2016 5 28) datePicker
+    Ui.DatePicker.setValue (Ext.Date.create 1980 5 17) datePicker
 -}
 setValue : Date.Date -> Model -> Model
 setValue date model =

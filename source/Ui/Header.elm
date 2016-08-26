@@ -82,9 +82,8 @@ view children =
   node "ui-header" [] children
 
 
-{-| Renders a header icon element which can:
-- link to an other page if specified
-- trigger an action if specified
+{-| Renders a header icon element which can link to an other page and / or
+trigger an action.
 
     Ui.Header.icon
       { action = Just OpenGithub
@@ -109,9 +108,8 @@ icon model =
     ]
 
 
-{-| Renders a header title element which can:
-- link to an other page if specified
-- trigger an action if specified
+{-| Renders a header title element which can link to an other page and / or
+trigger an action.
 
     Ui.Header.title
       { text = "Elm-UI Rocks!"
@@ -142,9 +140,8 @@ separator =
   node "ui-header-separator" [] []
 
 
-{-| Renders a header navigation item which can:
-- link to an other page if specified
-- trigger an action if specified
+{-| Renders a header navigation item which can link to an other page and / or
+trigger an action.
 
     Ui.Header.item
       { link = Just "https://www.github.com"
@@ -166,9 +163,8 @@ item model =
     ]
 
 
-{-| Renders an header navigation item with an icon item which can:
-- link to an other page if specified
-- trigger an action if specified
+{-| Renders an header navigation item with an icon item which can link to
+an other page and / or trigger an action.
 
     Ui.Header.iconItem
       { action = Just OpenGithub

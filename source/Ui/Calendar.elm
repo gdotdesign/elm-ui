@@ -62,7 +62,7 @@ type Msg
 
 {-| Initializes a calendar with the given selected date.
 
-    calendar = Ui.Calendar.init (Ext.Date.create 2016 5 28)
+    calendar = Ui.Calendar.init (Ext.Date.create 1977 5 25)
 -}
 init : Date.Date -> Model
 init date =
@@ -191,7 +191,7 @@ render locale model =
 
 {-| Sets the value of a calendar.
 
-    Ui.Calendar.setValue (Ext.Date.createDate 2016 5 28) calendar
+    Ui.Calendar.setValue (Ext.Date.createDate 1977 5 25) calendar
 -}
 setValue : Date.Date -> Model -> Model
 setValue date model =

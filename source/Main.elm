@@ -3,6 +3,7 @@ module Main exposing (..)
 import Date.Extra.Config.Configs as DateConfigs
 import Date.Extra.Format
 import List.Extra
+import Task.Extra exposing (performFailproof)
 import Ext.Color
 import Ext.Date
 import Color
@@ -109,6 +110,8 @@ type Msg {- Showcase models -}
   | CloseMenu
   | Alert
   | NotFound Dom.Error
+  | WindowOpenFailed String
+  | SetTitle
   | NoOp2 ()
   | NoOp {- Component related. -}
   | TaggerRemove String
@@ -285,8 +288,8 @@ init =
     , buttons =
         [ Ui.Button.primaryBig "Primary" Alert
         , Ui.Button.secondary "Secondary" FocusChooser
-        , Ui.Button.success "Success" NoOp
-        , Ui.Button.warning "Warning" NoOp
+        , Ui.Button.success "Success" SetTitle
+        , Ui.Button.warning "Warning" (Open "http://www.google.com")
         , Ui.Button.dangerSmall "Danger" NoOp
         ]
     , disabledIconButton =
@@ -355,7 +358,7 @@ init =
           (\_ -> Sub.none)
           (\_ -> Sub.none)
     , pager = { pager | width = "100%", height = "200px" }
-    , notifications = Ui.NotificationCenter.init 4000 320
+    , notifications = Ui.NotificationCenter.init 4000 400
     , fileInput =
         Showcase.init
           (\_ -> Ui.FileInput.init "image/*")
@@ -727,9 +730,6 @@ update msg model =
     CloseMenu ->
       { model | menu = Ui.DropdownMenu.close model.menu }
 
-    Open url ->
-      Browser.openWindow url model
-
     NextPage ->
       { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active + 1)) model.pager }
 
@@ -996,6 +996,15 @@ update' msg model =
 
     FocusChooser ->
       ( model, Task.perform NotFound NoOp2 (Dom.focus model.chooser.enabled.uid) )
+
+    SetTitle ->
+      ( model, performFailproof NoOp2 (Browser.setTitle "test"))
+
+    Open url ->
+      ( model, Task.perform WindowOpenFailed NoOp2 (Browser.openWindow url))
+
+    WindowOpenFailed error ->
+      notify "Could not open window!" model
 
     _ ->
       ( update msg model, Cmd.none )

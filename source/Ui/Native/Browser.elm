@@ -1,13 +1,11 @@
 module Ui.Native.Browser exposing
-  (Location, location, Prefix(..), prefix, openWindow, redirect, alert)
+  ( Location, location, openWindow, redirect, alert, setTitle )
 
 {-| This module provides browser related utility functions.
 
 # Window
-@docs openWindow, redirect, alert
+@docs openWindow, redirect, alert, setTitle
 
-# Vendor Prefix
-@docs Prefix, prefix
 
 # Location
 @docs Location, location
@@ -18,15 +16,6 @@ import Task exposing (Task)
 import String
 
 import Native.Browser
-
-{-| A union of prefix tags.
--}
-type Prefix
-  = Moz
-  | Webkit
-  | MS
-  | O
-  | Unknown
 
 
 {-| Location model.
@@ -85,51 +74,38 @@ decodeLocation =
       ("port" := Json.string `Json.andThen` convertPort)
 
 
-{-| Opens a new window with the given URL and return the given value.
+{-| Returns a task for opening a new window with the given url, if the window is
+blocked by a popup blocker it will fail.
 
-    Ui.Native.Browser.openWindow "url" value
+    task = Ui.Native.Browser.openWindow "url"
 -}
-openWindow : String -> value -> value
-openWindow url value =
-  Native.Browser.openWindow url value
+openWindow : String -> Task String ()
+openWindow url =
+  Native.Browser.openWindow url
 
 
-{-| Replace the current page with the given URL and return the given value.
+{-| Returns a task for replacing the current page with the given URL.
 
-    Ui.Native.Browser.redirect "http://elm-lang.org" value
+    task = Ui.Native.Browser.redirect "http://elm-lang.org"
 -}
-redirect : String -> value -> value
-redirect url value =
-  Native.Browser.redirect url value
+redirect : String -> Task Never ()
+redirect url =
+  Native.Browser.redirect url
 
 
-{-| Shows an alert dialog with the given text and returns the given value.
+{-| Returns a task for showing an alert dialog with the given text.
 
-    Ui.Native.Browser.alert "Hey there!"" value
+    task = Ui.Native.Browser.alert "Hey there!"
 -}
-alert : String -> value -> value
-alert message value =
-  Native.Browser.alert message value
+alert : String -> Task Never ()
+alert message =
+  Native.Browser.alert message
 
 
-{-| The detected vendor prefix.
+{-| Sets the title of the document.
 
-    displayValue : String
-    displayValue =
-      if Ui.Browser.prefix == Ui.Browser.Webkit then
-        "-webkit-flex"
-      else
-        "flex"
+    task = Ui.Browser.setTitle "New Title"
 -}
-prefix : Prefix
-prefix =
-  if Native.Browser.prefix == "webkit" then
-    Webkit
-  else if Native.Browser.prefix == "moz" then
-    Moz
-  else if Native.Browser.prefix == "ms" then
-    MS
-  else if Native.Browser.prefix == "o" then
-    O
-  else
-    Unknown
+setTitle : String -> Task Never ()
+setTitle title =
+  Native.Browser.setTitle title

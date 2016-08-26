@@ -454,7 +454,7 @@ init =
           Ui.Chooser.update
           (Ui.Chooser.subscribe ChooserChanged)
           (\_ -> Sub.none)
-    , app = Ui.App.init "Elm-UI Kitchen Sink"
+    , app = Ui.App.init
     }
 
 

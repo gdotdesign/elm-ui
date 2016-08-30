@@ -26,10 +26,9 @@ import Task
 import Date
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui.Input
 import Ui
-
-import Native.Uid
 
 
 {-| Representation of a search input:
@@ -67,7 +66,7 @@ type Msg
 init : Time -> String -> Model
 init timeout placeholder =
   { input = Ui.Input.init "" placeholder
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , timeout = timeout
   , disabled = False
   , readonly = False
@@ -115,7 +114,7 @@ update msg model =
     Input act ->
       let
         justNow =
-          Ext.Date.nowTime Nothing
+          Ext.Date.nowTime ()
 
         ( input, effect2 ) =
           Ui.Input.update act model.input
@@ -145,7 +144,6 @@ update msg model =
 view : Model -> Html.Html Msg
 view model =
   Html.Lazy.lazy render model
-
 
 
 {-| Renders a search input.

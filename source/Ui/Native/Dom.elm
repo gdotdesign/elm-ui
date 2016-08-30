@@ -2,9 +2,6 @@ module Ui.Native.Dom exposing (..)
 
 {-| Helper functions and tasks for DOM related activities.
 
-# Focusing / Bluring
-@docs focusSelector, focusComponent, blur
-
 # Decoder Queries
 @docs decodeElementFunction, withBoundingClientRect, withClosest, withSelector
 @docs withNearest
@@ -15,33 +12,6 @@ import Task exposing (Task)
 import Json.Decode as Json
 
 import Native.Dom
-
-
-{-| Blurs the active element in the DOM.
-
-    cmd = Ui.Native.Dom.blur NoOp
--}
-blur: msg -> Cmd msg
-blur msg =
-  Task.perform (\_ -> msg) (\_ -> msg) (Native.Dom.blur ())
-
-
-{-| Focuses a DOM element with the given selector.
-
-    cmd = Ui.Native.Dom.focusSelector "input#comments"
--}
-focusSelector : msg -> String -> Cmd msg
-focusSelector msg selector =
-  Task.perform (\_ -> msg) (\_ -> msg) (Native.Dom.focusSelector selector)
-
-
-{-| Focuses a UI component that have a uid field.
-
-    cmd = Ui.Native.Dom.focusUid NoOp "xxxx-xxx-xxx-xxxx"
--}
-focusComponent : msg -> { a | uid: String } -> Cmd msg
-focusComponent msg { uid } =
-  focusSelector msg ("[uid='" ++ uid ++ "']")
 
 
 {-| This function allows decoders to call JavaScript functions on objects
@@ -81,6 +51,7 @@ selector of the decoded Element.
 -}
 withNearest : String -> Json.Decoder a -> Json.Decoder a
 withNearest selector decoder =
-  Json.oneOf [ withClosest selector decoder
-             , Json.at ["parentNode"] (withSelector selector decoder)
-             ]
+  Json.oneOf
+    [ withClosest selector decoder
+    , Json.at [ "parentNode" ] (withSelector selector decoder)
+    ]

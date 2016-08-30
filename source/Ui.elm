@@ -1,22 +1,24 @@
 module Ui exposing
   (icon, title, subTitle, panel, spacer, inputGroup, iconAttributes,
    stylesheetLink, tabIndex, fab, textBlock, enabledActions, breadcrumbs,
-   scrolledPanel)
+   scrolledPanel, link)
 
 {-| UI Library for Elm!
 
 # Static Components
 @docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup
-@docs fab, textBlock, breadcrumbs, scrolledPanel
+@docs fab, textBlock, breadcrumbs, scrolledPanel, link
 
 # Helper Functions
 @docs tabIndex, enabledActions, iconAttributes
 -}
 
-import Html.Attributes exposing (classList, attribute, rel, href, class)
+import Html.Attributes exposing (classList, attribute, rel, href, class, tabindex, target)
+import Html.Events.Extra exposing (onLoad, unobtrusiveClick, onKeys)
 import Html.Events exposing (onClick)
-import Html.Events.Extra exposing (onLoad)
 import Html exposing (node, text)
+
+import Maybe.Extra exposing (isJust)
 
 
 {-| An icon component from Ionicons.
@@ -32,10 +34,11 @@ icon glyph clickable attributes =
 
     Ui.iconAttributes "android-download" False [ onClick Download ]
 -}
-iconAttributes : String
-               -> Bool
-               -> List (Html.Attribute msg)
-               -> List (Html.Attribute msg)
+iconAttributes :
+  String
+  -> Bool
+  -> List (Html.Attribute msg)
+  -> List (Html.Attribute msg)
 iconAttributes glyph clickable attributes =
   let
     classes =
@@ -225,3 +228,44 @@ scrolledPanel contents =
     "ui-scrolled-panel"
     []
     [ node "ui-scrolled-panel-wrapper" [] contents ]
+
+
+{-| Non obtrusive link:
+- Ctrl click doesn't trigger the message
+- Mouse middle click doesn't tigger the message
+- Enter or Space triggers the message
+- Simple click triggers the message
+-}
+link : Maybe msg -> Maybe String -> String -> List (Html.Html msg) -> Html.Html msg
+link msg url target' =
+  let
+    tabIndex =
+      if isJust msg || isJust url then
+        [ tabindex 0 ]
+      else
+        []
+
+    attributes =
+      case msg of
+        Just action ->
+          [ unobtrusiveClick action
+          , onKeys
+              [ ( 13, action )
+              , ( 32, action )
+              ]
+          ]
+
+        Nothing ->
+          []
+
+    hrefAttribute =
+      case url of
+        Just value ->
+          [ href value
+          , target target'
+          ]
+
+        Nothing ->
+          []
+  in
+    node "a" (tabIndex ++ hrefAttribute ++ attributes)

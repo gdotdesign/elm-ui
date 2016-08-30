@@ -3,13 +3,22 @@ cache:
   directories:
     - node_modules
     - elm-stuff
+before_install:
+  - export CHROME_BIN=chromium-browser
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sleep 3
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+  - sh ./spec/vendor/install-selenium.sh
 install:
   - npm install
   - npm run elm-install
+  - rm -rf elm-stuff/build-artifacts
 node_js:
   - "4.2.4"
   - "6.1"
 script:
-  - npm test
+  - npm run build
+  - npm run test
 sudo: required
 dist: trusty

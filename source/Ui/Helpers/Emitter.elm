@@ -1,28 +1,44 @@
 effect module Ui.Helpers.Emitter
-  where { command = MyCmd, subscription = MySub}
+  where { command = MyCmd, subscription = MySub }
   exposing
-  ( send, sendString, sendFloat, sendInt, sendBool, sendNaked
-  , listen, listenString, listenFloat, listenInt, listenBool, listenNaked
-  , decode)
+    ( send
+    , sendString
+    , sendFloat
+    , sendInt
+    , sendBool
+    , sendNaked
+    , sendFile
+    , listen
+    , listenString
+    , listenFloat
+    , listenInt
+    , listenBool
+    , listenNaked
+    , listenFile
+    , decode
+    )
 
 {-| This is a module for publishing and subscribing to arbritary data in
 different channels that are identified by strings.
 
 # Listining
 @docs listen, listenString, listenFloat, listenInt, listenBool, listenNaked
+@docs listenFile
 
 # Sending Data
-@docs send, sendString, sendFloat, sendInt, sendBool, sendNaked
+@docs send, sendString, sendFloat, sendInt, sendBool, sendNaked, sendFile
 
 # Decodeing
 @docs decode
 
 -}
 
+import Ui.Native.FileManager exposing (File)
 import Json.Decode exposing (Value)
+import Task exposing (Task)
+import Native.FileManager
 import Json.Encode as JE
 
-import Task exposing (Task)
 
 {-| Representation of a command.
 -}
@@ -53,6 +69,7 @@ generally to trigger actions.
 sendNaked : String -> Cmd msg
 sendNaked id =
   command (Send id JE.null)
+
 
 {-| Sends a string value to the given channel.
 
@@ -88,6 +105,15 @@ sendInt id value =
 sendBool : String -> Bool -> Cmd msg
 sendBool id value =
   send id (JE.bool value)
+
+
+{-| Sends a file value to the given channel.
+
+    Ui.Helpers.Emitter.sendFile "channelId" file
+-}
+sendFile : String -> File -> Cmd msg
+sendFile id value =
+  send id (Native.FileManager.identity value)
 
 
 {-| Creates a subscription for the given channel.
@@ -137,11 +163,20 @@ listenInt id tagger =
 
 {-| Creates a subscription for the given boolean channel.
 
-    Ui.Helpers.Emitter.listenBool "channelId" HandleInt
+    Ui.Helpers.Emitter.listenBool "channelId" HandleBool
 -}
 listenBool : String -> (Bool -> msg) -> Sub msg
 listenBool id tagger =
   listen id (decodeBool False tagger)
+
+
+{-| Creates a subscription for the given file channel.
+
+    Ui.Helpers.Emitter.listenBool "channelId" HandleFile
+-}
+listenFile : String -> (File -> msg) -> Sub msg
+listenFile id tagger =
+  listen id (Native.FileManager.identitiyTag tagger)
 
 
 {-| Decodes a Json value and maps it to a message with a fallback value.

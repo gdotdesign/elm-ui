@@ -1,19 +1,15 @@
-module Ui.App exposing (Model, Msg, init, subscriptions, update, view, render, setTitle)
+module Ui.App exposing (Model, Msg, init, subscriptions, update, view, render)
 
 {-| Ui.App is the starting point of any Elm-UI application, it has multiple
 responsibilities:
   - Schedules updates for the **Ui.Time** component
   - Sets the **viewport meta tag** to be mobile friendly
-  - Sets the **title** of the window
 
 # Model
 @docs Model, Msg, update, init, subscriptions
 
 # View
 @docs view, render
-
-# Functions
-@docs setTitle
 -}
 
 import Html.Attributes exposing (name, content, style)
@@ -22,22 +18,16 @@ import Html.Lazy
 
 import Time exposing (Time)
 
-import Native.Uid
-
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Browser as Browser
 import Ui.Time
 import Ui
 
 
-{-| Representation of an application:
-  - **title** - The title of the application (and the window)
-  - **uid** - The unique identifier of the application
+{-| Representation of an application.
 -}
 type alias Model =
-  { title : String
-  , uid : String
-  }
+  { }
 
 
 {-| Messages that an application can receive.
@@ -46,15 +36,13 @@ type Msg
   = Tick Time
 
 
-{-| Initializes an application with the given title.
+{-| Initializes an application.
 
-    app = Ui.App.init "My Application"
+    app = Ui.App.init
 -}
-init : String -> Model
-init title =
-  { uid = Native.Uid.uid ()
-  , title = title
-  }
+init : Model
+init =
+  {}
 
 
 {-| Subscriptions for an application.
@@ -95,20 +83,12 @@ render address model children =
   node
     "ui-app"
     []
-    ([ node "title" [] [ text model.title ]
-    , node
+    ([ node
         "meta"
         [ content "initial-scale=1.0, user-scalable=no"
         , name "viewport"
         ]
         []
-    ] ++ children)
-
-
-{-| Sets the title of the application
-
-    Ui.App.setTitle "New Title" model.app
--}
-setTitle : String -> Model -> Model
-setTitle title model =
-  { model | title = title }
+     ]
+      ++ children
+    )

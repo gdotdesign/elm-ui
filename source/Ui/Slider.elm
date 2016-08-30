@@ -19,13 +19,12 @@ import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
 import Html.Lazy
 
-import Native.Uid
-
 import Dict
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Browser as Browser
 import Ui.Helpers.Drag as Drag
+import Ui.Native.Uid as Uid
 import Ui
 
 
@@ -65,7 +64,7 @@ type Msg
 -}
 init : Float -> Model
 init value =
-  { uid = Native.Uid.uid ()
+  { uid = Uid.uid ()
   , startDistance = 0
   , drag = Drag.init
   , disabled = False

@@ -1,12 +1,11 @@
 var renderError = require('./error').renderHTMLError
-var child_process = require('child_process')
-var spawn = child_process.spawn
+var which = require('npm-which')(__dirname)
+var spawn = require('child_process').spawn
 var path = require('path')
 var fs = require('fs')
 
 // Find the elm-make executable
-var elmExecutable =
-  path.resolve(__dirname, '../../../node_modules/elm/binwrappers/elm-make')
+var elmExecutable = which.sync('elm-make')
 
 // Try to load pty.js beacause it's an optional dependency.
 var pty
@@ -73,7 +72,9 @@ module.exports = function(file, config, shouldFail) {
       } else {
         var contents = [
           `window.ENV = ${JSON.stringify(config)};`,
-          fs.readFileSync(filename, 'utf-8'),
+          fs.readFileSync(filename, 'utf-8')
+            // NOTICE: This is a fix for in elm-lang/core scheduler
+            .replace('setTimeout(work, 0);', 'requestAnimationFrame(work);'),
         ].join('\n')
         callback(null, contents)
         fs.unlink(filename)

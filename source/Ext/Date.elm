@@ -1,6 +1,7 @@
 module Ext.Date exposing (..)
 
-{-| Utility functions for dates.
+{-| This module provides utility functions to Date with manipulating the Native
+implementation.
 
 # Create
 @docs now, nowTime, createDate
@@ -26,22 +27,26 @@ import Date
 
 
 {-| Returns the current date.
+
+    Ext.Date.now ()
 -}
-now : a -> Date.Date
+now : () -> Date.Date
 now _ =
   Native.DateTime.now Nothing
 
 
 {-| Returns the current date as time.
+
+    Ext.Date.nowTime ()
 -}
-nowTime : a -> Time
-nowTime a =
-  Date.toTime (now a)
+nowTime : () -> Time
+nowTime _ =
+  Date.toTime (now ())
 
 
 {-| Creates a date from the given year, month and day.
 
-    createDate 2015 1 1
+    Ext.Date.createDate 2015 1 1
 -}
 createDate : Int -> Int -> Int -> Date.Date
 createDate year month day =
@@ -50,7 +55,7 @@ createDate year month day =
 
 {-| Returns the month from the given date.
 
-    month (createDate 2015 1 1) -- 1
+    Ext.Date.month (Ext.Date.createDate 2015 1 1) -- 1
 -}
 month : Date.Date -> Int
 month date =
@@ -59,7 +64,7 @@ month date =
 
 {-| Returns how many days are in the month of the given date.
 
-    daysInMonth (createDate 2015 1 1) -- 31
+    Ext.Date.daysInMonth (Ext.Date.createDate 2015 1 1) -- 31
 -}
 daysInMonth : Date.Date -> Int
 daysInMonth date =
@@ -68,7 +73,8 @@ daysInMonth date =
 
 {-| Return the dates in the month of the given date.
 
-    datesInMonth (createDate 2015 1 1) -- [ 2015-01-01, 2015-02-02, ... ]
+    Ext.Date.datesInMonth (Ext.Date.createDate 2015 1 1)
+    -- [ 2015-01-01, 2015-02-02, ... ]
 -}
 datesInMonth : Date.Date -> List Date.Date
 datesInMonth date =
@@ -81,7 +87,7 @@ datesInMonth date =
 
 {-| Returns the previous days date in relation to the given date.
 
-    previousDay (createDate 2015 1 1) -- 2014-12-31
+    Ext.Date.previousDay (Ext.Date.createDate 2015 1 1) -- 2014-12-31
 -}
 previousDay : Date.Date -> Date.Date
 previousDay date =
@@ -90,7 +96,7 @@ previousDay date =
 
 {-| Returns the next days date in relation to the given date.
 
-    nextDay (createDate 2015 1 1) -- 2015-01-02
+    Ext.Date.nextDay (Ext.Date.createDate 2015 1 1) -- 2015-01-02
 -}
 nextDay : Date.Date -> Date.Date
 nextDay date =
@@ -99,7 +105,7 @@ nextDay date =
 
 {-| Returns the next month date in relation to the given date.
 
-    nextMonth (createDate 2015 1 5) -- 2015-02-05
+    Ext.Date.nextMonth (Ext.Date.createDate 2015 1 5) -- 2015-02-05
 -}
 nextMonth : Date.Date -> Date.Date
 nextMonth date =
@@ -109,7 +115,7 @@ nextMonth date =
 
 {-| Returns the previous month date in relation to the given date.
 
-    previousMonth (createDate 2015 1 5) -- 2014-12-05
+    Ext.Date.previousMonth (Ext.Date.createDate 2015 1 5) -- 2014-12-05
 -}
 previousMonth : Date.Date -> Date.Date
 previousMonth date =
@@ -119,7 +125,7 @@ previousMonth date =
 
 {-| Returns the first date in of the month of the given date.
 
-    begginingOfMonth (createDate 2015 1 5) -- 2015-01-01
+    Ext.Date.begginingOfMonth (Ext.Date.createDate 2015 1 5) -- 2015-01-01
 -}
 begginingOfMonth : Date.Date -> Date.Date
 begginingOfMonth date =
@@ -128,7 +134,7 @@ begginingOfMonth date =
 
 {-| Returns the last date in of the month of the given date.
 
-    endOfMonth (createDate 2015 1 5) -- 2015-01-31
+    Ext.Date.endOfMonth (Ext.Date.createDate 2015 1 5) -- 2015-01-31
 -}
 endOfMonth : Date.Date -> Date.Date
 endOfMonth date =
@@ -145,7 +151,7 @@ isSameMonth date other =
     == (month other)
 
 
-{-| Tests if the given dates are in the same.
+{-| Tests if the given dates are the same.
 -}
 isSameDate : Date.Date -> Date.Date -> Bool
 isSameDate date other =

@@ -2,11 +2,18 @@ var renderError = require('./error').renderCSSError
 var autoprefixer = require('autoprefixer')
 var sass = require('node-sass')
 var path = require('path')
+var fs = require('fs')
 
 module.exports = function(file, shouldFail) {
+  var deps = require(path.resolve('elm-stuff/exact-dependencies.json'))
+  var uiPath =
+    path.resolve('elm-stuff/packages/gdotdesign/elm-ui/' +
+                 deps['gdotdesign/elm-ui'] +
+                 '/stylesheets/ui')
+
   return function(callback) {
     sass.render({
-      includePaths: [path.resolve(__dirname, '../../../stylesheets/ui')],
+      includePaths: [uiPath],
       file: file,
     }, function(err, result) {
       if (err) {

@@ -23,6 +23,7 @@ import Html.Lazy
 import Process
 import Task
 
+
 {-| Representation of a loader:
   - **timeout** - The waiting perid in milliseconds
   - **loading** - Whether or not the loading is started
@@ -130,7 +131,7 @@ finish model =
 start : Model -> ( Model, Cmd Msg )
 start model =
   ( { model | loading = True }
-  , Task.perform (\_-> NoOp) (\_-> Show) (Process.sleep model.timeout)
+  , Task.perform (\_ -> NoOp) (\_ -> Show) (Process.sleep model.timeout)
   )
 
 

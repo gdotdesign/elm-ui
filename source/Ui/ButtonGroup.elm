@@ -57,7 +57,6 @@ view model =
   Html.Lazy.lazy render model
 
 
-
 {-| Renders a button group.
 
     Ui.ButtonGroup.render buttonGroup
@@ -68,7 +67,6 @@ render model =
     "ui-button-group"
     []
     (List.map (renderButton model) model.items)
-
 
 
 {-| Renders a button for the button group.

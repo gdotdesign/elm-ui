@@ -2,9 +2,6 @@ module Ui.NotificationCenter exposing (Model, Msg, init, update, view, notify)
 
 {-| Notification center for displaying messages to the user.
 
-TODO: Refactor this into something that doesn't use animations, or wait for
-virtual-dom to fix "keys" concept.
-
 # Models
 @docs Model, Msg, init, update
 
@@ -19,10 +16,13 @@ import Html.Attributes exposing (classList, style, id)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Keyed
+
 import Json.Encode
 import List.Extra
 import Process
+import Vendor
 import Task
+
 import Ui.Native.Browser as Browser
 
 
@@ -145,17 +145,17 @@ renderNotification address model =
       (toString model.duration) ++ "ms"
 
     prefix =
-      case Browser.prefix of
-        Browser.Webkit ->
+      case Vendor.prefix of
+        Vendor.Webkit ->
           "-webkit-"
 
-        Browser.Moz ->
+        Vendor.Moz ->
           "-moz-"
 
-        Browser.MS ->
+        Vendor.MS ->
           "-ms-"
 
-        Browser.O ->
+        Vendor.O ->
           "-o-"
 
         _ ->

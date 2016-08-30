@@ -29,14 +29,14 @@ import Html.Attributes
     , attribute
     )
 
-import Native.Uid
-
 import String
 import Task
 import List
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui
+
 
 {-| Representation of a textarea:
   - **placeholder** - The text to display when there is no value
@@ -70,7 +70,7 @@ type Msg
 init : String -> String -> Model
 init value placeholder =
   { placeholder = placeholder
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , enterAllowed = True
   , disabled = False
   , readonly = False
@@ -122,7 +122,7 @@ render model =
   let
     base =
       [ placeholder model.placeholder
-      , attribute "uid" model.uid
+      , attribute "id" model.uid
       , readonly model.readonly
       , disabled model.disabled
       , value model.value

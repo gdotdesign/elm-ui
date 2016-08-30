@@ -1,83 +1,98 @@
+// Header base view (bar)
 ui-header {
   @include colors($color-header);
 
-  background: linear-gradient(dampen($color-header, 2%), $color-header);
-  border-bottom: 1px solid $color-header-border;
-  text-shadow: 0 1px 0 rgba(#000, 0.2);
-  box-shadow: 0 0 10px rgba(#000, 0.2);
+  background: linear-gradient(dampen($color-header, 3%), $color-header);
+  box-shadow: 0 2px 3px 0 rgba(#000, 0.1), 0 0 10px rgba(#000, 0.2);
+  text-shadow: 0 1px 0 rgba(#000, 0.3);
   position: relative;
   padding: 0 20px;
   flex: 0 0 auto;
   z-index: 10;
-}
 
-ui-header,
-ui-header ui-layout-center {
   flex-direction: row;
   align-items: center;
   display: flex;
 
   line-height: 60px;
   height: 60px;
-
-  > * + * {
-    margin-left: 10px;
-  }
 }
 
-ui-header-icon {
-  @extend ui-icon;
-
-  font-size: 24px;
-  flex: 0 0 40px;
-  height: 59px;
-  width: 40px;
-
-  &.clickable:hover {
-    color: white;
-  }
-
-  &:focus {
-    background: dampen($color-header, 10%);
-    outline: none;
-    color: white;
-  }
-}
-
-ui-header-title {
-  align-items: center;
+// Header item
+%ui-header-item {
   font-weight: 600;
-  font-size: 20px;
-  display: flex;
+  height: inherit;
+  font-size: 18px;
+  margin: 0 2px;
 
-  div {
+  &[interactive] a {
+    @extend %interactive;
+    cursor: pointer;
+  }
+
+  &:not([interactive]) {
+    svg {
+      display: none;
+    }
+  }
+
+  a {
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
+    font-size: inherit;
+    user-select: none;
+    height: inherit;
+    padding: 0 12px;
+    display: block;
+    color: white;
+  }
+}
+
+%interactive {
+  @extend %ripple;
+
+  border-right: 1px solid transparent;
+  border-left: 1px solid transparent;
+  transform: translate3d(0,0,0);
+  position: relative;
+  transition: 220ms;
+  cursor: pointer;
+
+  &:focus {
+    border-color: rgba(black, 0.4);
+    transition: 220ms 100ms;
+    outline: none;
+  }
+
+  &:active {
+    border-color: rgba(black, 0.6);
   }
 }
 
 ui-header-separator {
   background: dampen-inverse($color-header, 10%);
+  margin: 0 8px;
   height: 40px;
   width: 2px;
 }
 
-%ui-header-item {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: 120ms;
-  overflow: hidden;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 18px;
-  padding: 0 15px;
-  height: 59px;
+ui-header-icon {
+  @extend %ui-header-item;
 
-  &:focus {
-    background: dampen($color-header, 10%);
-    outline: none;
+  ui-icon {
+    justify-content: center;
+    align-items: center;
+    height: inherit;
+    flex: 0 0 auto;
+    display: flex;
+    color: white;
   }
+}
+
+ui-header-title {
+  @extend %ui-header-item;
+
+  font-size: 20px;
 }
 
 ui-header-item {
@@ -87,8 +102,16 @@ ui-header-item {
 ui-header-icon-item {
   @extend %ui-header-item;
 
+  ui-icon {
+    font-size: 20px;
+  }
+
+  a > * {
+    vertical-align: middle;
+  }
+
   ui-icon + span,
   span + ui-icon {
-    margin-left: 10px;
+    margin-left: 12px;
   }
 }

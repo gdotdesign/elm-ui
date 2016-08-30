@@ -10,6 +10,7 @@ module Html.Events.Extra exposing (..)
 
 # Miscellaneous
 @docs onScroll, onTransitionEnd, onLoad, onError, onWheel, decodeDelta
+@docs unobtrusiveClick
 -}
 
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
@@ -20,10 +21,37 @@ import Json.Decode as Json exposing ((:=))
 
 import Dict
 
-{-| Decodes delta value from wheel events. -}
+
+{-| Creates an attribute for the **click** event that will stop the event if
+the control key or the middle mouse button is not pressed.
+
+It works this way to not to hinder the browsers basic ability to open
+the link on in new pages.
+-}
+unobtrusiveClick : msg -> Html.Attribute msg
+unobtrusiveClick msg =
+  let
+    result ( ctrlKey, button ) =
+      if ctrlKey || button == 1 then
+        Json.fail "Control key or middle mouse button is pressed!"
+      else
+        Json.succeed msg
+
+    decoder =
+      Json.object2 (,)
+        ("ctrlKey" := Json.bool)
+        ("button" := Json.int)
+        `Json.andThen` result
+  in
+    onWithOptions "click" stopOptions decoder
+
+
+{-| Decodes delta value from wheel events.
+-}
 decodeDelta : Json.Decoder Float
 decodeDelta =
-  Json.at ["deltaY"] Json.float
+  Json.at [ "deltaY" ] Json.float
+
 
 {-| Capture [wheel](https://developer.mozilla.org/en-US/docs/Web/Events/wheel)
 events.
@@ -32,12 +60,13 @@ onWheel : Json.Decoder data -> (data -> msg) -> Html.Attribute msg
 onWheel decoder action =
   on "wheel" (Json.map action decoder)
 
+
 {-| Capture [keyup](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
 events that have the enter key pressed, additionally if the first agrument is
 true it will fail if the control key is not pressed.
 
-    onEnter False Send -- calls Send on enter
-    onEnter True Send -- calls Send on ctrl+enter
+    Html.Events.Extra.onEnter False Send -- calls Send on enter
+    Html.Events.Extra.onEnter True Send -- calls Send on ctrl+enter
 -}
 onEnter : Bool -> msg -> Html.Attribute msg
 onEnter control msg =
@@ -65,7 +94,8 @@ onEnter control msg =
 {-| Capture [keydown](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
 events that have the enter key pressed and prevent their default behavior.
 
-    onEnterPreventDefault Send -- prevents default and calls Send on enter
+    Html.Events.Extra.onEnterPreventDefault Send
+    -- prevents default and calls Send on enter
 -}
 onEnterPreventDefault : msg -> Html.Attribute msg
 onEnterPreventDefault action =
@@ -78,7 +108,7 @@ onEnterPreventDefault action =
 
 {-| Capture events and prevent their default behavior.
 
-    onPreventDefault "keyup" Update
+    Html.Events.Extra.onPreventDefault "keyup" Update
 -}
 onPreventDefault : String -> msg -> Html.Attribute msg
 onPreventDefault event msg =
@@ -90,12 +120,11 @@ onPreventDefault event msg =
 
 {-| Capture events and prevent their default behavior and stop it's propagation.
 
-    onStop "keyup" Update
+    Html.Events.Extra.onStop "keyup" Update
 -}
 onStop : String -> msg -> Html.Attribute msg
 onStop event msg =
   onWithOptions event stopOptions (Json.succeed msg)
-
 
 
 {-| Capture [scroll](https://developer.mozilla.org/en-US/docs/Web/Events/scroll)
@@ -145,7 +174,7 @@ onError msg =
 
 {-| A decoder which succeeds when a specific key is pressed from the given list.
 
-    on "keydown" [ ( 13, Enter ) ]
+    Html.Events.on "keydown" (Html.Events.Extra.keysDecoder [ ( 13, Enter ) ])
 -}
 keysDecoder : List ( Int, msg ) -> Json.Decoder msg
 keysDecoder mappings =

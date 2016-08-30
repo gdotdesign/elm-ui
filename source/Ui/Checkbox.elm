@@ -23,12 +23,11 @@ import Html.Events exposing (onClick)
 import Html exposing (node)
 import Html.Lazy
 
-import Native.Uid
-
 import Task
 import Dict
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui
 
 
@@ -58,7 +57,7 @@ type Msg
 -}
 init : Bool -> Model
 init value =
-  { uid = Native.Uid.uid ()
+  { uid = Uid.uid ()
   , disabled = False
   , readonly = False
   , value = value

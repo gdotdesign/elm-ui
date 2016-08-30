@@ -28,10 +28,8 @@ import Html.Attributes
     , attribute
     )
 
-import Native.Browser
-import Native.Uid
-
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 
 import String
 import Task
@@ -41,9 +39,9 @@ import Task
   - **placeholder** - The text to display when there is no value
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
-  - **value** - The value
-  - **kind** - The type of the input
   - **uid** - The unique identifier of the input
+  - **kind** - The type of the input
+  - **value** - The value
 -}
 type alias Model =
   { placeholder : String
@@ -68,7 +66,7 @@ type Msg
 init : String -> String -> Model
 init value placeholder =
   { placeholder = placeholder
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , disabled = False
   , readonly = False
   , value = value
@@ -124,7 +122,7 @@ render model =
     [ node
         "input"
         [ placeholder model.placeholder
-        , attribute "uid" model.uid
+        , attribute "id" model.uid
         , readonly model.readonly
         , disabled model.disabled
         , value model.value

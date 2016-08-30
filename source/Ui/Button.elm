@@ -4,13 +4,14 @@ module Ui.Button exposing
   , secondaryBig, secondarySmall, secondary
   , warningBig, warningSmall, warning
   , successBig, successSmall, success
-  , dangerBig, dangerSmall, danger)
+  , dangerBig, dangerSmall, danger )
 
 {-| Basic button component that implements:
   - **5 different types** (primary, secondary, warning, danger, success)
   - **3 different sizes** (small, medium, big)
   - **focus state** with animation
   - **disabled state**
+  - **readonly state**
 
 # Model
 @docs Model, init
@@ -35,9 +36,7 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
-import Svg.Attributes exposing (cx, cy, r, viewBox)
-import Svg exposing (svg, circle)
-
+import Ui.Helpers.Ripple as Ripple
 import Ui
 
 
@@ -87,9 +86,9 @@ render msg model =
   node
     "ui-button"
     (attributes msg model)
-    [ svg [ viewBox "0 0 100 100" ]
-      [ circle [cx "50", cy "50", r "50"] [] ]
-    , node "span" [] [ text model.text ] ]
+    [ Ripple.view
+    , node "span" [] [ text model.text ]
+    ]
 
 
 {-| Renders a **big primary** button with the given text.
@@ -200,8 +199,10 @@ danger title msg =
 {-| Creates the attributes for a button that contains events, tabindex and
 classes.
 -}
-attributes : msg -> { b | disabled : Bool, kind : String, size : String, readonly: Bool }
-           -> List (Html.Attribute msg)
+attributes :
+  msg
+  -> { b | disabled : Bool, kind : String, size : String, readonly : Bool }
+  -> List (Html.Attribute msg)
 attributes msg model =
   let
     actions =

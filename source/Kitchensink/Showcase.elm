@@ -45,13 +45,15 @@ subscribe model =
     ]
 
 
-init : (() -> Partial component)
-     -> (msg
-     -> Partial component
-     -> ( Partial component, Cmd msg ))
-     -> (Partial component -> Sub parentMsg)
-     -> (Partial component -> Sub msg)
-     -> Model (Partial component) msg parentMsg
+init :
+  (() -> Partial component)
+  -> (msg
+      -> Partial component
+      -> ( Partial component, Cmd msg )
+     )
+  -> (Partial component -> Sub parentMsg)
+  -> (Partial component -> Sub msg)
+  -> Model (Partial component) msg parentMsg
 init fn update subscribe subscriptions =
   let
     enabled =
@@ -72,9 +74,10 @@ init fn update subscribe subscriptions =
     }
 
 
-update : Msg msg
-       -> Model component msg parentMsg
-       -> ( Model component msg parentMsg, Cmd (Msg msg) )
+update :
+  Msg msg
+  -> Model component msg parentMsg
+  -> ( Model component msg parentMsg, Cmd (Msg msg) )
 update action model =
   case action of
     Enabled act ->
@@ -99,10 +102,11 @@ update action model =
         ( { model | disabled = disabled }, Cmd.map Disabled effect )
 
 
-view2 : (Msg msg -> parentMsg)
-      -> ((msg -> parentMsg) -> component -> Html.Html parentMsg)
-      -> Model component msg parentMsg
-      -> Html.Html parentMsg
+view2 :
+  (Msg msg -> parentMsg)
+  -> ((msg -> parentMsg) -> component -> Html.Html parentMsg)
+  -> Model component msg parentMsg
+  -> Html.Html parentMsg
 view2 address renderFn model =
   (tr
     []
@@ -113,18 +117,20 @@ view2 address renderFn model =
   )
 
 
-view : (Msg msg -> parentMsg)
-     -> (component -> Html.Html msg)
-     -> Model component msg parentMsg
-     -> Html.Html parentMsg
+view :
+  (Msg msg -> parentMsg)
+  -> (component -> Html.Html msg)
+  -> Model component msg parentMsg
+  -> Html.Html parentMsg
 view address renderFn model =
   render address renderFn model
 
 
-render : (Msg msg -> parentMsg)
-       -> (component -> Html.Html msg)
-       -> Model component msg parentMsg
-       -> Html.Html parentMsg
+render :
+  (Msg msg -> parentMsg)
+  -> (component -> Html.Html msg)
+  -> Model component msg parentMsg
+  -> Html.Html parentMsg
 render address renderFn model =
   Html.App.map
     address
@@ -137,9 +143,10 @@ render address renderFn model =
     )
 
 
-updateModels : (component -> component)
-             -> Model component msg parentMsg
-             -> Model component msg parentMsg
+updateModels :
+  (component -> component)
+  -> Model component msg parentMsg
+  -> Model component msg parentMsg
 updateModels fn model =
   { model
     | enabled = fn model.enabled

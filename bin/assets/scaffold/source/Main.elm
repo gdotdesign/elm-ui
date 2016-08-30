@@ -23,7 +23,7 @@ type Msg
 
 init : Model
 init =
-  { app = Ui.App.init "Elm-UI Project"
+  { app = Ui.App.init
   , counter = 0
   }
 

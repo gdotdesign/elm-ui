@@ -3,6 +3,7 @@ module Main exposing (..)
 import Date.Extra.Config.Configs as DateConfigs
 import Date.Extra.Format
 import List.Extra
+import Task.Extra exposing (performFailproof)
 import Ext.Color
 import Ext.Date
 import Color
@@ -10,16 +11,18 @@ import Task
 import Date
 import Time
 import Set
+import Dom
 
 import Html.Attributes exposing (style, classList, class, colspan, href)
 import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
 import Html.App
 
+import Ui.Native.FileManager as FileManager exposing (File)
 import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
 import Ui.Native.Scrolls as Scrolls
-import Ui.Native.Dom as Dom
+import Ui.Native.Uid as Uid
 
 import Ui.NotificationCenter
 import Ui.DropdownMenu
@@ -99,12 +102,17 @@ type Msg {- Showcase models -}
   | CheckboxChanged Bool
   | RatingsChanged Float
   | ButtonClicked String {- Kitchensink related. -}
+  | FileChanged File
   | ShowNotification
   | EscIsDown Bool
   | FocusChooser
   | Open String
   | CloseMenu
   | Alert
+  | NotFound Dom.Error
+  | WindowOpenFailed String
+  | SetTitle
+  | NoOp2 ()
   | NoOp {- Component related. -}
   | TaggerRemove String
   | TaggerAdd String
@@ -280,8 +288,8 @@ init =
     , buttons =
         [ Ui.Button.primaryBig "Primary" Alert
         , Ui.Button.secondary "Secondary" FocusChooser
-        , Ui.Button.success "Success" NoOp
-        , Ui.Button.warning "Warning" NoOp
+        , Ui.Button.success "Success" SetTitle
+        , Ui.Button.warning "Warning" (Open "http://www.google.com")
         , Ui.Button.dangerSmall "Danger" NoOp
         ]
     , disabledIconButton =
@@ -350,12 +358,12 @@ init =
           (\_ -> Sub.none)
           (\_ -> Sub.none)
     , pager = { pager | width = "100%", height = "200px" }
-    , notifications = Ui.NotificationCenter.init 4000 320
+    , notifications = Ui.NotificationCenter.init 4000 400
     , fileInput =
         Showcase.init
           (\_ -> Ui.FileInput.init "image/*")
           Ui.FileInput.update
-          (\_ -> Sub.none)
+          (Ui.FileInput.subscribe FileChanged)
           (\_ -> Sub.none)
     , input =
         Showcase.init
@@ -446,7 +454,7 @@ init =
           Ui.Chooser.update
           (Ui.Chooser.subscribe ChooserChanged)
           (\_ -> Sub.none)
-    , app = Ui.App.init "Elm-UI Kitchen Sink"
+    , app = Ui.App.init
     }
 
 
@@ -513,27 +521,49 @@ view model =
       model.app
       [ Ui.NotificationCenter.view Notis model.notifications
       , Ui.Modal.view Modal modalView model.modal
-      , Ui.Layout.centerDefault
-          [ Ui.Header.icon "grid" NoOp
-          , Ui.Header.title "Elm-UI Kitchen Sink" NoOp
-          , Ui.spacer
-          , Ui.Header.iconItem
-              "Github"
-              (Open "https://github.com/gdotdesign/elm-ui")
-              "social-github"
-              "right"
-          , Ui.Header.separator
-          , Ui.Header.iconItem
-              "Guide"
-              (Open "https://gdotdesign.gitbooks.io/elm-ui-guide/content/")
-              "bookmark"
-              "right"
-          , Ui.Header.separator
-          , Ui.Header.iconItem
-              "Examples"
-              (Open "https://github.com/gdotdesign/elm-ui-examples")
-              "clipboard"
-              "right"
+      , Ui.Layout.website
+          [ Ui.Header.view
+            [ Ui.Header.icon
+              { glyph = "grid"
+              , action = Just NoOp
+              , target = ""
+              , link = Nothing
+              , size = 32
+              }
+            , Ui.Header.title
+              { text = "Elm-UI Kitchen Sink"
+              , target = ""
+              , action = Nothing
+              , link = Nothing
+              }
+            , Ui.spacer
+            , Ui.Header.iconItem
+              { text = "Github"
+              , action = Nothing
+              , link = Just "https://github.com/gdotdesign/elm-ui"
+              , glyph = "social-github"
+              , target = "_blank"
+              , side = "right"
+              }
+            , Ui.Header.separator
+            , Ui.Header.iconItem
+              { text = "Guide"
+              , action = Nothing
+              , glyph = "bookmark"
+              , link = Just "https://gdotdesign.gitbooks.io/elm-ui-guide/content/"
+              , target = "_blank"
+              , side = "right"
+              }
+            , Ui.Header.separator
+            , Ui.Header.iconItem
+              { text = "Examples"
+              , action = Nothing
+              , link = Just "https://github.com/gdotdesign/elm-ui-examples"
+              , target = "_blank"
+              , glyph = "clipboard"
+              , side = "right"
+              }
+            ]
           ]
           [ node
               "kitchen-sink"
@@ -637,6 +667,7 @@ view model =
                       , Showcase.view2 NumberPad (Ui.NumberPad.view { bottomLeft = text "", bottomRight = text "" }) numberPad
                       , componentHeader "FileInput"
                       , Showcase.view FileInput Ui.FileInput.view fileInput
+                      , Showcase.view FileInput Ui.FileInput.viewDetails fileInput
                       , componentHeader "Pager"
                       , tr
                           []
@@ -699,9 +730,6 @@ update msg model =
     CloseMenu ->
       { model | menu = Ui.DropdownMenu.close model.menu }
 
-    Open url ->
-      Browser.openWindow url model
-
     NextPage ->
       { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active + 1)) model.pager }
 
@@ -732,7 +760,7 @@ update msg model =
     TaggerAdd value ->
       let
         tag =
-          { label = value, id = Native.Uid.uid () }
+          { label = value, id = Uid.uid () }
       in
         { model
           | taggerData = tag :: model.taggerData
@@ -940,6 +968,9 @@ update' msg model =
     ColorPanelChanged value ->
       notify ("Color panel changed to: " ++ (Ext.Color.toCSSRgba value)) model
 
+    FileChanged value ->
+      notify ("File input changed to: " ++ (value.name)) model
+
     ShowNotification ->
       notify "Test Notification" model
 
@@ -964,7 +995,16 @@ update' msg model =
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
 
     FocusChooser ->
-      ( model, Dom.focusComponent NoOp model.chooser.enabled )
+      ( model, Task.perform NotFound NoOp2 (Dom.focus model.chooser.enabled.uid) )
+
+    SetTitle ->
+      ( model, performFailproof NoOp2 (Browser.setTitle "test"))
+
+    Open url ->
+      ( model, Task.perform WindowOpenFailed NoOp2 (Browser.openWindow url))
+
+    WindowOpenFailed error ->
+      notify "Could not open window!" model
 
     _ ->
       ( update msg model, Cmd.none )
@@ -1000,6 +1040,7 @@ gatherSubs model =
     , Showcase.subscribe model.textarea
     , Showcase.subscribe model.chooser
     , Showcase.subscribe model.tagger
+    , Showcase.subscribe model.fileInput
     , Scrolls.scrolls CloseMenu
     , Sub.map App Ui.App.subscriptions
     , Sub.map Time Ui.Time.subscriptions

@@ -28,9 +28,8 @@ import Ext.Date
 import Date
 import List
 
-import Native.Uid
-
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui.Container
 import Ui
 
@@ -63,11 +62,11 @@ type Msg
 
 {-| Initializes a calendar with the given selected date.
 
-    calendar = Ui.Calendar.init (Ext.Date.create 2016 5 28)
+    calendar = Ui.Calendar.init (Ext.Date.create 1977 5 25)
 -}
 init : Date.Date -> Model
 init date =
-  { uid = Native.Uid.uid ()
+  { uid = Uid.uid ()
   , selectable = True
   , disabled = False
   , readonly = False
@@ -107,7 +106,7 @@ update msg model =
         )
 
 
-{-| Lazily renders a calendar.
+{-| Lazily renders a calendar in the given locale.
 
     Ui.Calendar.view "en_us" calendar
 -}
@@ -116,8 +115,7 @@ view locale model =
   Html.Lazy.lazy2 render locale model
 
 
-
-{-| Renders a calendar.
+{-| Renders a calendar in the given locale.
 
     Ui.Calendar.render "en_us" calendar
 -}
@@ -193,7 +191,7 @@ render locale model =
 
 {-| Sets the value of a calendar.
 
-    Ui.Calendar.setValue (Ext.Date.createDate 2016 5 28) calendar
+    Ui.Calendar.setValue (Ext.Date.createDate 1977 5 25) calendar
 -}
 setValue : Date.Date -> Model -> Model
 setValue date model =

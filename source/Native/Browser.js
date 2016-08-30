@@ -1,37 +1,48 @@
 var _gdotdesign$elm_ui$Native_Browser = function() {
-  /* http://davidwalsh.name/vendor-prefix */
-  var styles = window.getComputedStyle(document.documentElement, '')
-
-  var vendorPrefix = (Array.prototype.slice
-    .call(styles)
-    .join('')
-    .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-  )[1]
+  var scheduler = _elm_lang$core$Native_Scheduler
+  var zeroTuple = _elm_lang$core$Native_Utils.Tuple0
 
   /* Redirect the user to the given url */
-  function redirect(url, value) {
-    window.location.href = url
-    return value
+  function redirect(url) {
+    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
+      window.location.href = url
+      return callback(scheduler.succeed(zeroTuple))
+    })
   }
 
   /* Show an alert dialog */
-  function alert(message, value) {
-    window.alert(message)
-    return value
+  function alert(message) {
+    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
+      window.alert(message)
+      return callback(scheduler.succeed(zeroTuple))
+    })
   }
 
   /* Open a new window with the given URL */
-  function openWindow(url,value) {
-    window.open(url)
-    return value
+  function openWindow(url) {
+    return scheduler.nativeBinding(function(callback){
+      var win = window.open(url)
+      if(!win || win.closed || typeof win.closed=='undefined'){
+        return callback(scheduler.fail("Window blocked!"))
+      }else{
+        return callback(scheduler.succeed(zeroTuple))
+      }
+    })
+  }
+
+  function setTitle(value){
+    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
+      document.title = value
+      return callback(scheduler.succeed(zeroTuple))
+    })
   }
 
   /* Interface */
   return {
     location: function(){ return window.location },
-    openWindow: F2(openWindow),
-    redirect: F2(redirect),
-    prefix: vendorPrefix,
-    alert: F2(alert)
+    openWindow: openWindow,
+    setTitle: setTitle,
+    redirect: redirect,
+    alert: alert
   }
 }()

@@ -4,7 +4,7 @@ module Ui.Tagger exposing
 {-| Component for displaying tags and handling it's events (adding / removing).
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, Tag, init, subscribe, update
 
 # View
 @docs view, render
@@ -26,6 +26,7 @@ import Json.Decode as JD
 import Json.Encode as JE
 
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui.IconButton
 import Ui.Container
 import Ui.Input
@@ -73,7 +74,7 @@ type Msg
 init : String -> Model
 init placeholder =
   { input = Ui.Input.init "" placeholder
-  , uid = Native.Uid.uid ()
+  , uid = Uid.uid ()
   , removeable = True
   , disabled = False
   , readonly = False
@@ -185,7 +186,7 @@ render tags model =
       , node
           "ui-tagger-tags"
           []
-          (List.map (rendertag model) tags)
+          (List.map (renderTag model) tags)
       ]
 
 
@@ -200,11 +201,11 @@ setValue value model =
 
 {-| Renders a tag.
 -}
-rendertag : Model -> Tag -> Html.Html Msg
-rendertag model tag =
+renderTag : Model -> Tag -> Html.Html Msg
+renderTag model tag =
   let
     icon =
-      if (model.disabled || model.readonly) && model.removeable then
+      if model.disabled || model.readonly || not model.removeable then
         text ""
       else
         Ui.icon

@@ -30,9 +30,9 @@ import Task
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
+import Ui.Native.Uid as Uid
 import Ui
 
-import Native.Uid
 
 {-| Representation of a number range:
   - **startValue** - The value when the dragging starts
@@ -86,7 +86,7 @@ type Msg
 -}
 init : Float -> Model
 init value =
-  { uid = Native.Uid.uid ()
+  { uid = Uid.uid ()
   , startValue = value
   , drag = Drag.init
   , disabled = False

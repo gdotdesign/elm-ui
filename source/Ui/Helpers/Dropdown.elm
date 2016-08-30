@@ -1,6 +1,6 @@
 module Ui.Helpers.Dropdown exposing (..)
 
-{-| Dropdown for other components.
+{-| This module provides utility functions for handing dropdowns for components.
 
 # Model
 @docs Dimensions, Dropdown

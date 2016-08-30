@@ -25,9 +25,8 @@ import Numeral exposing (format)
 import String
 import Dict
 
-import Native.Uid
-
 import Ui.Helpers.Emitter as Emitter
+import Ui.Native.Uid as Uid
 import Ui
 
 
@@ -76,7 +75,7 @@ type Msg
 -}
 init : Int -> Model
 init value =
-  { uid = Native.Uid.uid ()
+  { uid = Uid.uid ()
   , maximumDigits = 10
   , disabled = False
   , readonly = False

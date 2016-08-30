@@ -3,16 +3,6 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
   var Json = _elm_lang$core$Native_Json;
   var valueDecoder = Json.decodePrimitive("value")
 
-  function focusSelector(selector){
-    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
-      setTimeout(function(){
-        var element = document.querySelector(selector)
-        if(element){ element.focus() }
-        return callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
-      }, 30)
-    })
-  }
-
   function blur(){
     return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
       if(document.activeElement) { document.activeElement.blur() }
@@ -41,7 +31,6 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
 
   return {
     decodeElementFunction: F3(decodeElementFunction),
-    focusSelector: focusSelector,
     blur: blur
   }
 }();

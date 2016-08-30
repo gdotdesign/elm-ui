@@ -185,7 +185,7 @@ render model =
       ]
 
 
-{-| Sets the vale of a color picker.
+{-| Sets the value of a color picker.
 
     Ui.ColorPicker.setValue Color.black colorPicker
 -}

@@ -1,6 +1,7 @@
 module Ext.Color exposing (..)
 
-{-| Utility functions for colors.
+{-| This module provides utility functions for colors and the ability to convert
+colors to HSV format.
 
 # Representations
 @docs Hsv
@@ -26,7 +27,7 @@ import Json.Decode as JD
 import Json.Encode as JE
 
 
-{-| Hsv color type.
+{-| HSV color type.
 -}
 type alias Hsv =
   { saturation : Float
@@ -56,7 +57,7 @@ encodeHsv hsv =
     ]
 
 
-{-| Renders the given HSV color to CSS rgba string.
+{-| Renders the given HSV color to CSS string (rgba).
 
     Ext.Color.toCSSRgba blackHsv -- "rgba(0,0,0,1)"
 -}
@@ -77,7 +78,7 @@ toCSSRgba hsv =
       ++ ")"
 
 
-{-| Converts the given HSV color into Elm's color type.
+{-| Converts the given HSV color into Elm's color type (RGB).
 -}
 hsvToRgb : Hsv -> Color
 hsvToRgb color =

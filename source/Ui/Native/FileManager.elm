@@ -4,8 +4,8 @@ module Ui.Native.FileManager
     , readAsString
     , readAsDataURL
     , toFormData
-    , openSingle
-    , openMultiple
+    , openSingleDecoder
+    , openMultipleDecoder
     , download
     )
 
@@ -21,10 +21,11 @@ module Ui.Native.FileManager
 @docs toFormData
 
 # Open / Download
-@docs openSingle, openMultiple, download
+@docs openSingleDecoder, openMultipleDecoder, download
 -}
 
 import Task exposing (Task)
+import Json.Decode as Json
 import Native.FileManager
 import Http
 
@@ -76,22 +77,52 @@ toFormData key file =
   Http.stringData key (Native.FileManager.toFormData file)
 
 
-{-| Opens a file browser for selecting a single file.
+{-| Provides a decoder that will open a file browser and return a task for
+reading the chosen file.
 
-    task = FileManager.openSingle "image/*"
+    -- type
+    | Opened (Task Never File)
+    | GetFile File
+
+    -- update
+    Opened task ->
+      (model, Task.peform (\_ -> Debug.crash "") GetFile task
+
+    GetFile file ->
+      ({ model | file = file }, Cmd.none)
+
+    -- view
+    div
+      [ on "click" (Ui.Native.FileManager.openSingleDecoder "image/*" Opened) ]
+      [ text "Open File" ]
 -}
-openSingle : String -> Task Never File
-openSingle accept =
-  Native.FileManager.openSingle accept
+openSingleDecoder : String -> (Task Never File -> msg) -> Json.Decoder msg
+openSingleDecoder accept msg =
+  Json.map msg (Native.FileManager.openSingleDecoder accept)
 
 
-{-| Opens a file browser for selecting multiple files.
+{-| Provides a decoder that will open a file browser and return a task for
+reading the chosen files.
 
-    task = FileManager.openMultiple "image/*"
+    -- type
+    | Opened (Task Never (List File))
+    | GetFiles (List File)
+
+    -- update
+    Opened task ->
+      (model, Task.peform (\_ -> Debug.crash "") GetFile task
+
+    GetFiles files ->
+      ({ model | files = files }, Cmd.none)
+
+    -- view
+    div
+      [ on "click" (Ui.Native.FileManager.openMultipleDecoder "image/*" Opened) ]
+      [ text "Open Files" ]
 -}
-openMultiple : String -> Task Never (List File)
-openMultiple accept =
-  Native.FileManager.openMultiple accept
+openMultipleDecoder : String -> (Task Never (List File) -> msg) -> Json.Decoder msg
+openMultipleDecoder accept msg =
+  Json.map msg (Native.FileManager.openMultipleDecoder accept)
 
 
 {-| Downloads the given data with the given name and mime type.

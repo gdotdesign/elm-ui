@@ -1,0 +1,29 @@
+{
+  "custom_assertions_path" : "spec/assertions",
+  "page_objects_path" : "spec/page_objects",
+  "globals_path": "spec/globals.json",
+  "output_folder": false,
+
+  "selenium": {
+    "start_process": true,
+    "server_path": "spec/vendor/selenium-server.jar",
+    "log_path": false,
+    "cli_args": {
+      "webdriver.chrome.driver": "spec/vendor/chromedriver"
+    }
+  },
+
+  "test_settings" : {
+    "firefox" : {
+      "desiredCapabilities": {
+        "browserName": "firefox"
+      }
+    },
+
+    "chrome" : {
+      "desiredCapabilities": {
+        "browserName": "chrome"
+      }
+    }
+  }
+}

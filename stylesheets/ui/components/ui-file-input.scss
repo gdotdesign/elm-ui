@@ -95,6 +95,11 @@ ui-file-input-details {
     display: block;
   }
 
+  &:hover:not(.disabled):not(.readonly) {
+    cursor: pointer;
+    color: $focus;
+  }
+
   &.readonly {
     cursor: $readonly-cursor;
   }

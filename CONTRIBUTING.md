@@ -18,5 +18,5 @@ The stylesheet directory contains the styles for the components.
 ## Tests
 Tests are run using [Nightwatch.js](http://nightwatchjs.org):
 
-- Install selenium for your system into spec/vendor/selenium-server.jar
+- Install selenium for your system into `spec/vendor/selenium-server.jar`
 - The following command will run all the tests in Chrome and Firefox `npm test`

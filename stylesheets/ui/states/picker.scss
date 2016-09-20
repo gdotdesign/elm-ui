@@ -4,7 +4,7 @@
   @include colors($input);
   @include border;
 
-  transition: z-index 1ms 320ms;
+  transition: z-index 1ms 320ms, box-shadow 400ms linear;
   display: inline-block;
   position: relative;
   padding: 6px 9px;
@@ -12,7 +12,7 @@
   height: 36px;
 
   &.dropdown-open {
-    transition: z-index 1ms;
+    transition: z-index 1ms, box-shadow 400ms linear;
     z-index: 50;
 
     // Fix opened state

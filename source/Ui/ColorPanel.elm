@@ -250,7 +250,7 @@ handleMove x y model =
       ( model, Cmd.none )
     else
       ( { model | value = color }
-      , Emitter.send model.uid (encodeHsv model.value)
+      , Emitter.send model.uid (encodeHsv color)
       )
 
 

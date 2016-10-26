@@ -15,18 +15,20 @@ module Ui.ColorPanel exposing
 -}
 
 import Html.Events.Geometry exposing (Dimensions, onWithDimensions)
-import Html.Attributes exposing (style, classList)
-import Html exposing (node, div, text)
+import Html.Attributes exposing (style, classList, type', id)
+import Html exposing (node, div, text, input)
 import Html.Lazy
 
 import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)
 import Color exposing (Color)
+import Task
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
+import Native.Dom
 
 {-| Representation of a color panel:
   - **alphaDrag** - The drag model of the alpha slider
@@ -56,6 +58,7 @@ type Msg
   | LiftRect Dimensions
   | LiftHue Dimensions
   | Click Bool
+  | NoOp
 
 
 {-| Initializes a color panel with the given Elm color.
@@ -137,6 +140,9 @@ update action model =
     Click pressed ->
       ( handleClick pressed model, Cmd.none )
 
+    NoOp ->
+      ( model, Cmd.none )
+
 
 {-| Lazily renders a color panel.
 
@@ -184,47 +190,58 @@ render model =
           , ( "readonly", model.readonly )
           ]
       ]
-      [ div
-          []
-          [ node
-              "ui-color-panel-rect"
-              ([ style
-                  [ ( "background-color", background )
-                  , ( "cursor"
-                    , if model.drag.dragging then
-                        "move"
-                      else
-                        ""
-                    )
-                  ]
-               ]
-                ++ (action LiftRect)
-              )
-              [ renderHandle
-                  (asPercent (1 - color.value))
-                  (asPercent color.saturation)
-              ]
-          , node
-              "ui-color-panel-hue"
-              (action LiftHue)
-              [ renderHandle (asPercent color.hue) "" ]
-          ]
-      , node
-          "ui-color-panel-alpha"
-          (action LiftAlpha)
-          [ div [ style [ ( "background-image", gradient ) ] ] []
-          , renderHandle "" (asPercent color.alpha)
-          ]
+      [ node "ui-color-panel-hsv" []
+        [ div []
+            [ node
+                "ui-color-panel-rect"
+                ([ style
+                    [ ( "background-color", background )
+                    , ( "cursor"
+                      , if model.drag.dragging then
+                          "move"
+                        else
+                          ""
+                      )
+                    ]
+                 ]
+                  ++ (action LiftRect)
+                )
+                [ renderHandle
+                    (asPercent (1 - color.value))
+                    (asPercent color.saturation)
+                ]
+            , node
+                "ui-color-panel-hue"
+                (action LiftHue)
+                [ renderHandle (asPercent color.hue) "" ]
+            ]
+        , node
+            "ui-color-panel-alpha"
+            (action LiftAlpha)
+            [ div [ style [ ( "background-image", gradient ) ] ] []
+            , renderHandle "" (asPercent color.alpha)
+            ]
+        ]
+      , node "ui-color-panel-controls" []
+        [ input [id (model.uid ++ "-hex")] []
+        , input [type' "number", id (model.uid ++ "-red"), Html.Attributes.min "0", Html.Attributes.max "255"] []
+        , input [type' "number", id (model.uid ++ "-green"), Html.Attributes.min "0", Html.Attributes.max "255"] []
+        , input [type' "number", id (model.uid ++ "-blue"), Html.Attributes.min "0", Html.Attributes.max "255"] []
+        , input [type' "number", id (model.uid ++ "-alpha")] []
+        ]
       ]
-
 
 {-| Sets the value of a color panel.
 
     Ui.ColorPanel.setValue Color.black colorPanel
 -}
-setValue : Color -> Model -> Model
+setValue : Color -> Model -> (Model, Cmd Msg)
 setValue color model =
-  { model | value = Ext.Color.toHsv color }
+  let
+    updatedModel =
+      { model | value = Ext.Color.toHsv color }
+  in
+  (updatedModel, updateInputs updatedModel)
 
 
 
@@ -249,9 +266,36 @@ handleMove x y model =
     if model.value == color then
       ( model, Cmd.none )
     else
-      ( { model | value = color }
-      , Emitter.send model.uid (encodeHsv color)
-      )
+      updateCommands { model | value = color }
+
+updateInputs : Model -> Cmd Msg
+updateInputs model =
+  let
+    {red, green, blue, alpha} =
+      model.value
+      |> Ext.Color.hsvToRgb
+      |> Color.toRgb
+
+    task =
+      Task.sequence
+        [ Native.Dom.setValue (model.uid ++ "-red") (toString red)
+        , Native.Dom.setValue (model.uid ++ "-blue") (toString blue)
+        , Native.Dom.setValue (model.uid ++ "-green") (toString green)
+        , Native.Dom.setValue (model.uid ++ "-alpha") (toString (round (alpha * 100)))
+        ]
+  in
+    Task.perform (\_ -> Debug.crash "") (\_-> NoOp) task
+
+updateCommands : Model -> (Model, Cmd Msg)
+updateCommands model =
+  let
+    commands =
+      Cmd.batch
+        [ Emitter.send model.uid (encodeHsv model.value)
+        , updateInputs model
+        ]
+  in
+    (model, commands)
 
 
 {-| Updates a color panel, stopping the drags if the mouse isn't pressed.

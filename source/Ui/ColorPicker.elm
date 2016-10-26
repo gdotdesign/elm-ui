@@ -188,6 +188,9 @@ render model =
 
     Ui.ColorPicker.setValue Color.black colorPicker
 -}
-setValue : Color -> Model -> Model
+setValue : Color -> Model -> (Model, Cmd Msg)
 setValue color model =
-  { model | colorPanel = Ui.ColorPanel.setValue color model.colorPanel }
+  let
+    ( colorPanel, cmd ) = Ui.ColorPanel.setValue color model.colorPanel
+  in
+    ( { model | colorPanel = colorPanel }, Cmd.map ColorPanel cmd )

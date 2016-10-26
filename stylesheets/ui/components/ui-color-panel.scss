@@ -8,7 +8,6 @@ ui-color-panel {
   user-select: none;
   display: flex;
   padding: 15px;
-  height: 250px;
   width: 250px;
 
   // Disabled State
@@ -78,32 +77,69 @@ ui-color-panel {
     border-radius: $border-radius;
   }
 
-  // Rect + Hue container
-  > div {
-    margin-bottom: 15px;
+  ui-color-panel-rect {
+    height: 186px;
+  }
+
+  ui-color-panel-controls {
+    margin-top: 15px;
+    justify-content: space-between;
+    display: flex;
+
+    input:not([type]) {
+      flex: 0 0 60px;
+    }
+
+    input[type=number],
+    input:not([type]) {
+      text-align: center;
+      line-height: 14px;
+      padding: 4px 0;
+      padding-top: 3px;
+      font-weight: 600;
+      font-size: 13px;
+      height: 30px;
+      width: 35px;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        display: none;
+      }
+    }
+  }
+
+  ui-color-panel-hsv {
+    flex-direction: column;
     display: flex;
     flex: 1;
 
-    ui-color-panel-hue {
-      background-image: linear-gradient(to bottom, #F00 0%, #FF0 17%, #0F0 33%,
-                                        #0FF 50%, #00F 67%, #F0F 83%, #F00 100%);
-      flex: 0 0 16px;
-
-      ui-color-panel-handle {
-        border-radius: $border-radius;
-        transform: translateY(-50%);
-        height: 10px;
-        left: -4px;
-        right: -4px;
-        width: auto;
-      }
-    }
-
-    ui-color-panel-rect {
-      background-image: linear-gradient(0deg, #000 0%, transparent 100%),
-                        linear-gradient(90deg, #FFF 0%, rgba(#FFF, 0) 100%);
-      margin-right: 15px;
+    // Rect + Hue container
+    > div {
+      margin-bottom: 15px;
+      display: flex;
       flex: 1;
+
+      ui-color-panel-hue {
+        background-image: linear-gradient(to bottom, #F00 0%, #FF0 17%, #0F0 33%,
+                                          #0FF 50%, #00F 67%, #F0F 83%, #F00 100%);
+        flex: 0 0 16px;
+
+        ui-color-panel-handle {
+          border-radius: $border-radius;
+          transform: translateY(-50%);
+          height: 10px;
+          left: -4px;
+          right: -4px;
+          width: auto;
+        }
+      }
+
+      ui-color-panel-rect {
+        background-image: linear-gradient(0deg, #000 0%, transparent 100%),
+                          linear-gradient(90deg, #FFF 0%, rgba(#FFF, 0) 100%);
+        margin-right: 15px;
+        flex: 1;
+      }
     }
   }
 

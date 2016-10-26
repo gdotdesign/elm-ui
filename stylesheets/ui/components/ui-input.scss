@@ -21,6 +21,7 @@ ui-input {
 }
 
 input:not([type]),
+input[type=number],
 input[type=text],
 input[type=email],
 input[type=password] {

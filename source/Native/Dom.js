@@ -33,17 +33,28 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     })(valueDecoder)
   }
 
+  function setValue(id, value){
+    return task(function(callback){
+      var element = document.querySelector("[id='" + id + "']")
+      if(!element) { return }
+      element.value = value
+      callback(succeed(emptyTuple))
+    })
+  }
+
   function selectAllInInput(id){
     return task(function(callback){
       var element = document.querySelector("[id='" + id + "']")
       if(!element) { return }
       element.setSelectionRange(0, element.value.length)
+      callback(succeed(emptyTuple))
     })
   }
 
   return {
     decodeElementFunction: F3(decodeElementFunction),
     selectAllInInput: selectAllInInput,
+    setValue: F2(setValue),
     blur: blur
   }
 }();

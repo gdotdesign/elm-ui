@@ -17,8 +17,8 @@ double clicking on the component.
 -}
 
 import Html.Events.Geometry as Geometry exposing (Dimensions, onWithDimensions)
+import Html.Attributes exposing (value, readonly, disabled, classList, id)
 import Html.Events.Extra exposing (onKeys, onEnterPreventDefault, onStop)
-import Html.Attributes exposing (value, readonly, disabled, classList)
 import Html.Events exposing (onInput, onBlur)
 import Html exposing (node, input)
 import Html.Lazy
@@ -33,6 +33,7 @@ import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
+import Native.Dom
 
 {-| Representation of a number range:
   - **startValue** - The value when the dragging starts
@@ -75,6 +76,7 @@ type Msg
   | Click Bool
   | Increment
   | Decrement
+  | NoOp ()
   | Edit
   | Blur
   | Save
@@ -166,7 +168,10 @@ update msg model =
           | editing = True
           , inputValue = toFixed model.round model.value
         }
-      , Cmd.none
+      , Task.perform
+        (\_ -> Debug.crash "")
+        NoOp
+        (Native.Dom.selectAllInInput model.uid)
       )
 
     Lift ( position, dimensions, size ) ->
@@ -176,6 +181,9 @@ update msg model =
         }
       , Cmd.none
       )
+
+    NoOp _ ->
+      ( model, Cmd.none )
 
 
 {-| Lazily renders a number range.
@@ -224,6 +232,7 @@ render model =
         ([ onBlur Blur
          , readonly (not model.editing)
          , disabled model.disabled
+         , id model.uid
          ]
           ++ attributes
           ++ actions

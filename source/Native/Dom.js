@@ -2,11 +2,14 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
 
   var Json = _elm_lang$core$Native_Json;
   var valueDecoder = Json.decodePrimitive("value")
+  var task = _elm_lang$core$Native_Scheduler.nativeBinding
+  var succeed = _elm_lang$core$Native_Scheduler.succeed
+  var emptyTuple = _elm_lang$core$Native_Utils.Tuple0
 
   function blur(){
-    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback){
+    return task(function(callback){
       if(document.activeElement) { document.activeElement.blur() }
-      return callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+      return callback(succeed(emptyTuple));
     })
   }
 
@@ -30,8 +33,17 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     })(valueDecoder)
   }
 
+  function selectAllInInput(id){
+    return task(function(callback){
+      var element = document.querySelector("[id='" + id + "']")
+      if(!element) { return }
+      element.setSelectionRange(0, element.value.length)
+    })
+  }
+
   return {
     decodeElementFunction: F3(decodeElementFunction),
+    selectAllInInput: selectAllInInput,
     blur: blur
   }
 }();

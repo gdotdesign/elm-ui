@@ -4,7 +4,10 @@ module Ext.Color exposing (..)
 colors to HSV format.
 
 # Representations
-@docs Hsv
+@docs Hsv, Rgba
+
+# Updating
+@docs updateColor
 
 # Converting
 @docs hsvToRgb
@@ -35,6 +38,37 @@ type alias Hsv =
   , alpha : Float
   , hue : Float
   }
+
+
+{-| Rgba color type.
+-}
+type alias Rgba =
+  { alpha : Float
+  , green : Int
+  , blue : Int
+  , red : Int
+  }
+
+
+{-| Updates an Hsv color converting it to Rgb and then converting the result to
+Color.
+-}
+updateColor : (Rgba -> Rgba) -> Hsv -> Color
+updateColor function color =
+  let
+    currentColor =
+      color
+        |> hsvToRgb
+        |> Color.toRgb
+
+    updatedColor =
+      function currentColor
+  in
+    Color.rgba
+      updatedColor.red
+      updatedColor.green
+      updatedColor.blue
+      updatedColor.alpha
 
 
 {-| Decodes a HSV color type from a four element tuple.

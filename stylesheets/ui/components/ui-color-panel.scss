@@ -87,7 +87,8 @@ ui-color-panel {
     display: flex;
 
     input:not([type]) {
-      flex: 0 0 60px;
+      text-transform: uppercase;
+      flex: 0 0 65px;
     }
 
     input[type=number],

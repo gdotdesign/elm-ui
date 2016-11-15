@@ -16,8 +16,8 @@ module Ui.ColorPanel exposing
 
 import Html.Attributes exposing (style, classList, type', id, value)
 import Html.Events.Geometry exposing (Dimensions, onWithDimensions)
+import Html exposing (node, div, text, input, span)
 import Html.Events exposing (onInput, onBlur)
-import Html exposing (node, div, text, input)
 import Html.Lazy
 
 import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)
@@ -298,39 +298,53 @@ render model =
             ]
         ]
       , node "ui-color-panel-controls" []
-        [ input
-          [ value model.tempHex
-          , onInput SetHex
-          , onBlur FromHex
+        [ div []
+          [ input
+            [ value model.tempHex
+            , onInput SetHex
+            , onBlur FromHex
+            ] []
+          , span [] [ text "Hex" ]
           ]
-          []
-        , input
-          [ type' "number"
-          , Html.Attributes.min "0", Html.Attributes.max "255"
-          , onInput SetRed
-          , value (toString red)
-          ] []
-        , input
-          [ type' "number"
-          , onInput SetGreen
-          , Html.Attributes.min "0"
-          , Html.Attributes.max "255"
-          , value (toString green)
-          ] []
-        , input
-          [ type' "number"
-          , onInput SetBlue
-          , Html.Attributes.min "0"
-          , Html.Attributes.max "255"
-          , value (toString blue)
-          ] []
-        , input
-          [ type' "number"
-          , onInput SetAlpha
-          , Html.Attributes.min "0"
-          , Html.Attributes.max "100"
-          , value (toString (round (alpha * 100)))
-          ] []
+        , div []
+          [ input
+            [ type' "number"
+            , Html.Attributes.min "0", Html.Attributes.max "255"
+            , onInput SetRed
+            , value (toString red)
+            ] []
+          , span [] [ text "R" ]
+          ]
+        , div []
+          [ input
+            [ type' "number"
+            , onInput SetGreen
+            , Html.Attributes.min "0"
+            , Html.Attributes.max "255"
+            , value (toString green)
+            ] []
+          , span [] [ text "G" ]
+          ]
+        , div []
+          [ input
+            [ type' "number"
+            , onInput SetBlue
+            , Html.Attributes.min "0"
+            , Html.Attributes.max "255"
+            , value (toString blue)
+            ] []
+          , span [] [ text "B" ]
+          ]
+        , div []
+          [ input
+            [ type' "number"
+            , onInput SetAlpha
+            , Html.Attributes.min "0"
+            , Html.Attributes.max "100"
+            , value (toString (round (alpha * 100)))
+            ] []
+          , span [] [ text "A" ]
+          ]
         ]
       ]
 

@@ -17,6 +17,11 @@ ui-color-panel {
     background: $disabled;
     filter: saturate(0);
 
+    input {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
     ui-color-panel-hue,
     ui-color-panel-rect,
     ui-color-panel-alpha {
@@ -43,6 +48,10 @@ ui-color-panel {
 
   &.readonly {
     @extend %readonly;
+
+    input {
+      pointer-events: none;
+    }
   }
 
   &:not(.readonly) {
@@ -82,17 +91,36 @@ ui-color-panel {
   }
 
   ui-color-panel-controls {
-    margin-top: 15px;
     justify-content: space-between;
+    border-top: $border;
+    padding-top: 10px;
+    margin-top: 10px;
     display: flex;
+
+    div {
+      flex: 0 0 35px;
+
+      span {
+        text-transform: uppercase;
+        margin-top: 5px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 12px;
+        display: block;
+      }
+    }
+
+    div:first-child {
+      flex: 0 0 65px;
+    }
 
     input:not([type]) {
       text-transform: uppercase;
-      flex: 0 0 65px;
     }
 
     input[type=number],
     input:not([type]) {
+      -moz-appearance:textfield;
       text-align: center;
       line-height: 14px;
       padding: 4px 0;
@@ -100,11 +128,15 @@ ui-color-panel {
       font-weight: 600;
       font-size: 13px;
       height: 30px;
-      width: 35px;
+      width: 100%;
 
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
         display: none;
+      }
+
+      &:focus {
+        @extend %focused;
       }
     }
   }

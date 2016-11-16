@@ -31,7 +31,7 @@ module.exports = function(options) {
   async.series([
     buildPublic(),
     buildHtml(),
-    buildElm(options.main || 'Main', config, true),
+    buildElm(options.main || 'Main', false, config, true),
     buildCSS(true)
   ], function(error, results) {
     if (error) {

@@ -14,7 +14,7 @@ module Ui.ColorPanel exposing
 @docs setValue
 -}
 
-import Html.Attributes exposing (style, classList, type', id, value)
+import Html.Attributes exposing (style, classList, type_, id, value)
 import Html.Events.Geometry exposing (Dimensions, onWithDimensions)
 import Html exposing (node, div, text, input, span)
 import Html.Events exposing (onInput, onBlur)
@@ -308,7 +308,7 @@ render model =
           ]
         , div []
           [ input
-            [ type' "number"
+            [ type_ "number"
             , Html.Attributes.min "0", Html.Attributes.max "255"
             , onInput SetRed
             , value (toString red)
@@ -317,7 +317,7 @@ render model =
           ]
         , div []
           [ input
-            [ type' "number"
+            [ type_ "number"
             , onInput SetGreen
             , Html.Attributes.min "0"
             , Html.Attributes.max "255"
@@ -327,7 +327,7 @@ render model =
           ]
         , div []
           [ input
-            [ type' "number"
+            [ type_ "number"
             , onInput SetBlue
             , Html.Attributes.min "0"
             , Html.Attributes.max "255"
@@ -337,7 +337,7 @@ render model =
           ]
         , div []
           [ input
-            [ type' "number"
+            [ type_ "number"
             , onInput SetAlpha
             , Html.Attributes.min "0"
             , Html.Attributes.max "100"

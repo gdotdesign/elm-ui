@@ -169,7 +169,6 @@ update msg model =
           , inputValue = toFixed model.round model.value
         }
       , Task.perform
-        (\_ -> Debug.crash "")
         NoOp
         (Native.Dom.selectAllInInput model.uid)
       )

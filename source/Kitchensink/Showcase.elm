@@ -1,7 +1,6 @@
 module Kitchensink.Showcase exposing (..)
 
 import Html exposing (tr, td)
-import Html.App
 
 
 type alias Partial a =
@@ -132,13 +131,13 @@ render :
   -> Model component msg parentMsg
   -> Html.Html parentMsg
 render address renderFn model =
-  Html.App.map
+  Html.map
     address
     (tr
       []
-      [ td [] [ Html.App.map Enabled (renderFn model.enabled) ]
-      , td [] [ Html.App.map Readonly (renderFn model.readonly) ]
-      , td [] [ Html.App.map Disabled (renderFn model.disabled) ]
+      [ td [] [ Html.map Enabled (renderFn model.enabled) ]
+      , td [] [ Html.map Readonly (renderFn model.readonly) ]
+      , td [] [ Html.map Disabled (renderFn model.disabled) ]
       ]
     )
 

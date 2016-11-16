@@ -17,7 +17,7 @@ import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
 import Html.Events exposing (on, keyCode, onWithOptions)
 import Html
 
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json exposing (field)
 
 import Dict
 
@@ -38,10 +38,10 @@ unobtrusiveClick msg =
         Json.succeed msg
 
     decoder =
-      Json.object2 (,)
-        ("ctrlKey" := Json.bool)
-        ("button" := Json.int)
-        `Json.andThen` result
+      Json.map2 (,)
+        (field "ctrlKey" Json.bool)
+        (field "button" Json.int)
+        |> Json.andThen result
   in
     onWithOptions "click" stopOptions decoder
 
@@ -80,8 +80,8 @@ onEnter control msg =
     decoder =
       if control then
         Json.andThen
-          ("ctrlKey" := Json.bool)
           decoder2
+          (field "ctrlKey" Json.bool)
       else
         (decoder2 True)
   in
@@ -187,4 +187,4 @@ keysDecoder mappings =
         |> Maybe.map Json.succeed
         |> Maybe.withDefault (Json.fail "Key pressed not was no in mappings!")
   in
-    Json.andThen keyCode decode
+    Json.andThen decode keyCode

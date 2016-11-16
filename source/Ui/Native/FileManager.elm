@@ -68,13 +68,13 @@ readAsDataURL file =
   Native.FileManager.readAsDataURL file
 
 
-{-| Converts a files data to Http.Data
+{-| Converts a files data to Http.Part
 
     data = FileManager.toFormData file
 -}
-toFormData : String -> File -> Http.Data
+toFormData : String -> File -> Http.Part
 toFormData key file =
-  Http.stringData key (Native.FileManager.toFormData file)
+  Http.stringPart key (Native.FileManager.toFormData file)
 
 
 {-| Provides a decoder that will open a file browser and return a task for

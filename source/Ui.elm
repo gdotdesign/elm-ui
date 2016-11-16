@@ -193,10 +193,10 @@ textBlock value =
 breadcrumbs : Html.Html msg -> List ( String, Maybe msg ) -> Html.Html msg
 breadcrumbs separator items =
   let
-    renderItem ( label, action' ) =
+    renderItem ( label, action_ ) =
       let
         attributes =
-          case action' of
+          case action_ of
             Just action ->
               [ onClick action
               , class "clickable"
@@ -237,7 +237,7 @@ scrolledPanel contents =
 - Simple click triggers the message
 -}
 link : Maybe msg -> Maybe String -> String -> List (Html.Html msg) -> Html.Html msg
-link msg url target' =
+link msg url target_ =
   let
     tabIndex =
       if isJust msg || isJust url then
@@ -262,7 +262,7 @@ link msg url target' =
       case url of
         Just value ->
           [ href value
-          , target target'
+          , target target_
           ]
 
         Nothing ->

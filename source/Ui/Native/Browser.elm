@@ -11,7 +11,7 @@ module Ui.Native.Browser exposing
 @docs Location, location
 -}
 
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json exposing (field)
 import Task exposing (Task)
 import String
 
@@ -27,7 +27,7 @@ type alias Location =
   , search : String
   , host : String
   , hash : String
-  , port' : Int
+  , port_ : Int
   }
 
 
@@ -49,7 +49,7 @@ emptyLocation =
   , search = ""
   , host = ""
   , hash = ""
-  , port' = 0
+  , port_ = 0
   }
 
 
@@ -58,20 +58,20 @@ emptyLocation =
 decodeLocation : Json.Decoder Location
 decodeLocation =
   let
-    convertPort port' =
-      String.toInt port'
+    convertPort port_ =
+      String.toInt port_
         |> Result.withDefault 0
         |> Json.succeed
   in
-    Json.object7
+    Json.map7
       Location
-      ("pathname" := Json.string)
-      ("hostname" := Json.string)
-      ("protocol" := Json.string)
-      ("search" := Json.string)
-      ("host" := Json.string)
-      ("hash" := Json.string)
-      ("port" := Json.string `Json.andThen` convertPort)
+      (field "pathname" Json.string)
+      (field "hostname" Json.string)
+      (field "protocol" Json.string)
+      (field "search" Json.string)
+      (field "host" Json.string)
+      (field "hash" Json.string)
+      (field "port" Json.string |> Json.andThen convertPort)
 
 
 {-| Returns a task for opening a new window with the given url, if the window is

@@ -15,7 +15,7 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
   }
 
   function decodeElementFunction(method, selector, decoder) {
-    return Json.customAndThen(valueDecoder)(function(value){
+    return Json.andThen(valueDecoder)(function(value){
       if (value instanceof HTMLElement) {
         var element = value[method](selector);
         if(element){

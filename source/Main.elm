@@ -3,7 +3,6 @@ module Main exposing (..)
 import Date.Extra.Config.Configs as DateConfigs
 import Date.Extra.Format
 import List.Extra
-import Task.Extra exposing (performFailproof)
 import Ext.Color
 import Ext.Date
 import Color
@@ -16,7 +15,6 @@ import Dom
 import Html.Attributes exposing (style, classList, class, colspan, href)
 import Html.Events exposing (onClick)
 import Html exposing (div, text, node, table, tr, td)
-import Html.App
 
 import Ui.Native.FileManager as FileManager exposing (File)
 import Ui.Native.LocalStorage as LocalStorage
@@ -110,7 +108,8 @@ type Msg {- Showcase models -}
   | CloseMenu
   | Alert
   | NotFound Dom.Error
-  | WindowOpenFailed String
+  | WindowOpen (Result String ())
+  | Focused (Result Dom.Error ())
   | SetTitle
   | NoOp2 ()
   | NoOp {- Component related. -}
@@ -119,10 +118,9 @@ type Msg {- Showcase models -}
   | PreviousPage
   | NextPage
   | CloseModal
-  | OpenModal {- Storaget related -}
-  | Loaded String
-  | Failed String
-  | Saved String
+  | OpenModal {- Storage related -}
+  | TextareaLoaded (Result String String)
+  | TextareaSaved (Result String String)
 
 type alias Model =
   {- Cache -}
@@ -700,7 +698,7 @@ view model =
                           []
                           [ td
                               []
-                              [ Html.App.map Image (Ui.Image.view model.image) ]
+                              [ Html.map Image (Ui.Image.view model.image) ]
                           , td [] []
                           , td [] []
                           ]
@@ -751,8 +749,12 @@ update msg model =
     Alert ->
       { model | clicked = True }
 
-    Loaded value ->
-      { model | textarea = Showcase.updateModels (\txta -> Ui.Textarea.setValue value txta) model.textarea }
+    TextareaLoaded result ->
+      case result of
+        Ok value ->
+          { model | textarea = Showcase.updateModels (\txta -> Ui.Textarea.setValue value txta) model.textarea }
+        Err _ ->
+          model
 
     TaggerRemove id ->
       { model | taggerData = List.filter (\item -> item.id /= id) model.taggerData }
@@ -771,11 +773,11 @@ update msg model =
       model
 
 
-update' : Msg -> Model -> ( Model, Cmd Msg )
-update' msg model =
+update_ : Msg -> Model -> ( Model, Cmd Msg )
+update_ msg model =
   case msg of
     TextAreaChanged value ->
-      ( model, Task.perform Failed Saved (LocalStorage.setItem "textarea" value) )
+      ( model, Task.attempt TextareaSaved (LocalStorage.setItem "textarea" value) )
 
     Time act ->
       let
@@ -995,16 +997,20 @@ update' msg model =
       notify ("Ratings changed to: " ++ (toString (Ui.Ratings.valueAsStars value model.ratings.enabled))) model
 
     FocusChooser ->
-      ( model, Task.perform NotFound NoOp2 (Dom.focus model.chooser.enabled.uid) )
+      ( model, Task.attempt Focused (Dom.focus model.chooser.enabled.uid) )
 
     SetTitle ->
-      ( model, performFailproof NoOp2 (Browser.setTitle "test"))
+      ( model, Task.perform NoOp2 (Browser.setTitle "test"))
 
     Open url ->
-      ( model, Task.perform WindowOpenFailed NoOp2 (Browser.openWindow url))
+      ( model, Task.attempt WindowOpen (Browser.openWindow url))
 
-    WindowOpenFailed error ->
-      notify "Could not open window!" model
+    WindowOpen result ->
+      case result of
+        Ok _ ->
+          ( model, Cmd.none )
+        Err error ->
+          notify "Could not open window!" model
 
     _ ->
       ( update msg model, Cmd.none )
@@ -1054,9 +1060,9 @@ gatherSubs model =
 
 
 main =
-  Html.App.program
-    { init = ( init, Task.perform Failed Loaded (LocalStorage.getItem "textarea") )
+  Html.program
+    { init = ( init, Task.attempt TextareaLoaded (LocalStorage.getItem "textarea") )
     , view = view
-    , update = update'
+    , update = update_
     , subscriptions = \model -> gatherSubs model
     }

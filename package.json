@@ -8,7 +8,7 @@
     "predeploy": "npm run build",
     "build": "bin/index.js build",
     "test": "nightwatch spec/tests -e chrome,firefox",
-    "elm-install": "elm-package install -y",
+    "elm-install": "elm-github-install",
     "elm-docs": "elm-make --docs=documentation.json"
   },
   "homepage": "https://github.com/gdotdesign/elm-ui#readme",

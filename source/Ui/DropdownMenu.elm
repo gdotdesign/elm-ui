@@ -197,7 +197,7 @@ close model =
 -}
 decodeDimensions : String -> String -> Json.Decoder Dimensions
 decodeDimensions parent dropdown =
-  Json.object3
+  Json.map3
     Dimensions
     (Json.at [ "target" ] (Dom.withClosest parent (Dom.withSelector dropdown Geometry.decodeElementDimensions)))
     (Json.at [ "target" ] (Dom.withClosest parent (Dom.withSelector "*:first-child" Geometry.decodeElementDimensions)))

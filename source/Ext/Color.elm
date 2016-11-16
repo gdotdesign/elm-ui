@@ -41,7 +41,7 @@ type alias Hsv =
 -}
 decodeHsv : JD.Decoder Hsv
 decodeHsv =
-  JD.tuple4 (,,,) JD.float JD.float JD.float JD.float
+  JD.map4 (,,,) JD.float JD.float JD.float JD.float
     |> JD.map (\( sat, val, alpha, hue ) -> Hsv sat val alpha hue)
 
 
@@ -96,7 +96,7 @@ hsvToRgb color =
       value * saturation
 
     x =
-      c * (1 - (abs (((hue / 60) `Ext.Number.remFloat` 2) - 1)))
+      c * (1 - (abs ((Ext.Number.remFloat (hue / 60) 2) - 1)))
 
     m =
       value - c
@@ -158,7 +158,7 @@ toHsv color =
       if delta == 0 then
         0
       else if cmax == red then
-        60 * (((green - blue) / delta) `Ext.Number.remFloat` 6)
+        60 * (Ext.Number.remFloat ((green - blue) / delta) 6)
       else if cmax == green then
         60 * (((blue - red) / delta) + 2)
       else

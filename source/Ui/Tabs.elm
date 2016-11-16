@@ -98,7 +98,7 @@ render contents address model =
 
     activeTab =
       List.Extra.getAt model.selected contents
-        |> Maybe.map snd
+        |> Maybe.map Tuple.second
         |> Maybe.withDefault (text "")
   in
     node

@@ -38,5 +38,6 @@ roundTo precision number =
   let
     magnitude =
       10 * precision
+      |> toFloat
   in
     (toFloat (round (number * magnitude))) / magnitude

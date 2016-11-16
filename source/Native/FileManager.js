@@ -218,7 +218,7 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
   var valueDecoder = Json.decodePrimitive("value")
 
   function openMultipleDecoder(accept){
-    return Json.andThen(valueDecoder)(function(_){
+    return Json.andThen(function(_){
       var input = createInput()
       input.accept = accept
       input.multiple = false
@@ -232,11 +232,11 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
         })
       })
       return Json.succeed(task)
-    })
+    })(valueDecoder)
   }
 
   function openSingleDecoder(accept){
-    return Json.andThen(valueDecoder)(function(_){
+    return Json.andThen(function(_){
       var input = createInput()
       input.accept = accept
       input.click()
@@ -246,7 +246,7 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
         })
       })
       return Json.succeed(task)
-    })
+    })(valueDecoder)
   }
 
   return {

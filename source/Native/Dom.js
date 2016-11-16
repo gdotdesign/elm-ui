@@ -10,23 +10,24 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     })
   }
 
-  function fail(msg){
-    return { ctor: 'Err' }
-  }
-
   function decodeElementFunction(method, selector, decoder) {
-    return Json.andThen(valueDecoder)(function(value){
+    return Json.andThen(function(value){
       if (value instanceof HTMLElement) {
         var element = value[method](selector);
         if(element){
-          return Json.run(decoder)(element)
+          var result = Json.run(decoder)(element)
+          if(result.ctor == 'Ok'){
+            return Json.succeed(result._0)
+          } else {
+            return Json.fail(result._0)
+          }
         } else {
-          return fail('Could not find selector: ' + selector)
+          return Json.fail('Could not find selector: ' + selector)
         }
       } else {
-        return fail('Not HTML Element!')
+        return Json.fail('Not HTML Element!')
       }
-    })
+    })(valueDecoder)
   }
 
   return {

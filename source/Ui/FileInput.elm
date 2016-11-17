@@ -93,7 +93,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     Open task ->
-      ( model, Task.perform (\_ -> Debug.crash "") Selected task )
+      ( model, Task.perform Selected task )
 
     Selected file ->
       ( { model | file = Just file }, Emitter.sendFile model.uid file )

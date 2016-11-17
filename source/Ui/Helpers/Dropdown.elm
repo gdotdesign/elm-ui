@@ -52,7 +52,7 @@ type alias Dropdown a =
 -}
 decodeDimensions : Json.Decoder Dimensions
 decodeDimensions =
-  Json.object3
+  Json.map3
     Dimensions
     (Json.at [ "target" ] decodeElementDimensions)
     (Json.at [ "target" ] (Dom.withNearest "ui-dropdown" decodeElementDimensions))
@@ -77,7 +77,7 @@ onKeysWithDimensions mappings =
   onWithOptions
     "keydown"
     preventDefaultOptions
-    (Json.andThen (keysDecoder mappings) (\msg -> Json.map msg decodeDimensions))
+    (Json.andThen (\msg -> Json.map msg decodeDimensions) (keysDecoder mappings))
 
 
 {-| Renders a dropdown.

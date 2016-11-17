@@ -21,7 +21,7 @@ import Html.Attributes
     ( value
     , spellcheck
     , placeholder
-    , type'
+    , type_
     , readonly
     , disabled
     , classList
@@ -127,7 +127,7 @@ render model =
         , disabled model.disabled
         , value model.value
         , spellcheck False
-        , type' model.kind
+        , type_ model.kind
         , onInput Input
         ]
         []

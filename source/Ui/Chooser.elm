@@ -380,10 +380,10 @@ the dropdown if needed.
 toggleItemAndClose : String -> Model -> ( Model, Cmd Msg )
 toggleItemAndClose value model =
   let
-    ( model, effect ) =
+    ( updatedModel, effect ) =
       toggleItem value model
   in
-    ( closeIfShouldClose model, effect )
+    ( closeIfShouldClose updatedModel, effect )
 
 
 {-| Toggle item if multiple is True.

@@ -40,7 +40,6 @@ type alias Model =
 -}
 type Msg
   = Show
-  | NoOp
 
 
 {-| Initializes a loader with the given timeout.
@@ -67,9 +66,6 @@ update msg model =
         ( { model | shown = True }, Cmd.none )
       else
         ( model, Cmd.none )
-
-    NoOp ->
-      ( model, Cmd.none )
 
 
 {-| Lazily renders a loader.
@@ -131,7 +127,7 @@ finish model =
 start : Model -> ( Model, Cmd Msg )
 start model =
   ( { model | loading = True }
-  , Task.perform (\_ -> NoOp) (\_ -> Show) (Process.sleep model.timeout)
+  , Task.perform (\_ -> Show) (Process.sleep model.timeout)
   )
 
 

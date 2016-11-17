@@ -74,8 +74,8 @@ onEffects router newSubs oldState =
       {- If we have a process and no new subs kill the process. -}
       ( Just pid, False ) ->
         Task.andThen
-          (Process.kill pid)
           (\_ -> Task.succeed { oldState | subs = [], pid = Nothing })
+          (Process.kill pid)
 
       ( Nothing, True ) ->
         Process.spawn
@@ -84,7 +84,8 @@ onEffects router newSubs oldState =
             (Json.succeed "")
             (\_ -> Platform.sendToSelf router Msg)
           )
-          `Task.andThen` \pid -> Task.succeed { pid = Just pid, subs = newSubs }
+          |> Task.andThen
+            (\pid -> Task.succeed { pid = Just pid, subs = newSubs })
 
       {- No process no new subs do nothing. -}
       ( Nothing, False ) ->
@@ -102,5 +103,5 @@ onSelfMsg router msg state =
           Platform.sendToApp router a
   in
     Task.andThen
-      (Task.sequence (List.map send state.subs))
       (\_ -> Task.succeed state)
+      (Task.sequence (List.map send state.subs))

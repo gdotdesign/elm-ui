@@ -168,16 +168,13 @@ render model =
     Ui.Ratings.setValue 8 ratings
 -}
 setValue : Float -> Model -> Model
-setValue value' model =
+setValue value_ model =
   let
     value =
-      roundTo 2 value'
+      roundTo 2 value_
   in
-    if
-      model.value
-        == value
-        && model.hoverValue
-        == value
+    if model.value == value
+    && model.hoverValue == value
     then
       model
     else

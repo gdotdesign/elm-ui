@@ -20,7 +20,6 @@ import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
-import Html.App
 
 import Json.Decode as JD
 import Json.Encode as JE
@@ -180,7 +179,7 @@ render tags model =
       (classes :: actions)
       [ Ui.Container.row
           []
-          [ Html.App.map Input (Ui.Input.view updatedInput)
+          [ Html.map Input (Ui.Input.view updatedInput)
           , Ui.IconButton.view Create button
           ]
       , node

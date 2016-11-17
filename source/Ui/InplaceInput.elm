@@ -17,7 +17,6 @@ import Html.Events.Extra exposing (onEnter, onKeys)
 import Html exposing (node, div, text)
 import Html.Events exposing (onClick)
 import Html.Lazy
-import Html.App
 import Task
 import Dom
 
@@ -60,8 +59,7 @@ type Msg
   | Close
   | Save
   | Edit
-  | NotFound Dom.Error
-  | NoOp ()
+  | Done (Result Dom.Error ())
 
 
 {-| Initializes an inplace input with the given value and palceholder.
@@ -129,7 +127,7 @@ update action model =
     Close ->
       ( close model, Cmd.none )
 
-    _ ->
+    Done _ ->
       ( model, Cmd.none )
 
 
@@ -163,7 +161,7 @@ render model =
 open : Model -> ( Model, Cmd Msg )
 open model =
   ( { model | open = True }
-  , Task.perform NotFound NoOp (Dom.focus model.textarea.uid)
+  , Task.attempt Done (Dom.focus model.textarea.uid)
   )
 
 
@@ -186,7 +184,7 @@ form model =
       [ onEnter model.ctrlSave Save
       , onKeys [ ( 27, Close ) ]
       ]
-      [ Html.App.map Textarea (Ui.Textarea.view model.textarea)
+      [ Html.map Textarea (Ui.Textarea.view model.textarea)
       , Ui.Container.row
           []
           [ Ui.Button.view

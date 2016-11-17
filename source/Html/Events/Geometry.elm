@@ -17,7 +17,7 @@ import Html.Events.Options exposing (stopPropagationOptions)
 import Html.Events exposing (onWithOptions)
 import Html
 
-import Json.Decode as Json exposing ((:=))
+import Json.Decode as Json exposing (field)
 
 import Ui.Native.Dom as Dom
 
@@ -65,10 +65,10 @@ type alias Dimensions =
 -}
 decodeMousePosition : Json.Decoder MousePosition
 decodeMousePosition =
-  Json.object2
+  Json.map2
     MousePosition
-    ("pageX" := Json.float)
-    ("pageY" := Json.float)
+    (field "pageX" Json.float)
+    (field "pageY" Json.float)
 
 
 {-| Decodes dimensions from an HTMLElement.
@@ -76,16 +76,16 @@ decodeMousePosition =
 decodeElementDimensions : Json.Decoder ElementDimensions
 decodeElementDimensions =
   Dom.withBoundingClientRect
-    (Json.object8
+    (Json.map8
       ElementDimensions
-      ("scrollLeft" := Json.float)
-      ("scrollTop" := Json.float)
-      ("height" := Json.float)
-      ("width" := Json.float)
-      ("bottom" := Json.float)
-      ("right" := Json.float)
-      ("left" := Json.float)
-      ("top" := Json.float)
+      (field "scrollLeft" Json.float)
+      (field "scrollTop" Json.float)
+      (field "height" Json.float)
+      (field "width" Json.float)
+      (field "bottom" Json.float)
+      (field "right" Json.float)
+      (field "left" Json.float)
+      (field "top" Json.float)
     )
 
 
@@ -95,10 +95,10 @@ decodeWindowSize : Json.Decoder WindowSize
 decodeWindowSize =
   let
     decoder =
-      Json.object2
+      Json.map2
         WindowSize
-        ("innerHeight" := Json.float)
-        ("innerWidth" := Json.float)
+        (field "innerHeight" Json.float)
+        (field "innerWidth" Json.float)
   in
     Json.at [ "target", "ownerDocument", "defaultView" ] decoder
 
@@ -110,7 +110,7 @@ onWithDimensions : String -> Bool -> (Dimensions -> msg) -> Html.Attribute msg
 onWithDimensions event preventDefault action =
   let
     decoder =
-      Json.object3
+      Json.map3
         (,,)
         decodeMousePosition
         (Json.at [ "target" ] decodeElementDimensions)

@@ -218,7 +218,7 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
   var valueDecoder = Json.decodePrimitive("value")
 
   function openMultipleDecoder(accept){
-    return Json.customAndThen(valueDecoder)(function(_){
+    return Json.andThen(function(_){
       var input = createInput()
       input.accept = accept
       input.multiple = false
@@ -231,12 +231,12 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
           callback(_elm_lang$core$Native_Scheduler.succeed(files))
         })
       })
-      return _elm_lang$core$Result$Ok(task)
-    })
+      return Json.succeed(task)
+    })(valueDecoder)
   }
 
   function openSingleDecoder(accept){
-    return Json.customAndThen(valueDecoder)(function(_){
+    return Json.andThen(function(_){
       var input = createInput()
       input.accept = accept
       input.click()
@@ -245,8 +245,8 @@ var _gdotdesign$elm_ui$Native_FileManager = function() {
           callback(_elm_lang$core$Native_Scheduler.succeed(createFile(input.files[0])))
         })
       })
-      return _elm_lang$core$Result$Ok(task)
-    })
+      return Json.succeed(task)
+    })(valueDecoder)
   }
 
   return {

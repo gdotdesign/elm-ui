@@ -18,7 +18,6 @@ import Html.Attributes exposing (classList, style)
 import Html.Events exposing (onBlur, onClick)
 import Html exposing (node, div, text)
 import Html.Lazy
-import Html.App
 
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
@@ -180,7 +179,7 @@ render model =
           NoOp
           model.dropdownPosition
           [ node "ui-dropdown-overlay" [ onClick Blur ] []
-          , Html.App.map ColorPanel (Ui.ColorPanel.view model.colorPanel)
+          , Html.map ColorPanel (Ui.ColorPanel.view model.colorPanel)
           ]
       ]
 

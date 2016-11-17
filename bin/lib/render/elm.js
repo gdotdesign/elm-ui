@@ -14,12 +14,16 @@ try {
 } catch (e) {}
 
 // Renders an .elm file.
-var render = function(file, callback) {
+var render = function(file, debug, callback) {
   var filename = `test-${+Date.now()}.js`
   var arguments = `${file} --output ${filename} --yes`.split(' ')
   var result = ''
   var command
   var regexp
+
+  if (debug) {
+    arguments.push('--debug')
+  }
 
   // If there is pty.js we can have colored output
   if (pty) {
@@ -57,9 +61,9 @@ var render = function(file, callback) {
   })
 }
 
-module.exports = function(file, config, shouldFail) {
+module.exports = function(file, debug, config, shouldFail) {
   return function(callback) {
-    render(file, function(error, result, filename) {
+    render(file, debug, function(error, result, filename) {
       if (error) {
         var prettyError =
           renderError('You have errors in of your Elm file(s):', error)

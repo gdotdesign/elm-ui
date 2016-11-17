@@ -17,7 +17,6 @@ current value of the input when it has settled after the given timeout.
 import Html.Attributes exposing (classList)
 import Html exposing (node)
 import Html.Lazy
-import Html.App
 
 import Time exposing (Time)
 import Ext.Date
@@ -56,7 +55,6 @@ type alias Model =
 type Msg
   = Input Ui.Input.Msg
   | Update Time
-  | NoOp
 
 
 {-| Initializes a search input with the given timeout.
@@ -127,14 +125,10 @@ update msg model =
 
         cmd =
           Task.perform
-            (\_ -> NoOp)
             (\_ -> (Update (justNow + model.timeout)))
             (Process.sleep model.timeout)
       in
         ( updatedModel, cmd )
-
-    NoOp ->
-      ( model, Cmd.none )
 
 
 {-| Lazily renders a search input.
@@ -163,7 +157,7 @@ render { input, disabled, readonly } =
       "ui-search-input"
       []
       [ Ui.icon "search" False []
-      , Html.App.map Input (Ui.Input.view updatedInput)
+      , Html.map Input (Ui.Input.view updatedInput)
       ]
 
 

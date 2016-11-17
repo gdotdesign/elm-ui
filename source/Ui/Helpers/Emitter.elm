@@ -277,7 +277,8 @@ onEffects router commands subscriptions model =
         |> List.foldr (++) []
   in
     {- Execute tasks and return the state -}
-    Task.sequence tasks `Task.andThen` (\_ -> Task.succeed model)
+    Task.sequence tasks
+      |> Task.andThen (\_ -> Task.succeed model)
 
 
 {-| On self message do nothing because we don't receive these.

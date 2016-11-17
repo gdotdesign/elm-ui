@@ -44,7 +44,6 @@ type Msg
   = AutoHide Int
   | Remove Int
   | Hide Int
-  | NoOp
 
 
 {-| Initializes a notification center with the given timeout and duration (in
@@ -75,9 +74,6 @@ update action model =
 
     Hide id ->
       hide id model
-
-    NoOp ->
-      ( model, Cmd.none )
 
 
 {-| Renders a notification center.
@@ -121,9 +117,9 @@ type alias Notification msg =
   }
 
 
-performTask : Msg -> Task.Task a b -> Cmd Msg
+performTask : Msg -> Task.Task Never b -> Cmd Msg
 performTask msg task =
-  Task.perform (\_ -> NoOp) (\_ -> msg) task
+  Task.perform (\_ -> msg) task
 
 
 {-| Renders a notification center.

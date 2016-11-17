@@ -19,7 +19,6 @@ import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node, div, text)
 import Html.Lazy
-import Html.App
 
 import Date.Extra.Format exposing (isoDateFormat, format)
 import Date.Extra.Config.Configs as DateConfigs
@@ -215,7 +214,7 @@ render locale model =
           NoOp
           model.dropdownPosition
           [ node "ui-dropdown-overlay" [ onClick Blur ] []
-          , Html.App.map Calendar (Ui.Calendar.view locale model.calendar)
+          , Html.map Calendar (Ui.Calendar.view locale model.calendar)
           ]
       ]
 

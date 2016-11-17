@@ -46,12 +46,14 @@ program
 program
   .command('server')
   .option('-p, --prefix [prefix]', 'path prefix')
+  .option('-d, --debug', "use Elm's debugger")
   .alias('start')
   .description('Starts development server')
   .action(function(env, opts) {
     elmUi.serve({
       env: program.env,
-      prefix: env.prefix
+      prefix: env.prefix || '',
+      debug: env.debug
     })
   })
 

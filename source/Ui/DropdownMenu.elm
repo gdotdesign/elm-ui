@@ -1,13 +1,10 @@
 module Ui.DropdownMenu exposing
-  (Model, ViewModel, Msg, Dimensions, init, subscriptions, update, view, item, close, openHandler)
+  (Model, ViewModel, Msg, init, subscriptions, update, view, item, close)
 
 {-| Dropdown menu that is always visible on the screen.
 
 # Model
 @docs Model, Msg, init, subscriptions, update
-
-# Dimensions
-@docs Dimensions, openHandler
 
 # View
 @docs ViewModel, view, item
@@ -16,10 +13,8 @@ module Ui.DropdownMenu exposing
 @docs close
 -}
 
-import Html.Attributes exposing (style, classList)
-import Html.Events exposing (onWithOptions)
-import Html.Events.Extra exposing (onStop)
-import Html.Events.Geometry as Geometry
+import Html.Attributes exposing (style, classList, id)
+import Html.Events exposing (on)
 import Html exposing (node)
 import Html.Lazy
 
@@ -27,8 +22,10 @@ import Json.Decode as Json
 import Mouse
 
 import Ui.Native.Scrolls as Scrolls
-import Ui.Native.Dom as Dom
+import Ui.Native.Uid as Uid
 
+import DOM.Window
+import DOM
 
 {-| Representation of a dropdown menu:
   - **offsetLeft** - The x-axis offset for the dropdown
@@ -43,6 +40,7 @@ import Ui.Native.Dom as Dom
 type alias Model =
   { offsetLeft : Float
   , offsetTop : Float
+  , uid : String
   , left : Float
   , top : Float
   , open : Bool
@@ -61,21 +59,12 @@ type alias ViewModel msg =
   }
 
 
-{-| Representation of dimensions for a dropdown menu.
--}
-type alias Dimensions =
-  { dropdown : Geometry.ElementDimensions
-  , parent : Geometry.ElementDimensions
-  , window : Geometry.WindowSize
-  }
-
-
 {-| Messages that a dropdown menu can receive.
 -}
 type Msg
-  = Toggle Dimensions
-  | Click Bool
-  | NoOp
+  = CloseWithPosition Mouse.Position
+  | Toggle Mouse.Position
+  | Close
 
 
 {-| Initializes a dropdown menu.
@@ -84,7 +73,8 @@ type Msg
 -}
 init : Model
 init =
-  { offsetLeft = 0
+  { uid = Uid.uid ()
+  , offsetLeft = 0
   , offsetTop = 5
   , open = False
   , left = 0
@@ -110,8 +100,8 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   if model.open then
     Sub.batch
-      [ Mouse.downs (Click << (\_ -> False))
-      , Scrolls.scrolls (Click False)
+      [ Mouse.downs CloseWithPosition
+      , Scrolls.scrolls Close
       ]
   else
     Sub.none
@@ -124,17 +114,42 @@ subscriptions model =
 update : Msg -> Model -> Model
 update action model =
   case action of
-    Toggle dimensions ->
-      open dimensions model
+    Toggle position ->
+      let
+        isOverResult =
+          DOM.isOver
+            (DOM.idSelector (model.uid ++ "-items"))
+            { top = position.y, left = position.x }
 
-    NoOp ->
-      model
+        isOver =
+          case isOverResult of
+            Ok value -> value
+            Err _ -> False
+      in
+        if isOver then
+          model
+        else
+          open model
 
-    Click pressed ->
-      if not pressed then
-        { model | open = False }
-      else
-        model
+    CloseWithPosition position ->
+      let
+        isOverResult =
+          DOM.isOver
+            (DOM.idSelector model.uid)
+            { top = position.y, left = position.x }
+
+        isOver =
+          case isOverResult of
+            Ok value -> value
+            Err _ -> False
+      in
+        if isOver then
+          model
+        else
+          close model
+
+    Close ->
+      close model
 
 
 {-| Renders a dropdown menu.
@@ -155,17 +170,14 @@ render : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
 render viewModel address model =
   node
     "ui-dropdown-menu"
-    [ openHandler
-        "ui-dropdown-menu"
-        "ui-dropdown-menu-items"
-        "mouseup"
-        (address << Toggle)
+    [ on "click" (Json.map (address << Toggle) Mouse.position)
+    , id model.uid
     ]
     [ viewModel.element
     , node
         "ui-dropdown-menu-items"
-        [ onStop "mousedown" (address NoOp)
-        , classList [ ( "open", model.open ) ]
+        [ classList [ ( "open", model.open ) ]
+        , id (model.uid ++ "-items")
         , style
             [ ( "top", (toString model.top) ++ "px" )
             , ( "left", (toString model.left) ++ "px" )
@@ -193,32 +205,26 @@ close model =
   { model | open = False }
 
 
-{-| Decodes dimensions.
--}
-decodeDimensions : String -> String -> Json.Decoder Dimensions
-decodeDimensions parent dropdown =
-  Json.map3
-    Dimensions
-    (Json.at [ "target" ] (Dom.withClosest parent (Dom.withSelector dropdown Geometry.decodeElementDimensions)))
-    (Json.at [ "target" ] (Dom.withClosest parent (Dom.withSelector "*:first-child" Geometry.decodeElementDimensions)))
-    Geometry.decodeWindowSize
-
-
-{-| Open event handler.
--}
-openHandler : String -> String -> String -> (Dimensions -> msg) -> Html.Attribute msg
-openHandler parent dropdown event msg =
-  onWithOptions
-    event
-    Html.Events.defaultOptions
-    (Json.map msg (decodeDimensions parent dropdown))
-
-
 {-| Updates the position of a dropdown form the given dimensions.
 -}
-open : Dimensions -> Model -> Model
-open { parent, dropdown, window } model =
+open : Model -> Model
+open model =
   let
+    window =
+      { height = toFloat (DOM.Window.height ())
+      , width = toFloat (DOM.Window.width ())
+      }
+
+    parent =
+      case DOM.getDimensionsSync (DOM.idSelector model.uid) of
+        Ok rect -> rect
+        Err _ -> { top = 0, left = 0, right = 0, bottom = 0, width = 0, height = 0 }
+
+    dropdown =
+      case DOM.getDimensionsSync (DOM.idSelector (model.uid ++ "-items")) of
+        Ok rect -> rect
+        Err _ -> { top = 0, left = 0, right = 0, bottom = 0, width = 0, height = 0 }
+
     topSpace =
       parent.top - dropdown.height - model.offsetTop
 

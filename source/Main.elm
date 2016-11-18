@@ -255,7 +255,7 @@ init =
                 , node "span" [] [ text "Download" ]
                 ]
             , Ui.DropdownMenu.item
-                [ onClick CloseMenu ]
+                []
                 [ Ui.icon "trash-b" True []
                 , node "span" [] [ text "Delete" ]
                 ]
@@ -1047,7 +1047,6 @@ gatherSubs model =
     , Showcase.subscribe model.chooser
     , Showcase.subscribe model.tagger
     , Showcase.subscribe model.fileInput
-    , Scrolls.scrolls CloseMenu
     , Sub.map App Ui.App.subscriptions
     , Sub.map Time Ui.Time.subscriptions
     , Sub.map Time2 Ui.Time.subscriptions

@@ -69,6 +69,7 @@
     "elm-lang/virtual-dom": "2.0.0 <= v < 3.0.0",
     "gdotdesign/elm-dom": "0.1.0 <= v < 1.0.0",
     "ggb/numeral-elm": "1.2.1 <= v < 2.0.0",
+    "elm-lang/window": "1.0.1 <= v < 2.0.0",
     "elm-lang/mouse": "1.0.1 <= v < 2.0.0",
     "elm-lang/http": "1.0.0 <= v < 4.0.0",
     "elm-lang/html": "2.0.0 <= v < 3.0.0",

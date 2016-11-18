@@ -440,7 +440,7 @@ init =
           Ui.Slider.update
           (\_ -> Sub.none)
           (\model -> Ui.Slider.subscriptions model)
-    , menu = Ui.DropdownMenu.init
+    , menu = Ui.DropdownMenu.init ()
     , modal = Ui.Modal.init
     , loader = { loader | shown = True }
     , time = Ui.Time.init (Ext.Date.createDate 2015 11 1)

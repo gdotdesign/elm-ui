@@ -24,6 +24,10 @@ import Mouse
 import Ui.Native.Scrolls as Scrolls
 import Ui.Native.Uid as Uid
 
+import Ui.Helpers.Dropdown_ as DD
+
+import Window
+
 import DOM.Window
 import DOM
 
@@ -38,16 +42,8 @@ import DOM
     - **vertical** - Either "top" or "bottom"
 -}
 type alias Model =
-  { offsetLeft : Float
-  , offsetTop : Float
-  , uid : String
-  , left : Float
-  , top : Float
-  , open : Bool
-  , favoredSides :
-      { horizontal : String
-      , vertical : String
-      }
+  { uid : String
+  , dropdown : DD.Dropdown
   }
 
 
@@ -69,21 +65,15 @@ type Msg
 
 {-| Initializes a dropdown menu.
 
-    dropdownMenu = Ui.DropdownMenu.init
+    dropdownMenu = Ui.DropdownMenu.init ()
 -}
-init : Model
-init =
+init : () -> Model
+init _ =
   { uid = Uid.uid ()
-  , offsetLeft = 0
-  , offsetTop = 5
-  , open = False
-  , left = 0
-  , top = 0
-  , favoredSides =
-      { horizontal = "left"
-      , vertical = "bottom"
-      }
+  , dropdown =
+    DD.init
   }
+    |> DD.offset 5
 
 
 {-| Subscriptions for a dropdown menu.
@@ -98,10 +88,11 @@ init =
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  if model.open then
+  if model.dropdown.open then
     Sub.batch
       [ Mouse.downs CloseWithPosition
       , Scrolls.scrolls Close
+      , Window.resizes (\_ -> Close)
       ]
   else
     Sub.none
@@ -129,7 +120,7 @@ update action model =
         if isOver then
           model
         else
-          open model
+          DD.open model
 
     CloseWithPosition position ->
       let
@@ -176,11 +167,11 @@ render viewModel address model =
     [ viewModel.element
     , node
         "ui-dropdown-menu-items"
-        [ classList [ ( "open", model.open ) ]
-        , id (model.uid ++ "-items")
+        [ classList [ ( "open", model.dropdown.open ) ]
+        , id (model.uid ++ "-dropdown")
         , style
-            [ ( "top", (toString model.top) ++ "px" )
-            , ( "left", (toString model.left) ++ "px" )
+            [ ( "top", (toString model.dropdown.top) ++ "px" )
+            , ( "left", (toString model.dropdown.left) ++ "px" )
             ]
         ]
         viewModel.items
@@ -202,73 +193,4 @@ item attributes children =
 -}
 close : Model -> Model
 close model =
-  { model | open = False }
-
-
-{-| Updates the position of a dropdown form the given dimensions.
--}
-open : Model -> Model
-open model =
-  let
-    window =
-      { height = toFloat (DOM.Window.height ())
-      , width = toFloat (DOM.Window.width ())
-      }
-
-    parent =
-      case DOM.getDimensionsSync (DOM.idSelector model.uid) of
-        Ok rect -> rect
-        Err _ -> { top = 0, left = 0, right = 0, bottom = 0, width = 0, height = 0 }
-
-    dropdown =
-      case DOM.getDimensionsSync (DOM.idSelector (model.uid ++ "-items")) of
-        Ok rect -> rect
-        Err _ -> { top = 0, left = 0, right = 0, bottom = 0, width = 0, height = 0 }
-
-    topSpace =
-      parent.top - dropdown.height - model.offsetTop
-
-    topPosition =
-      topSpace
-
-    bottomSpace =
-      window.height - (parent.bottom + dropdown.height + model.offsetTop)
-
-    bottomPosition =
-      parent.bottom + model.offsetTop
-
-    leftSpace =
-      parent.left + dropdown.width + model.offsetLeft
-
-    leftPosition =
-      parent.left + model.offsetLeft
-
-    rightSpace =
-      parent.right - dropdown.width - model.offsetLeft
-
-    rightPosition =
-      rightSpace
-
-    top =
-      if model.favoredSides.vertical == "top" then
-        if topSpace > 0 then
-          topPosition
-        else
-          bottomPosition
-      else if bottomSpace > 0 then
-        bottomPosition
-      else
-        topPosition
-
-    left =
-      if model.favoredSides.horizontal == "right" then
-        if rightSpace > 0 then
-          rightPosition
-        else
-          leftPosition
-      else if leftSpace < window.width then
-        leftPosition
-      else
-        rightPosition
-  in
-    { model | top = top, left = left, open = True }
+  DD.close model

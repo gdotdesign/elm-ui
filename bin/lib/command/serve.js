@@ -43,7 +43,7 @@ module.exports = function(options) {
 
     if(isJs && haveElmFile){
       this.type = 'text/javascript'
-      this.body = yield renderElm(filePath, readConfig(options))
+      this.body = yield renderElm(filePath, options.debug, readConfig(options))
     } else {
       yield next
     }

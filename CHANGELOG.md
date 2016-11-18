@@ -1,3 +1,12 @@
+# 0.4.0
+This release is for upgrading to Elm 0.18.
+
+### Changes
+* Added the option `-d, --debug` to turn on Elms debugger.
+* Using `yarn` instead of `npm` internally.
+* Fixed braking changes.
+
+
 # 0.3.0
 This is the release comes with may improvements to the workflow and coincides
 with the release of the official website that provides guides and documentation.

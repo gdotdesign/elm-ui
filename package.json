@@ -1,6 +1,6 @@
 {
   "name": "elm-ui",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "UI Libary in Elm",
   "scripts": {
     "start": "bin/index.js server",
@@ -8,7 +8,7 @@
     "predeploy": "npm run build",
     "build": "bin/index.js build",
     "test": "nightwatch spec/tests -e chrome,firefox",
-    "elm-install": "elm-github-install",
+    "elm-install": "elm-package install -y",
     "elm-docs": "elm-make --docs=documentation.json"
   },
   "homepage": "https://github.com/gdotdesign/elm-ui#readme",

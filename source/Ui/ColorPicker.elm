@@ -131,7 +131,6 @@ update action model =
     Blur ->
       ( Dropdown.close model, Cmd.none )
 
-
 {-| Lazily renders a color picker.
 
     Ui.ColorPicker.view colorPicker

@@ -51,10 +51,15 @@ var _gdotdesign$elm_ui$Native_Dom = function() {
     })
   }
 
+  function test(selector){
+    return !!(document.querySelector(selector))
+  }
+
   return {
     decodeElementFunction: F3(decodeElementFunction),
     selectAllInInput: selectAllInInput,
     setValue: F2(setValue),
+    test: test,
     blur: blur
   }
 }();

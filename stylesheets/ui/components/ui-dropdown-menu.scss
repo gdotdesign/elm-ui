@@ -12,14 +12,14 @@
 
   transition: opacity 150ms, transform 150ms, visibility 1ms 150ms;
   z-index: map-get($z-index, dropdown);
-  transform: translateY(10px);
+  transform: translate3d(0,0,0) translateY(10px);
   pointer-events: none;
   visibility: hidden;
   opacity: 0;
 
   &.open {
     transition: opacity 150ms, transform 150ms, visibility 1ms;
-    transform: translateY(0);
+    transform: translate3d(0,0,0) translateY(0);
     pointer-events: auto;
     visibility: visible;
     opacity: 1;

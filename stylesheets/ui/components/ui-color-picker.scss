@@ -5,10 +5,6 @@ ui-color-picker {
   padding-right: 52px;
   min-width: 220px;
 
-  *[dropdown-panel] {
-    transform: translate3d(0,0,0);
-  }
-
   // Color preview on the right side
   ui-color-picker-rect {
     background-color: dampen($secondary, 5%);

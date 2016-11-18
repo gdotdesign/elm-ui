@@ -12,10 +12,18 @@ colorPicker =
     |> Dropdown.offset 5
 ```
 -}
+import Html.Attributes exposing (style, classList, id, attribute)
+import Html.Events exposing (on)
+import Html exposing (node)
+
+import Json.Decode as Json
 import Window
+import Mouse
 
 import DOM.Window
 import DOM
+
+import Ui.Native.Scrolls as Scrolls
 
 type Direction
   = Horizontal
@@ -31,8 +39,23 @@ type Space
   = Positive
   | Negative
 
+type Msg
+  = Click Mouse.Position
+  | Toggle Mouse.Position
+  | Close
+
+type alias ViewModel msg =
+  { attributes : List (Html.Attribute msg)
+  , elements : List (Html.Html msg)
+  , items : List (Html.Html msg)
+  , address : Msg -> msg
+  , dropdownTag : String
+  , tag : String
+  }
+
 type alias Dropdown =
   { direction : Direction
+  , clickToggle : Bool
   , favoring : Space
   , alignTo : Space
   , offset : Float
@@ -53,6 +76,7 @@ init =
   { direction = Vertical
   , favoring = Positive
   , alignTo = Positive
+  , clickToggle = True
   , open = False
   , offset = 0
   , left = 0
@@ -61,10 +85,16 @@ init =
 
 -- PUBLIC API
 
-direction : Direction -> Model a -> Model a
-direction direction model =
+clickToggle : Bool -> Model a -> Model a
+clickToggle value model =
   updateDropdown
-    (\dropdown -> { dropdown | direction = direction } )
+    (\dropdown -> { dropdown | clickToggle = value } )
+    model
+
+direction : Direction -> Model a -> Model a
+direction value model =
+  updateDropdown
+    (\dropdown -> { dropdown | direction = value } )
     model
 
 alignTo : Side -> Model a -> Model a
@@ -97,7 +127,75 @@ close model =
     (\dropdown -> { dropdown | open = False })
     model
 
+toggle : Model a -> Model a
+toggle model =
+  if model.dropdown.open then
+    close model
+  else
+    open model
+
+subscriptions : Model a -> Sub Msg
+subscriptions model =
+  if model.dropdown.open then
+    Sub.batch
+      [ Window.resizes (\_ -> Close)
+      , Scrolls.scrolls Close
+      , Mouse.downs Click
+      ]
+  else
+    Sub.none
+
+update : Msg -> Model a -> Model a
+update msg model =
+  case msg of
+    Toggle position ->
+      if isOver (model.uid ++ "-dropdown") position then
+        model
+      else
+        toggle model
+
+    Click position ->
+      if isOver model.uid position then
+        model
+      else
+        close model
+
+    Close ->
+      close model
+
+view : ViewModel msg -> Model a -> Html.Html msg
+view viewModel model =
+  let
+    clickToggleAttr =
+      if model.dropdown.clickToggle then
+        [ on "click" (Json.map (viewModel.address << Toggle) Mouse.position) ]
+      else
+        []
+  in
+    node viewModel.tag
+      ([ id model.uid
+      , attribute "dropdown" ""
+      ] ++ viewModel.attributes ++ clickToggleAttr)
+      ( viewModel.elements
+      ++ [ node
+          viewModel.dropdownTag
+          [ classList [ ( "open", model.dropdown.open ) ]
+          , id (model.uid ++ "-dropdown")
+          , attribute "dropdown-panel" ""
+          , style
+              [ ( "top", (toString model.dropdown.top) ++ "px" )
+              , ( "left", (toString model.dropdown.left) ++ "px" )
+              ]
+          ]
+          viewModel.items
+      ])
+
 -- PRIVATE API
+
+isOver : String -> Mouse.Position -> Bool
+isOver id position =
+  DOM.isOver (DOM.idSelector id) { top = position.y, left = position.x }
+    |> Result.withDefault False
 
 updateDropdown : (Dropdown -> Dropdown) -> Model a -> Model a
 updateDropdown function model =

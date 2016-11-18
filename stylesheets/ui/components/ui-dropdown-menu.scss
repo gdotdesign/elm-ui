@@ -1,6 +1,32 @@
-ui-dropdown-menu {
+*[dropdown] {
   display: inline-block;
+}
 
+*[dropdown-panel] {
+  @include colors($input);
+  @include border;
+
+  box-shadow: 0 5px 20px rgba(#000, 0.1);
+  background: $input;
+  position: fixed;
+
+  transition: opacity 150ms, transform 150ms, visibility 1ms 150ms;
+  z-index: map-get($z-index, dropdown);
+  transform: translateY(10px);
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+
+  &.open {
+    transition: opacity 150ms, transform 150ms, visibility 1ms;
+    transform: translateY(0);
+    pointer-events: auto;
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+ui-dropdown-menu {
   ui-dropdown-menu-item {
     padding: 9px 14px;
     display: flex;
@@ -32,29 +58,7 @@ ui-dropdown-menu {
     }
   }
 
-  // Dropdown menu items
   ui-dropdown-menu-items {
-    @include colors($input);
-    @include border;
-
-    box-shadow: 0 5px 20px rgba(#000, 0.1);
-    background: $input;
-    position: fixed;
     padding: 7px;
-
-    transition: opacity 150ms, transform 150ms, visibility 1ms 150ms;
-    z-index: map-get($z-index, dropdown);
-    transform: translateY(10px);
-    pointer-events: none;
-    visibility: hidden;
-    opacity: 0;
-
-    &.open {
-      transition: opacity 150ms, transform 150ms, visibility 1ms;
-      transform: translateY(0);
-      pointer-events: auto;
-      visibility: visible;
-      opacity: 1;
-    }
   }
 }

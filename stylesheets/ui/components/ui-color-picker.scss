@@ -1,10 +1,13 @@
 ui-color-picker {
   @extend %picker;
 
-  transform: translate3d(0, 0, 0);
   display: inline-flex;
   padding-right: 52px;
   min-width: 220px;
+
+  *[dropdown-panel] {
+    transform: translate3d(0,0,0);
+  }
 
   // Color preview on the right side
   ui-color-picker-rect {

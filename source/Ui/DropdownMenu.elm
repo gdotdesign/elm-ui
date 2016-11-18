@@ -58,9 +58,7 @@ type alias ViewModel msg =
 {-| Messages that a dropdown menu can receive.
 -}
 type Msg
-  = CloseWithPosition Mouse.Position
-  | Toggle Mouse.Position
-  | Close
+  = Dropdown DD.Msg
 
 
 {-| Initializes a dropdown menu.
@@ -88,14 +86,7 @@ init _ =
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  if model.dropdown.open then
-    Sub.batch
-      [ Mouse.downs CloseWithPosition
-      , Scrolls.scrolls Close
-      , Window.resizes (\_ -> Close)
-      ]
-  else
-    Sub.none
+  Sub.map Dropdown (DD.subscriptions model)
 
 
 {-| Updates a dropdown menu.
@@ -105,43 +96,8 @@ subscriptions model =
 update : Msg -> Model -> Model
 update action model =
   case action of
-    Toggle position ->
-      let
-        isOverResult =
-          DOM.isOver
-            (DOM.idSelector (model.uid ++ "-items"))
-            { top = position.y, left = position.x }
-
-        isOver =
-          case isOverResult of
-            Ok value -> value
-            Err _ -> False
-      in
-        if isOver then
-          model
-        else
-          DD.open model
-
-    CloseWithPosition position ->
-      let
-        isOverResult =
-          DOM.isOver
-            (DOM.idSelector model.uid)
-            { top = position.y, left = position.x }
-
-        isOver =
-          case isOverResult of
-            Ok value -> value
-            Err _ -> False
-      in
-        if isOver then
-          model
-        else
-          close model
-
-    Close ->
-      close model
-
+    Dropdown msg ->
+      DD.update msg model
 
 {-| Renders a dropdown menu.
 
@@ -159,23 +115,14 @@ view viewModel address model =
 -}
 render : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
 render viewModel address model =
-  node
-    "ui-dropdown-menu"
-    [ on "click" (Json.map (address << Toggle) Mouse.position)
-    , id model.uid
-    ]
-    [ viewModel.element
-    , node
-        "ui-dropdown-menu-items"
-        [ classList [ ( "open", model.dropdown.open ) ]
-        , id (model.uid ++ "-dropdown")
-        , style
-            [ ( "top", (toString model.dropdown.top) ++ "px" )
-            , ( "left", (toString model.dropdown.left) ++ "px" )
-            ]
-        ]
-        viewModel.items
-    ]
+  DD.view
+  { elements = [viewModel.element]
+  , attributes = []
+  , tag = "ui-dropdown-menu"
+  , dropdownTag = "ui-dropdown-menu-items"
+  , address = address << Dropdown
+  , items = viewModel.items
+  } model
 
 
 {-| Renders a dropdown item.

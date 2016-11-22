@@ -14,7 +14,7 @@ module Ui.DropdownMenu exposing
 -}
 
 import Html.Attributes exposing (style, classList, id)
-import Html.Events exposing (on)
+import Html.Events exposing (onClick)
 import Html exposing (node)
 import Html.Lazy
 
@@ -25,11 +25,6 @@ import Ui.Native.Scrolls as Scrolls
 import Ui.Native.Uid as Uid
 
 import Ui.Helpers.Dropdown_ as DD
-
-import Window
-
-import DOM.Window
-import DOM
 
 {-| Representation of a dropdown menu:
   - **offsetLeft** - The x-axis offset for the dropdown
@@ -59,6 +54,7 @@ type alias ViewModel msg =
 -}
 type Msg
   = Dropdown DD.Msg
+  | Toggle
 
 
 {-| Initializes a dropdown menu.
@@ -96,6 +92,9 @@ subscriptions model =
 update : Msg -> Model -> Model
 update action model =
   case action of
+    Toggle ->
+      DD.toggle model
+
     Dropdown msg ->
       DD.update msg model
 
@@ -116,13 +115,12 @@ view viewModel address model =
 render : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
 render viewModel address model =
   DD.view
-  { elements = [viewModel.element]
-  , attributes = []
-  , tag = "ui-dropdown-menu"
-  , dropdownTag = "ui-dropdown-menu-items"
-  , address = address << Dropdown
-  , items = viewModel.items
-  } model
+    { children = [ viewModel.element ]
+    , attributes = [onClick (address Toggle) ]
+    , tag = "ui-dropdown-menu"
+    , address = address << Dropdown
+    , contents = viewModel.items
+    } model
 
 
 {-| Renders a dropdown item.

@@ -1,9 +1,37 @@
 ui-color-picker {
-  @extend %picker;
+  @extend %focused-idle;
 
+  @include colors($input);
+  @include border;
+
+  transition: z-index 1ms 320ms, box-shadow 400ms linear;
   display: inline-flex;
-  padding-right: 52px;
   min-width: 220px;
+  height: 36px;
+
+  ui-color-picker-input {
+    display: block;
+    position: relative;
+    cursor: pointer;
+
+    padding: 6px 9px;
+    padding-right: 52px;
+  }
+
+  // Focused state
+  &:focus {
+    @extend %focused;
+  }
+
+  &.readonly {
+    @extend %readonly;
+  }
+
+  // Disabled state
+  &.disabled {
+    @extend %disabled;
+    background: $disabled;
+  }
 
   // Color preview on the right side
   ui-color-picker-rect {

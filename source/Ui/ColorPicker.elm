@@ -14,7 +14,7 @@ focused, allowing the user to manipulate the selected color.
 @docs setValue
 -}
 
-import Html.Events exposing (onBlur, onClick, onFocus)
+import Html.Events exposing (onBlur, onMouseDown, onFocus, on)
 import Html.Attributes exposing (classList, style)
 import Html.Events.Extra exposing (onKeys)
 import Html exposing (node, div, text)
@@ -22,6 +22,8 @@ import Html.Lazy
 
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
+
+import Json.Decode as Json
 
 import Ui.Helpers.Dropdown_ as Dropdown
 import Ui.Native.Uid as Uid
@@ -68,7 +70,6 @@ init color =
   , uid = Uid.uid ()
   }
     |> Dropdown.offset 5
-    |> Dropdown.clickToggle False
 
 
 {-| Subscribe to the changes of a color picker.
@@ -129,7 +130,14 @@ update action model =
       ( Dropdown.close model, Cmd.none )
 
     Blur ->
-      ( Dropdown.close model, Cmd.none )
+      let
+        selector =
+          "[id='" ++ model.uid ++ "'] *:focus"
+      in
+        if Native.Dom.test selector then
+          ( model, Cmd.none )
+        else
+          ( Dropdown.close model, Cmd.none )
 
 {-| Lazily renders a color picker.
 
@@ -155,14 +163,18 @@ render model =
         model
         [ onFocus Focus
         , onBlur Blur
+        , on "focusout" (Json.succeed Blur)
         , onKeys
             [ ( 27, Close )
             , ( 13, Toggle )
             ]
         ]
 
-    open =
-      model.dropdown.open && not model.disabled && not model.readonly
+    toggleAction =
+      if Native.Dom.test ("[id='" ++ model.uid ++ "']:focus") then
+        [ onMouseDown Toggle ]
+      else
+        []
 
     finalActions =
       [ classList
@@ -176,16 +188,18 @@ render model =
     Dropdown.view
       { tag = "ui-color-picker"
       , address = Dropdown
-      , dropdownTag = "div"
       , attributes = finalActions
-      , elements =
-          [ div [] [ text color ]
-          , node
-              "ui-color-picker-rect"
-              []
-              [ div [ style [ ( "background-color", color ) ] ] [] ]
+      , children =
+          [ node "ui-color-picker-input"
+            toggleAction
+            [ text color
+            , node
+                "ui-color-picker-rect"
+                []
+                [ div [ style [ ( "background-color", color ) ] ] [] ]
+            ]
           ]
-      , items = [ Html.map ColorPanel (Ui.ColorPanel.view model.colorPanel)]
+      , contents = [ Html.map ColorPanel (Ui.ColorPanel.view model.colorPanel)]
       } model
     {-
     node

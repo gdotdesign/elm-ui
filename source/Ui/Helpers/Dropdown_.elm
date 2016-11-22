@@ -177,7 +177,7 @@ view viewModel model =
 
 isOver : String -> Mouse.Position -> Bool
 isOver id position =
-  DOM.isOver (DOM.idSelector id) { top = position.y, left = position.x }
+  DOM.isOver (DOM.idSelector id) { top = toFloat position.y, left = toFloat position.x }
     |> Result.withDefault False
 
 updateDropdown : (Dropdown -> Dropdown) -> Model a -> Model a
@@ -201,8 +201,8 @@ openDropdown uid model =
   let
     -- Get Window Positions
     window =
-      { height = toFloat (DOM.Window.height ())
-      , width = toFloat (DOM.Window.width ())
+      { height = DOM.Window.height ()
+      , width = DOM.Window.width ()
       }
 
     parent =

@@ -1,4 +1,4 @@
-ui-color-picker {
+ui-picker {
   @extend %focused-idle;
 
   @include colors($input);
@@ -9,7 +9,7 @@ ui-color-picker {
   min-width: 220px;
   height: 36px;
 
-  ui-color-picker-input {
+  ui-picker-input {
     display: block;
     position: relative;
     cursor: pointer;

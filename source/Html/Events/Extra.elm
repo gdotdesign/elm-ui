@@ -10,7 +10,7 @@ module Html.Events.Extra exposing (..)
 
 # Miscellaneous
 @docs onScroll, onTransitionEnd, onLoad, onError, onWheel, decodeDelta
-@docs unobtrusiveClick
+@docs unobtrusiveClick, onFocusOut
 -}
 
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
@@ -59,6 +59,14 @@ events.
 onWheel : Json.Decoder data -> (data -> msg) -> Html.Attribute msg
 onWheel decoder action =
   on "wheel" (Json.map action decoder)
+
+
+{-| Capture [focusout](https://developer.mozilla.org/en-US/docs/Web/Events/focusout)
+events.
+-}
+onFocusOut : msg -> Html.Attribute msg
+onFocusOut msg =
+  on "focusout" (Json.succeed msg)
 
 
 {-| Capture [keyup](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)

@@ -14,18 +14,15 @@ focused, allowing the user to manipulate the selected color.
 @docs setValue
 -}
 
-import Html.Events exposing (onBlur, onMouseDown, onFocus, on)
-import Html.Attributes exposing (classList, style)
-import Html.Events.Extra exposing (onKeys)
+import Html.Attributes exposing (style)
 import Html exposing (node, div, text)
 import Html.Lazy
 
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
 
-import Json.Decode as Json
-
-import Ui.Helpers.Dropdown_ as Dropdown
+import Ui.Helpers.Dropdown_ as Dropdown exposing (Dropdown)
+import Ui.Helpers.Picker as Picker
 import Ui.Native.Uid as Uid
 import Ui.ColorPanel
 import Ui
@@ -39,7 +36,7 @@ import Ui
 -}
 type alias Model =
   { colorPanel : Ui.ColorPanel.Model
-  , dropdown : Dropdown.Dropdown
+  , dropdown : Dropdown
   , disabled : Bool
   , readonly : Bool
   , uid : String
@@ -50,12 +47,7 @@ type alias Model =
 -}
 type Msg
   = ColorPanel Ui.ColorPanel.Msg
-  | Dropdown Dropdown.Msg
-  | Toggle
-  | Focus
-  | Close
-  | Blur
-
+  | Picker Picker.Msg
 
 {-| Initializes a color picker with the given color.
 
@@ -101,7 +93,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
     [ Sub.map ColorPanel (Ui.ColorPanel.subscriptions model.colorPanel)
-    , Sub.map Dropdown (Dropdown.subscriptions model)
+    , Sub.map Picker (Picker.subscriptions model)
     ]
 
 
@@ -110,34 +102,14 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
-    Dropdown msg ->
-      (Dropdown.update msg model, Cmd.none)
-
+    Picker act ->
+      (Picker.update act model, Cmd.none)
     ColorPanel act ->
       let
         ( colorPanel, effect ) =
           Ui.ColorPanel.update act model.colorPanel
       in
         ( { model | colorPanel = colorPanel }, Cmd.map ColorPanel effect )
-
-    Toggle ->
-      ( Dropdown.toggle model, Cmd.none)
-
-    Focus ->
-      ( Dropdown.open model, Cmd.none )
-
-    Close ->
-      ( Dropdown.close model, Cmd.none )
-
-    Blur ->
-      let
-        selector =
-          "[id='" ++ model.uid ++ "'] *:focus"
-      in
-        if Native.Dom.test selector then
-          ( model, Cmd.none )
-        else
-          ( Dropdown.close model, Cmd.none )
 
 {-| Lazily renders a color picker.
 
@@ -157,63 +129,19 @@ render model =
   let
     color =
       Ext.Color.toCSSRgba model.colorPanel.value
-
-    actions =
-      Ui.enabledActions
-        model
-        [ onFocus Focus
-        , onBlur Blur
-        , on "focusout" (Json.succeed Blur)
-        , onKeys
-            [ ( 27, Close )
-            , ( 13, Toggle )
-            ]
-        ]
-
-    toggleAction =
-      if Native.Dom.test ("[id='" ++ model.uid ++ "']:focus") then
-        [ onMouseDown Toggle ]
-      else
-        []
-
-    finalActions =
-      [ classList
-          [ ( "disabled", model.disabled )
-          , ( "readonly", model.readonly )
-          ]
-      ]
-        ++ actions
-        ++ (Ui.tabIndex model)
   in
-    Dropdown.view
-      { tag = "ui-color-picker"
-      , address = Dropdown
-      , attributes = finalActions
-      , children =
-          [ node "ui-color-picker-input"
-            toggleAction
-            [ text color
-            , node
-                "ui-color-picker-rect"
-                []
-                [ div [ style [ ( "background-color", color ) ] ] [] ]
-            ]
+    Picker.view
+      { address = Picker
+      , attributes = []
+      , contents =
+          [ text color
+          , node
+              "ui-color-picker-rect"
+              []
+              [ div [ style [ ( "background-color", color ) ] ] [] ]
           ]
-      , contents = [ Html.map ColorPanel (Ui.ColorPanel.view model.colorPanel)]
+      , dropdownContents = [ Html.map ColorPanel (Ui.ColorPanel.view model.colorPanel)]
       } model
-    {-
-    node
-      "ui-color-picker"
-      (
-      )
-      [
-      , Dropdown.view
-          model.dropdownPosition
-          [ node "ui-dropdown-overlay" [ onClick Blur ] []
-          , Html.map ColorPanel (Ui.ColorPanel.view model.colorPanel)
-          ]
-      ]
-    -}
 
 
 {-| Sets the value of a color picker.

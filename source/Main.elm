@@ -354,7 +354,7 @@ init =
           (\_ -> Ui.DatePicker.init (Ext.Date.now ()))
           Ui.DatePicker.update
           (\_ -> Sub.none)
-          (\_ -> Sub.none)
+          (\model -> Ui.DatePicker.subscriptions model)
     , pager = { pager | width = "100%", height = "200px" }
     , notifications = Ui.NotificationCenter.init 4000 400
     , fileInput =
@@ -1054,6 +1054,7 @@ gatherSubs model =
     , Sub.map NumberRange (Showcase.subscriptions model.numberRange)
     , Sub.map Slider (Showcase.subscriptions model.slider)
     , Sub.map ColorPicker (Showcase.subscriptions model.colorPicker)
+    , Sub.map DatePicker (Showcase.subscriptions model.datePicker)
     , Sub.map DropdownMenu (Ui.DropdownMenu.subscriptions model.menu)
     ]
 

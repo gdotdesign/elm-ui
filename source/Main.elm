@@ -19,7 +19,6 @@ import Html exposing (div, text, node, table, tr, td)
 import Ui.Native.FileManager as FileManager exposing (File)
 import Ui.Native.LocalStorage as LocalStorage
 import Ui.Native.Browser as Browser
-import Ui.Native.Scrolls as Scrolls
 import Ui.Native.Uid as Uid
 
 import Ui.NotificationCenter
@@ -924,7 +923,7 @@ update_ msg model =
         ( notis, effect ) =
           Ui.NotificationCenter.update act model.notifications
       in
-        ( { model | notifications = notis }, Cmd.map Notis effect )
+        { model | notifications = notis }
 
     NumberRange act ->
       let

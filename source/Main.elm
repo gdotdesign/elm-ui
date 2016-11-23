@@ -451,7 +451,7 @@ init =
           (\_ -> Ui.Chooser.init data "Select a country..." "")
           Ui.Chooser.update
           (Ui.Chooser.subscribe ChooserChanged)
-          (\_ -> Sub.none)
+          (\model -> Ui.Chooser.subscriptions model)
     , app = Ui.App.init
     }
 
@@ -1055,6 +1055,7 @@ gatherSubs model =
     , Sub.map Slider (Showcase.subscriptions model.slider)
     , Sub.map ColorPicker (Showcase.subscriptions model.colorPicker)
     , Sub.map DatePicker (Showcase.subscriptions model.datePicker)
+    , Sub.map Chooser (Showcase.subscriptions model.chooser)
     , Sub.map DropdownMenu (Ui.DropdownMenu.subscriptions model.menu)
     ]
 

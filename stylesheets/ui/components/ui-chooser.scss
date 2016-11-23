@@ -100,8 +100,9 @@ ui-chooser {
   }
 
   // Empty state
-  ui-dropdown {
-    min-width: 100%;
+  [dropdown-panel] {
+    max-height: 250px;
+    display: flex;
     padding: 5px;
 
     &:empty:before {

@@ -15,7 +15,6 @@ module Ui.ColorPanel exposing
 -}
 
 import Html.Attributes exposing (style, classList, type_, id, value)
-import Html.Events.Geometry exposing (Dimensions, onWithDimensions)
 import Html exposing (node, div, text, input, span)
 import Html.Events exposing (onInput, onBlur)
 import Html.Lazy
@@ -30,6 +29,8 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
+
+import Native.Dom
 
 import DOM exposing (Position)
 

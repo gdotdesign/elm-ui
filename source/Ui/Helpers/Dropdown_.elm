@@ -90,7 +90,7 @@ direction value model =
 alignTo : Side -> Model a -> Model a
 alignTo side model =
   updateDropdown
-    (\dropdown -> { dropdown | alignTo = getSpaceFromSide side } )
+    (\dropdown -> { dropdown | alignTo = stwitchSpace (getSpaceFromSide side) } )
     model
 
 favoring : Side -> Model a -> Model a
@@ -191,6 +191,12 @@ getSpaceFromSide side =
     Right -> Positive
     Left -> Negative
     Top -> Negative
+
+stwitchSpace : Space -> Space
+stwitchSpace space =
+  case space of
+    Positive -> Negative
+    Negative -> Positive
 
 defaultRect : DOM.Dimensions
 defaultRect =

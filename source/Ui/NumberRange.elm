@@ -16,24 +16,26 @@ double clicking on the component.
 @docs setValue, increment, decrement
 -}
 
-import Html.Events.Geometry as Geometry exposing (Dimensions, onWithDimensions)
 import Html.Attributes exposing (value, readonly, disabled, classList, id)
-import Html.Events.Extra exposing (onKeys, onEnterPreventDefault, onStop)
-import Html.Events exposing (onInput, onBlur)
+import Html.Events.Extra exposing (onKeys, onEnterPreventDefault)
+import Html.Events exposing (onInput, onBlur, on)
 import Html exposing (node, input)
 import Html.Lazy
 
 import Ext.Number exposing (toFixed)
+import Process
 import Result
 import String
 import Task
+
+import Json.Decode as Json
+
+import DOM exposing (Position)
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
-
-import Native.Dom
 
 {-| Representation of a number range:
   - **startValue** - The value when the dragging starts
@@ -53,7 +55,7 @@ import Native.Dom
 type alias Model =
   { inputValue : String
   , startValue : Float
-  , drag : Drag.Model
+  , drag : Drag.Drag
   , disabled : Bool
   , readonly : Bool
   , editing : Bool
@@ -70,16 +72,16 @@ type alias Model =
 {-| Messages that a number range can receive.
 -}
 type Msg
-  = Move ( Float, Float )
-  | Lift Dimensions
+  = Move Position
+  | Lift Position
   | Input String
-  | Click Bool
   | Increment
   | Decrement
-  | NoOp ()
+  | NoOpTask (Result DOM.Error ())
   | Edit
   | Blur
   | Save
+  | End
 
 
 {-| Initializes a number range by the given value.
@@ -132,7 +134,10 @@ subscribe msg model =
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Drag.subscriptions Move Click model.drag.dragging
+  Sub.batch
+    [ Drag.onMove Move model
+    , Drag.onEnd End model
+    ]
 
 
 {-| Updates a number range.
@@ -151,11 +156,11 @@ update msg model =
     Save ->
       endEdit model
 
-    Move ( x, y ) ->
-      handleMove x y model
+    Move position ->
+      handleMove position model
 
-    Click pressed ->
-      ( handleClick pressed model, Cmd.none )
+    End ->
+      ( Drag.end model, Cmd.none )
 
     Input value ->
       ( { model | inputValue = value }, Cmd.none )
@@ -168,20 +173,16 @@ update msg model =
           | editing = True
           , inputValue = toFixed model.round model.value
         }
-      , Task.perform
-        NoOp
-        (Native.Dom.selectAllInInput model.uid)
+      , Task.attempt NoOpTask (DOM.select (DOM.idSelector model.uid))
       )
 
-    Lift ( position, dimensions, size ) ->
-      ( { model
-          | drag = Drag.lift dimensions position model.drag
-          , startValue = model.value
-        }
-      , Cmd.none
+    Lift position ->
+      ( { model | startValue = model.value }
+          |> Drag.lift position
+      , Task.attempt NoOpTask (DOM.focus (DOM.idSelector model.uid))
       )
 
-    NoOp _ ->
+    _ ->
       ( model, Cmd.none )
 
 
@@ -209,8 +210,8 @@ render model =
         , onEnterPreventDefault Save
         ]
       else
-        [ onWithDimensions "mousedown" False Lift
-        , onStop "dblclick" Edit
+        [ Drag.liftHandler Lift
+        , on "dblclick" (Json.succeed Edit)
         , onKeys
             [ ( 40, Decrement )
             , ( 38, Increment )
@@ -293,31 +294,18 @@ sendValue model =
 
 {-| Updates a number range value by coordinates.
 -}
-handleMove : Float -> Float -> Model -> ( Model, Cmd Msg )
-handleMove x y model =
+handleMove : Position -> Model -> ( Model, Cmd Msg )
+handleMove position model =
   let
-    diff =
-      (Drag.diff x y model.drag).left
+    left =
+      Drag.diff position model
+        |> .left
   in
     if model.drag.dragging then
-      setValue (model.startValue - (-diff * model.step)) model
+      setValue (model.startValue - (-left * model.step)) model
         |> sendValue
     else
       ( model, Cmd.none )
-
-
-{-| Updates a number range, stopping the drag if the mouse isnt pressed.
--}
-handleClick : Bool -> Model -> Model
-handleClick value model =
-  let
-    drag =
-      Drag.handleClick value model.drag
-  in
-    if model.drag == drag then
-      model
-    else
-      { model | drag = drag }
 
 
 {-| Exits a number range from its editing mode.

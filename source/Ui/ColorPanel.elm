@@ -31,7 +31,7 @@ import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
-import Native.Dom
+import DOM exposing (Position)
 
 {-| Representation of a color panel:
   - **alphaDrag** - The drag model of the alpha slider
@@ -43,9 +43,9 @@ import Native.Dom
   - **value** - The current HSV color
 -}
 type alias Model =
-  { alphaDrag : Drag.Model
-  , hueDrag : Drag.Model
-  , drag : Drag.Model
+  { alphaDrag : DragModel
+  , hueDrag : DragModel
+  , drag : DragModel
   , tempHex : String
   , disabled : Bool
   , readonly : Bool
@@ -54,20 +54,27 @@ type alias Model =
   }
 
 
+type alias DragModel =
+  { drag : Drag.Drag
+  , uid : String
+  }
+
 {-| Messages that a color panel can receive.
 -}
 type Msg
-  = Move ( Float, Float )
-  | LiftAlpha Dimensions
-  | LiftRect Dimensions
-  | LiftHue Dimensions
+  = MoveAlpha Position
+  | MoveRect Position
+  | MoveHue Position
+  | LiftAlpha Position
+  | LiftRect Position
+  | LiftHue Position
   | SetAlpha String
   | SetGreen String
   | SetBlue String
   | SetHex String
   | SetRed String
-  | Click Bool
   | FromHex
+  | End
 
 
 {-| Initializes a color panel with the given Elm color.
@@ -76,16 +83,25 @@ type Msg
 -}
 init : Color -> Model
 init color =
-  { value = Ext.Color.toHsv color
-  , uid = Uid.uid ()
-  , alphaDrag = Drag.init
-  , hueDrag = Drag.init
-  , drag = Drag.init
-  , disabled = False
-  , readonly = False
-  , tempHex = Color.Convert.colorToHex color
-  }
+  let
+    uid = Uid.uid ()
+  in
+    { value = Ext.Color.toHsv color
+    , uid = uid
+    , alphaDrag = initDrag (uid ++ "alpha")
+    , hueDrag = initDrag (uid ++ "hue")
+    , drag = initDrag (uid ++ "rect")
+    , disabled = False
+    , readonly = False
+    , tempHex = Color.Convert.colorToHex color
+    }
 
+
+initDrag : String -> DragModel
+initDrag id =
+  { uid = id
+  , drag = Drag.init
+  }
 
 {-| Subscribe for the changes of a color panel.
 
@@ -116,13 +132,14 @@ subscribe msg model =
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  let
-    dragging =
-      model.alphaDrag.dragging
-        || model.hueDrag.dragging
-        || model.drag.dragging
-  in
-    Drag.subscriptions Move Click dragging
+  Sub.batch
+    [ Drag.onMove MoveHue model.hueDrag
+    , Drag.onMove MoveAlpha model.alphaDrag
+    , Drag.onMove MoveRect model.drag
+    , Drag.onEnd End model.drag
+    , Drag.onEnd End model.hueDrag
+    , Drag.onEnd End model.alphaDrag
+    ]
 
 
 {-| Updates a color panel.
@@ -132,23 +149,29 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
-    LiftRect ( position, dimensions, size ) ->
-      { model | drag = Drag.lift dimensions position model.drag }
-        |> handleMove position.left position.top
+    LiftRect position ->
+      { model | drag = Drag.lift position model.drag }
+        |> handleRect position
 
-    LiftAlpha ( position, dimensions, size ) ->
-      { model | alphaDrag = Drag.lift dimensions position model.alphaDrag }
-        |> handleMove position.left position.top
+    LiftAlpha position ->
+      { model | alphaDrag = Drag.lift position model.alphaDrag }
+        |> handleAlpha position
 
-    LiftHue ( position, dimensions, size ) ->
-      { model | hueDrag = Drag.lift dimensions position model.hueDrag }
-        |> handleMove position.left position.top
+    LiftHue position ->
+      { model | hueDrag = Drag.lift position model.hueDrag }
+        |> handleHue position
 
-    Move ( x, y ) ->
-      handleMove x y model
+    MoveHue position ->
+      handleHue position model
 
-    Click pressed ->
-      ( handleClick pressed model, Cmd.none )
+    MoveAlpha position ->
+      handleAlpha position model
+
+    MoveRect position ->
+      handleRect position model
+
+    End ->
+      ( handleClick model, Cmd.none )
 
     SetRed value ->
       let
@@ -256,7 +279,7 @@ render model =
     action act =
       Ui.enabledActions
         model
-        [ onWithDimensions "mousedown" False act ]
+        [ Drag.liftHandler act ]
   in
     node
       "ui-color-panel"
@@ -269,10 +292,11 @@ render model =
         [ div []
             [ node
                 "ui-color-panel-rect"
-                ([ style
+                ([ id model.drag.uid
+                 , style
                     [ ( "background-color", background )
                     , ( "cursor"
-                      , if model.drag.dragging then
+                      , if model.drag.drag.dragging then
                           "move"
                         else
                           ""
@@ -287,12 +311,12 @@ render model =
                 ]
             , node
                 "ui-color-panel-hue"
-                (action LiftHue)
+                (id model.hueDrag.uid :: action LiftHue)
                 [ renderHandle (asPercent color.hue) "" ]
             ]
         , node
             "ui-color-panel-alpha"
-            (action LiftAlpha)
+            (id model.alphaDrag.uid :: action LiftAlpha)
             [ div [ style [ ( "background-image", gradient ) ] ] []
             , renderHandle "" (asPercent color.alpha)
             ]
@@ -363,43 +387,32 @@ setValue color model =
 
 {-| Updates a color panel color by coordinates.
 -}
-handleMove : Float -> Float -> Model -> ( Model, Cmd Msg )
-handleMove x y model =
-  let
-    color =
-      if model.drag.dragging then
-        handleRect x y model.value model.drag
-      else if model.hueDrag.dragging then
-        handleHue x y model.value model.hueDrag
-      else if model.alphaDrag.dragging then
-        handleAlpha x y model.value model.alphaDrag
-      else
-        model.value
-  in
-    if model.value == color then
-      ( model, Cmd.none )
-    else
-      ( { model
-          | value = color
-          , tempHex = Color.Convert.colorToHex (Ext.Color.hsvToRgb model.value)
-        }
-      , Emitter.send model.uid (encodeHsv color)
-      )
+updateValue : Hsv -> Model -> ( Model, Cmd Msg )
+updateValue value model =
+  if model.value == value then
+    ( model, Cmd.none )
+  else
+    ( { model
+        | value = value
+        , tempHex = Color.Convert.colorToHex (Ext.Color.hsvToRgb value)
+      }
+    , Emitter.send model.uid (encodeHsv value)
+    )
 
 
 {-| Updates a color panel, stopping the drags if the mouse isn't pressed.
 -}
-handleClick : Bool -> Model -> Model
-handleClick value model =
+handleClick : Model -> Model
+handleClick model =
   let
     alphaDrag =
-      Drag.handleClick value model.alphaDrag
+      Drag.end model.alphaDrag
 
     hueDrag =
-      Drag.handleClick value model.hueDrag
+      Drag.end model.hueDrag
 
     drag =
-      Drag.handleClick value model.drag
+      Drag.end model.drag
   in
     if
       model.alphaDrag
@@ -420,61 +433,64 @@ handleClick value model =
 
 {-| Handles the hue drag.
 -}
-handleHue : Float -> Float -> Hsv -> Drag.Model -> Hsv
-handleHue x y color drag =
+handleHue : Position -> Model -> (Model, Cmd Msg)
+handleHue position ({ value } as model) =
   let
-    { top } =
-      Drag.relativePercentPosition x y drag
-
     hue =
-      clamp 0 1 top
+      Drag.relativePercentPosition position model.hueDrag
+        |> .top
+        |> clamp 0 1
+
+    updatedValue =
+      if value.hue == hue then
+        value
+      else
+        { value | hue = hue}
   in
-    if color.hue == hue then
-      color
-    else
-      { color | hue = hue }
+    updateValue updatedValue model
 
 
 {-| Handles the value / saturation drag.
 -}
-handleRect : Float -> Float -> Hsv -> Drag.Model -> Hsv
-handleRect x y color drag =
+handleRect : Position -> Model -> (Model, Cmd Msg)
+handleRect position ({ value } as model) =
   let
     { top, left } =
-      Drag.relativePercentPosition x y drag
+      Drag.relativePercentPosition position model.drag
 
     saturation =
       clamp 0 1 left
 
-    value =
+    colorValue =
       1 - (clamp 0 1 top)
-  in
-    if
-      color.saturation
-        == saturation
-        && color.value
-        == value
-    then
-      color
-    else
-      { color | saturation = saturation, value = value }
 
+    updatedValue =
+      if value.saturation == saturation
+      && value.value == colorValue
+      then
+        value
+      else
+        { value | saturation = saturation, value = colorValue }
+  in
+    updateValue updatedValue model
 
 {-| Handles the alpha drag.
 -}
-handleAlpha : Float -> Float -> Hsv -> Drag.Model -> Hsv
-handleAlpha x y color drag =
+handleAlpha : Position -> Model -> (Model, Cmd Msg)
+handleAlpha position ({ value } as model) =
   let
-    { left } =
-      Drag.relativePercentPosition x y drag
-
     alpha =
-      clamp 0 1 left
+      Drag.relativePercentPosition position model.alphaDrag
+        |> .left
+        |> clamp 0 1
+
+    updatedValue =
+      if value.alpha == alpha then
+        value
+      else
+        { value | alpha = alpha }
   in
-    if color.alpha == alpha then
-      color
-    else
-      { color | alpha = alpha }
+    updateValue updatedValue model
 
 
 {-| Renders a handle

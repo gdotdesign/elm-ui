@@ -5,25 +5,34 @@ module Ui.Helpers.Drag exposing (..)
     drag = Drag.init
 
     -- Later on when the mouse is down
-    Drag.lift dimensions startPosition drag
+    Drag.lift position drag
 
-    -- During mouse move calulate things when necessary
-    distanceMoved = Drag.diff pageX pageY drag
+    -- During move calulate things when necessary
+    distanceMoved = Drag.diff position drag
 
     -- When the mouse is released
-    Drag.handleClick False drag
+    Drag.end drag
 
 # Model
-@docs Point, Model, init, subscriptions
+@docs Drag, Model, init, emptyDimensions
+
+# Events
+@docs onMove, onEnd
 
 # Lifecycle
-@docs lift, handleClick
+@docs lift, end, liftHandler
 
 # Functions
 @docs diff, relativePosition, relativePercentPosition
 -}
+import Html.Events.Options exposing (preventDefaultOptions)
+import Html.Events exposing (onWithOptions)
+import Html
 
-import Html.Events.Geometry exposing (MousePosition, ElementDimensions)
+import Json.Decode as Json
+
+import DOM exposing (Position, Dimensions)
+import DOM.Window
 
 import Mouse
 
@@ -33,105 +42,123 @@ import Mouse
   - **dimensions** - The associated element's dimensions
   - **dragging** - Whether or not the drag is active
 -}
-type alias Model =
-  { mouseStartPosition : MousePosition
-  , dimensions : ElementDimensions
+type alias Drag =
+  { startPosition : Position
+  , dimensions : Dimensions
   , dragging : Bool
   }
 
-
-{-| Representation a point:
-  - **left** - The left position
-  - **top** - The top position
--}
-type alias Point =
-  { left : Float
-  , top : Float
+{-|-}
+type alias Model a =
+  { a
+  | uid : String
+  , drag : Drag
   }
-
 
 {-| Initializes a drag model.
 -}
-init : Model
+init : Drag
 init =
-  { mouseStartPosition = { left = 0, top = 0 }
+  { startPosition = { left = 0, top = 0 }
+  , dimensions = emptyDimensions
   , dragging = False
-  , dimensions =
-      { scrollLeft = 0
-      , scrollTop = 0
-      , height = 0
-      , bottom = 0
-      , width = 0
-      , right = 0
-      , left = 0
-      , top = 0
-      }
   }
 
+{-|-}
+liftHandler : (Position -> msg) -> Html.Attribute msg
+liftHandler msg =
+  onWithOptions
+    "mousedown"
+    preventDefaultOptions
+    (Json.map (\pos -> msg { top = toFloat pos.y, left = toFloat pos.x } ) Mouse.position)
 
-{-| Creates subscriptions for a drag with the message for mouse move and
-mouse click.
--}
-subscriptions : (( Float, Float ) -> msg) -> (Bool -> msg) -> Bool -> Sub msg
-subscriptions move click dragging =
-  if dragging then
-    Sub.batch
-      [ Mouse.moves (move << (\{ x, y } -> ( toFloat x, toFloat y )))
-      , Mouse.ups (click << (\_ -> False))
-      ]
+
+{-|-}
+emptyDimensions : Dimensions
+emptyDimensions =
+  { height = 0
+  , bottom = 0
+  , width = 0
+  , right = 0
+  , left = 0
+  , top = 0
+  }
+
+{-|-}
+onMove : (Position -> msg) -> Model a -> Sub msg
+onMove msg ({ drag } as model) =
+  if drag.dragging then
+    Mouse.moves (\{ x, y } -> msg { top = toFloat y, left = toFloat x })
   else
     Sub.none
 
 
+{-|-}
+onEnd : msg -> Model a -> Sub msg
+onEnd msg ({ drag } as model) =
+  if drag.dragging then
+    Mouse.ups (\_ -> msg)
+  else
+    Sub.none
+
 {-| Calculates the difference between the start position and the given position.
 -}
-diff : Float -> Float -> Model -> Point
-diff left top model =
-  { left = left - model.mouseStartPosition.left
-  , top = top - model.mouseStartPosition.top
+diff : Position -> Model a -> Position
+diff { left, top } ({ drag } as model) =
+  { left = left - drag.startPosition.left
+  , top = top - drag.startPosition.top
   }
 
 
 {-| Returns the given points relative position to the dimensions of the drag.
 -}
-relativePosition : Float -> Float -> Model -> Point
-relativePosition left top model =
-  { left = left - (model.dimensions.left + model.dimensions.scrollLeft)
-  , top = top - (model.dimensions.top + model.dimensions.scrollTop)
+relativePosition : Position -> Model a -> Position
+relativePosition { left, top } ({ drag } as model) =
+  { left = left - (drag.dimensions.left + (DOM.Window.scrollLeft ()))
+  , top = top - (drag.dimensions.top + (DOM.Window.scrollTop ()))
   }
 
 
 {-| Returns the give points relative position to the dimensions of the drag as
 a percentage.
 -}
-relativePercentPosition : Float -> Float -> Model -> Point
-relativePercentPosition left top model =
+relativePercentPosition : Position -> Model a -> Position
+relativePercentPosition position ({ drag } as model) =
   let
     point =
-      relativePosition left top model
+      relativePosition position model
   in
-    { left = point.left / model.dimensions.width
-    , top = point.top / model.dimensions.height
+    { left = point.left / drag.dimensions.width
+    , top = point.top / drag.dimensions.height
     }
 
 
 {-| Starts a drag.
 -}
-lift : ElementDimensions -> MousePosition -> Model -> Model
-lift dimensions position model =
-  { model
-    | mouseStartPosition = position
-    , dimensions = dimensions
-    , dragging = True
-  }
+lift : Position -> Model a -> Model a
+lift position ({ drag } as model) =
+  let
+    dimensions =
+      DOM.idSelector model.uid
+        |> DOM.getDimensionsSync
+        |> Result.withDefault emptyDimensions
+  in
+    { model
+      | drag =
+        { drag
+        | startPosition = position
+        , dimensions = dimensions
+        , dragging = True
+        }
+    }
 
 
 {-| Handles the "mouseup" event, if the given pressed value is False
 stopping the drag.
 -}
-handleClick : Bool -> Model -> Model
-handleClick pressed model =
-  if not pressed && model.dragging then
-    { model | dragging = False }
+end : Model a -> Model a
+end ({ drag } as model) =
+  if model.drag.dragging then
+    { model | drag = { drag | dragging = False } }
   else
     model

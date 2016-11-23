@@ -22,7 +22,7 @@ import DOM exposing (Position)
 import Dict
 
 import Ui.Helpers.Emitter as Emitter
-import Ui.Helpers.Drag_ as Drag
+import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 

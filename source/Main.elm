@@ -923,7 +923,7 @@ update_ msg model =
         ( notis, effect ) =
           Ui.NotificationCenter.update act model.notifications
       in
-        { model | notifications = notis }
+        ( { model | notifications = notis }, Cmd.map Notis effect )
 
     NumberRange act ->
       let

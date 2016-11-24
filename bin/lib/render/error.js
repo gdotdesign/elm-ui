@@ -1,5 +1,6 @@
 var fs = require('fs')
 var hljs = require('highlight.js')
+var path = require('path')
 
 var htmlErrorContent = `
 <html>
@@ -19,6 +20,7 @@ var htmlErrorContent = `
       line-height: 18px;
       background: #F9F9F9;
       padding: 10px;
+      margin-top: 0;
     }
 
     .error p {
@@ -39,16 +41,27 @@ var htmlErrorContent = `
       top: 0;
     }
 
+    .file {
+      background: #F0F0f0;
+      padding: 7px 10px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-bottom: 0;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
     .elm-error > div {
       padding: 40px;
-      max-width: 960px;
+      max-width: 85vw;
       margin: 0 auto;
     }
 
     h2 {
       font-size: 24px;
       margin: 0;
-      margin-bottom: 30px;
+      border-bottom: 3px solid rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+      padding-bottom: 10px;
     }
 
     /* Base16 Atelier Forest Light - Theme */
@@ -134,18 +147,18 @@ var renderError = function(error) {
   var code =
     fs.readFileSync(error.file, 'utf-8')
       .split(/\n/)
+      .map(function(line, index) { return `${index} | ${line}` })
       .slice(error.region.start.line - 3, error.region.end.line + 2)
       .join("\n")
-
-  console.log(error)
 
   return `
   <div class="error">
     <strong>
-      <span>${error.tag} - </span>
+      <span>${error.tag.toUpperCase()} - </span>
       ${error.overview}
     </strong>
-    <pre>${hljs.highlight("elm", code).value}</pre>
+    <div class="file">${path.relative('', error.file)}</div>
+    <pre>${hljs.highlight("elm", code, true).value}</pre>
     <p>${error.details}</p>
   </div>
   `.replace(/\"/g, "\\\"")
@@ -153,10 +166,16 @@ var renderError = function(error) {
 }
 
 var renderHTMLError = function(title, content) {
-  console.log(content)
+  var parts =
+    content
+      .split(/(\[.*\])/g)
+      .map(function(part){ return part.trim() })
+      .filter(function(part){ return part !== "" })
+      .map(function(part) { return JSON.parse(part) })
+      .reduce(function(a,b) { return a.concat(b) })
+
   var errors =
-    JSON
-      .parse(content)
+    parts
       .map(function(error){
         return renderError(error)
       })

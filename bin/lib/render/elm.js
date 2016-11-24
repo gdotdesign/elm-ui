@@ -31,7 +31,7 @@ var render = function(file, debug, callback) {
   })
 
   command.on('close', function() {
-    if (result.match('Successfully generated test')) {
+    if (result.match('Successfully generated')) {
       callback(null, '', filename)
     } else {
       callback(result, '', filename)

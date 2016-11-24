@@ -166,20 +166,31 @@ var renderError = function(error) {
 }
 
 var renderHTMLError = function(title, content) {
-  var parts =
-    content
-      .split(/(\[.*\])/g)
-      .map(function(part){ return part.trim() })
-      .filter(function(part){ return part !== "" })
-      .map(function(part) { return JSON.parse(part) })
-      .reduce(function(a,b) { return a.concat(b) })
+  try {
+    var parts =
+      content
+        .split(/(\[.*\])/g)
+        .map(function(part){ return part.trim() })
+        .filter(function(part){ return part !== "" })
+        .map(function(part) { return JSON.parse(part) })
+        .reduce(function(a,b) { return a.concat(b) })
 
-  var errors =
-    parts
-      .map(function(error){
-        return renderError(error)
-      })
-      .join("")
+    var errors =
+      parts
+        .map(function(error){
+          return renderError(error)
+        })
+        .join("")
+
+  } catch (e) {
+    var formatted =
+      content
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"')
+        .replace(/\n/g, "\\n")
+
+    var errors = `<pre>${formatted}</pre>`
+  }
 
   var errorContent = htmlErrorContent
     .replace('TITLE', title)

@@ -24,7 +24,7 @@ import Mouse
 import Ui.Native.Scrolls as Scrolls
 import Ui.Native.Uid as Uid
 
-import Ui.Helpers.Dropdown_ as DD
+import Ui.Helpers.Dropdown as DD
 
 {-| Representation of a dropdown menu:
   - **offsetLeft** - The x-axis offset for the dropdown

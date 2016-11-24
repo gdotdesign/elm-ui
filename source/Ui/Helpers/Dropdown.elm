@@ -1,7 +1,8 @@
-module Ui.Helpers.Dropdown_ exposing (..)
+module Ui.Helpers.Dropdown exposing
+  ( Direction(..), Side(..), Msg, Dropdown, Model, init, update, subscriptions
+  , favoring, alignTo, offset, direction, open, close, toggle, view )
 
-{-| This is a module for creating components that have a dropdown
-element.
+{-| This is a module for creating components that have a dropdown.
 
 ```
 colorPicker =
@@ -11,38 +12,65 @@ colorPicker =
     |> Dropdown.alignTo Top -- align it to the top of the trigger element
     |> Dropdown.offset 5
 ```
+
+# Types
+@docs Direction, Side, Msg, Dropdown
+
+# Model
+@docs Model, init, update, subscriptions
+
+# DSL
+@docs offset, direction, favoring, alignTo
+
+# Functions
+@docs open, close, toggle
+
+# Rendering
+@docs view
+
 -}
 import Html.Attributes exposing (style, classList, id, attribute)
-import Html.Events exposing (on)
 import Html exposing (node)
 
-import Json.Decode as Json
 import Window
 import Mouse
 
+import DOM exposing (Dimensions)
 import DOM.Window
-import DOM
 
 import Ui.Native.Scrolls as Scrolls
 
+{-| Representation of the direction where the dropdown opens:
+    * Horizontal - either left or right
+    * Vertical - either top or bottom
+-}
 type Direction
   = Horizontal
   | Vertical
 
+{-| Representation of the a side.
+-}
 type Side
   = Bottom
   | Right
   | Left
   | Top
 
+{-| Representation of part of a direction similar to a Cartesian coordinate
+systems.
+-}
 type Space
   = Positive
   | Negative
 
+{-| Messages that a dropdown can receive.
+-}
 type Msg
   = Click Mouse.Position
   | Close
 
+{-| Representation of things in the view.
+-}
 type alias ViewModel msg =
   { attributes : List (Html.Attribute msg)
   , children : List (Html.Html msg)
@@ -51,6 +79,9 @@ type alias ViewModel msg =
   , tag : String
   }
 
+
+{-| Representation of a dropdown.
+-}
 type alias Dropdown =
   { direction : Direction
   , favoring : Space
@@ -61,6 +92,8 @@ type alias Dropdown =
   , open : Bool
   }
 
+{-| Representation of a component which has a dropdown.
+-}
 type alias Model a =
   { a
     | dropdown : Dropdown
@@ -68,6 +101,8 @@ type alias Model a =
   }
 
 
+{-| Initializes a dropdown.
+-}
 init : Dropdown
 init =
   { direction = Vertical
@@ -81,42 +116,59 @@ init =
 
 -- PUBLIC API
 
+{-| Sets the direction of a dropdown, this property indicates where the dropdown
+will open.
+-}
 direction : Direction -> Model a -> Model a
 direction value model =
   updateDropdown
     (\dropdown -> { dropdown | direction = value } )
     model
 
+{-| Sets where to align a dropdown when it's open. For example if a dropdown
+opens horizontally to either to the left or right, then it can be aligned to
+either the top or the bottom of the opening element.
+-}
 alignTo : Side -> Model a -> Model a
 alignTo side model =
   updateDropdown
     (\dropdown -> { dropdown | alignTo = stwitchSpace (getSpaceFromSide side) } )
     model
 
+{-| Sets where to open a dropdown if there is more space.
+-}
 favoring : Side -> Model a -> Model a
 favoring side model =
   updateDropdown
     (\dropdown -> { dropdown | favoring = getSpaceFromSide side } )
     model
 
+{-| Sets the offset of the dropdown from it's opening element.
+-}
 offset : Float -> Model a -> Model a
 offset offset model =
   updateDropdown
     (\dropdown -> { dropdown | offset = offset } )
     model
 
+{-| Opens a dropdown.
+-}
 open : Model a -> Model a
 open model =
   updateDropdown
     (\dropdown -> openDropdown model.uid dropdown)
     model
 
+{-| Closes a dropdown.
+-}
 close : Model a -> Model a
 close model =
   updateDropdown
     (\dropdown -> { dropdown | open = False })
     model
 
+{-| Toggles a dropdown.
+-}
 toggle : Model a -> Model a
 toggle model =
   if model.dropdown.open then
@@ -124,6 +176,8 @@ toggle model =
   else
     open model
 
+{-| Subscriptions for a dropdown.
+-}
 subscriptions : Model a -> Sub Msg
 subscriptions model =
   if model.dropdown.open then
@@ -135,6 +189,8 @@ subscriptions model =
   else
     Sub.none
 
+{-| Updates a dropdown.
+-}
 update : Msg -> Model a -> Model a
 update msg model =
   case msg of
@@ -147,6 +203,8 @@ update msg model =
     Close ->
       close model
 
+{-| Renders a dropdown.
+-}
 view : ViewModel msg -> Model a -> Html.Html msg
 view viewModel model =
   let
@@ -225,6 +283,7 @@ openDropdown uid model =
     , top = calculateTop window parent dropdown model
     }
 
+decideSide : Space -> Float -> Float -> Float -> Float -> Float
 decideSide side positiveOptimal negativeOptimal bound size =
   case side of
     Positive ->
@@ -238,6 +297,7 @@ decideSide side positiveOptimal negativeOptimal bound size =
       else
         negativeOptimal
 
+favored : Dropdown -> Float -> Float -> Float -> Float -> Float
 favored model high low bound size =
   let
     positiveOptimal = low + model.offset
@@ -245,6 +305,7 @@ favored model high low bound size =
   in
     decideSide model.favoring positiveOptimal negativeOptimal bound size
 
+align : Dropdown -> Float -> Float -> Float -> Float -> Float
 align model high low bound size =
   let
     positiveOptimal = high
@@ -252,6 +313,7 @@ align model high low bound size =
   in
     decideSide model.alignTo positiveOptimal negativeOptimal bound size
 
+calculateLeft : { width: Float, height: Float } -> Dimensions -> Dimensions -> Dropdown -> Float
 calculateLeft window parent dropdown model =
   let
     maxiumum =
@@ -266,6 +328,7 @@ calculateLeft window parent dropdown model =
   in
     min maxiumum optimal
 
+calculateTop : { width: Float, height: Float } -> Dimensions -> Dimensions -> Dropdown -> Float
 calculateTop window parent dropdown model =
   let
     maxiumum =

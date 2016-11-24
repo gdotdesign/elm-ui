@@ -5,7 +5,7 @@ import Html.Events.Extra exposing (onKeys, onFocusOut)
 import Html.Attributes exposing (classList)
 import Html exposing (node)
 
-import Ui.Helpers.Dropdown_ as Dropdown exposing (Dropdown)
+import Ui.Helpers.Dropdown as Dropdown exposing (Dropdown)
 import Ui
 
 type alias Model a =

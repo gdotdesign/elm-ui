@@ -23,7 +23,7 @@ import Date.Extra.Config.Configs as DateConfigs
 import Time
 import Date
 
-import Ui.Helpers.Dropdown_ as Dropdown exposing (Dropdown)
+import Ui.Helpers.Dropdown as Dropdown exposing (Dropdown)
 import Ui.Helpers.Picker as Picker
 import Ui.Native.Uid as Uid
 import Ui.Calendar

@@ -21,7 +21,7 @@ import Html.Lazy
 import Ext.Color exposing (Hsv)
 import Color exposing (Color)
 
-import Ui.Helpers.Dropdown_ as Dropdown exposing (Dropdown)
+import Ui.Helpers.Dropdown as Dropdown exposing (Dropdown)
 import Ui.Helpers.Picker as Picker
 import Ui.Native.Uid as Uid
 import Ui.ColorPanel

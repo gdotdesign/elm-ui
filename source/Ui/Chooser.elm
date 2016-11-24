@@ -39,7 +39,7 @@ import Regex
 import List
 
 import Ui.Helpers.Intendable as Intendable
-import Ui.Helpers.Dropdown_ as Dropdown
+import Ui.Helpers.Dropdown as Dropdown
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui

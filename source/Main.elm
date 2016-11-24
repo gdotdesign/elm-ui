@@ -751,16 +751,6 @@ update msg model =
     TaggerRemove id ->
       { model | taggerData = List.filter (\item -> item.id /= id) model.taggerData }
 
-    TaggerAdd value ->
-      let
-        tag =
-          { label = value, id = Uid.uid () }
-      in
-        { model
-          | taggerData = tag :: model.taggerData
-          , tagger = Showcase.updateModels (Ui.Tagger.setValue "") model.tagger
-        }
-
     _ ->
       model
 
@@ -768,6 +758,21 @@ update msg model =
 update_ : Msg -> Model -> ( Model, Cmd Msg )
 update_ msg model =
   case msg of
+    TaggerAdd value ->
+      let
+        tag =
+          { label = value, id = Uid.uid () }
+
+        (tagger, cmd) =
+          Showcase.updateModelsWithCmd
+            (Ui.Tagger.setValue "")
+            model.tagger
+      in
+        ({ model
+          | taggerData = tag :: model.taggerData
+          , tagger = tagger
+        }, Cmd.map Tagger cmd)
+
     TextareaLoaded result ->
       case result of
         Ok value ->

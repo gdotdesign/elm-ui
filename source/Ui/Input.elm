@@ -18,7 +18,7 @@ import Html exposing (node)
 import Html.Lazy
 import Html.Attributes
   exposing
-    ( value
+    ( defaultValue
     , spellcheck
     , placeholder
     , type_
@@ -26,13 +26,14 @@ import Html.Attributes
     , disabled
     , classList
     , attribute
+    , id
     )
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 
-import String
 import Task
+import DOM
 
 
 {-| Representation of an input:
@@ -57,6 +58,7 @@ type alias Model =
 -}
 type Msg
   = Input String
+  | Done (Result DOM.Error ())
 
 
 {-| Initializes an input with a default value and a placeholder.
@@ -94,7 +96,16 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     Input value ->
-      ( setValue value model, Emitter.sendString model.uid value )
+      ( { model | value = value }, Emitter.sendString model.uid value )
+
+    Done result ->
+      let
+        _ =
+          case result of
+            Err error -> Debug.log "Could not set value:" (toString error)
+            Ok _ -> ""
+      in
+        ( model, Cmd.none )
 
 
 {-| Lazily renders an input.
@@ -122,13 +133,13 @@ render model =
     [ node
         "input"
         [ placeholder model.placeholder
-        , attribute "id" model.uid
+        , defaultValue model.value
         , readonly model.readonly
         , disabled model.disabled
-        , value model.value
         , spellcheck False
         , type_ model.kind
         , onInput Input
+        , id model.uid
         ]
         []
     ]
@@ -138,6 +149,10 @@ render model =
 
     Ui.Input.setValue "new value" input
 -}
-setValue : String -> Model -> Model
+setValue : String -> Model -> ( Model, Cmd Msg)
 setValue value model =
-  { model | value = value }
+  let
+    task =
+      DOM.setValue value (DOM.idSelector model.uid)
+  in
+    ( { model | value = value }, Task.attempt Done task )

@@ -14,7 +14,6 @@ current value of the input when it has settled after the given timeout.
 @docs setValue
 -}
 
-import Html.Attributes exposing (classList)
 import Html exposing (node)
 import Html.Lazy
 
@@ -22,7 +21,6 @@ import Time exposing (Time)
 import Ext.Date
 import Process
 import Task
-import Date
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
@@ -165,6 +163,10 @@ render { input, disabled, readonly } =
 
     Ui.SearchInput.setValue "new value" searchInput
 -}
-setValue : String -> Model -> Model
+setValue : String -> Model -> ( Model, Cmd Msg)
 setValue value model =
-  { model | value = value, input = Ui.Input.setValue value model.input }
+  let
+    ( input, cmd ) =
+      Ui.Input.setValue value model.input
+  in
+    ( { model | value = value, input = input }, Cmd.map Input cmd )

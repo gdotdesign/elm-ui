@@ -167,7 +167,7 @@ setValue : String -> Model -> (Model, Cmd Msg)
 setValue value model =
   let
     task =
-      DOM.setValue (DOM.idSelector model.uid) value
+      DOM.setValue value (DOM.idSelector model.uid)
   in
     ( { model | value = value }, Task.attempt Done task )
 

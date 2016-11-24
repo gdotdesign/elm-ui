@@ -21,9 +21,6 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
-import Json.Decode as JD
-import Json.Encode as JE
-
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui.IconButton
@@ -193,9 +190,13 @@ render tags model =
 
     Ui.Tagger.setValue "" tagger
 -}
-setValue : String -> Model -> Model
+setValue : String -> Model -> ( Model, Cmd Msg)
 setValue value model =
-  { model | input = Ui.Input.setValue value model.input }
+  let
+    ( input, cmd ) =
+      Ui.Input.setValue value model.input
+  in
+    ( { model | input = input }, Cmd.map Input cmd )
 
 
 {-| Renders a tag.

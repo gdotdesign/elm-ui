@@ -23,8 +23,6 @@ import Process
 import Vendor
 import Task
 
-import Ui.Native.Browser as Browser
-
 
 {-| Representation of a notification center:
   - **timeout** - The timeout of the notification before it's hidden

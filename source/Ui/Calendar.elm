@@ -1,5 +1,5 @@
 module Ui.Calendar exposing
-  ( Model, Msg, init, subscribe, update, view, render
+  ( Model, Msg, init, onChange, update, view, render, selectable
   , setValue, nextDay, previousDay )
 
 {-| Calendar component with which the user can:
@@ -7,7 +7,13 @@ module Ui.Calendar exposing
   - Change the month with arrows
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, init, update
+
+# DSL
+@docs selectable
+
+# Events
+@docs onChange
 
 # View
 @docs view, render
@@ -21,12 +27,11 @@ import Html.Events exposing (onMouseDown)
 import Html exposing (node, text, span)
 import Html.Lazy
 
-import Date.Extra.Format exposing (isoDateFormat, format)
 import Date.Extra.Config.Configs as DateConfigs
+import Date.Extra.Format exposing (format)
 import Time exposing (Time)
 import Ext.Date
 import Date
-import List
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
@@ -36,11 +41,11 @@ import Ui
 
 {-| Representation of a calendar component:
   - **selectable** - Whether or not the user can select a date by clicking
+  - **date** - The month in which this date is will be displayed
   - **readonly** - Whether or not the calendar is interactive
   - **disabled** - Whether or not the calendar is disabled
-  - **value** - The current selected date
-  - **date** - The month in which this date is will be displayed
   - **uid** - The unique identifier of the calendar
+  - **value** - The current selected date
 -}
 type alias Model =
   { selectable : Bool
@@ -66,21 +71,28 @@ type Msg
 -}
 init : Date.Date -> Model
 init date =
-  { uid = Uid.uid ()
-  , selectable = True
+  { selectable = True
   , disabled = False
   , readonly = False
+  , uid = Uid.uid ()
   , value = date
   , date = date
   }
 
 
+{-| Sets the selectable property of a calendar.
+-}
+selectable : Bool -> Model -> Model
+selectable value model =
+  { model | selectable = value }
+
+
 {-| Subscribe to the changes of a calendar.
 
-    Ui.Calendar.subscribe CalendarChanged calendar
+    Ui.Calendar.onChange CalendarChanged calendar
 -}
-subscribe : (Time -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (Time -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenFloat model.uid msg
 
 
@@ -159,7 +171,7 @@ render locale model =
     previousAction =
       Ui.enabledActions model [ onMouseDown PreviousMonth ]
 
-    {- Header container -}
+    -- Header container
     container =
       Ui.Container.view
         { compact = True
@@ -168,23 +180,24 @@ render locale model =
         }
         []
         [ Ui.icon "chevron-left" (not model.readonly) previousAction
-        , node "div" [] [ text (format (DateConfigs.getConfig locale) "%Y - %B" month) ]
+        , node "div" []
+          [ text (format (DateConfigs.getConfig locale) "%Y - %B" month) ]
         , Ui.icon "chevron-right" (not model.readonly) nextAction
         ]
   in
     node
       "ui-calendar"
       [ classList
-          [ ( "disabled", model.disabled )
+          [ ( "selectable", model.selectable )
+          , ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
-          , ( "selectable", model.selectable )
           ]
       ]
       [ container
       , node
           "ui-calendar-header"
           []
-          (List.map (\item -> span [] [ text item ]) dayNames)
+          (List.map (\item -> span [] [ text item ]) (dayNames locale))
       , node "ui-calendar-table" [] cells
       ]
 
@@ -254,9 +267,22 @@ paddingLeft date =
 
 {-| Short names of days.
 -}
-dayNames : List String
-dayNames =
-  [ "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" ]
+dayNames : String -> List String
+dayNames locale =
+  let
+    config =
+      DateConfigs.getConfig locale
+        |> .i18n
+  in
+    [ Date.Mon
+    , Date.Tue
+    , Date.Wed
+    , Date.Thu
+    , Date.Fri
+    , Date.Sat
+    , Date.Sun
+    ]
+      |> List.map config.dayShort
 
 
 {-| Renders a single cell.
@@ -283,8 +309,8 @@ renderCell date model =
 
     classes =
       classList
-        [ ( "selected", value )
-        , ( "inactive", not sameMonth )
+        [ ( "inactive", not sameMonth )
+        , ( "selected", value )
         ]
   in
     node

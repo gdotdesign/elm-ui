@@ -9,7 +9,6 @@ module Ui.ButtonGroup exposing (Model, init, view, render)
 @docs view, render
 -}
 
-import Html.Events.Extra exposing (onKeys)
 import Html exposing (node)
 import Html.Lazy
 
@@ -34,9 +33,11 @@ type alias Model msg =
 
 {-| Initializes a button group with the given data.
 
-    buttonGroup = Ui.ButtonGroup.init [ ("Download", Download)
-                                      , ("Export", Export)
-                                      ]
+    buttonGroup =
+      Ui.ButtonGroup.init
+        [ ("Download", Download)
+        , ("Export", Export)
+        ]
 -}
 init : List ( String, msg ) -> Model msg
 init items =

@@ -69,7 +69,7 @@ init date =
   { calendar = Ui.Calendar.init date
   , dropdown = Dropdown.init
   , format = isoDateFormat
-  , closeOnSelect = True
+  , closeOnSelect = False
   , disabled = False
   , readonly = False
   , uid = Uid.uid ()
@@ -88,7 +88,7 @@ init date =
 -}
 subscribe : (Time.Time -> msg) -> Model -> Sub msg
 subscribe msg model =
-  Ui.Calendar.subscribe msg model.calendar
+  Ui.Calendar.onChange msg model.calendar
 
 
 {-| Subscriptions for a date picker.
@@ -104,7 +104,7 @@ subscribe msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ Ui.Calendar.subscribe Select model.calendar
+    [ Ui.Calendar.onChange Select model.calendar
     , Sub.map Picker (Picker.subscriptions model)
     ]
 

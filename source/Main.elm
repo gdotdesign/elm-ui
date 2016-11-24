@@ -197,7 +197,7 @@ init =
         Showcase.init
           (\_ -> Ui.Calendar.init (Ext.Date.createDate 2015 5 1))
           Ui.Calendar.update
-          (Ui.Calendar.subscribe CalendarChanged)
+          (Ui.Calendar.onChange CalendarChanged)
           (\_ -> Sub.none)
     , tabs =
         Showcase.init
@@ -400,19 +400,19 @@ init =
         Showcase.init
           (\_ -> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          (Ui.Checkbox.subscribe Checkbox3Changed)
+          (Ui.Checkbox.onChange Checkbox3Changed)
           (\_ -> Sub.none)
     , checkbox2 =
         Showcase.init
           (\_ -> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          (Ui.Checkbox.subscribe Checkbox2Changed)
+          (Ui.Checkbox.onChange Checkbox2Changed)
           (\_ -> Sub.none)
     , checkbox =
         Showcase.init
           (\_ -> Ui.Checkbox.init False)
           Ui.Checkbox.update
-          (Ui.Checkbox.subscribe CheckboxChanged)
+          (Ui.Checkbox.onChange CheckboxChanged)
           (\_ -> Sub.none)
     , textarea =
         Showcase.init

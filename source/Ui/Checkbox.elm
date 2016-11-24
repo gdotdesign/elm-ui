@@ -1,11 +1,11 @@
 module Ui.Checkbox exposing
-  ( Model, Msg, init, subscribe, update, view, render, viewToggle
+  ( Model, Msg, init, onChange, update, view, render, viewToggle
   , renderToggle, viewRadio, renderRadio, setValue )
 
 {-| Checkbox component with three different views.
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, init, onChange, update
 
 # Views
 @docs view, render
@@ -22,9 +22,6 @@ import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node)
 import Html.Lazy
-
-import Task
-import Dict
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
@@ -66,10 +63,10 @@ init value =
 
 {-| Subscribe to the changes of a checkbox.
 
-    Ui.Calendar.subscribe CheckboxChanged checkbox
+    Ui.Calendar.onChange CheckboxChanged checkbox
 -}
-subscribe : (Bool -> a) -> Model -> Sub a
-subscribe msg model =
+onChange : (Bool -> a) -> Model -> Sub a
+onChange msg model =
   Emitter.listenBool model.uid msg
 
 

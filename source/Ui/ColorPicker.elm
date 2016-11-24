@@ -25,7 +25,6 @@ import Ui.Helpers.Dropdown_ as Dropdown exposing (Dropdown)
 import Ui.Helpers.Picker as Picker
 import Ui.Native.Uid as Uid
 import Ui.ColorPanel
-import Ui
 
 
 {-| Representation of a color picker:

@@ -223,9 +223,10 @@ isEmpty model =
 
     Ui.InplaceInput.setValue "new value" inplaceInput
 -}
-setValue : String -> Model -> Model
+setValue : String -> Model -> (Model, Cmd Msg)
 setValue value model =
-  { model
-    | textarea = Ui.Textarea.setValue value model.textarea
-    , value = value
-  }
+  let
+    (textarea, cmd) =
+      Ui.Textarea.setValue value model.textarea
+  in
+    ({ model | textarea = textarea, value = value }, Cmd.map Textarea cmd)

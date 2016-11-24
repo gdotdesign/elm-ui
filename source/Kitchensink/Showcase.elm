@@ -152,3 +152,24 @@ updateModels fn model =
     , disabled = fn model.disabled
     , readonly = fn model.readonly
   }
+
+
+updateModelsWithCmd :
+  (component -> (component, Cmd msg))
+  -> Model component msg parentMsg
+  -> (Model component msg parentMsg, Cmd (Msg msg))
+updateModelsWithCmd fn model =
+  let
+    (enabled, enabledMsg) = fn model.enabled
+    (disabled, disabledMsg) = fn model.disabled
+    (readonly, readonlyMsg) = fn model.readonly
+  in
+    ({ model
+      | enabled = enabled
+      , disabled = disabled
+      , readonly = readonly
+    }, Cmd.batch
+    [ Cmd.map Enabled enabledMsg
+    , Cmd.map Disabled disabledMsg
+    , Cmd.map Readonly readonlyMsg
+    ])

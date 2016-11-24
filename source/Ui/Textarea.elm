@@ -20,7 +20,7 @@ import Html.Events exposing (onInput)
 import Html.Lazy
 import Html.Attributes
   exposing
-    ( value
+    ( defaultValue
     , spellcheck
     , placeholder
     , classList
@@ -37,6 +37,7 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui
 
+import DOM
 
 {-| Representation of a textarea:
   - **placeholder** - The text to display when there is no value
@@ -59,7 +60,8 @@ type alias Model =
 {-| Messages that a textarea can receive.
 -}
 type Msg
-  = Input String
+  = Done (Result DOM.Error ())
+  | Input String
   | NoOp
 
 
@@ -98,7 +100,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     Input value ->
-      ( setValue value model, Emitter.sendString model.uid value )
+      ( { model | value = value }, Emitter.sendString model.uid value )
 
     _ ->
       ( model, Cmd.none )
@@ -123,9 +125,9 @@ render model =
     base =
       [ placeholder model.placeholder
       , attribute "id" model.uid
+      , defaultValue model.value
       , readonly model.readonly
       , disabled model.disabled
-      , value model.value
       , spellcheck False
       ]
         ++ actions
@@ -161,9 +163,13 @@ render model =
 
     Ui.Textarea.setValue "new value" textarea
 -}
-setValue : String -> Model -> Model
+setValue : String -> Model -> (Model, Cmd Msg)
 setValue value model =
-  { model | value = value }
+  let
+    task =
+      DOM.setValue (DOM.idSelector model.uid) value
+  in
+    ( { model | value = value }, Task.attempt Done task )
 
 
 

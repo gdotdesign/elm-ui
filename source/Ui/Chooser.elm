@@ -490,22 +490,15 @@ createRegex value =
 -}
 renderItem : Model -> Item -> Html.Html Msg
 renderItem model item =
-  let
-    selectEvent =
-      if model.closeOnSelect then
-        onStop "mouseup" (Select item.value)
-      else
-        onPreventDefault "mousedown" (Select item.value)
-  in
-    node
-      "ui-chooser-item"
-      [ selectEvent
-      , classList
-          [ ( "selected", Set.member item.value model.selected )
-          , ( "intended", item.value == model.intended )
-          ]
-      ]
-      [ model.render item ]
+  node
+    "ui-chooser-item"
+    [ onPreventDefault "mousedown" (Select item.value)
+    , classList
+        [ ( "selected", Set.member item.value model.selected )
+        , ( "intended", item.value == model.intended )
+        ]
+    ]
+    [ model.render item ]
 
 
 {-| Returns the items to display for a chooser.

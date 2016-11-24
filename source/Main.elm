@@ -748,13 +748,6 @@ update msg model =
     Alert ->
       { model | clicked = True }
 
-    TextareaLoaded result ->
-      case result of
-        Ok value ->
-          { model | textarea = Showcase.updateModels (\txta -> Ui.Textarea.setValue value txta) model.textarea }
-        Err _ ->
-          model
-
     TaggerRemove id ->
       { model | taggerData = List.filter (\item -> item.id /= id) model.taggerData }
 
@@ -775,6 +768,19 @@ update msg model =
 update_ : Msg -> Model -> ( Model, Cmd Msg )
 update_ msg model =
   case msg of
+    TextareaLoaded result ->
+      case result of
+        Ok value ->
+          let
+            (textarea, cmd) =
+              Showcase.updateModelsWithCmd
+                (\txta -> Ui.Textarea.setValue value txta)
+                model.textarea
+          in
+            ({ model | textarea = textarea }, Cmd.map TextArea cmd)
+        Err _ ->
+          (model, Cmd.none)
+
     TextAreaChanged value ->
       ( model, Task.attempt TextareaSaved (LocalStorage.setItem "textarea" value) )
 

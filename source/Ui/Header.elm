@@ -16,9 +16,7 @@ module Ui.Header exposing
 @docs item, iconItem
 -}
 
-import Html.Attributes exposing (attribute, tabindex, style)
-import Html.Events.Extra exposing (onKeys)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (attribute, style)
 import Html exposing (node, text)
 
 import Maybe.Extra exposing (isJust)

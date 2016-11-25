@@ -25,7 +25,6 @@ module Ui.IconButton exposing
 import Html exposing (node, text)
 import Html.Lazy
 
-
 import Ui.Button exposing (attributes)
 import Ui.Helpers.Ripple as Ripple
 import Ui

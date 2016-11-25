@@ -363,7 +363,7 @@ init =
         Showcase.init
           (\_ -> Ui.FileInput.init "image/*")
           Ui.FileInput.update
-          (Ui.FileInput.subscribe FileChanged)
+          (Ui.FileInput.onChange FileChanged)
           (\_ -> Sub.none)
     , input =
         Showcase.init

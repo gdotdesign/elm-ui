@@ -1,11 +1,17 @@
 module Ui.FileInput exposing
-  ( Model, Msg, init, update, subscribe, view, render, viewDetails
+  ( Model, Msg, init, update, onChange, view, accept, render, viewDetails
   , renderDetails )
 
 {-| Component for selecting a file.
 
 # Model
-@docs Model, Msg, init, update, subscribe
+@docs Model, Msg, init, update
+
+# DSL
+@docs accept
+
+# Events
+@docs onChange
 
 # View
 @docs view, render
@@ -16,8 +22,6 @@ module Ui.FileInput exposing
 
 import Numeral exposing (format)
 import Task exposing (Task)
-import Json.Decode as Json
-import Http
 
 import Html.Attributes exposing (classList)
 import Html exposing (node, div, text)
@@ -32,8 +36,8 @@ import Ui
 
 
 {-| Representation of a file input:
-  - **readonly** - Whether or not the date picker is readonly
-  - **disabled** - Whether or not the date picker is disabled
+  - **readonly** - Whether or not the file input is readonly
+  - **disabled** - Whether or not the file input is disabled
   - **accept** - The mime types that the file input accepts
   - **uid** - The unique identifier of the file input
   - **file** - (Maybe) The selected file
@@ -75,14 +79,21 @@ init accept =
     ...
     subscriptions =
       \model ->
-        Ui.FileInput.subscribe
+        Ui.FileInput.onChange
           FileInputChanged
           model.fileInput
     ...
 -}
-subscribe : (File -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (File -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenFile model.uid msg
+
+
+{-| Sets the accept property of a file input
+-}
+accept : String -> Model -> Model
+accept value model =
+  { model | accept = value }
 
 
 {-| Updates a file input.
@@ -92,14 +103,14 @@ subscribe msg model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Open task ->
-      ( model, Task.perform Selected task )
-
     Selected file ->
       ( { model | file = Just file }, Emitter.sendFile model.uid file )
 
     Clear ->
       ( { model | file = Nothing }, Cmd.none )
+
+    Open task ->
+      ( model, Task.perform Selected task )
 
     NoOp ->
       ( model, Cmd.none )

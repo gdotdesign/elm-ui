@@ -42,8 +42,8 @@ import Ui
 
 {-| Representation of a calendar component:
   - **selectable** - Whether or not the user can select a date by clicking on it
-  - **readonly** - Whether or not the calendar is interactive
   - **disabled** - Whether or not the calendar is disabled
+  - **readonly** - Whether or not the calendar is readonly
   - **uid** - The unique identifier of the calendar
   - **date** - The month which is displayed
   - **value** - The current selected date
@@ -207,7 +207,7 @@ render locale model =
 
 {-| Sets the value of a calendar.
 
-    (updatedCalendar, msg) =
+    ( updatedCalendar, msg ) =
       Ui.Calendar.setValue (Ext.Date.createDate 1977 5 25) calendar
 -}
 setValue : Date.Date -> Model -> Model

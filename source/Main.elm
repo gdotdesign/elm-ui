@@ -18,6 +18,7 @@ import Html exposing (div, text, node, table, tr, td)
 
 import Ui.Native.FileManager as FileManager exposing (File)
 import Ui.Native.LocalStorage as LocalStorage
+import Ui.Helpers.Dropdown as Dropdown
 import Ui.Native.Browser as Browser
 import Ui.Native.Uid as Uid
 
@@ -138,6 +139,7 @@ type alias Model =
   , clicked : Bool
   , dropdownMenu :
       { element : Html.Html Msg
+      , address : Ui.DropdownMenu.Msg -> Msg
       , items : List (Html.Html Msg)
       }
   , buttonGroup :
@@ -247,6 +249,7 @@ init =
               "chevron-down"
               "right"
               NoOp
+        , address = DropdownMenu
         , items =
             [ Ui.DropdownMenu.item
                 [ onClick CloseMenu ]
@@ -612,7 +615,6 @@ view model =
                       , tableRow
                           (Ui.DropdownMenu.view
                             dropdownMenu
-                            DropdownMenu
                             model.menu
                           )
                           (emptyText)
@@ -725,7 +727,7 @@ update msg model =
       { model | pager = Ui.Pager.update act model.pager }
 
     CloseMenu ->
-      { model | menu = Ui.DropdownMenu.close model.menu }
+      { model | menu = Dropdown.close model.menu }
 
     NextPage ->
       { model | pager = Ui.Pager.select (clamp 0 2 (model.pager.active + 1)) model.pager }
@@ -735,7 +737,7 @@ update msg model =
 
     EscIsDown bool ->
       { model
-        | menu = Ui.DropdownMenu.close model.menu
+        | menu = Dropdown.close model.menu
         , modal = Ui.Modal.close model.modal
       }
 

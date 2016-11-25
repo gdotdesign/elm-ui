@@ -18,15 +18,15 @@ module Ui.Container exposing
 @docs column, columnStart, columnEnd, columnCenter
 -}
 
-import Html.Attributes exposing (classList, style)
+import Html.Attributes exposing (classList)
 import Html exposing (node)
 import Html.Lazy
 
 
 {-| Representation of a container:
-  - **direction** - Either "row" or "column"
   - **align** - Either "start", "center", "space-between", "space-around" or "end"
   - **compact** - Whether or not to have spacing between the children
+  - **direction** - Either "row" or "column"
 -}
 type alias Model =
   { direction : String
@@ -120,8 +120,8 @@ columnEnd attributes children =
 rowOptions : Model
 rowOptions =
   { direction = "row"
-  , align = "start"
   , compact = False
+  , align = "start"
   }
 
 
@@ -130,8 +130,8 @@ rowOptions =
 columnOptions : Model
 columnOptions =
   { direction = "column"
-  , align = "start"
   , compact = False
+  , align = "start"
   }
 
 

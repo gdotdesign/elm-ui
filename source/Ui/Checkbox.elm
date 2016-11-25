@@ -2,10 +2,13 @@ module Ui.Checkbox exposing
   ( Model, Msg, init, onChange, update, view, render, viewToggle
   , renderToggle, viewRadio, renderRadio, setValue )
 
-{-| Checkbox component with three different views.
+{-| Checkbox component with three different views (checkbox, radio, toggle).
 
 # Model
-@docs Model, Msg, init, onChange, update
+@docs Model, Msg, init, update
+
+# Events
+@docs onChange
 
 # Views
 @docs view, render

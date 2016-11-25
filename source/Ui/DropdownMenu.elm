@@ -1,59 +1,48 @@
 module Ui.DropdownMenu exposing
-  (Model, ViewModel, Msg, init, subscriptions, update, view, item, close)
+  (Model, ViewModel, Msg, init, subscriptions, update, view, item)
 
-{-| Dropdown menu that is always visible on the screen.
+{-| Dropdown menu that is always visible on the screen:
+  - It opens on the click of the opener element
+  - It interfaces with Ui.Helpers.Dropdown DSLs
 
 # Model
 @docs Model, Msg, init, subscriptions, update
 
 # View
 @docs ViewModel, view, item
-
-# Functions
-@docs close
 -}
 
-import Html.Attributes exposing (style, classList, id)
 import Html.Events exposing (onClick)
 import Html exposing (node)
 import Html.Lazy
 
-import Json.Decode as Json
-import Mouse
-
-import Ui.Native.Scrolls as Scrolls
+import Ui.Helpers.Dropdown as Dropdown exposing (Dropdown)
 import Ui.Native.Uid as Uid
 
-import Ui.Helpers.Dropdown as DD
 
 {-| Representation of a dropdown menu:
-  - **offsetLeft** - The x-axis offset for the dropdown
-  - **offsetTop** - The y-axis offset for the dropdown
-  - **left** - The left position of the dropdown
-  - **top** - The top position of the dropdown
-  - **open** - Whether or not the dropdown is open
-  - **favoredSides** - The sides to open the dropdown when there is space
-    - **horizontal** - Either "left" or "right"
-    - **vertical** - Either "top" or "bottom"
+  - **uid** - The unique identifier for a menu
+  - **dropdown** - The model of the dropdown
 -}
 type alias Model =
-  { uid : String
-  , dropdown : DD.Dropdown
+  { dropdown : Dropdown
+  , uid : String
   }
 
 
 {-| The view model for a dropdown menu.
 -}
 type alias ViewModel msg =
-  { element : Html.Html msg
-  , items : List (Html.Html msg)
+  { items : List (Html.Html msg)
+  , element : Html.Html msg
+  , address : Msg -> msg
   }
 
 
 {-| Messages that a dropdown menu can receive.
 -}
 type Msg
-  = Dropdown DD.Msg
+  = Dropdown Dropdown.Msg
   | Toggle
 
 
@@ -63,11 +52,10 @@ type Msg
 -}
 init : () -> Model
 init _ =
-  { uid = Uid.uid ()
-  , dropdown =
-    DD.init
+  { dropdown = Dropdown.init
+  , uid = Uid.uid ()
   }
-    |> DD.offset 5
+    |> Dropdown.offset 5
 
 
 {-| Subscriptions for a dropdown menu.
@@ -82,7 +70,7 @@ init _ =
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.map Dropdown (DD.subscriptions model)
+  Sub.map Dropdown (Dropdown.subscriptions model)
 
 
 {-| Updates a dropdown menu.
@@ -92,34 +80,37 @@ subscriptions model =
 update : Msg -> Model -> Model
 update action model =
   case action of
-    Toggle ->
-      DD.toggle model
-
     Dropdown msg ->
-      DD.update msg model
+      Dropdown.update msg model
+
+    Toggle ->
+      Dropdown.toggle model
+
 
 {-| Renders a dropdown menu.
 
     Ui.DropdownMenu.view
-      address
-      { element: triggerElement, items: items }
+      { element: openerElement
+      , address : address
+      , items: items
+      }
       dropdownMenu
 -}
-view : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
-view viewModel address model =
-  Html.Lazy.lazy3 render viewModel address model
+view : ViewModel msg -> Model -> Html.Html msg
+view viewModel model =
+  Html.Lazy.lazy2 render viewModel model
 
 
 {-| Renders a dropdown menu
 -}
-render : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
-render viewModel address model =
-  DD.view
-    { children = [ viewModel.element ]
-    , attributes = [onClick (address Toggle) ]
-    , tag = "ui-dropdown-menu"
-    , address = address << Dropdown
+render : ViewModel msg -> Model -> Html.Html msg
+render viewModel model =
+  Dropdown.view
+    { attributes = [onClick (viewModel.address Toggle) ]
+    , address = viewModel.address << Dropdown
+    , children = [ viewModel.element ]
     , contents = viewModel.items
+    , tag = "ui-dropdown-menu"
     } model
 
 
@@ -130,12 +121,3 @@ render viewModel address model =
 item : List (Html.Attribute msg) -> List (Html.Html msg) -> Html.Html msg
 item attributes children =
   node "ui-dropdown-menu-item" attributes children
-
-
-{-| Closes a dropdown menu.
-
-    Ui.DropdownMenu.close dropdownMenu
--}
-close : Model -> Model
-close model =
-  DD.close model

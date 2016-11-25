@@ -1,11 +1,18 @@
 module Ui.DatePicker exposing
-  (Model, Msg, init, update, subscribe, subscriptions, view, render, setValue)
+  ( Model, Msg, init, update, subscriptions, onChange, view, render, setValue
+  , closeOnSelect )
 
 {-| An input component that displays a **Calendar** (in a dropdown) when
 focused, allowing the user to manipulate the selected date.
 
 # Model
-@docs Model, Msg, init, subscribe, subscriptions, update
+@docs Model, Msg, init, subscriptions, update
+
+# DSL
+@docs closeOnSelect
+
+# Events
+@docs onChange
 
 # View
 @docs view, render
@@ -31,13 +38,14 @@ import Ui
 
 
 {-| Representation of a date picker:
-  - **calendar** - The model of a calendar
-  - **dropdownPosition** - The dropdowns position
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
   - **format** - The format of the date to render in the input
   - **readonly** - Whether or not the date picker is readonly
   - **disabled** - Whether or not the date picker is disabled
-  - **open** - Whether or not the dropdown is open
+  - **uid** - The unique identifier of the date picker
+  - **dropdownPosition** - The dropdowns position
+  - **calendar** - The model of the calendar
+  - **dropdown** - The model of the dropdown
 -}
 type alias Model =
   { calendar : Ui.Calendar.Model
@@ -81,13 +89,13 @@ init date =
     ...
     subscriptions =
       \model ->
-        Ui.DatePicker.subscribe
+        Ui.DatePicker.onChange
           DatePickerChanged
           model.datePicker
     ...
 -}
-subscribe : (Time.Time -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (Time.Time -> msg) -> Model -> Sub msg
+onChange msg model =
   Ui.Calendar.onChange msg model.calendar
 
 
@@ -109,13 +117,24 @@ subscriptions model =
     ]
 
 
+{-| Sets whether or not to close the dropdown when selecting an other date.
+
+    date
+      |> Ui.DatePicker.init
+      |> Ui.DatePicker.closeOnSelect true
+-}
+closeOnSelect : Bool -> Model -> Model
+closeOnSelect value model =
+  { model | closeOnSelect = value }
+
+
 {-| Updates a date picker.
 
     Ui.DatePicker.update msg datePicker
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
-  case Debug.log "" action of
+  case action of
     Calendar act ->
       let
         ( calendar, effect ) =
@@ -172,16 +191,18 @@ render locale model =
       { address = Picker
       , attributes =
         [ onKeys
-          [( 40, Increment )
+          [ ( 40, Increment )
           , ( 38, Decrement )
           , ( 39, Increment )
-          , ( 37, Decrement )]
+          , ( 37, Decrement )
+          ]
         ]
       , contents =
           [ text dateText
           , Ui.icon "calendar" False []
           ]
-      , dropdownContents = [ Html.map Calendar (Ui.Calendar.view locale model.calendar) ]
+      , dropdownContents =
+        [ Html.map Calendar (Ui.Calendar.view locale model.calendar) ]
       } model
 
 

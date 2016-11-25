@@ -2,9 +2,10 @@ module Ui.Calendar exposing
   ( Model, Msg, init, onChange, update, view, render, selectable
   , setValue, nextDay, previousDay )
 
-{-| Calendar component with which the user can:
+{-| Simple calendar component:
+  - Change month by clicking on arrows on the left or right in the header
   - Select a date by clicking on it
-  - Change the month with arrows
+  - Can be render in a given locale
 
 # Model
 @docs Model, Msg, init, update
@@ -40,11 +41,11 @@ import Ui
 
 
 {-| Representation of a calendar component:
-  - **selectable** - Whether or not the user can select a date by clicking
-  - **date** - The month in which this date is will be displayed
+  - **selectable** - Whether or not the user can select a date by clicking on it
   - **readonly** - Whether or not the calendar is interactive
   - **disabled** - Whether or not the calendar is disabled
   - **uid** - The unique identifier of the calendar
+  - **date** - The month which is displayed
   - **value** - The current selected date
 -}
 type alias Model =
@@ -103,11 +104,11 @@ onChange msg model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    NextMonth ->
-      ( { model | date = Ext.Date.nextMonth model.date }, Cmd.none )
-
     PreviousMonth ->
       ( { model | date = Ext.Date.previousMonth model.date }, Cmd.none )
+
+    NextMonth ->
+      ( { model | date = Ext.Date.nextMonth model.date }, Cmd.none )
 
     Select date ->
       if Ext.Date.isSameDate model.value date then
@@ -148,22 +149,24 @@ render locale model =
 
     -- The cells before the month
     paddingLeftItems =
-      Ext.Date.datesInMonth (Ext.Date.previousMonth month)
+      Ext.Date.previousMonth month
+        |> Ext.Date.datesInMonth
         |> List.reverse
         |> List.take (paddingLeft month)
         |> List.reverse
 
-    -- The cells after the month -
+    -- The cells after the month
     paddingRightItems =
-      Ext.Date.datesInMonth (Ext.Date.nextMonth month)
+      Ext.Date.nextMonth month
+        |> Ext.Date.datesInMonth
         |> List.take (42 - leftPadding - (List.length dates))
 
-    -- All of the 42 cells combined --
+    -- All of the 42 cells combined
     cells =
       paddingLeftItems
         ++ dates
         ++ paddingRightItems
-        |> List.map (\item -> renderCell item model)
+        |> List.map (renderCell model)
 
     nextAction =
       Ui.enabledActions model [ onMouseDown NextMonth ]
@@ -204,7 +207,8 @@ render locale model =
 
 {-| Sets the value of a calendar.
 
-    Ui.Calendar.setValue (Ext.Date.createDate 1977 5 25) calendar
+    (updatedCalendar, msg) =
+      Ui.Calendar.setValue (Ext.Date.createDate 1977 5 25) calendar
 -}
 setValue : Date.Date -> Model -> Model
 setValue date model =
@@ -265,7 +269,7 @@ paddingLeft date =
       6
 
 
-{-| Short names of days.
+{-| Returns the short names of days.
 -}
 dayNames : String -> List String
 dayNames locale =
@@ -287,8 +291,8 @@ dayNames locale =
 
 {-| Renders a single cell.
 -}
-renderCell : Date.Date -> Model -> Html.Html Msg
-renderCell date model =
+renderCell : Model -> Date.Date -> Html.Html Msg
+renderCell model date =
   let
     sameMonth =
       Ext.Date.isSameMonth date model.date
@@ -297,11 +301,10 @@ renderCell date model =
       model.selectable && (Ext.Date.isSameDate date model.value)
 
     click =
-      if
-        model.selectable
-          && sameMonth
-          && not model.disabled
-          && not model.readonly
+      if not model.disabled
+      && not model.readonly
+      && model.selectable
+      && sameMonth
       then
         [ onMouseDown (Select date) ]
       else

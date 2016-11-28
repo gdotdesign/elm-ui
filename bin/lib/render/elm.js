@@ -16,7 +16,7 @@ try {
 // Renders an .elm file.
 var render = function(file, debug, callback) {
   var filename = `test-${+Date.now()}.js`
-  var arguments = `${file} --output ${filename} --yes`.split(' ')
+  var arguments = [file, '--output', filename, '--yes']
   var result = ''
   var command
   var regexp

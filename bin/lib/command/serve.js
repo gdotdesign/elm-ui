@@ -11,7 +11,6 @@ var renderCSS = require('../render/css')
 var readConfig = require('./read-config')
 
 module.exports = function(options) {
-  console.log(options)
   var router = new koaRouter({prefix: options.prefix})
 
   browserSync.watch("source/**/*.elm").on("change", browserSync.reload)

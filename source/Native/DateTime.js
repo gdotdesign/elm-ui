@@ -19,8 +19,23 @@ var _gdotdesign$elm_ui$Native_DateTime = function() {
     return date.getMonth() + 1
   }
 
+  function setInterval_(interval, task)
+  {
+    return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+    {
+      console.log(interval, task)
+      var id = setInterval(function() {
+        console.log(task)
+        _elm_lang$core$Native_Scheduler.rawSpawn(task);
+      }, interval);
+
+      return function() { clearInterval(id); };
+    });
+  }
+
   /* Interface. */
   return {
+    setInterval: F2(setInterval_),
     daysInMonth: daysInMonth,
     create: F3(create),
     month: month,

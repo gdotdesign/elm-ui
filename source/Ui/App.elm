@@ -18,10 +18,7 @@ import Html.Lazy
 
 import Time exposing (Time)
 
-import Ui.Helpers.Emitter as Emitter
-import Ui.Native.Browser as Browser
 import Ui.Time
-import Ui
 
 
 {-| Representation of an application.
@@ -51,7 +48,7 @@ init =
 -}
 subscriptions : Sub Msg
 subscriptions =
-  Time.every 1000 Tick
+  Sub.none
 
 
 {-| Updates an application.
@@ -60,9 +57,7 @@ subscriptions =
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case msg of
-    Tick now ->
-      ( model, Ui.Time.updateTime now )
+  model ! []
 
 
 {-| Lazily renders an application.

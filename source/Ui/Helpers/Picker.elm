@@ -8,6 +8,8 @@ import Html exposing (node)
 import Ui.Helpers.Dropdown as Dropdown exposing (Dropdown)
 import Ui
 
+import DOM
+
 type alias Model a =
   { a
   | dropdown : Dropdown
@@ -53,7 +55,7 @@ update action model =
         selector =
           "[id='" ++ model.uid ++ "'] *:focus"
       in
-        if Native.Dom.test selector then
+        if DOM.contains selector then
           model
         else
           Dropdown.close model

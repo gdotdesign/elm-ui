@@ -128,47 +128,68 @@ updateTime now =
 
 --- EFFECTS
 
-type alias State =
-  Maybe Platform.ProcessId
+type alias State msg =
+  { process : Maybe Platform.ProcessId
+  , subs : List (MySub msg)
+  }
 
 type MySub msg =
   Sub (Time -> msg)
 
-init : Task Never State
+init : Task Never (State msg)
 init =
-  Task.succeed Nothing
+  Task.succeed
+    { process = Nothing
+    , subs = []
+    }
 
 subMap : (a -> b) -> MySub a -> MySub b
 subMap f (Sub msg) =
   Sub (f << msg)
 
-onEffects : Platform.Router msg () -> List (MySub msg) -> State -> Task Never State
-onEffects router subs state =
+onEffects : Platform.Router msg () -> List (MySub msg) -> (State msg) -> Task Never (State msg)
+onEffects router newSubs ({ process, subs } as state) =
   let
-    haveSubs = not (List.isEmpty subs)
+    haveSubs =
+      not (List.isEmpty newSubs)
+
+    updatedState =
+      { state | subs = newSubs }
+
+    updateProcess process =
+      Task.succeed { updatedState | process = process }
   in
-    case Debug.log "" (state, haveSubs) of
+    case (process, haveSubs) of
+      -- Nothing changed
       (Just id, True) ->
-        Task.succeed (Just id)
+        Task.succeed updatedState
         -- send updates
       (Nothing, True) ->
         Process.spawn (setInterval 5000 (Platform.sendToSelf router ()))
-          |> Task.andThen (\id -> Task.succeed (Just id))
+          |> Task.andThen (updateProcess << Just)
         -- start process
       (Just id, False) ->
         -- stop process
         Process.kill id
-          |> Task.andThen (\_ -> Task.succeed Nothing)
+          |> Task.andThen (\_ -> updateProcess Nothing)
       (Nothing, False) ->
-        Task.succeed Nothing
+        Task.succeed { process = Nothing, subs = [] }
 
 
-onSelfMsg : Platform.Router msg () -> () -> State -> Task Never State
+onSelfMsg : Platform.Router msg () -> () -> (State msg) -> Task Never (State msg)
 onSelfMsg router _ state =
   let
-    _ = Debug.log "WTF" (Ext.Date.now ())
+    value = Ext.Date.nowTime ()
+
+    mapSub sub =
+      case sub of
+        Sub msg -> msg
   in
-    Task.succeed state
+    state.subs
+      |> List.map mapSub
+      |> List.map (\tagger -> Platform.sendToApp router (tagger value))
+      |> Task.sequence
+      |> Task.andThen (\_ -> Task.succeed state)
 
 setInterval : Time -> Task Never () -> Task x Never
 setInterval =

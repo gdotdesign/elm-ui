@@ -23,9 +23,7 @@ var _gdotdesign$elm_ui$Native_DateTime = function() {
   {
     return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
     {
-      console.log(interval, task)
       var id = setInterval(function() {
-        console.log(task)
         _elm_lang$core$Native_Scheduler.rawSpawn(task);
       }, interval);
 

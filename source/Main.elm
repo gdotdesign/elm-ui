@@ -365,7 +365,10 @@ init =
           (\_ -> Sub.none)
     , input =
         Showcase.init
-          (\_ -> Ui.Input.init "" "Type here...")
+          (\_ ->
+            Ui.Input.init "" "Type here..."
+              |> Ui.Input.showClearIcon True
+          )
           Ui.Input.update
           (\_ -> Sub.none)
           (\_ -> Sub.none)

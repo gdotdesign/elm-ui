@@ -1,10 +1,13 @@
 module Ui.Input exposing
-  (Model, Msg, init, subscribe, update, view, render, setValue)
+  (Model, Msg, init, subscribe, update, view, render, setValue, showClearIcon)
 
 {-| Component for single line text based input (wrapper for the input HTML tag).
 
 # Model
 @docs Model, Msg, init, subscribe, update
+
+# DSL
+@docs showClearIcon
 
 # View
 @docs view, render
@@ -168,6 +171,9 @@ setValue : String -> Model -> Model
 setValue value model =
   { model | value = value }
 
+
+{-| Sets whether or not to show a clear icon.
+-}
 showClearIcon : Bool -> Model -> Model
 showClearIcon value model =
   { model | showClearIcon = value }

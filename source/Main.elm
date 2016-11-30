@@ -442,8 +442,8 @@ init =
     , menu = Ui.DropdownMenu.init ()
     , modal = Ui.Modal.init
     , loader = { loader | shown = True }
-    , time = Ui.Time.initModel (Ext.Date.createDate 2015 11 1)
-    , time2 = Ui.Time.initModel (Ext.Date.now ())
+    , time = Ui.Time.init (Ext.Date.createDate 2015 11 1)
+    , time2 = Ui.Time.init (Ext.Date.now ())
     , clicked = False
     , chooser =
         Showcase.init

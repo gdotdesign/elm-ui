@@ -14,6 +14,7 @@
     "Ext.Date",
     "Html.Events.Options",
     "Html.Events.Extra",
+    "Ui.Helpers.PeriodicUpdate",
     "Ui.Helpers.Drag",
     "Ui.Helpers.Dropdown",
     "Ui.Helpers.Emitter",

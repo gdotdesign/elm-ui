@@ -13,8 +13,13 @@ module Ui.Input exposing
 @docs setValue
 -}
 
-import Html.Events exposing (onInput)
-import Html exposing (node)
+import Html.Events
+  exposing
+    ( onInput
+    , onClick
+    )
+import Html.Events.Extra exposing (onKeys)
+import Html exposing (node, text)
 import Html.Lazy
 import Html.Attributes
   exposing
@@ -30,6 +35,7 @@ import Html.Attributes
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
+import Ui
 
 import String
 import Task
@@ -56,7 +62,7 @@ type alias Model =
 {-| Messages that an input can receive.
 -}
 type Msg
-  = Input String
+  = Input String | Delete
 
 
 {-| Initializes an input with a default value and a placeholder.
@@ -95,6 +101,9 @@ update msg model =
   case msg of
     Input value ->
       ( setValue value model, Emitter.sendString model.uid value )
+    Delete ->
+      ( setValue "" model, Emitter.sendString model.uid "" )
+
 
 
 {-| Lazily renders an input.
@@ -112,26 +121,37 @@ view model =
 -}
 render : Model -> Html.Html Msg
 render model =
-  node
-    "ui-input"
-    [ classList
-        [ ( "disabled", model.disabled )
-        , ( "readonly", model.readonly )
-        ]
-    ]
-    [ node
-        "input"
-        [ placeholder model.placeholder
-        , attribute "id" model.uid
-        , readonly model.readonly
-        , disabled model.disabled
-        , value model.value
-        , spellcheck False
-        , type_ model.kind
-        , onInput Input
-        ]
-        []
-    ]
+  let
+    deleteIcon =
+      if model.disabled || model.readonly || model.value == "" then
+        text ""
+      else
+        Ui.icon
+          "android-close"
+          True
+          [onClick (Delete)]
+  in
+    node
+      "ui-input"
+      [ classList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+      ]
+      [ node
+          "input"
+          [ placeholder model.placeholder
+          , attribute "id" model.uid
+          , readonly model.readonly
+          , disabled model.disabled
+          , value model.value
+          , spellcheck False
+          , type_ model.kind
+          , onInput Input
+          ]
+          []
+      , deleteIcon   
+      ]
 
 
 {-| Sets the value of an input.

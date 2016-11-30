@@ -2545,9 +2545,9 @@ netmask@~1.0.4:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/netmask/-/netmask-1.0.6.tgz#20297e89d86f6f6400f250d9f4f6b4c1945fcd35"
 
-nightwatch@0.9.8:
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/nightwatch/-/nightwatch-0.9.8.tgz#f80a21ae84c4d3d366f7007f1e564537e90c0442"
+nightwatch@0.9.9:
+  version "0.9.9"
+  resolved "https://registry.yarnpkg.com/nightwatch/-/nightwatch-0.9.9.tgz#478744cf23bfbdd86e503b0bacfa722426abe781"
   dependencies:
     chai-nightwatch "~0.1.x"
     ejs "~0.8.3"

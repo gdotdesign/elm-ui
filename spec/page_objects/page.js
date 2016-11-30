@@ -3,9 +3,6 @@ var path = require('path')
 module.exports = {
   url: 'file://' + path.resolve('dist/index.html'),
   elements: {
-  	app: {
-  		selector: 'ui-app'
-  	},
     checkbox: {
       selector: 'td ui-checkbox'
     },
@@ -18,9 +15,9 @@ module.exports = {
     readonlyCheckbox: {
       selector: 'td ui-checkbox.readonly'
     },
-  	disabledButton: {
-  		selector: 'td ui-button.disabled'
-  	},
+    disabledButton: {
+      selector: 'td ui-button.disabled'
+    },
     button: {
       selector: 'td ui-button.ui-button-big.ui-button-primary'
     },

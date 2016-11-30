@@ -43,7 +43,7 @@
     "dotenv": "2.0.0",
     "gulp": "3.9.1",
     "gulp-gh-pages": "0.5.4",
-    "nightwatch": "0.9.8"
+    "nightwatch": "0.9.9"
   },
   "preferGlobal": true,
   "bin": {

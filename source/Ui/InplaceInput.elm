@@ -1,10 +1,17 @@
 module Ui.InplaceInput exposing
-  (Model, Msg, init, subscribe, update, view, render, setValue, open, close)
+  ( Model, Msg, init, onChange, update, view, render, setValue, open, close
+  , required, ctrlSave )
 
 {-| Inplace editing textarea / input component.
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, init, update
+
+# DSL
+@docs required, ctrlSave
+
+# Events
+@docs onChange
 
 # View
 @docs view, render
@@ -17,10 +24,10 @@ import Html.Events.Extra exposing (onEnter, onKeys)
 import Html exposing (node, div, text)
 import Html.Events exposing (onClick)
 import Html.Lazy
-import Task
-import Dom
 
 import String
+import Task
+import Dom
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
@@ -31,14 +38,14 @@ import Ui
 
 
 {-| Represents an inplace input:
-  - **textarea** - The textarea model
   - **required** - Whether or not to disable the save button if the value is empty
   - **disabled** - Whether or not the inplace input is disabled
   - **readonly** - Whether or not the inplace input is readonly
-  - **ctrlSave** - Whether or not to save on ctrl+enter
-  - **value** - The value of the inplace input
-  - **open** - Whether or not the inplace input is open
   - **uid** - The unique identifier of the inplace input
+  - **ctrlSave** - Whether or not to save on ctrl+enter
+  - **open** - Whether or not the inplace input is open
+  - **value** - The value of the inplace input
+  - **textarea** - The textarea model
 -}
 type alias Model =
   { textarea : Ui.Textarea.Model
@@ -55,11 +62,11 @@ type alias Model =
 {-| Messages that an inplace input can recieve.
 -}
 type Msg
-  = Textarea Ui.Textarea.Msg
+  = Done (Result Dom.Error ())
+  | Textarea Ui.Textarea.Msg
   | Close
   | Save
   | Edit
-  | Done (Result Dom.Error ())
 
 
 {-| Initializes an inplace input with the given value and palceholder.
@@ -79,18 +86,38 @@ init value placholder =
   }
 
 
+{-| Sets whether or not to disable the save button if the value is empty.
+
+    inplaceInput
+      |> Ui.InplaceInput.required True
+-}
+required : Bool -> Model -> Model
+required value model =
+  { model | required = value }
+
+
+{-| Sets whether or not to control key is needed to save.
+
+    inplaceInput
+      |> Ui.InplaceInput.ctrlSave True
+-}
+ctrlSave : Bool -> Model -> Model
+ctrlSave value model =
+  { model | ctrlSave = value }
+
+
 {-| Subscribe to the changes of an inplace input.
 
     ...
     subscriptions =
       \model ->
-        Ui.InplaceInput.subscribe
+        Ui.InplaceInput.onChange
           InplaceInputChanged
           model.inplaceInput
     ...
 -}
-subscribe : (String -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (String -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenString model.uid msg
 
 
@@ -192,8 +219,8 @@ form model =
               { disabled = disabled
               , readonly = False
               , kind = "primary"
-              , text = "Save"
               , size = "medium"
+              , text = "Save"
               }
           , Ui.spacer
           , Ui.Button.secondary "Close" Close
@@ -221,12 +248,13 @@ isEmpty model =
 
 {-| Sets the value of an inplace input.
 
-    Ui.InplaceInput.setValue "new value" inplaceInput
+    ( updatedInplaceInput, cmd ) =
+      Ui.InplaceInput.setValue "new value" inplaceInput
 -}
-setValue : String -> Model -> (Model, Cmd Msg)
+setValue : String -> Model -> ( Model, Cmd Msg )
 setValue value model =
   let
-    (textarea, cmd) =
+    ( textarea, cmd ) =
       Ui.Textarea.setValue value model.textarea
   in
-    ({ model | textarea = textarea, value = value }, Cmd.map Textarea cmd)
+    ( { model | textarea = textarea, value = value }, Cmd.map Textarea cmd )

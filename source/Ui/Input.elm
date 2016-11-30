@@ -167,3 +167,7 @@ render model =
 setValue : String -> Model -> Model
 setValue value model =
   { model | value = value }
+
+showClearIcon : Bool -> Model -> Model
+showClearIcon value model =
+  { model | showClearIcon = value }

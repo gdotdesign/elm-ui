@@ -1,10 +1,16 @@
 module Ui.Input exposing
-  (Model, Msg, init, subscribe, update, view, render, setValue)
+  (Model, Msg, init, onChange, update, view, render, placeholder, setValue)
 
 {-| Component for single line text based input (wrapper for the input HTML tag).
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, init, update
+
+# DSL
+@docs placeholder
+
+# Events
+@docs onChange
 
 # View
 @docs view, render
@@ -20,7 +26,6 @@ import Html.Attributes
   exposing
     ( defaultValue
     , spellcheck
-    , placeholder
     , type_
     , readonly
     , disabled
@@ -57,17 +62,19 @@ type alias Model =
 {-| Messages that an input can receive.
 -}
 type Msg
-  = Input String
-  | Done (Result DOM.Error ())
+  = Done (Result DOM.Error ())
+  | Input String
 
 
 {-| Initializes an input with a default value and a placeholder.
 
-    input = Ui.Input.init "value" "Placeholder..."
+    input =
+      Ui.Input.init "value"
+        |> Ui.Input.placeholder "Type here..."
 -}
-init : String -> String -> Model
-init value placeholder =
-  { placeholder = placeholder
+init : String -> Model
+init value =
+  { placeholder = ""
   , uid = Uid.uid ()
   , disabled = False
   , readonly = False
@@ -76,15 +83,22 @@ init value placeholder =
   }
 
 
+{-| Sets the placeholder of an input.
+-}
+placeholder : String -> Model -> Model
+placeholder value model =
+  { model | placeholder = value }
+
+
 {-| Subscribe to the changes of an input.
 
     ...
     subscriptions =
-      \model -> Ui.Input.subscribe InputChanged model.input
+      \model -> Ui.Input.onChange InputChanged model.input
     ...
 -}
-subscribe : (String -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (String -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenString model.uid msg
 
 
@@ -132,7 +146,7 @@ render model =
     ]
     [ node
         "input"
-        [ placeholder model.placeholder
+        [ Html.Attributes.placeholder model.placeholder
         , defaultValue model.value
         , readonly model.readonly
         , disabled model.disabled
@@ -147,7 +161,7 @@ render model =
 
 {-| Sets the value of an input.
 
-    Ui.Input.setValue "new value" input
+    (updatedInput, cmd) = Ui.Input.setValue "new value" input
 -}
 setValue : String -> Model -> ( Model, Cmd Msg)
 setValue value model =

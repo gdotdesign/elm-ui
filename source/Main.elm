@@ -217,7 +217,7 @@ init =
           (\_ -> Sub.none)
     , searchInput =
         Showcase.init
-          (\_ -> Ui.SearchInput.init 1000 "Search")
+          (\_ -> Ui.SearchInput.init 1000)
           Ui.SearchInput.update
           (Ui.SearchInput.subscribe SearchInputChanged)
           (\_ -> Sub.none)
@@ -272,6 +272,7 @@ init =
           OpenModal
     , modalView =
         { title = "Test Modal"
+        , address = Modal
         , content =
             [ node "p" [] [ text "This is a modal window." ]
             , node "p" [] [ text "Lorem ipsum dolor sit amet, consectetur\n                                         adipiscing elit. Pellentesque ornare odio sed\n                                         lorem malesuada, id efficitur elit consequat.\n                                         Aenean suscipit, est a varius aliquam,\n                                         turpis diam sollicitudin tortor, in venenatis\n                                         felis nisl ac ex. Quisque finibus nisl nec urna\n                                         laoreet aliquet. Maecenas et volutpat arcu, a\n                                         dapibus tellus. Praesent nec enim velit. Class\n                                         aptent taciti sociosqu ad litora torquent per\n                                         conubia nostra, per inceptos himenaeos. Nullam\n                                         volutpat turpis vel lorem fringilla, pulvinar\n                                         viverra dolor varius." ]
@@ -364,7 +365,10 @@ init =
           (\_ -> Sub.none)
     , input =
         Showcase.init
-          (\_ -> Ui.Input.init "" "Type here...")
+          (\_ ->
+            Ui.Input.init ""
+              |> Ui.Input.placeholder "Type here..."
+          )
           Ui.Input.update
           (\_ -> Sub.none)
           (\_ -> Sub.none)
@@ -514,7 +518,7 @@ view model =
   in
     node "app" []
       [ Ui.NotificationCenter.view Notis model.notifications
-      , Ui.Modal.view Modal modalView model.modal
+      , Ui.Modal.view modalView model.modal
       , Ui.Layout.website
           [ Ui.Header.view
             [ Ui.Header.icon

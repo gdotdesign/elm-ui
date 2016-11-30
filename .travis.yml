@@ -19,6 +19,6 @@ node_js:
   - "6.1"
 script:
   - npm run build
-  - npm run test
+  - npm run elm-docs
 sudo: required
 dist: trusty

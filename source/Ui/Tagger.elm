@@ -69,7 +69,9 @@ type Msg
 -}
 init : String -> Model
 init placeholder =
-  { input = Ui.Input.init "" placeholder
+  { input =
+      Ui.Input.init ""
+        |> Ui.Input.placeholder placeholder
   , uid = Uid.uid ()
   , removeable = True
   , disabled = False

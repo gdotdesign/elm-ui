@@ -57,11 +57,11 @@ type Msg
 
 {-| Initializes a search input with the given timeout.
 
-    searchInput = Ui.SearchInput.init 1000 "Placeholder..."
+    searchInput = Ui.SearchInput.init 1000
 -}
-init : Time -> String -> Model
-init timeout placeholder =
-  { input = Ui.Input.init "" placeholder
+init : Time -> Model
+init timeout =
+  { input = Ui.Input.init ""
   , uid = Uid.uid ()
   , timeout = timeout
   , disabled = False

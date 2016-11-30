@@ -45,6 +45,7 @@ import Task
   - **placeholder** - The text to display when there is no value
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
+  - **showClearIcon** - Whether or not to show the clear icon
   - **uid** - The unique identifier of the input
   - **kind** - The type of the input
   - **value** - The value
@@ -53,6 +54,7 @@ type alias Model =
   { placeholder : String
   , disabled : Bool
   , readonly : Bool
+  , showClearIcon : Bool
   , value : String
   , kind : String
   , uid : String
@@ -75,6 +77,7 @@ init value placeholder =
   , uid = Uid.uid ()
   , disabled = False
   , readonly = False
+  , showClearIcon = True
   , value = value
   , kind = "text"
   }
@@ -123,7 +126,10 @@ render : Model -> Html.Html Msg
 render model =
   let
     deleteIcon =
-      if model.disabled || model.readonly || model.value == "" then
+      if not model.showClearIcon
+         || model.disabled
+         || model.readonly
+         || model.value == "" then
         text ""
       else
         Ui.icon
@@ -150,7 +156,7 @@ render model =
           , onInput Input
           ]
           []
-      , deleteIcon   
+      , deleteIcon
       ]
 
 

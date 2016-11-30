@@ -64,7 +64,7 @@ type alias Model =
 {-| Messages that an input can receive.
 -}
 type Msg
-  = Input String | Delete
+  = Input String | Clear
 
 
 {-| Initializes an input with a default value and a placeholder.
@@ -77,7 +77,7 @@ init value placeholder =
   , uid = Uid.uid ()
   , disabled = False
   , readonly = False
-  , showClearIcon = True
+  , showClearIcon = False
   , value = value
   , kind = "text"
   }
@@ -104,7 +104,7 @@ update msg model =
   case msg of
     Input value ->
       ( setValue value model, Emitter.sendString model.uid value )
-    Delete ->
+    Clear ->
       ( setValue "" model, Emitter.sendString model.uid "" )
 
 
@@ -125,7 +125,7 @@ view model =
 render : Model -> Html.Html Msg
 render model =
   let
-    deleteIcon =
+    clearIcon =
       if not model.showClearIcon
          || model.disabled
          || model.readonly
@@ -135,7 +135,7 @@ render model =
         Ui.icon
           "android-close"
           True
-          [onClick (Delete)]
+          [onClick Clear]
   in
     node
       "ui-input"
@@ -156,7 +156,7 @@ render model =
           , onInput Input
           ]
           []
-      , deleteIcon
+      , clearIcon
       ]
 
 

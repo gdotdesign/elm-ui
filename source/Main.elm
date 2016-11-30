@@ -52,7 +52,6 @@ import Ui.Image
 import Ui.Input
 import Ui.Time
 import Ui.Tabs
-import Ui.App
 import Ui
 import Kitchensink.Showcase as Showcase
 
@@ -84,7 +83,6 @@ type Msg {- Showcase models -}
   | Pager Ui.Pager.Msg
   | Time2 Ui.Time.Msg
   | Time Ui.Time.Msg
-  | App Ui.App.Msg {- Notify about changes -}
   | ColorPickerChanged Ext.Color.Hsv
   | ColorPanelChanged Ext.Color.Hsv
   | ChooserChanged (Set.Set String)
@@ -167,7 +165,6 @@ type alias Model =
   , input : Showcase.Model Ui.Input.Model Ui.Input.Msg Msg
   , tabs : Showcase.Model Ui.Tabs.Model Ui.Tabs.Msg Msg
   , notifications : Ui.NotificationCenter.Model Msg
-  , app : Ui.App.Model
   , menu : Ui.DropdownMenu.Model
   , loader : Ui.Loader.Model
   , modal : Ui.Modal.Model
@@ -454,7 +451,6 @@ init =
           Ui.Chooser.update
           (Ui.Chooser.subscribe ChooserChanged)
           (\model -> Ui.Chooser.subscriptions model)
-    , app = Ui.App.init
     }
 
 
@@ -516,9 +512,7 @@ view model =
       else
         []
   in
-    Ui.App.view
-      App
-      model.app
+    node "app" []
       [ Ui.NotificationCenter.view Notis model.notifications
       , Ui.Modal.view Modal modalView model.modal
       , Ui.Layout.website
@@ -924,13 +918,6 @@ update_ msg model =
       in
         ( { model | ratings = ratings }, Cmd.map Ratings effect )
 
-    App act ->
-      let
-        ( app, effect ) =
-          Ui.App.update act model.app
-      in
-        ( { model | app = app }, Cmd.map App effect )
-
     Notis act ->
       let
         ( notis, effect ) =
@@ -1059,7 +1046,6 @@ gatherSubs model =
     , Showcase.subscribe model.chooser
     , Showcase.subscribe model.tagger
     , Showcase.subscribe model.fileInput
-    , Sub.map App Ui.App.subscriptions
     , Sub.map Time Ui.Time.subscriptions
     , Sub.map Time2 Ui.Time.subscriptions
     , Sub.map ColorPanel (Showcase.subscriptions model.colorPanel)

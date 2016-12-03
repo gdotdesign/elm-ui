@@ -75,14 +75,14 @@ type Msg
 -}
 init : String -> String -> Model
 init value placholder =
-  { textarea = Ui.Textarea.init value placholder
+  { textarea = Ui.Textarea.init ()
   , uid = Uid.uid ()
   , disabled = False
   , readonly = False
   , required = True
   , ctrlSave = True
-  , value = value
   , open = False
+  , value = ""
   }
 
 

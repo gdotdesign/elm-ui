@@ -1,11 +1,18 @@
 module Ui.Textarea exposing
-  (Model, Msg, init, subscribe, update, view, render, setValue)
+  ( Model, Msg, init, onChange, update, view, render, setValue, placeholder
+  , enterAllowed, defaultValue )
 
 {-| Textarea which uses a mirror object to render the contents the same way,
 thus creating an automatically growing textarea.
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, init, update
+
+# Events
+@docs onChange
+
+# DSL
+@docs placeholder, enterAllowed, defaultValue
 
 # View
 @docs view, render
@@ -14,20 +21,11 @@ thus creating an automatically growing textarea.
 @docs setValue
 -}
 
+import Html.Attributes exposing (spellcheck, classList, readonly, disabled, id)
 import Html.Events.Extra exposing (onEnterPreventDefault, onStop)
 import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onInput)
 import Html.Lazy
-import Html.Attributes
-  exposing
-    ( defaultValue
-    , spellcheck
-    , placeholder
-    , classList
-    , readonly
-    , disabled
-    , attribute
-    )
 
 import String
 import Task
@@ -40,12 +38,12 @@ import Ui
 import DOM
 
 {-| Representation of a textarea:
-  - **placeholder** - The text to display when there is no value
   - **enterAllowed** - Whether or not to allow new lines when pressing enter
+  - **placeholder** - The text to display when there is no value
   - **disabled** - Whether or not the textarea is disabled
   - **readonly** - Whether or not the textarea is readonly
-  - **value** - The value
   - **uid** - The unique identifier of the textarea
+  - **value** - The value
 -}
 type alias Model =
   { placeholder : String
@@ -67,16 +65,19 @@ type Msg
 
 {-| Initializes a textarea with a default value and a placeholder.
 
-    textarea = Ui.Textarea.init "default value" "Placeholder..."
+    textarea =
+      Ui.Textarea.init ()
+        |> Ui.Textarea.placeholder "Placeholder"
+        |> Ui.Textarea.enterAllowed False
 -}
-init : String -> String -> Model
-init value placeholder =
-  { placeholder = placeholder
+init : () -> Model
+init _ =
+  { enterAllowed = True
   , uid = Uid.uid ()
-  , enterAllowed = True
+  , placeholder = ""
   , disabled = False
   , readonly = False
-  , value = value
+  , value = ""
   }
 
 
@@ -84,12 +85,33 @@ init value placeholder =
 
     ...
     subscriptions =
-      \model -> Ui.Textarea.subscribe TextareaChanged model.textarea
+      \model -> Ui.Textarea.onChange TextareaChanged model.textarea
     ...
 -}
-subscribe : (String -> a) -> Model -> Sub a
-subscribe msg model =
+onChange : (String -> a) -> Model -> Sub a
+onChange msg model =
   Emitter.listenString model.uid msg
+
+
+{-| Sets the placeholder of a textarea.
+-}
+placeholder : String -> Model -> Model
+placeholder value model =
+  { model | placeholder = value }
+
+
+{-| Sets whether or not pressing enter creates a new line.
+-}
+enterAllowed : Bool -> Model -> Model
+enterAllowed value model =
+  { model | enterAllowed = value }
+
+
+{-| Sets the default value of a textarea.
+-}
+defaultValue : String -> Model -> Model
+defaultValue value model =
+  { model | value = value }
 
 
 {-| Updates a textarea.
@@ -123,12 +145,12 @@ render : Model -> Html.Html Msg
 render model =
   let
     base =
-      [ placeholder model.placeholder
-      , attribute "id" model.uid
-      , defaultValue model.value
+      [ Html.Attributes.placeholder model.placeholder
+      , Html.Attributes.defaultValue model.value
       , readonly model.readonly
       , disabled model.disabled
       , spellcheck False
+      , id model.uid
       ]
         ++ actions
 

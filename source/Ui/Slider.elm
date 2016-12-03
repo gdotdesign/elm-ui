@@ -1,10 +1,13 @@
 module Ui.Slider exposing
-  (Model, Msg, init, subscribe, subscriptions, update, view, render, setValue)
+  (Model, Msg, init, onChange, subscriptions, update, view, render, setValue)
 
 {-| Simple slider component.
 
 # Model
-@docs Model, Msg, init, subscribe, subscriptions, update
+@docs Model, Msg, init, subscriptions, update
+
+# Events
+@docs onChange
 
 # View
 @docs view, render
@@ -19,7 +22,6 @@ import Html exposing (node)
 import Html.Lazy
 
 import DOM exposing (Position)
-import Dict
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
@@ -55,15 +57,17 @@ type Msg
 
 {-| Initializes a slider with the given value.
 
-    slider = Ui.Slider.init 0.5
+    slider =
+      Ui.Slider.init
+        |> Ui.Slider.setValue 0.5
 -}
-init : Float -> Model
-init value =
+init : () -> Model
+init _ =
   { uid = Uid.uid ()
   , disabled = False
   , readonly = False
   , drag = Drag.init
-  , value = value
+  , value = 0
   }
 
 
@@ -71,11 +75,11 @@ init value =
 
     ...
     subscriptions =
-      \model -> Ui.Slider.subscribe SliderChanged model.slider
+      \model -> Ui.Slider.onChange SliderChanged model.slider
     ...
 -}
-subscribe : (Float -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (Float -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenFloat model.uid msg
 
 

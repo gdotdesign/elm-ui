@@ -211,9 +211,17 @@ init =
         ]
     , tagger =
         Showcase.init
-          (\_ -> Ui.Tagger.init "Add a tag...")
+          (\_ ->
+            Ui.Tagger.init ()
+            |> Ui.Tagger.placeholder "Add a tag..."
+          )
           Ui.Tagger.update
-          (Ui.Tagger.subscribe TaggerAdd TaggerRemove)
+          (\model ->
+            Sub.batch
+            [ Ui.Tagger.onCreate TaggerAdd model
+            , Ui.Tagger.onRemove TaggerRemove model
+            ]
+          )
           (\_ -> Sub.none)
     , searchInput =
         Showcase.init
@@ -426,9 +434,13 @@ init =
           (\_ -> Sub.none)
     , textarea =
         Showcase.init
-          (\_ -> Ui.Textarea.init "Test" "Placeholder")
+          (\_ ->
+            Ui.Textarea.init ()
+              |> Ui.Textarea.defaultValue "Test"
+              |> Ui.Textarea.placeholder "Placeholder..."
+          )
           Ui.Textarea.update
-          (Ui.Textarea.subscribe TextAreaChanged)
+          (Ui.Textarea.onChange TextAreaChanged)
           (\_ -> Sub.none)
     , numberPad =
         Showcase.init
@@ -449,7 +461,10 @@ init =
           (\_ -> Sub.none)
     , slider =
         Showcase.init
-          (\_ -> Ui.Slider.init 50)
+          (\_ ->
+            Ui.Slider.init ()
+            |> Ui.Slider.setValue 50
+          )
           Ui.Slider.update
           (\_ -> Sub.none)
           (\model -> Ui.Slider.subscriptions model)

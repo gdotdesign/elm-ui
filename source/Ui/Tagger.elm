@@ -1,10 +1,17 @@
 module Ui.Tagger exposing
-  (Tag, Model, Msg, init, subscribe, update, view, render, setValue)
+  ( Tag, Model, Msg, init, update, view, render, setValue, onCreate, onRemove
+  , placeholder, removeable )
 
 {-| Component for displaying tags and handling it's events (adding / removing).
 
 # Model
-@docs Model, Msg, Tag, init, subscribe, update
+@docs Model, Msg, Tag, init, update
+
+# Events
+@docs onCreate, onRemove
+
+# DSL
+@docs removeable, placeholder
 
 # View
 @docs view, render
@@ -30,8 +37,8 @@ import Ui
 
 
 {-| Represents a tag:
-  - **label** - The label to display
   - **id** - The identifier of the tag
+  - **label** - The label to display
 -}
 type alias Tag =
   { label : String
@@ -40,11 +47,11 @@ type alias Tag =
 
 
 {-| Representation of a tagger component:
-  - **input** - The model of the input field
-  - **removeable** - Whether or not tags can be removed
   - **disabled** - Whether or not the tagger is disabled
   - **readonly** - Whether or not the tagger is readonly
+  - **removeable** - Whether or not tags can be removed
   - **uid** - The unique identifier of the chooser
+  - **input** - The model of the input field
 -}
 type alias Model =
   { input : Ui.Input.Model
@@ -65,30 +72,59 @@ type Msg
 
 {-| Initializes a tagger.
 
-    tagger = Ui.Tagger.init "Add a tag..."
+    tagger =
+      Ui.Tagger.init ()
+        |> Ui.Tagger.removeable False
+        |> Ui.tagger.placeholder "Add tag..."
 -}
-init : String -> Model
-init placeholder =
-  { input =
-      Ui.Input.init ""
-        |> Ui.Input.placeholder placeholder
-  , uid = Uid.uid ()
+init : () -> Model
+init _ =
+  { input = Ui.Input.init ""
   , removeable = True
   , disabled = False
   , readonly = False
+  , uid = Uid.uid ()
   }
 
 
-{-| Subscribe to the changes of a tagger.
-
-    Ui.Tagger.subscribe AddTag RemoveTag model.tagger
+{-| Sets whether or not tags can be removed.
 -}
-subscribe : (String -> msg) -> (String -> msg) -> Model -> Sub msg
-subscribe create remove model =
-  Sub.batch
-    [ Emitter.listenString (model.uid ++ "-create") create
-    , Emitter.listenString (model.uid ++ "-remove") remove
-    ]
+removeable : Bool -> Model -> Model
+removeable value model =
+  { model | removeable = value }
+
+
+{-| Sets the placeholder of the input input of a tagger.
+-}
+placeholder : String -> Model -> Model
+placeholder value model =
+  { model | input = Ui.Input.placeholder value model.input }
+
+
+{-| Subscribe to the **create** events of a tagger.
+
+    ...
+    subscriptions =
+      \model ->
+        Ui.Tagger.onCreate AddTag model.tagger
+    ...
+-}
+onCreate : (String -> msg) -> Model -> Sub msg
+onCreate msg model =
+  Emitter.listenString (model.uid ++ "-create") msg
+
+
+{-| Subscribe to the **remove** events of a tagger.
+
+    ...
+    subscriptions =
+      \model ->
+        Ui.Tagger.onRemove RemoveTag model.tagger
+    ...
+-}
+onRemove : (String -> msg) -> Model -> Sub msg
+onRemove msg model =
+  Emitter.listenString (model.uid ++ "-remove") msg
 
 
 {-| Updates a tagger.

@@ -368,6 +368,7 @@ init =
           (\_ ->
             Ui.Input.init ""
               |> Ui.Input.placeholder "Type here..."
+              |> Ui.Input.showClearIcon True
           )
           Ui.Input.update
           (\_ -> Sub.none)

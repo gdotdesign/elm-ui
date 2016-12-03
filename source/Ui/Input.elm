@@ -1,5 +1,6 @@
 module Ui.Input exposing
-  (Model, Msg, init, onChange, update, view, render, placeholder, setValue)
+  ( Model, Msg, init, onChange, update, view, render, placeholder, showClearIcon
+  , setValue )
 
 {-| Component for single line text based input (wrapper for the input HTML tag).
 
@@ -7,7 +8,7 @@ module Ui.Input exposing
 @docs Model, Msg, init, update
 
 # DSL
-@docs placeholder
+@docs placeholder, showClearIcon
 
 # Events
 @docs onChange
@@ -19,8 +20,9 @@ module Ui.Input exposing
 @docs setValue
 -}
 
-import Html.Events exposing (onInput)
-import Html exposing (node)
+import Html.Events exposing (onInput, onClick)
+import Html.Events.Extra exposing (onKeys)
+import Html exposing (node, text)
 import Html.Lazy
 import Html.Attributes
   exposing
@@ -36,6 +38,7 @@ import Html.Attributes
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
+import Ui
 
 import Task
 import DOM
@@ -45,6 +48,7 @@ import DOM
   - **placeholder** - The text to display when there is no value
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
+  - **showClearIcon** - Whether or not to show the clear icon
   - **uid** - The unique identifier of the input
   - **kind** - The type of the input
   - **value** - The value
@@ -53,6 +57,7 @@ type alias Model =
   { placeholder : String
   , disabled : Bool
   , readonly : Bool
+  , showClearIcon : Bool
   , value : String
   , kind : String
   , uid : String
@@ -64,6 +69,7 @@ type alias Model =
 type Msg
   = Done (Result DOM.Error ())
   | Input String
+  | Clear
 
 
 {-| Initializes an input with a default value and a placeholder.
@@ -71,10 +77,12 @@ type Msg
     input =
       Ui.Input.init "value"
         |> Ui.Input.placeholder "Type here..."
+        |> Ui.Input.showClearIcon True
 -}
 init : String -> Model
 init value =
-  { placeholder = ""
+  { showClearIcon = False
+  , placeholder = ""
   , uid = Uid.uid ()
   , disabled = False
   , readonly = False
@@ -109,9 +117,6 @@ onChange msg model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Input value ->
-      ( { model | value = value }, Emitter.sendString model.uid value )
-
     Done result ->
       let
         _ =
@@ -120,6 +125,22 @@ update msg model =
             Ok _ -> ""
       in
         ( model, Cmd.none )
+
+    Input value ->
+      ( { model | value = value }, Emitter.sendString model.uid value )
+
+    Clear ->
+      let
+        (updatedInput, cmd) =
+          setValue "" model
+
+        commands =
+          Cmd.batch
+            [ Emitter.sendString model.uid ""
+            , cmd
+            ]
+      in
+        ( updatedInput, commands )
 
 
 {-| Lazily renders an input.
@@ -137,26 +158,40 @@ view model =
 -}
 render : Model -> Html.Html Msg
 render model =
-  node
-    "ui-input"
-    [ classList
-        [ ( "disabled", model.disabled )
-        , ( "readonly", model.readonly )
-        ]
-    ]
-    [ node
-        "input"
-        [ Html.Attributes.placeholder model.placeholder
-        , defaultValue model.value
-        , readonly model.readonly
-        , disabled model.disabled
-        , spellcheck False
-        , type_ model.kind
-        , onInput Input
-        , id model.uid
-        ]
-        []
-    ]
+  let
+    clearIcon =
+      if not model.showClearIcon
+         || model.disabled
+         || model.readonly
+         || model.value == "" then
+        text ""
+      else
+        Ui.icon
+          "android-close"
+          True
+          [onClick Clear]
+  in
+    node
+      "ui-input"
+      [ classList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+      ]
+      [ node
+          "input"
+          [ Html.Attributes.placeholder model.placeholder
+          , defaultValue model.value
+          , readonly model.readonly
+          , disabled model.disabled
+          , spellcheck False
+          , type_ model.kind
+          , onInput Input
+          , id model.uid
+          ]
+          []
+      , clearIcon
+      ]
 
 
 {-| Sets the value of an input.
@@ -170,3 +205,10 @@ setValue value model =
       DOM.setValue value (DOM.idSelector model.uid)
   in
     ( { model | value = value }, Task.attempt Done task )
+
+
+{-| Sets whether or not to show a clear icon.
+-}
+showClearIcon : Bool -> Model -> Model
+showClearIcon value model =
+  { model | showClearIcon = value }

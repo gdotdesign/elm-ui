@@ -11,7 +11,10 @@ var elmExecutable = which.sync('elm-make')
 // Renders an .elm file.
 var render = function(file, debug, callback) {
   var filename = temp.openSync({ suffix: '.js' }).path
-  var arguments = `${file} --output ${filename} --yes --warn --report=json`.split(' ')
+
+  var arguments =
+    [file, '--output', filename, '--yes', '--warn', '--report=json']
+
   var result = ''
   var command
   var regexp

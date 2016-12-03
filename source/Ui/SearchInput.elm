@@ -154,8 +154,8 @@ render { input, disabled, readonly } =
     node
       "ui-search-input"
       []
-      [ Ui.icon "search" False []
-      , Html.map Input (Ui.Input.view updatedInput)
+      [ Html.map Input (Ui.Input.view updatedInput)
+      , Ui.icon "search" False []
       ]
 
 

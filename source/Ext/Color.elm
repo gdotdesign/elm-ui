@@ -75,7 +75,12 @@ updateColor function color =
 -}
 decodeHsv : JD.Decoder Hsv
 decodeHsv =
-  JD.map4 (,,,) JD.float JD.float JD.float JD.float
+  JD.map4
+    (,,,)
+    (JD.index 0 JD.float)
+    (JD.index 1 JD.float)
+    (JD.index 2 JD.float)
+    (JD.index 3 JD.float)
     |> JD.map (\( sat, val, alpha, hue ) -> Hsv sat val alpha hue)
 
 

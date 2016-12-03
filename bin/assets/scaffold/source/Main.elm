@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import Html exposing (div, span, strong, text)
-import Html.App
 
 import Ui.Container
 import Ui.Button
@@ -69,7 +68,7 @@ view model =
 
 
 main =
-  Html.App.program
+  Html.program
     { init = ( init, Cmd.none )
     , view = view
     , update = update

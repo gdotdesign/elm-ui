@@ -1,4 +1,5 @@
 ui-input {
+  position: relative;
   display: inline-block;
 
   &.disabled input {
@@ -17,6 +18,12 @@ ui-input {
     &[readonly] {
       cursor: $readonly-cursor;
     }
+  }
+  ui-icon {
+    position: absolute;
+    right: 12px;
+    top: 9px;
+    font-size: 18px;
   }
 }
 

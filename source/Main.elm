@@ -406,7 +406,11 @@ init =
           (\model -> Ui.ColorPanel.subscriptions model)
     , numberRange =
         Showcase.init
-          (\_ -> Ui.NumberRange.init 0)
+          (\_ ->
+              Ui.NumberRange.init 0
+              |> Ui.NumberRange.affix "px"
+              |> Ui.NumberRange.dragStep 0.1
+          )
           Ui.NumberRange.update
           (\_ -> Sub.none)
           (\model -> Ui.NumberRange.subscriptions model)

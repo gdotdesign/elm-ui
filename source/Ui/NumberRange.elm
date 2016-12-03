@@ -1,13 +1,19 @@
 module Ui.NumberRange exposing
-  ( Model, Msg, init, subscribe, subscriptions, update, view, render
-  , setValue, increment, decrement )
+  ( Model, Msg, init, onChange, subscriptions, update, view, render
+  , setValue, increment, decrement, affix, keyboardStep, dragStep )
 
 {-| This is a component allows the user to change a number value by
 dragging or by using the keyboard, also traditional editing is enabled by
 double clicking on the component.
 
 # Model
-@docs Model, Msg, init, subscribe, subscriptions, update
+@docs Model, Msg, init, subscriptions, update
+
+# Events
+@docs onChange
+
+# DSL
+@docs affix, keyboardStep, dragStep
 
 # View
 @docs view, render
@@ -16,14 +22,13 @@ double clicking on the component.
 @docs setValue, increment, decrement
 -}
 
-import Html.Attributes exposing (value, readonly, disabled, classList, id)
+import Html.Attributes exposing (readonly, disabled, classList, id)
 import Html.Events.Extra exposing (onKeys, onEnterPreventDefault)
 import Html.Events exposing (onInput, onBlur, on)
 import Html exposing (node, input)
 import Html.Lazy
 
 import Ext.Number exposing (toFixed)
-import Process
 import Result
 import String
 import Task
@@ -35,18 +40,17 @@ import DOM exposing (Position)
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
-import Ui
 
 {-| Representation of a number range:
-  - **startValue** - The value when the dragging starts
+  - **step** - The step to increment / decrement by (per pixel, or per keyboard action)
+  - **affix** - The affix string to display (for example px, %, em, s)
   - **inputValue** - The value of the input element editing
+  - **startValue** - The value when the dragging starts
   - **drag** - The drag model
+  - **editing** - Whether or not the number range is in edit mode
   - **disabled** - Whether or not the number range is disabled
   - **readonly** - Whether or not the number range is readonly
-  - **editing** - Whether or not the number range is in edit mode
-  - **affix** - The affix string to display (for example px, %, em, s)
   - **value** - The current value
-  - **step** - The step to increment / decrement by (per pixel, or per keyboard action)
   - **min** - The minimum allowed value
   - **max** - The maximum allowed value
   - **round** - The decimals to round the value
@@ -61,7 +65,8 @@ type alias Model =
   , editing : Bool
   , affix : String
   , value : Float
-  , step : Float
+  , dragStep : Float
+  , keyboardStep : Float
   , min : Float
   , max : Float
   , round : Int
@@ -73,11 +78,12 @@ type alias Model =
 -}
 type Msg
   = Move Position
+  | NoOpTask (Result DOM.Error ())
+  | StartEdit Float
   | Lift Position
   | Input String
   | Increment
   | Decrement
-  | NoOpTask (Result DOM.Error ())
   | Edit
   | Blur
   | Save
@@ -106,19 +112,36 @@ init value =
       (1 / 0)
       -- Plus Infinity
   , round = 0
-  , step = 1
+  , dragStep = 1
+  , keyboardStep = 1
   }
 
+
+{-|-}
+affix : String -> Model -> Model
+affix value model =
+  { model | affix = value }
+
+
+{-|-}
+dragStep : Float -> Model -> Model
+dragStep value model =
+  { model | dragStep = value }
+
+{-|-}
+keyboardStep : Float -> Model -> Model
+keyboardStep value model =
+  { model | keyboardStep = value }
 
 {-| Subscribe to the changes of a number range.
 
     ...
     subscriptions =
-      \model -> Ui.NumberRange.subscribe NumberRangeChanged model.numberRange
+      \model -> Ui.NumberRange.onChange NumberRangeChanged model.numberRange
     ...
 -}
-subscribe : (Float -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (Float -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenFloat model.uid msg
 
 
@@ -168,13 +191,11 @@ update msg model =
     Blur ->
       endEdit model
 
+    StartEdit value ->
+      edit value False model
+
     Edit ->
-      ( { model
-          | editing = True
-          , inputValue = toFixed model.round model.value
-        }
-      , Task.attempt NoOpTask (DOM.select (DOM.idSelector model.uid))
-      )
+      edit model.value True model
 
     Lift position ->
       ( { model | startValue = model.value }
@@ -184,6 +205,29 @@ update msg model =
 
     _ ->
       ( model, Cmd.none )
+
+
+edit value select model =
+  let
+    val =
+      toFixed model.round value
+
+    cmd =
+      DOM.setValue val (DOM.idSelector model.uid)
+      |> Task.andThen (\_ ->
+        if select then
+          DOM.select (DOM.idSelector model.uid)
+        else
+          DOM.focus (DOM.idSelector model.uid)
+        )
+      |> Task.attempt NoOpTask
+  in
+    ( { model
+        | editing = True
+        , inputValue = val
+      }
+    , cmd
+    )
 
 
 {-| Lazily renders a number range.
@@ -218,23 +262,37 @@ render model =
             , ( 37, Decrement )
             , ( 39, Increment )
             , ( 13, Edit )
+            , ( 48, (StartEdit 0) )
+            , ( 49, (StartEdit 1) )
+            , ( 50, (StartEdit 2) )
+            , ( 51, (StartEdit 3) )
+            , ( 52, (StartEdit 4) )
+            , ( 53, (StartEdit 5) )
+            , ( 54, (StartEdit 6) )
+            , ( 55, (StartEdit 7) )
+            , ( 56, (StartEdit 8) )
+            , ( 57, (StartEdit 9) )
+            , ( 96, (StartEdit 0) )
+            , ( 97, (StartEdit 1) )
+            , ( 98, (StartEdit 2) )
+            , ( 99, (StartEdit 3) )
+            , ( 100, (StartEdit 4) )
+            , ( 101, (StartEdit 5) )
+            , ( 102, (StartEdit 6) )
+            , ( 103, (StartEdit 7) )
+            , ( 104, (StartEdit 8) )
+            , ( 105, (StartEdit 9) )
             ]
         ]
-
-    attributes =
-      if model.editing then
-        [ value model.inputValue ]
-      else
-        [ value ((toFixed model.round model.value) ++ model.affix) ]
 
     inputElement =
       input
         ([ onBlur Blur
+         , Html.Attributes.defaultValue "0"
          , readonly (not model.editing)
          , disabled model.disabled
          , id model.uid
          ]
-          ++ attributes
           ++ actions
         )
         []
@@ -253,12 +311,23 @@ render model =
 
     Ui.NumberRange.setValue 1 numberRange
 -}
-setValue : Float -> Model -> Model
+setValue : Float -> Model -> ( Model, Cmd Msg )
 setValue value model =
-  if model.value == value then
-    model
-  else
-    { model | value = clamp model.min model.max value }
+  let
+    clamped =
+      clamp model.min model.max value
+
+    val =
+      ((toFixed model.round clamped) ++ model.affix)
+
+    task =
+      DOM.setValue val (DOM.idSelector model.uid)
+  in
+    if model.value == value then
+      ( model, Cmd.none)
+    else
+      ( { model | value = clamped }
+      , Task.attempt NoOpTask task )
 
 
 {-| Increments a number ranges value by it's defined step.
@@ -267,7 +336,7 @@ setValue value model =
 -}
 increment : Model -> ( Model, Cmd Msg )
 increment model =
-  setValue (model.value + model.step) model
+  setValue (model.value + model.keyboardStep) model
     |> sendValue
 
 
@@ -277,7 +346,7 @@ increment model =
 -}
 decrement : Model -> ( Model, Cmd Msg )
 decrement model =
-  setValue (model.value - model.step) model
+  setValue (model.value - model.keyboardStep) model
     |> sendValue
 
 
@@ -287,9 +356,9 @@ decrement model =
 
 {-| Sends the value to the signal
 -}
-sendValue : Model -> ( Model, Cmd Msg )
-sendValue model =
-  ( model, Emitter.sendFloat model.uid model.value )
+sendValue : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+sendValue (model, cmd) =
+  ( model, Cmd.batch [ Emitter.sendFloat model.uid model.value, cmd ] )
 
 
 {-| Updates a number range value by coordinates.
@@ -302,7 +371,7 @@ handleMove position model =
         |> .left
   in
     if model.drag.dragging then
-      setValue (model.startValue - (-left * model.step)) model
+      setValue (model.startValue - (-left * model.dragStep)) model
         |> sendValue
     else
       ( model, Cmd.none )

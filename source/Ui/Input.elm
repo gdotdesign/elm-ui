@@ -174,7 +174,8 @@ render model =
     node
       "ui-input"
       [ classList
-          [ ( "disabled", model.disabled )
+          [ ( "clearable", model.showClearIcon)
+          , ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
       ]
@@ -207,7 +208,7 @@ setValue value model =
     ( { model | value = value }, Task.attempt Done task )
 
 
-{-| Sets whether or not to show a clear icon.
+{-| Sets whether or not to show a clear icon for an input.
 -}
 showClearIcon : Bool -> Model -> Model
 showClearIcon value model =

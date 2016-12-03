@@ -1,11 +1,18 @@
 module Ui.SearchInput exposing
-  (Model, Msg, init, subscribe, update, view, render, setValue)
+  ( Model, Msg, init, onChange, update, view, render, setValue, placeholder
+  , showClearIcon, timeout )
 
 {-| A input component for handling searches. The component will send the
 current value of the input when it has settled after the given timeout.
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, init, update
+
+# DSL
+@docs placeholder, showClearIcon, timeout
+
+# Events
+@docs onChange
 
 # View
 @docs view, render
@@ -29,13 +36,13 @@ import Ui
 
 
 {-| Representation of a search input:
-  - **input** - The model of the input component
-  - **timestamp** - The timestamp of the last edit
+  - **timeout** - The duration after which the input is considered settled
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
-  - **value** - The current value of the input
-  - **timeout** - The duration after which the input is considered settled
+  - **timestamp** - The timestamp of the last edit
+  - **input** - The model of the input component
   - **uid** - The unique identifier of the input
+  - **value** - The current value of the input
 -}
 type alias Model =
   { input : Ui.Input.Model
@@ -55,31 +62,55 @@ type Msg
   | Update Time
 
 
-{-| Initializes a search input with the given timeout.
+{-| Initializes a search input.
 
-    searchInput = Ui.SearchInput.init 1000
+    searchInput = Ui.SearchInput.init ()
 -}
-init : Time -> Model
-init timeout =
+init : () -> Model
+init _ =
   { input = Ui.Input.init ""
   , uid = Uid.uid ()
-  , timeout = timeout
   , disabled = False
   , readonly = False
+  , timeout = 1000
   , timestamp = 0
   , value = ""
   }
+
+
+{-| Sets the placeholder of a search input.
+-}
+placeholder : String -> Model -> Model
+placeholder value model =
+  { model | input = Ui.Input.placeholder value model.input }
+
+
+{-| Sets whether or not to show a clear icon for a search input.
+-}
+showClearIcon : Bool -> Model -> Model
+showClearIcon value model =
+  { model | input = Ui.Input.showClearIcon value model.input }
+
+
+{-| Sets the timeout (in milliseconds) of a search input.
+-}
+timeout : Time -> Model -> Model
+timeout value model =
+  { model | timeout = value }
 
 
 {-| Subscribe to the changes of a search input.
 
     ...
     subscriptions =
-      \model -> Ui.SearchInput.subscribe SearchInputChanged model.searchInput
+      \model ->
+        Ui.SearchInput.onChange
+          SearchInputChanged
+          model.searchInput
     ...
 -}
-subscribe : (String -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (String -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenString model.uid msg
 
 
@@ -88,18 +119,15 @@ subscribe msg model =
     Ui.SearchInput.update msg searchInput
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-  case msg of
+update msg_ model =
+  case msg_ of
     Update time ->
       let
         value =
           model.input.value
       in
-        if
-          time
-            == (model.timestamp + model.timeout)
-            && model.value
-            /= value
+        if time == (model.timestamp + model.timeout)
+        && model.value /= value
         then
           ( { model | value = value }
           , Emitter.sendString model.uid value
@@ -107,24 +135,30 @@ update msg model =
         else
           ( model, Cmd.none )
 
-    Input act ->
+    Input msg ->
       let
         justNow =
           Ext.Date.nowTime ()
 
-        ( input, effect2 ) =
-          Ui.Input.update act model.input
+        ( input, inputCmd ) =
+          Ui.Input.update msg model.input
 
         updatedModel =
           { model
-            | input = input
-            , timestamp = justNow
+            | timestamp = justNow
+            , input = input
           }
 
-        cmd =
+        delayedUpdateCmd =
           Task.perform
             (\_ -> (Update (justNow + model.timeout)))
             (Process.sleep model.timeout)
+
+        cmd =
+          Cmd.batch
+            [ Cmd.map Input inputCmd
+            , delayedUpdateCmd
+            ]
       in
         ( updatedModel, cmd )
 

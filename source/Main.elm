@@ -217,9 +217,14 @@ init =
           (\_ -> Sub.none)
     , searchInput =
         Showcase.init
-          (\_ -> Ui.SearchInput.init 1000)
+          (\_ ->
+            Ui.SearchInput.init ()
+              |> Ui.SearchInput.timeout 1000
+              |> Ui.SearchInput.placeholder "Search here..."
+              |> Ui.SearchInput.showClearIcon True
+          )
           Ui.SearchInput.update
-          (Ui.SearchInput.subscribe SearchInputChanged)
+          (Ui.SearchInput.onChange SearchInputChanged)
           (\_ -> Sub.none)
     , notificationButton =
         Ui.IconButton.primary
@@ -434,9 +439,13 @@ init =
     , image = Ui.Image.init imageUrl
     , ratings =
         Showcase.init
-          (\_ -> Ui.Ratings.init 5 0.4)
+          (\_ ->
+            Ui.Ratings.init ()
+              |> Ui.Ratings.size 5
+              |> Ui.Ratings.setValueAsStars 2
+          )
           Ui.Ratings.update
-          (Ui.Ratings.subscribe RatingsChanged)
+          (Ui.Ratings.onChange RatingsChanged)
           (\_ -> Sub.none)
     , slider =
         Showcase.init

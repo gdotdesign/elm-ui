@@ -19,11 +19,16 @@ ui-input {
       cursor: $readonly-cursor;
     }
   }
+
+  &.clearable input {
+    padding-right: 30px;
+  }
+
   ui-icon {
     position: absolute;
+    font-size: 18px;
     right: 12px;
     top: 9px;
-    font-size: 18px;
   }
 }
 

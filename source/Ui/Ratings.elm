@@ -1,16 +1,20 @@
 module Ui.Ratings exposing
-  (Model, Msg, init, subscribe, update, view, render, setValue, valueAsStars)
+  ( Model, Msg, init, onChange, update, view, render, setValue, valueAsStars
+  , size, setValueAsStars )
 
 {-| A simple star rating component.
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, init, onChange, update
+
+# DSL
+@docs size
 
 # View
 @docs view, render
 
 # Functions
-@docs setValue, valueAsStars
+@docs setValue, setValueAsStars, valueAsStars
 -}
 
 import Ext.Number exposing (roundTo)
@@ -58,21 +62,19 @@ type Msg
   | Click Int
 
 
-{-| Initializes a ratings component with the given number of stars and initial
-value.
+{-| Initializes a ratings component.
 
-    -- 1 out of 10 star rating
-    ratings = Ui.Ratings.init 10 0.1
+    ratings = Ui.Ratings.init ()
 -}
-init : Int -> Float -> Model
-init size value =
-  { hoverValue = value
+init : () -> Model
+init _ =
+  { clearable = False
   , uid = Uid.uid ()
-  , clearable = False
   , disabled = False
   , readonly = False
-  , value = value
-  , size = size
+  , hoverValue = 0
+  , value = 0
+  , size = 5
   }
 
 
@@ -80,12 +82,20 @@ init size value =
 
     ...
     subscriptions =
-      \model -> Ui.Ratings.subscribe RatingsChanged model.ratings
+      \model ->
+        Ui.Ratings.onChange RatingsChanged model.ratings
     ...
 -}
-subscribe : (Float -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (Float -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenFloat model.uid msg
+
+
+{-| Sets the size of a ratings component.
+-}
+size : Int -> Model -> Model
+size value model =
+  { model | size = value }
 
 
 {-| Updates a ratings component.
@@ -165,7 +175,7 @@ render model =
 
 {-| Sets the value of a ratings component.
 
-    Ui.Ratings.setValue 8 ratings
+    Ui.Ratings.setValue 0.8 ratings
 -}
 setValue : Float -> Model -> Model
 setValue value_ model =
@@ -182,6 +192,19 @@ setValue value_ model =
         | value = value
         , hoverValue = value
       }
+
+
+{-| Sets the value of a ratrings component as stars.
+-}
+setValueAsStars : Int -> Model -> Model
+setValueAsStars value_ model =
+  let
+    value =
+      (toFloat value_) / (toFloat model.size)
+        |> clamp 0 1
+  in
+    setValue value model
+
 
 
 {-| Returns the value of a ratings component as number of stars.
@@ -243,9 +266,9 @@ renderStar model index =
     actions =
       Ui.enabledActions
         model
-        [ onClick (Click index)
-        , onMouseEnter (MouseEnter index)
+        [ onMouseEnter (MouseEnter index)
         , onMouseLeave MouseLeave
+        , onClick (Click index)
         ]
 
     class =

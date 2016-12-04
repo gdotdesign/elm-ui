@@ -8,5 +8,12 @@ ui-inplace-input {
   > div {
     word-break: break-word;
     white-space: pre-wrap;
+
+    &:empty:before {
+    	content: attr(placeholder);
+    	font-style: italic;
+    	cursor: pointer;
+    	opacity: 0.5;
+    }
   }
 }

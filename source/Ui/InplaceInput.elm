@@ -1,6 +1,6 @@
 module Ui.InplaceInput exposing
   ( Model, Msg, init, onChange, update, view, render, setValue, open, close
-  , required, ctrlSave )
+  , required, ctrlSave, placeholder )
 
 {-| Inplace editing textarea / input component.
 
@@ -8,7 +8,7 @@ module Ui.InplaceInput exposing
 @docs Model, Msg, init, update
 
 # DSL
-@docs required, ctrlSave
+@docs required, ctrlSave, placeholder
 
 # Events
 @docs onChange
@@ -23,6 +23,7 @@ module Ui.InplaceInput exposing
 import Html.Events.Extra exposing (onEnter, onKeys)
 import Html exposing (node, div, text)
 import Html.Events exposing (onClick)
+import Html.Attributes
 import Html.Lazy
 
 import String
@@ -71,10 +72,12 @@ type Msg
 
 {-| Initializes an inplace input with the given value and palceholder.
 
-    inplaceInput = Ui.InplaceInput.init "test" "placeholder"
+    inplaceInput =
+      Ui.InplaceInput.init ()
+        |> Ui.InplaceInput.placeholder "Type here..."
 -}
-init : String -> String -> Model
-init value placholder =
+init : () -> Model
+init _ =
   { textarea = Ui.Textarea.init ()
   , uid = Uid.uid ()
   , disabled = False
@@ -94,6 +97,13 @@ init value placholder =
 required : Bool -> Model -> Model
 required value model =
   { model | required = value }
+
+
+{-| Sets the placeholder of an inplace input.
+-}
+placeholder : String -> Model -> Model
+placeholder value model =
+  { model | textarea = Ui.Textarea.placeholder value model.textarea }
 
 
 {-| Sets whether or not to control key is needed to save.
@@ -187,9 +197,16 @@ render model =
 -}
 open : Model -> ( Model, Cmd Msg )
 open model =
-  ( { model | open = True }
-  , Task.attempt Done (Dom.focus model.textarea.uid)
-  )
+  let
+    ( textarea, cmd ) =
+      Ui.Textarea.setValue model.value model.textarea
+  in
+    ( { model | open = True, textarea = textarea }
+    , Cmd.batch
+      [ Task.attempt Done (Dom.focus model.textarea.uid)
+      , Cmd.map Textarea cmd
+      ]
+    )
 
 
 {-| Closes an inplace input.
@@ -235,8 +252,12 @@ display model =
   let
     click =
       Ui.enabledActions model [ onClick Edit ]
+
+    attributes =
+      [ Html.Attributes.attribute "placeholder" model.textarea.placeholder ]
+        ++ click
   in
-    div click [ text model.value ]
+    div attributes [ text model.value ]
 
 
 {-| Returns whether the given inplace input is empty.

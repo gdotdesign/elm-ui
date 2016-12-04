@@ -388,7 +388,10 @@ init =
           (\_ -> Sub.none)
     , inplaceInput =
         Showcase.init
-          (\_ -> Ui.InplaceInput.init "Test" "Placeholder")
+          (\_ ->
+            Ui.InplaceInput.init ()
+              |> Ui.InplaceInput.placeholder "Type here..."
+          )
           Ui.InplaceInput.update
           (\_ -> Sub.none)
           (\_ -> Sub.none)

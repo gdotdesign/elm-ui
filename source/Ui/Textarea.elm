@@ -22,7 +22,7 @@ thus creating an automatically growing textarea.
 -}
 
 import Html.Attributes exposing (spellcheck, classList, readonly, disabled, id)
-import Html.Events.Extra exposing (onEnterPreventDefault, onStop)
+import Html.Events.Extra exposing (onEnterPreventDefault)
 import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onInput)
 import Html.Lazy
@@ -157,8 +157,7 @@ render model =
     actions =
       Ui.enabledActions
         model
-        [ onStop "select" NoOp
-        , onInput Input
+        [ onInput Input
         ]
 
     attributes =

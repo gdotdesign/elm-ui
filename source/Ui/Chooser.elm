@@ -16,7 +16,7 @@ form a list of choises, with lots of options.
 -}
 
 import Html.Events exposing (onFocus, onBlur, onClick, onInput, onMouseDown)
-import Html.Events.Extra exposing (onPreventDefault, onStop, onKeys)
+import Html.Events.Extra exposing (onPreventDefault, onKeys)
 import Html exposing (span, text, node, input, Html)
 import Html.Lazy
 

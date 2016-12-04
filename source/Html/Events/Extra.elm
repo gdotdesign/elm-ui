@@ -3,7 +3,7 @@ module Html.Events.Extra exposing (..)
 {-| Event handlers and event decoders that are not part of _elm-lang/html_.
 
 # Generic
-@docs onStop, onPreventDefault
+@docs onPreventDefault
 
 # Keyboard Related
 @docs onEnter, onEnterPreventDefault, onKeys, keysDecoder
@@ -126,15 +126,6 @@ onPreventDefault event msg =
     (Json.succeed msg)
 
 
-{-| Capture events and prevent their default behavior and stop it's propagation.
-
-    Html.Events.Extra.onStop "keyup" Update
--}
-onStop : String -> msg -> Html.Attribute msg
-onStop event msg =
-  onWithOptions event stopOptions (Json.succeed msg)
-
-
 {-| Capture [scroll](https://developer.mozilla.org/en-US/docs/Web/Events/scroll)
 events.
 -}
@@ -161,7 +152,7 @@ is pressed from the give list.
 -}
 onKeys : List ( Int, msg ) -> Html.Attribute msg
 onKeys mappings =
-  onWithOptions "keydown" stopOptions (keysDecoder mappings)
+  onWithOptions "keydown" preventDefaultOptions (keysDecoder mappings)
 
 
 {-| Capture [load](https://developer.mozilla.org/en-US/docs/Web/Events/load)

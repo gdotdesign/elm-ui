@@ -25,8 +25,7 @@ module Ui.Helpers.Drag exposing (..)
 # Functions
 @docs diff, relativePosition, relativePercentPosition
 -}
-import Html.Events.Options exposing (preventDefaultOptions)
-import Html.Events exposing (onWithOptions)
+import Html.Events exposing (on)
 import Html
 
 import Json.Decode as Json
@@ -67,9 +66,7 @@ init =
 {-|-}
 liftHandler : (Position -> msg) -> Html.Attribute msg
 liftHandler msg =
-  onWithOptions
-    "mousedown"
-    preventDefaultOptions
+  on "mousedown"
     (Json.map (\pos -> msg { top = toFloat pos.y, left = toFloat pos.x } ) Mouse.position)
 
 

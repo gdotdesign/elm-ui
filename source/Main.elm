@@ -407,7 +407,7 @@ init =
     , numberRange =
         Showcase.init
           (\_ ->
-              Ui.NumberRange.init 0
+              Ui.NumberRange.init ()
               |> Ui.NumberRange.affix "px"
               |> Ui.NumberRange.dragStep 0.1
           )

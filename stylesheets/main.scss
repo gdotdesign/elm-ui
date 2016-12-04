@@ -67,6 +67,7 @@ kitchen-sink {
 
       &[colspan='3'] {
         background: dampen-inverse($background, 60%);
+        user-select: none;
         font-weight: 600;
         font-size: 18px;
       }

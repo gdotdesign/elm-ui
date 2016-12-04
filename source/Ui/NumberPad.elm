@@ -1,12 +1,20 @@
 module Ui.NumberPad exposing
-  (Model, ViewModel, Msg, init, subscribe, update, view, render, setValue)
+  ( Model, ViewModel, Msg, init, onChange, update, view, render, setValue
+  , maximumDigits, format, affix, prefix )
 
-{-| A component for displaying a type of [numeric keypad](https://en.wikipedia.org/wiki/Numeric_keypad),
+{-| A component for displaying a type of
+[numeric keypad](https://en.wikipedia.org/wiki/Numeric_keypad),
 that is mainly used for asking the user for a passcode or other forms of
 numberic data.
 
 # Model
-@docs Model, Msg, init, subscribe, update
+@docs Model, Msg, init, update
+
+# Events
+@docs onChange
+
+# DSL
+@docs maximumDigits, prefix, affix, format
 
 # View
 @docs ViewModel, view, render
@@ -21,9 +29,8 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
-import Numeral exposing (format)
+import Numeral
 import String
-import Dict
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
@@ -31,14 +38,14 @@ import Ui
 
 
 {-| Representation of a number pad:
-  - **maximumDigits** - The maximum length of the value
   - **disabled** - Whether or not the number pad is disabled
   - **readonly** - Whether or not the number pad is readonly
+  - **maximumDigits** - The maximum length of the value
   - **format** - Wheter or not to format the value
+  - **uid** - The unique identifier of the input
   - **prefix** - The prefix to use
   - **value** - The current value
   - **affix** - The affix to use
-  - **uid** - The unique identifier of the input
 -}
 type alias Model =
   { maximumDigits : Int
@@ -47,8 +54,8 @@ type alias Model =
   , prefix : String
   , affix : String
   , format : Bool
-  , value : Int
   , uid : String
+  , value : Int
   }
 
 
@@ -59,6 +66,7 @@ type alias Model =
 type alias ViewModel msg =
   { bottomRight : Html.Html msg
   , bottomLeft : Html.Html msg
+  , address : (Msg -> msg)
   }
 
 
@@ -71,18 +79,21 @@ type Msg
 
 {-| Initializes a number pad with the given value.
 
-    numberPad = Ui.NumberPad.init 0
+    numberPad =
+      Ui.NumberPad.init ()
+        |> Ui.NumberPad.maximumDigits 5
+        |> Ui.NumberPad.affix "USD"
 -}
-init : Int -> Model
-init value =
-  { uid = Uid.uid ()
-  , maximumDigits = 10
+init : () -> Model
+init _ =
+  { maximumDigits = 10
+  , uid = Uid.uid ()
   , disabled = False
   , readonly = False
   , format = True
-  , value = value
   , prefix = ""
   , affix = ""
+  , value = 0
   }
 
 
@@ -90,12 +101,40 @@ init value =
 
     ...
     subscriptions =
-      \model -> Ui.NumberPad.subscribe NumberPadChanged model.numberPad
+      \model -> Ui.NumberPad.onChange NumberPadChanged model.numberPad
     ...
 -}
-subscribe : (Int -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (Int -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listenInt model.uid msg
+
+
+{-| Sets the maximum digits enterable for a number pad.
+-}
+maximumDigits : Int -> Model -> Model
+maximumDigits value model =
+  { model | maximumDigits = value }
+
+
+{-| Sets whether or not to format the value of a number pad.
+-}
+format : Bool -> Model -> Model
+format value model =
+  { model | format = value }
+
+
+{-| Sets the affix of a number pad.
+-}
+affix : String -> Model -> Model
+affix value model =
+  { model | affix = value }
+
+
+{-| Sets the prefix of a number pad.
+-}
+prefix : String -> Model -> Model
+prefix value model =
+  { model | prefix = value }
 
 
 {-| Updates a number pad.
@@ -117,34 +156,40 @@ update msg model =
 {-| Lazily renders a number pad.
 
     Ui.NumberPad.view
-      { bottomLeft: text "", bottomRight: text "" }
+      { bottomRight = text ""
+      , bottomLeft = text ""
+      , address = NumberPad
+      }
       NumberPad
       numberPad
 -}
-view : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
-view viewModel address model =
-  Html.Lazy.lazy3 render viewModel address model
+view : ViewModel msg -> Model -> Html.Html msg
+view viewModel model =
+  Html.Lazy.lazy2 render viewModel model
 
 
 {-| Renders a number pad.
 
     Ui.NumberPad.render
-      { bottomLeft: text "", bottomRight: text "" }
+      { bottomRight = text ""
+      , bottomLeft = text ""
+      , address = NumberPad
+      }
       NumberPad
       numberPad
 -}
-render : ViewModel msg -> (Msg -> msg) -> Model -> Html.Html msg
-render viewModel address model =
+render : ViewModel msg -> Model -> Html.Html msg
+render ({ address } as viewModel) model =
   let
     value =
       if model.format then
-        format "0,0" (toFloat model.value)
+        Numeral.format "0,0" (toFloat model.value)
       else
         toString model.value
 
     buttons =
       List.map
-        (\number -> renderButton address number model)
+        (renderButton address model)
         [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 
     textValue =
@@ -203,7 +248,7 @@ render viewModel address model =
           []
           (buttons
             ++ [ node "ui-number-pad-button" [] [ viewModel.bottomLeft ]
-               , renderButton address 0 model
+               , renderButton address model 0
                , node "ui-number-pad-button" [] [ viewModel.bottomRight ]
                ]
           )
@@ -225,8 +270,8 @@ setValue value model =
 
 {-| Renders a digit button.
 -}
-renderButton : (Msg -> msg) -> Int -> Model -> Html.Html msg
-renderButton address number model =
+renderButton : (Msg -> msg) -> Model -> Int ->  Html.Html msg
+renderButton address model number =
   let
     click =
       Ui.enabledActions model [ onClick (address (Pressed number)) ]

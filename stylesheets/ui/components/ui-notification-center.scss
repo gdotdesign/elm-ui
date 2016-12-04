@@ -55,15 +55,16 @@ ui-notification-center {
       cursor: pointer;
 
       div {
-        background: rgba(#000, 0.65);
+        background: rgba(#222, 0.95);
       }
     }
 
     div {
       border-radius: $border-radius;
-      background: rgba(#000, 0.8);
+      background: rgba(#111, 0.95);
       padding-bottom: 16px;
       padding: 14px 24px;
+      font-weight: 600;
       color: #FFF;
     }
 

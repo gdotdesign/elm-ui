@@ -116,6 +116,15 @@ view2 address renderFn model =
   )
 
 
+view3 viewM renderFn model =
+  (tr
+    []
+    [ td [] [ (renderFn ({ viewM | address = viewM.address << Enabled }) model.enabled) ]
+    , td [] [ (renderFn ({ viewM | address = viewM.address << Readonly }) model.readonly) ]
+    , td [] [ (renderFn ({ viewM | address = viewM.address << Disabled }) model.disabled) ]
+    ]
+  )
+
 view :
   (Msg msg -> parentMsg)
   -> (component -> Html.Html msg)

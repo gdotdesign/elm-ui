@@ -451,7 +451,7 @@ init =
           (\_ -> Sub.none)
     , numberPad =
         Showcase.init
-          (\_ -> Ui.NumberPad.init 0)
+          (\_ -> Ui.NumberPad.init ())
           Ui.NumberPad.update
           (\_ -> Sub.none)
           (\_ -> Sub.none)
@@ -693,7 +693,7 @@ view model =
                       , componentHeader "Inplace Input"
                       , Showcase.view InplaceInput Ui.InplaceInput.view inplaceInput
                       , componentHeader "Number Pad"
-                      , Showcase.view2 NumberPad (Ui.NumberPad.view { bottomLeft = text "", bottomRight = text "" }) numberPad
+                      , Showcase.view3 { bottomLeft = text "", bottomRight = text "", address = NumberPad } Ui.NumberPad.view numberPad
                       , componentHeader "FileInput"
                       , Showcase.view FileInput Ui.FileInput.view fileInput
                       , Showcase.view FileInput Ui.FileInput.viewDetails fileInput

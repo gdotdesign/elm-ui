@@ -483,9 +483,15 @@ init =
     , clicked = False
     , chooser =
         Showcase.init
-          (\_ -> Ui.Chooser.init data "Select a country..." "")
+          (\_ ->
+            Ui.Chooser.init ()
+            |> Ui.Chooser.items data
+            |> Ui.Chooser.placeholder "Select a country..."
+            |> Ui.Chooser.searchable True
+            |> Ui.Chooser.multiple True
+          )
           Ui.Chooser.update
-          (Ui.Chooser.subscribe ChooserChanged)
+          (Ui.Chooser.onChange ChooserChanged)
           (\model -> Ui.Chooser.subscriptions model)
     }
 

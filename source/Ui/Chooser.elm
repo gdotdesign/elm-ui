@@ -1,12 +1,19 @@
 module Ui.Chooser exposing
-  ( Model, Item, Msg, init, subscribe, update, view, render, subscriptions
-  , close, toggleItem, getFirstSelected, updateData, selectFirst, setValue )
+  ( Model, Item, Msg, init, onChange, update, view, render, subscriptions
+  , close, toggleItem, getFirstSelected, updateData, selectFirst, setValue
+  , placeholder, closeOnSelect, deselectable, searchable, multiple, items )
 
 {-| This is a component for selecting a single / multiple items
 form a list of choises, with lots of options.
 
 # Model
-@docs Model, Item, Msg, init, subscribe, subscriptions, update
+@docs Model, Item, Msg, init, subscriptions, update
+
+# Events
+@docs onChange
+
+# DSL
+@docs placeholder, closeOnSelect, deselectable, searchable, multiple, items
 
 # View
 @docs view, render
@@ -106,51 +113,87 @@ type Msg
 
 {-| Initializes a chooser with the given values.
 
-    chooser = Ui.Chooser.init items placeholder selectedValue
+    chooser = Ui.Chooser.init items selectedValue
 -}
-init : List Item -> String -> String -> Model
-init data placeholder value =
-  let
-    selected =
-      if value == "" then
-        Set.empty
-      else
-        Set.singleton value
-  in
-    { render = (\item -> span [] [ text item.label ])
-    , dropdown = Dropdown.init
-    , placeholder = placeholder
-    , uid = Uid.uid ()
-    , closeOnSelect = False
-    , deselectable = False
-    , selected = selected
-    , searchable = False
-    , multiple = False
-    , disabled = False
-    , readonly = False
-    , intended = ""
-    , data = data
-    , value = ""
-    }
-      |> intendFirst
-      |> Dropdown.offset 5
+init : () -> Model
+init _ =
+  { render = (\item -> span [] [ text item.label ])
+  , dropdown = Dropdown.init
+  , uid = Uid.uid ()
+  , closeOnSelect = False
+  , deselectable = False
+  , selected = Set.empty
+  , searchable = False
+  , multiple = False
+  , disabled = False
+  , readonly = False
+  , placeholder = ""
+  , intended = ""
+  , value = ""
+  , data = []
+  }
+    |> intendFirst
+    |> Dropdown.offset 5
 
 
 {-| Subscribe to the changes of a chooser.
 
     ...
     subscriptions =
-      \model -> Ui.Chooser.subscribe ChooserChanged model.chooser
+      \model -> Ui.Chooser.onChange ChooserChanged model.chooser
     ...
 -}
-subscribe : (Set String -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (Set String -> msg) -> Model -> Sub msg
+onChange msg model =
   let
     decoder =
       JD.list JD.string
         |> JD.map Set.fromList
   in
     Emitter.listen model.uid (Emitter.decode decoder Set.empty msg)
+
+
+{-| Sets the placeholder of a chooser.
+-}
+placeholder : String -> Model -> Model
+placeholder value model =
+  { model | placeholder = value }
+
+
+{-| Sets whether or not to close the dropdown when selecting an item.
+-}
+closeOnSelect : Bool -> Model -> Model
+closeOnSelect value model =
+  { model | closeOnSelect = value }
+
+
+{-| Sets whether an item must be selected or not.
+-}
+deselectable : Bool -> Model -> Model
+deselectable value model =
+  { model | deselectable = value }
+
+
+{-| Sets whether the user can search among the items or not.
+-}
+searchable : Bool -> Model -> Model
+searchable value model =
+  { model | searchable = value }
+
+
+{-| Sets whether the user can select multiple items or not.
+-}
+multiple : Bool -> Model -> Model
+multiple value model =
+  { model | multiple = value }
+
+
+{-| Sets the items of a chooser.
+-}
+items : List Item -> Model -> Model
+items value model =
+  { model | data = value }
+
 
 {-| Subscriptions for a dropdown menu.
 
@@ -165,6 +208,7 @@ subscribe msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.map Dropdown (Dropdown.subscriptions model)
+
 
 {-| Updates a chooser.
 
@@ -250,11 +294,17 @@ render : Model -> Html.Html Msg
 render model =
   let
     children =
-      (List.map (renderItem model) (items model))
+      (List.map (renderItem model) (items_ model))
 
     val =
       if model.dropdown.open && model.searchable then
         model.value
+      else
+        label model
+
+    placeholder_ =
+      if Set.isEmpty model.selected then
+        model.placeholder
       else
         label model
 
@@ -295,7 +345,7 @@ render model =
       , contents = [ (Ui.scrolledPanel children)]
       , children =
         [ input
-          ([ placeholder model.placeholder
+          ([ Html.Attributes.placeholder placeholder_
            , attribute "id" model.uid
            , disabled model.disabled
            , readonly isReadOnly
@@ -503,8 +553,8 @@ renderItem model item =
 
 {-| Returns the items to display for a chooser.
 -}
-items : Model -> List Item
-items model =
+items_ : Model -> List Item
+items_ model =
   let
     test item =
       Regex.contains (createRegex model.value) item.label
@@ -519,4 +569,4 @@ items model =
 -}
 availableItems : Model -> List String
 availableItems model =
-  List.map .value (items model)
+  List.map .value (items_ model)

@@ -56,9 +56,9 @@ type Msg
 
     colorPicker = Ui.ColorPicker.init Color.yellow
 -}
-init : Color.Color -> Model
-init color =
-  { colorPanel = Ui.ColorPanel.init color
+init : () -> Model
+init _ =
+  { colorPanel = Ui.ColorPanel.init ()
   , dropdown = Dropdown.init
   , disabled = False
   , readonly = False

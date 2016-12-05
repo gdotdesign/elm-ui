@@ -400,7 +400,7 @@ init =
           (\_ -> Sub.none)
     , colorPicker =
         Showcase.init
-          (\_ -> Ui.ColorPicker.init Color.yellow)
+          (\_ -> Ui.ColorPicker.init ())
           Ui.ColorPicker.update
           (\_ -> Sub.none)
           (\model -> Ui.ColorPicker.subscriptions model)
@@ -412,7 +412,7 @@ init =
           (\_ -> Sub.none)
     , colorPanel =
         Showcase.init
-          (\_ -> Ui.ColorPanel.init Color.blue)
+          (\_ -> Ui.ColorPanel.init ())
           Ui.ColorPanel.update
           (\_ -> Sub.none)
           (\model -> Ui.ColorPanel.subscriptions model)

@@ -23,7 +23,6 @@ import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)
 import Color exposing (Color)
 import Color.Convert
 import String
-import Task
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag

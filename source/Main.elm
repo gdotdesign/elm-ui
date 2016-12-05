@@ -30,6 +30,7 @@ import Ui.NumberRange
 import Ui.ButtonGroup
 import Ui.ColorPicker
 import Ui.DatePicker
+import Ui.ColorFields
 import Ui.ColorPanel
 import Ui.IconButton
 import Ui.FileInput
@@ -60,6 +61,7 @@ type Msg {- Showcase models -}
   = InplaceInput (Showcase.Msg Ui.InplaceInput.Msg)
   | NumberRange (Showcase.Msg Ui.NumberRange.Msg)
   | ColorPicker (Showcase.Msg Ui.ColorPicker.Msg)
+  | ColorFields (Showcase.Msg Ui.ColorFields.Msg)
   | SearchInput (Showcase.Msg Ui.SearchInput.Msg)
   | DatePicker (Showcase.Msg Ui.DatePicker.Msg)
   | ColorPanel (Showcase.Msg Ui.ColorPanel.Msg)
@@ -148,6 +150,7 @@ type alias Model =
   , searchInput : Showcase.Model Ui.SearchInput.Model Ui.SearchInput.Msg Msg
   , inplaceInput : Showcase.Model Ui.InplaceInput.Model Ui.InplaceInput.Msg Msg
   , colorPicker : Showcase.Model Ui.ColorPicker.Model Ui.ColorPicker.Msg Msg
+  , colorFields : Showcase.Model Ui.ColorFields.Model Ui.ColorFields.Msg Msg
   , numberRange : Showcase.Model Ui.NumberRange.Model Ui.NumberRange.Msg Msg
   , colorPanel : Showcase.Model Ui.ColorPanel.Model Ui.ColorPanel.Msg Msg
   , datePicker : Showcase.Model Ui.DatePicker.Model Ui.DatePicker.Msg Msg
@@ -401,6 +404,12 @@ init =
           Ui.ColorPicker.update
           (\_ -> Sub.none)
           (\model -> Ui.ColorPicker.subscriptions model)
+    , colorFields =
+        Showcase.init
+          (\_ -> Ui.ColorFields.init ())
+          Ui.ColorFields.update
+          (\_ -> Sub.none)
+          (\_ -> Sub.none)
     , colorPanel =
         Showcase.init
           (\_ -> Ui.ColorPanel.init Color.blue)
@@ -545,7 +554,7 @@ view model =
       numberPad, ratings, pager, input, buttonGroup, buttons, iconButtons,
       disabledButton, disabledIconButton, modalView, infos, modalButton,
       dropdownMenu, pagerControls, notificationButton, tagger, pagerContents,
-      searchInput, tabs, tabsContents, taggerData, fileInput } =
+      searchInput, tabs, tabsContents, taggerData, fileInput, colorFields } =
       model
 
     clicked =
@@ -667,6 +676,8 @@ view model =
                       , Showcase.view Chooser Ui.Chooser.view chooser
                       , componentHeader "Color Panel"
                       , Showcase.view ColorPanel Ui.ColorPanel.view colorPanel
+                      , componentHeader "Color Fields"
+                      , Showcase.view ColorFields Ui.ColorFields.view colorFields
                       , componentHeader "Color Picker"
                       , Showcase.view ColorPicker Ui.ColorPicker.view colorPicker
                       , componentHeader "Date Picker"
@@ -924,6 +935,13 @@ update_ msg model =
           Showcase.update act model.colorPicker
       in
         ( { model | colorPicker = colorPicker }, Cmd.map ColorPicker effect )
+
+    ColorFields act ->
+      let
+        ( colorFields, effect ) =
+          Showcase.update act model.colorFields
+      in
+        ( { model | colorFields = colorFields }, Cmd.map ColorFields effect )
 
     ColorPanel act ->
       let

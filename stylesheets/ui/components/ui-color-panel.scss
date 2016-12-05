@@ -90,57 +90,6 @@ ui-color-panel {
     height: 186px;
   }
 
-  ui-color-panel-controls {
-    justify-content: space-between;
-    border-top: $border;
-    padding-top: 10px;
-    margin-top: 10px;
-    display: flex;
-
-    div {
-      flex: 0 0 35px;
-
-      span {
-        text-transform: uppercase;
-        margin-top: 5px;
-        text-align: center;
-        font-weight: bold;
-        font-size: 12px;
-        display: block;
-      }
-    }
-
-    div:first-child {
-      flex: 0 0 65px;
-    }
-
-    input:not([type]) {
-      text-transform: uppercase;
-    }
-
-    input[type=number],
-    input:not([type]) {
-      -moz-appearance:textfield;
-      text-align: center;
-      line-height: 14px;
-      padding: 4px 0;
-      padding-top: 3px;
-      font-weight: 600;
-      font-size: 13px;
-      height: 30px;
-      width: 100%;
-
-      &::-webkit-outer-spin-button,
-      &::-webkit-inner-spin-button {
-        display: none;
-      }
-
-      &:focus {
-        @extend %focused;
-      }
-    }
-  }
-
   ui-color-panel-hsv {
     flex-direction: column;
     display: flex;
@@ -197,6 +146,58 @@ ui-color-panel {
     > div {
       pointer-events: none;
       height: 16px;
+    }
+  }
+}
+
+ui-color-fields {
+  justify-content: space-between;
+  display: flex;
+
+  div {
+    flex: 0 0 35px;
+
+    span {
+      text-transform: uppercase;
+      margin-top: 5px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 12px;
+      display: block;
+    }
+  }
+
+  div + div {
+    margin-left: 5px;
+  }
+
+  div:first-child {
+    flex: 1 0 65px;
+  }
+
+  input:not([type]) {
+    text-transform: uppercase;
+  }
+
+  input[type=number],
+  input:not([type]) {
+    -moz-appearance:textfield;
+    text-align: center;
+    line-height: 14px;
+    padding: 4px 0;
+    padding-top: 3px;
+    font-weight: 600;
+    font-size: 13px;
+    height: 30px;
+    width: 100%;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+
+    &:focus {
+      @extend %focused;
     }
   }
 }

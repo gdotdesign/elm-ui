@@ -33,6 +33,7 @@
     "Ui.Chooser",
     "Ui.ColorPanel",
     "Ui.ColorPicker",
+    "Ui.ColorFields",
     "Ui.Container",
     "Ui.DatePicker",
     "Ui.DropdownMenu",

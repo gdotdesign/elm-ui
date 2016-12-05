@@ -16,14 +16,12 @@ module Ui.ColorPanel exposing
 
 import Html.Attributes exposing (style, classList, type_, id, value)
 import Html exposing (node, div, text, input, span)
-import Html.Events exposing (onInput, onBlur)
 import Html.Lazy
 
 import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)
 import Color exposing (Color)
-import Color.Convert
-import String
 
+import Ui.ColorFields as ColorFields
 import Ui.Helpers.Emitter as Emitter
 import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
@@ -44,9 +42,9 @@ import DOM exposing (Position)
 -}
 type alias Model =
   { alphaDrag : DragModel
+  , fields : ColorFields.Model
   , hueDrag : DragModel
   , drag : DragModel
-  , tempHex : String
   , disabled : Bool
   , readonly : Bool
   , uid : String
@@ -67,13 +65,9 @@ type Msg
   | MoveHue Position
   | LiftAlpha Position
   | LiftRect Position
+  | Fields ColorFields.Msg
   | LiftHue Position
-  | SetAlpha String
-  | SetGreen String
-  | SetBlue String
-  | SetHex String
-  | SetRed String
-  | FromHex
+  | SetValue Hsv
   | End
 
 
@@ -86,21 +80,21 @@ init color =
   let
     uid = Uid.uid ()
   in
-    { value = Ext.Color.toHsv color
-    , uid = uid
-    , alphaDrag = initDrag (uid ++ "alpha")
+    { alphaDrag = initDrag (uid ++ "alpha")
     , hueDrag = initDrag (uid ++ "hue")
     , drag = initDrag (uid ++ "rect")
+    , value = Ext.Color.toHsv Color.black
+    , fields = ColorFields.init ()
     , disabled = False
     , readonly = False
-    , tempHex = Color.Convert.colorToHex color
+    , uid = uid
     }
 
 
 initDrag : String -> DragModel
 initDrag id =
-  { uid = id
-  , drag = Drag.init
+  { drag = Drag.init
+  , uid = id
   }
 
 {-| Subscribe for the changes of a color panel.
@@ -133,12 +127,13 @@ subscribe msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ Drag.onMove MoveHue model.hueDrag
-    , Drag.onMove MoveAlpha model.alphaDrag
+    [ Drag.onMove MoveAlpha model.alphaDrag
+    , ColorFields.onChange SetValue model.fields
+    , Drag.onMove MoveHue model.hueDrag
     , Drag.onMove MoveRect model.drag
-    , Drag.onEnd End model.drag
-    , Drag.onEnd End model.hueDrag
     , Drag.onEnd End model.alphaDrag
+    , Drag.onEnd End model.hueDrag
+    , Drag.onEnd End model.drag
     ]
 
 
@@ -173,69 +168,15 @@ update action model =
     End ->
       ( handleClick model, Cmd.none )
 
-    SetRed value ->
+    SetValue color ->
+      ({ model | value = color }, Cmd.none)
+
+    Fields msg ->
       let
-        red =
-          value
-            |> String.toInt
-            |> Result.withDefault 0
-
-        color =
-          model.value
-            |> Ext.Color.updateColor (\c -> { c | red = clamp 0 255 red })
+        (fields, cmd) =
+          ColorFields.update msg model.fields
       in
-        (setValue color model, Cmd.none)
-
-    SetGreen value ->
-      let
-        green =
-          value
-            |> String.toInt
-            |> Result.withDefault 0
-
-        color =
-          model.value
-            |> Ext.Color.updateColor (\c -> { c | green = clamp 0 255 green })
-      in
-        (setValue color model, Cmd.none)
-
-    SetBlue value ->
-      let
-        blue =
-          value
-            |> String.toInt
-            |> Result.withDefault 0
-
-        color =
-          model.value
-            |> Ext.Color.updateColor (\c -> { c | blue = clamp 0 255 blue })
-      in
-        (setValue color model, Cmd.none)
-
-    SetHex value ->
-      ({ model | tempHex = value }, Cmd.none)
-
-    FromHex ->
-      case Color.Convert.hexToColor model.tempHex of
-        Just color ->
-          ({ model | value = Ext.Color.toHsv color }, Cmd.none)
-        _ ->
-          ({ model | tempHex = Color.Convert.colorToHex (Ext.Color.hsvToRgb model.value) }, Cmd.none)
-
-    SetAlpha value ->
-      let
-        alpha =
-          value
-            |> String.toInt
-            |> Result.withDefault 0
-            |> toFloat
-
-        color =
-          model.value
-            |> Ext.Color.updateColor (\c -> { c | alpha = clamp 0 1 (alpha / 100) })
-      in
-        (setValue color model, Cmd.none)
-
+        ( { model | fields = fields }, Cmd.map Fields cmd)
 
 {-| Lazily renders a color panel.
 
@@ -258,11 +199,6 @@ render model =
 
     color =
       model.value
-
-    {red, green, blue, alpha} =
-      model.value
-        |> Ext.Color.hsvToRgb
-        |> Color.toRgb
 
     colorTransparent =
       (Ext.Color.toCSSRgba { color | alpha = 0 })
@@ -321,55 +257,7 @@ render model =
             , renderHandle "" (asPercent color.alpha)
             ]
         ]
-      , node "ui-color-panel-controls" []
-        [ div []
-          [ input
-            [ value model.tempHex
-            , onInput SetHex
-            , onBlur FromHex
-            ] []
-          , span [] [ text "Hex" ]
-          ]
-        , div []
-          [ input
-            [ type_ "number"
-            , Html.Attributes.min "0", Html.Attributes.max "255"
-            , onInput SetRed
-            , value (toString red)
-            ] []
-          , span [] [ text "R" ]
-          ]
-        , div []
-          [ input
-            [ type_ "number"
-            , onInput SetGreen
-            , Html.Attributes.min "0"
-            , Html.Attributes.max "255"
-            , value (toString green)
-            ] []
-          , span [] [ text "G" ]
-          ]
-        , div []
-          [ input
-            [ type_ "number"
-            , onInput SetBlue
-            , Html.Attributes.min "0"
-            , Html.Attributes.max "255"
-            , value (toString blue)
-            ] []
-          , span [] [ text "B" ]
-          ]
-        , div []
-          [ input
-            [ type_ "number"
-            , onInput SetAlpha
-            , Html.Attributes.min "0"
-            , Html.Attributes.max "100"
-            , value (toString (round (alpha * 100)))
-            ] []
-          , span [] [ text "A" ]
-          ]
-        ]
+      , Html.map Fields (ColorFields.view model.fields)
       ]
 
 {-| Sets the value of a color panel.
@@ -392,12 +280,16 @@ updateValue value model =
   if model.value == value then
     ( model, Cmd.none )
   else
-    ( { model
-        | value = value
-        , tempHex = Color.Convert.colorToHex (Ext.Color.hsvToRgb value)
-      }
-    , Emitter.send model.uid (encodeHsv value)
-    )
+    let
+      (fields, cmd) =
+        ColorFields.setValue value model.fields
+    in
+      ( { model | value = value, fields = fields }
+      , Cmd.batch
+        [ Emitter.send model.uid (encodeHsv value)
+        , Cmd.map Fields cmd
+        ]
+      )
 
 
 {-| Updates a color panel, stopping the drags if the mouse isn't pressed.

@@ -1,8 +1,26 @@
-module Ui.ColorFields exposing (..)
+module Ui.ColorFields exposing
+  (Model, Msg, init, update, onChange, view, render, setValue)
 
-import Html.Events exposing (onBlur, onInput, on)
-import Html.Attributes exposing (type_, defaultValue, id)
+{-| A component for manipulating a color's red, green, blue and alpha values
+along with the ability to set it with a hex (#FFFFFF) value.
+
+# Model
+@docs Model, Msg, init, update
+
+# Events
+@docs onChange
+
+# Functions
+@docs setValue
+
+# View
+@docs render, view
+-}
+
+import Html.Attributes exposing (type_, defaultValue, id, spellcheck)
 import Html exposing (node, div, input, text, span)
+import Html.Events exposing (onBlur, onInput, on)
+import Html.Lazy
 
 import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)
 import Color exposing (Color)
@@ -13,26 +31,52 @@ import DOM
 
 import Json.Decode as Json
 
+import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 
+
+{-| Represents the values of the inputs.
+-}
 type alias Inputs =
-  { hex : String
-  , red : String
-  , green : String
-  , blue : String
+  { green : String
   , alpha : String
+  , blue : String
+  , hex : String
+  , red : String
   }
 
 
+{-| Representation of a color fields component.
+-}
 type alias Model =
-  { value : Hsv
-  , uid : String
-  , disabled : Bool
+  { disabled : Bool
   , readonly : Bool
   , inputs : Inputs
+  , uid : String
+  , value : Hsv
   }
 
 
+{-| Messages that a color fields component can receive.
+-}
+type Msg
+  = Done (Result DOM.Error (List ()))
+  | Alpha String
+  | Green String
+  | Blue String
+  | Hex String
+  | Red String
+  | BlurGreen
+  | BlurAlpha
+  | BlurBlue
+  | BlurHex
+  | BlurRed
+
+
+{-| Initializes a color fields component.
+
+    colorFields = Ui.ColorFields.init ()
+-}
 init : () -> Model
 init _ =
   { value = Ext.Color.toHsv Color.black
@@ -40,46 +84,52 @@ init _ =
   , disabled = False
   , readonly = False
   , inputs =
-    { hex = ""
-    , red = ""
-    , green = ""
-    , blue = ""
-    , alpha = ""
-    }
+      { green = ""
+      , alpha = ""
+      , blue = ""
+      , red = ""
+      , hex = ""
+      }
   }
     |> updateInputs
 
-type Msg
-  = Hex String
-  | Red String
-  | Blue String
-  | Green String
-  | Alpha String
-  | BlurHex
-  | BlurRed
-  | BlurBlue
-  | BlurGreen
-  | BlurAlpha
-  | Done (Result DOM.Error (List ()))
+
+{-| Subscribe for the changes of a color panel.
+
+    ...
+    subscriptions =
+      \model ->
+        Ui.ColorFields.onChange
+          ColorFieldsChanged
+          model.colorPanel
+    ...
+-}
+onChange : (Hsv -> msg) -> Model -> Sub msg
+onChange msg model =
+  Emitter.listen
+    model.uid
+    (Emitter.decode decodeHsv (Ext.Color.toHsv Color.black) msg)
 
 
+{-| Updates a color fields component.
+-}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ ({ inputs } as model) =
   case msg_ of
-    Hex value ->
-      ( { model | inputs = { inputs | hex = value } }, Cmd.none )
-
-    Red value ->
-      ( { model | inputs = { inputs | red = value } }, Cmd.none )
-
-    Blue value ->
-      ( { model | inputs = { inputs | blue = value } }, Cmd.none )
-
     Green value ->
       ( { model | inputs = { inputs | green = value } }, Cmd.none )
 
     Alpha value ->
       ( { model | inputs = { inputs | alpha = value } }, Cmd.none )
+
+    Blue value ->
+      ( { model | inputs = { inputs | blue = value } }, Cmd.none )
+
+    Red value ->
+      ( { model | inputs = { inputs | red = value } }, Cmd.none )
+
+    Hex value ->
+      ( { model | inputs = { inputs | hex = value } }, Cmd.none )
 
     BlurHex ->
       let
@@ -94,9 +144,10 @@ update msg_ ({ inputs } as model) =
 
                 value =
                   Ext.Color.toHsv color
-                  |> Ext.Color.setAlpha alpha
+                    |> Ext.Color.setAlpha alpha
               in
                 { model | value = value }
+
             Nothing ->
               model
       in
@@ -153,28 +204,45 @@ update msg_ ({ inputs } as model) =
     Done _ ->
       ( model, Cmd.none )
 
-setInputs : Model -> (Model, Cmd Msg)
+
+{-| Sets the value of a color fields component.
+-}
+setValue : Hsv -> Model -> ( Model, Cmd Msg )
+setValue value model =
+  { model | value = value }
+    |> setInputs
+
+
+{-| Sets the inputs to match the current value of a color fields component.
+-}
+setInputs : Model -> ( Model, Cmd Msg )
 setInputs model =
   let
     ({ inputs } as updatedModel) =
       updateInputs model
 
-    cmd =
-      [ DOM.setValue inputs.hex (DOM.idSelector (model.uid ++ "-hex"))
-      , DOM.setValue inputs.red (DOM.idSelector (model.uid ++ "-red"))
-      , DOM.setValue inputs.blue (DOM.idSelector (model.uid ++ "-blue"))
-      , DOM.setValue inputs.green (DOM.idSelector (model.uid ++ "-green"))
+    setCommand =
+      [ DOM.setValue inputs.green (DOM.idSelector (model.uid ++ "-green"))
       , DOM.setValue inputs.alpha (DOM.idSelector (model.uid ++ "-alpha"))
+      , DOM.setValue inputs.blue (DOM.idSelector (model.uid ++ "-blue"))
+      , DOM.setValue inputs.red (DOM.idSelector (model.uid ++ "-red"))
+      , DOM.setValue inputs.hex (DOM.idSelector (model.uid ++ "-hex"))
       ]
         |> Task.sequence
         |> Task.attempt Done
-  in
-    ( updatedModel, cmd )
 
+    sendCommand =
+      Emitter.send model.uid (encodeHsv model.value)
+  in
+    ( updatedModel, Cmd.batch [ setCommand, sendCommand ] )
+
+
+{-| Updates the inputs to match the current value of a color fields component.
+-}
 updateInputs : Model -> Model
 updateInputs ({ inputs } as model) =
   let
-    {red, green, blue, alpha} =
+    { red, green, blue, alpha } =
       model.value
         |> Ext.Color.hsvToRgb
         |> Color.toRgb
@@ -184,73 +252,71 @@ updateInputs ({ inputs } as model) =
 
     updatedInputs =
       { inputs
-      | hex = hex
-      , red = toString red
-      , green = toString green
-      , alpha = toString (round (alpha * 100))
-      , blue = toString blue
+        | alpha = toString (round (alpha * 100))
+        , green = toString green
+        , blue = toString blue
+        , red = toString red
+        , hex = hex
       }
   in
     { model | inputs = updatedInputs }
 
+
+{-| Renders a number input.
+-}
+renderInput :
+  String
+  -> String
+  -> String
+  -> (String -> Msg)
+  -> Msg
+  -> String
+  -> Model
+  -> Html.Html Msg
+renderInput name min max msg blurMsg value model =
+  div []
+    [ input
+        [ on "change" (Json.succeed blurMsg)
+        , id (model.uid ++ "-" ++ name)
+        , Html.Attributes.min min
+        , Html.Attributes.max max
+        , defaultValue value
+        , spellcheck False
+        , type_ "number"
+        , onInput msg
+        ]
+        []
+    , span [] [ text (String.toUpper (String.left 1 name)) ]
+    ]
+
+
+{-| Laizly renders a color fields component.
+-}
 view : Model -> Html.Html Msg
-view ({ inputs } as model) =
-  node "ui-color-fields" []
+view model =
+  Html.Lazy.lazy render model
+
+
+{-| Renders a color fields component.
+-}
+render : Model -> Html.Html Msg
+render ({ inputs } as model) =
+  node "ui-color-fields"
+    []
     [ div []
-      [ input
-        [ defaultValue inputs.hex
-        , onInput Hex
-        , onBlur BlurHex
-        , id (model.uid ++ "-hex")
-        ] []
-      , span [] [ text "Hex" ]
-      ]
-    , div []
-      [ input
-        [ type_ "number"
-        , Html.Attributes.min "0"
-        , Html.Attributes.max "255"
-        , onInput Red
-        , on "change" (Json.succeed BlurRed)
-        , defaultValue inputs.red
-        , id (model.uid ++ "-red")
-        ] []
-      , span [] [ text "R" ]
-      ]
-    , div []
-      [ input
-        [ type_ "number"
-        , onInput Green
-        , on "change" (Json.succeed BlurGreen)
-        , Html.Attributes.min "0"
-        , Html.Attributes.max "255"
-        , defaultValue inputs.green
-        , id (model.uid ++ "-green")
-        ] []
-      , span [] [ text "G" ]
-      ]
-    , div []
-      [ input
-        [ type_ "number"
-        , onInput Blue
-        , on "change" (Json.succeed BlurBlue)
-        , Html.Attributes.min "0"
-        , Html.Attributes.max "255"
-        , defaultValue inputs.blue
-        , id (model.uid ++ "-blue")
-        ] []
-      , span [] [ text "B" ]
-      ]
-    , div []
-      [ input
-        [ type_ "number"
-        , onInput Alpha
-        , on "change" (Json.succeed BlurAlpha)
-        , Html.Attributes.min "0"
-        , Html.Attributes.max "100"
-        , defaultValue inputs.alpha
-        , id (model.uid ++ "-alpha")
-        ] []
-      , span [] [ text "A" ]
-      ]
+        [ input
+            [ on "change" (Json.succeed BlurHex)
+            , id (model.uid ++ "-hex")
+            , defaultValue inputs.hex
+            , spellcheck False
+            , onBlur BlurHex
+            , onInput Hex
+            ]
+            []
+        , span [] [ text "Hex" ]
+        ]
+    , renderInput "red" "0" "255" Red BlurRed inputs.red model
+    , renderInput "green" "0" "255" Green BlurGreen inputs.green model
+    , renderInput "blue" "0" "255" Blue BlurBlue inputs.blue model
+    , renderInput "alpha" "0" "100" Alpha BlurAlpha inputs.alpha model
     ]

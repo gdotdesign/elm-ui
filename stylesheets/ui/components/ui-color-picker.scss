@@ -10,9 +10,10 @@ ui-picker {
   height: 36px;
 
   ui-picker-input {
-    display: block;
     position: relative;
+    user-select: none;
     cursor: pointer;
+    display: block;
 
     padding: 6px 9px;
     padding-right: 52px;

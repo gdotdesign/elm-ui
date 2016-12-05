@@ -8,7 +8,7 @@ ui-color-panel {
   user-select: none;
   display: flex;
   padding: 15px;
-  width: 250px;
+  width: 260px;
 
   // Disabled State
   &.disabled {
@@ -87,7 +87,7 @@ ui-color-panel {
   }
 
   ui-color-panel-rect {
-    height: 186px;
+    height: 197;
   }
 
   ui-color-panel-hsv {
@@ -148,6 +148,12 @@ ui-color-panel {
       height: 16px;
     }
   }
+
+  ui-color-fields {
+    border-top: $border;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
 }
 
 ui-color-fields {
@@ -173,6 +179,14 @@ ui-color-fields {
 
   div:first-child {
     flex: 1 0 65px;
+  }
+
+  span {
+    user-select: none;
+  }
+
+  input:not(:focus)::selection {
+    background: transparent;
   }
 
   input:not([type]) {

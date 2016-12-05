@@ -1,11 +1,14 @@
 module Ui.ColorPanel exposing
-  (Model, Msg, init, subscribe, subscriptions, update, view, render, setValue)
+  (Model, Msg, init, onChange, subscriptions, update, view, render, setValue)
 
-{-| Color panel component for selecting a colors **hue**, **saturation**,
+{-| A component for manipulating a color's **hue**, **saturation**,
 **value** and **alpha** components with draggable interfaces.
 
 # Model
-@docs Model, Msg, init, update, subscribe, subscriptions
+@docs Model, Msg, init, update, subscriptions
+
+# Events
+@docs onChange
 
 # View
 @docs view, render
@@ -27,22 +30,20 @@ import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
-import Native.Dom
-
 import DOM exposing (Position)
 
 {-| Representation of a color panel:
-  - **alphaDrag** - The drag model of the alpha slider
-  - **hueDrag** - The drag model of the hue slider
   - **drag** - The drag model of the value / saturation rectangle
   - **disabled** - Whether or not the color panel is disabled
   - **readonly** - Whether or not the color panel is editable
   - **uid** - The unique identifier of the color panel
+  - **alphaDrag** - The drag model of the alpha slider
+  - **hueDrag** - The drag model of the hue slider
   - **value** - The current HSV color
 -}
 type alias Model =
-  { alphaDrag : DragModel
-  , fields : ColorFields.Model
+  { fields : ColorFields.Model
+  , alphaDrag : DragModel
   , hueDrag : DragModel
   , drag : DragModel
   , disabled : Bool
@@ -52,10 +53,13 @@ type alias Model =
   }
 
 
+{-| Model for drags.
+-}
 type alias DragModel =
   { drag : Drag.Drag
   , uid : String
   }
+
 
 {-| Messages that a color panel can receive.
 -}
@@ -73,17 +77,17 @@ type Msg
 
 {-| Initializes a color panel with the given Elm color.
 
-    colorPanel = Ui.ColorPanel.init Color.blue
+    colorPanel = Ui.ColorPanel.init ()
 -}
-init : Color -> Model
-init color =
+init : () -> Model
+init _ =
   let
     uid = Uid.uid ()
   in
     { alphaDrag = initDrag (uid ++ "alpha")
+    , value = Ext.Color.toHsv Color.black
     , hueDrag = initDrag (uid ++ "hue")
     , drag = initDrag (uid ++ "rect")
-    , value = Ext.Color.toHsv Color.black
     , fields = ColorFields.init ()
     , disabled = False
     , readonly = False
@@ -91,24 +95,27 @@ init color =
     }
 
 
+{-| Initializes a drag model.
+-}
 initDrag : String -> DragModel
 initDrag id =
   { drag = Drag.init
   , uid = id
   }
 
+
 {-| Subscribe for the changes of a color panel.
 
     ...
     subscriptions =
       \model ->
-        Ui.ColorPanel.subscribe
+        Ui.ColorPanel.onChange
           ColorPanelChanged
           model.colorPanel
     ...
 -}
-subscribe : (Hsv -> msg) -> Model -> Sub msg
-subscribe msg model =
+onChange : (Hsv -> msg) -> Model -> Sub msg
+onChange msg model =
   Emitter.listen
     model.uid
     (Emitter.decode decodeHsv (Ext.Color.toHsv Color.black) msg)
@@ -144,10 +151,6 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
-    LiftRect position ->
-      { model | drag = Drag.lift position model.drag }
-        |> handleRect position
-
     LiftAlpha position ->
       { model | alphaDrag = Drag.lift position model.alphaDrag }
         |> handleAlpha position
@@ -156,14 +159,18 @@ update action model =
       { model | hueDrag = Drag.lift position model.hueDrag }
         |> handleHue position
 
-    MoveHue position ->
-      handleHue position model
+    LiftRect position ->
+      { model | drag = Drag.lift position model.drag }
+        |> handleRect position
 
     MoveAlpha position ->
       handleAlpha position model
 
     MoveRect position ->
       handleRect position model
+
+    MoveHue position ->
+      handleHue position model
 
     End ->
       ( handleClick model, Cmd.none )
@@ -177,6 +184,7 @@ update action model =
           ColorFields.update msg model.fields
       in
         ( { model | fields = fields }, Cmd.map Fields cmd)
+
 
 {-| Lazily renders a color panel.
 
@@ -311,13 +319,9 @@ handleClick model =
     drag =
       Drag.end model.drag
   in
-    if
-      model.alphaDrag
-        == alphaDrag
-        && model.hueDrag
-        == hueDrag
-        && model.drag
-        == drag
+    if model.alphaDrag == alphaDrag
+    && model.hueDrag == hueDrag
+    && model.drag == drag
     then
       model
     else
@@ -370,6 +374,7 @@ handleRect position ({ value } as model) =
         { value | saturation = saturation, value = colorValue }
   in
     updateValue updatedValue model
+
 
 {-| Handles the alpha drag.
 -}

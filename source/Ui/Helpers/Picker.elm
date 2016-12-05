@@ -77,7 +77,7 @@ view ({ address } as viewModel) model =
         ] ++ viewModel.attributes)
 
     toggleAction =
-      if Native.Dom.test ("[id='" ++ model.uid ++ "']:focus") then
+      if DOM.contains ("[id='" ++ model.uid ++ "']:focus") then
         [ onMouseDown Toggle ]
       else
         []

@@ -1,11 +1,14 @@
 module Ui.ColorPicker exposing
-  (Model, Msg, init, subscribe, subscriptions, update, view, render, setValue)
+  (Model, Msg, init, onChange, subscriptions, update, view, render, setValue)
 
 {-| An input component that displays a **Ui.ColorPanel** (in a dropdown) when
 focused, allowing the user to manipulate the selected color.
 
 # Model
-@docs Model, Msg, init, subscribe, subscriptions, update
+@docs Model, Msg, init, subscriptions, update
+
+# DSL
+@docs onChange
 
 # View
 @docs view, render
@@ -28,10 +31,10 @@ import Ui.ColorPanel
 
 
 {-| Representation of a color picker:
-  - **colorPanel** - The model of a color panel
   - **disabled** - Whether or not the color picker is disabled
   - **readonly** - Whether or not the color picker is readonly
   - **open** - Whether or not the color picker is open
+  - **colorPanel** - The model of a color panel
 -}
 type alias Model =
   { colorPanel : Ui.ColorPanel.Model
@@ -47,6 +50,7 @@ type alias Model =
 type Msg
   = ColorPanel Ui.ColorPanel.Msg
   | Picker Picker.Msg
+
 
 {-| Initializes a color picker with the given color.
 
@@ -68,14 +72,14 @@ init color =
     ...
     subscriptions =
       \model ->
-        Ui.ColorPicker.subscribe
+        Ui.ColorPicker.onChange
           ColorPickerChanged
           model.colorPicker
     ...
 -}
-subscribe : (Hsv -> msg) -> Model -> Sub msg
-subscribe msg model =
-  Ui.ColorPanel.subscribe msg model.colorPanel
+onChange : (Hsv -> msg) -> Model -> Sub msg
+onChange msg model =
+  Ui.ColorPanel.onChange msg model.colorPanel
 
 
 {-| Subscriptions for a color picker.
@@ -102,7 +106,8 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
     Picker act ->
-      (Picker.update act model, Cmd.none)
+      ( Picker.update act model, Cmd.none )
+
     ColorPanel act ->
       let
         ( colorPanel, effect ) =

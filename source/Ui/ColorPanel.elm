@@ -192,7 +192,7 @@ view model =
     Ui.ColorPanel.render colorPanel
 -}
 render : Model -> Html.Html Msg
-render model =
+render ({ fields } as model) =
   let
     background =
       "hsla(" ++ (toString (round (model.value.hue * 360))) ++ ", 100%, 50%, 1)"
@@ -257,7 +257,12 @@ render model =
             , renderHandle "" (asPercent color.alpha)
             ]
         ]
-      , Html.map Fields (ColorFields.view model.fields)
+      , Html.map Fields
+          (ColorFields.view
+            { fields
+              | disabled = model.disabled
+              , readonly = model.readonly
+            })
       ]
 
 {-| Sets the value of a color panel.

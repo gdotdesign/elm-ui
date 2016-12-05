@@ -17,7 +17,8 @@ along with the ability to set it with a hex (#FFFFFF) value.
 @docs render, view
 -}
 
-import Html.Attributes exposing (type_, defaultValue, id, spellcheck)
+import Html.Attributes exposing ( type_, defaultValue, id, spellcheck
+                                , classList, readonly, disabled )
 import Html exposing (node, div, input, text, span)
 import Html.Events exposing (onBlur, onInput, on)
 import Html.Lazy
@@ -274,20 +275,32 @@ renderInput :
   -> Model
   -> Html.Html Msg
 renderInput name min max msg blurMsg value model =
-  div []
-    [ input
+  let
+    baseAttributes =
+      [ id (model.uid ++ "-" ++ name)
+      , defaultValue value
+      , spellcheck False
+      , type_ "number"
+      ]
+
+    attributes =
+      if model.disabled || model.readonly then
+        if model.readonly then
+          [ readonly True ]
+        else
+          [ disabled True ]
+      else
         [ on "change" (Json.succeed blurMsg)
-        , id (model.uid ++ "-" ++ name)
         , Html.Attributes.min min
         , Html.Attributes.max max
-        , defaultValue value
-        , spellcheck False
-        , type_ "number"
         , onInput msg
         ]
-        []
-    , span [] [ text (String.toUpper (String.left 1 name)) ]
-    ]
+
+  in
+    div []
+      [ input (baseAttributes ++ attributes) []
+      , span [] [ text (String.toUpper (String.left 1 name)) ]
+      ]
 
 
 {-| Laizly renders a color fields component.
@@ -301,22 +314,37 @@ view model =
 -}
 render : Model -> Html.Html Msg
 render ({ inputs } as model) =
-  node "ui-color-fields"
-    []
-    [ div []
-        [ input
-            [ on "change" (Json.succeed BlurHex)
-            , id (model.uid ++ "-hex")
-            , defaultValue inputs.hex
-            , spellcheck False
-            , onBlur BlurHex
-            , onInput Hex
-            ]
-            []
-        , span [] [ text "Hex" ]
+  let
+    baseHexAttributes =
+      [ defaultValue inputs.hex
+      , id (model.uid ++ "-hex")
+      , spellcheck False
+      ]
+
+    hexAttributes =
+      if model.readonly || model.disabled then
+        if model.readonly then
+          [ readonly True ]
+        else
+          [ disabled True ]
+      else
+        [ on "change" (Json.succeed BlurHex)
+        , onBlur BlurHex
+        , onInput Hex
         ]
-    , renderInput "red" "0" "255" Red BlurRed inputs.red model
-    , renderInput "green" "0" "255" Green BlurGreen inputs.green model
-    , renderInput "blue" "0" "255" Blue BlurBlue inputs.blue model
-    , renderInput "alpha" "0" "100" Alpha BlurAlpha inputs.alpha model
+  in
+    node "ui-color-fields"
+      [ classList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+      ]
+      [ div []
+          [ input (baseHexAttributes ++ hexAttributes) []
+          , span [] [ text "Hex" ]
+          ]
+      , renderInput "red" "0" "255" Red BlurRed inputs.red model
+      , renderInput "green" "0" "255" Green BlurGreen inputs.green model
+      , renderInput "blue" "0" "255" Blue BlurBlue inputs.blue model
+      , renderInput "alpha" "0" "100" Alpha BlurAlpha inputs.alpha model
     ]

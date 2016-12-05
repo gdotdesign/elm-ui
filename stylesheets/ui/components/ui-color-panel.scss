@@ -17,9 +17,12 @@ ui-color-panel {
     background: $disabled;
     filter: saturate(0);
 
-    input {
-      pointer-events: none;
-      opacity: 0.6;
+    ui-color-fields {
+      border-top: 1px solid rgba(#000, 0.1);
+
+      input {
+        background: rgba(#000, 0.15);
+      }
     }
 
     ui-color-panel-hue,
@@ -159,6 +162,28 @@ ui-color-panel {
 ui-color-fields {
   justify-content: space-between;
   display: flex;
+
+  &.disbaled,
+  &.readonly {
+    > * {
+      pointer-events: none;
+    }
+  }
+
+  &.readonly {
+    cursor: $readonly-cursor;
+  }
+
+  &.disabled {
+    input {
+      background: $disabled;
+      @extend %disabled;
+    }
+
+    span {
+      opacity: 0.6;
+    }
+  }
 
   div {
     flex: 0 0 35px;

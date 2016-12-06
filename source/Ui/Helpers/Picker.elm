@@ -1,5 +1,14 @@
 module Ui.Helpers.Picker exposing (..)
 
+{-| This is a module for creating dropdowns that acts as pickers.
+
+# Model
+@docs Model, Msg, update, subscriptions
+
+# View
+@docs ViewModel, view
+-}
+
 import Html.Events exposing (onBlur, onMouseDown, onFocus, on)
 import Html.Events.Extra exposing (onKeys, onFocusOut)
 import Html.Attributes exposing (classList)
@@ -10,21 +19,30 @@ import Ui
 
 import DOM
 
+
+{-| Represents a picker.
+-}
 type alias Model a =
   { a
-  | dropdown : Dropdown
-  , readonly : Bool
-  , disabled : Bool
-  , uid : String
+    | dropdown : Dropdown
+    , readonly : Bool
+    , disabled : Bool
+    , uid : String
   }
 
+
+{-| Represents the arguments for the view of a picker.
+-}
 type alias ViewModel msg =
-  { contents : List (Html.Html msg)
-  , dropdownContents : List (Html.Html msg)
+  { dropdownContents : List (Html.Html msg)
   , attributes : List (Html.Attribute msg)
+  , contents : List (Html.Html msg)
   , address : Msg -> msg
   }
 
+
+{-| Messages that a picker can receive.
+-}
 type Msg
   = Dropdown Dropdown.Msg
   | Toggle
@@ -32,26 +50,24 @@ type Msg
   | Close
   | Blur
 
+
+{-| Subscriptions for a picker.
+-}
+subscriptions : Model a -> Sub Msg
 subscriptions model =
   Sub.map Dropdown (Dropdown.subscriptions model)
 
+
+{-| Updates a picker.
+-}
 update : Msg -> Model a -> Model a
 update action model =
   case action of
-    Dropdown msg ->
-      Dropdown.update msg model
-
     Toggle ->
       if DOM.contains ("[id='" ++ model.uid ++ "']:focus") then
         Dropdown.toggle model
       else
         model
-
-    Focus ->
-      Dropdown.open model
-
-    Close ->
-      Dropdown.close model
 
     Blur ->
       let
@@ -63,7 +79,18 @@ update action model =
         else
           Dropdown.close model
 
+    Dropdown msg ->
+      Dropdown.update msg model
 
+    Close ->
+      Dropdown.close model
+
+    Focus ->
+      Dropdown.open model
+
+
+{-| Renders a picker.
+-}
 view : ViewModel msg -> Model a -> Html.Html msg
 view ({ address } as viewModel) model =
   let
@@ -71,13 +98,15 @@ view ({ address } as viewModel) model =
       Ui.enabledActions
         model
         ([ onFocusOut (address Blur)
-        , onFocus (address Focus)
-        , onBlur (address Blur)
-        , onKeys False
+         , onFocus (address Focus)
+         , onBlur (address Blur)
+         , onKeys False
             [ ( 13, (address Toggle) )
             , ( 27, (address Close) )
             ]
-        ] ++ viewModel.attributes)
+         ]
+          ++ viewModel.attributes
+        )
 
     toggleAction =
       if DOM.contains ("[id='" ++ model.uid ++ "']:focus") then
@@ -105,4 +134,5 @@ view ({ address } as viewModel) model =
       , children =
           [ node "ui-picker-input" toggleAttributes viewModel.contents
           ]
-      } model
+      }
+      model

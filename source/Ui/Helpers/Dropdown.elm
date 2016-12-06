@@ -29,6 +29,7 @@ colorPicker =
 @docs view
 
 -}
+
 import Html.Attributes exposing (style, classList, id, attribute)
 import Html exposing (node)
 
@@ -40,6 +41,7 @@ import DOM.Window
 
 import Ui.Native.Scrolls as Scrolls
 
+
 {-| Representation of the direction where the dropdown opens:
     * Horizontal - either left or right
     * Vertical - either top or bottom
@@ -47,6 +49,7 @@ import Ui.Native.Scrolls as Scrolls
 type Direction
   = Horizontal
   | Vertical
+
 
 {-| Representation of the a side.
 -}
@@ -56,6 +59,7 @@ type Side
   | Left
   | Top
 
+
 {-| Representation of part of a direction similar to a Cartesian coordinate
 systems.
 -}
@@ -63,11 +67,13 @@ type Space
   = Positive
   | Negative
 
+
 {-| Messages that a dropdown can receive.
 -}
 type Msg
   = Click Mouse.Position
   | Close
+
 
 {-| Representation of things in the view.
 -}
@@ -92,6 +98,7 @@ type alias Dropdown =
   , open : Bool
   }
 
+
 {-| Representation of a component which has a dropdown.
 -}
 type alias Model a =
@@ -114,7 +121,6 @@ init =
   , top = 0
   }
 
--- PUBLIC API
 
 {-| Sets the direction of a dropdown, this property indicates where the dropdown
 will open.
@@ -122,8 +128,9 @@ will open.
 direction : Direction -> Model a -> Model a
 direction value model =
   updateDropdown
-    (\dropdown -> { dropdown | direction = value } )
+    (\dropdown -> { dropdown | direction = value })
     model
+
 
 {-| Sets where to align a dropdown when it's open. For example if a dropdown
 opens horizontally to either to the left or right, then it can be aligned to
@@ -132,24 +139,27 @@ either the top or the bottom of the opening element.
 alignTo : Side -> Model a -> Model a
 alignTo side model =
   updateDropdown
-    (\dropdown -> { dropdown | alignTo = stwitchSpace (getSpaceFromSide side) } )
+    (\dropdown -> { dropdown | alignTo = stwitchSpace (getSpaceFromSide side) })
     model
+
 
 {-| Sets where to open a dropdown if there is more space.
 -}
 favoring : Side -> Model a -> Model a
 favoring side model =
   updateDropdown
-    (\dropdown -> { dropdown | favoring = getSpaceFromSide side } )
+    (\dropdown -> { dropdown | favoring = getSpaceFromSide side })
     model
+
 
 {-| Sets the offset of the dropdown from it's opening element.
 -}
 offset : Float -> Model a -> Model a
 offset offset model =
   updateDropdown
-    (\dropdown -> { dropdown | offset = offset } )
+    (\dropdown -> { dropdown | offset = offset })
     model
+
 
 {-| Opens a dropdown.
 -}
@@ -159,6 +169,7 @@ open model =
     (\dropdown -> openDropdown model.uid dropdown)
     model
 
+
 {-| Closes a dropdown.
 -}
 close : Model a -> Model a
@@ -166,6 +177,7 @@ close model =
   updateDropdown
     (\dropdown -> { dropdown | open = False })
     model
+
 
 {-| Toggles a dropdown.
 -}
@@ -176,18 +188,20 @@ toggle model =
   else
     open model
 
+
 {-| Subscriptions for a dropdown.
 -}
 subscriptions : Model a -> Sub Msg
 subscriptions model =
   if model.dropdown.open then
     Sub.batch
-      [ Window.resizes (\_ -> Close)
+      [ Window.resizes (always Close)
       , Scrolls.scrolls Close
       , Mouse.downs Click
       ]
   else
     Sub.none
+
 
 {-| Updates a dropdown.
 -}
@@ -202,6 +216,7 @@ update msg model =
 
     Close ->
       close model
+
 
 {-| Renders a dropdown.
 -}
@@ -231,58 +246,90 @@ view viewModel model =
   in
     node viewModel.tag attributes children
 
--- PRIVATE API
 
+{-| Tests if the given position is above the given selector.
+-}
 isOver : String -> Mouse.Position -> Bool
 isOver id position =
-  DOM.isOver (DOM.idSelector id) { top = toFloat position.y, left = toFloat position.x }
+  DOM.isOver  (DOM.idSelector id)
+    { top = toFloat position.y, left = toFloat position.x }
     |> Result.withDefault False
 
+
+{-| Updates a dropdown of a model.
+-}
 updateDropdown : (Dropdown -> Dropdown) -> Model a -> Model a
 updateDropdown function model =
   { model | dropdown = function model.dropdown }
 
+
+{-| Converts `Side` to `Space`.
+-}
 getSpaceFromSide : Side -> Space
 getSpaceFromSide side =
   case side of
-    Bottom -> Positive
-    Right -> Positive
-    Left -> Negative
-    Top -> Negative
+    Bottom ->
+      Positive
 
+    Right ->
+      Positive
+
+    Left ->
+      Negative
+
+    Top ->
+      Negative
+
+
+{-| Gets the other `Space` from a `Space`.
+-}
 stwitchSpace : Space -> Space
 stwitchSpace space =
   case space of
-    Positive -> Negative
-    Negative -> Positive
+    Positive ->
+      Negative
 
+    Negative ->
+      Positive
+
+
+{-| Returns an empty rect (used as fallback).
+-}
 defaultRect : DOM.Dimensions
 defaultRect =
   { top = 0, left = 0, right = 0, bottom = 0, width = 0, height = 0 }
 
+
+{-| Opens a dropdown with the given ID and dropdown model.
+-}
 openDropdown : String -> Dropdown -> Dropdown
 openDropdown uid model =
   let
-    -- Get Window Positions
+    -- Get Window positions
     window =
       { height = DOM.Window.height ()
       , width = DOM.Window.width ()
       }
 
+    -- Get parent dimensions
     parent =
       DOM.getDimensionsSync (DOM.idSelector uid)
         |> Result.withDefault defaultRect
 
+    -- Get dropdown dimensions
     dropdown =
       DOM.getDimensionsSync (DOM.idSelector (uid ++ "-dropdown"))
         |> Result.withDefault defaultRect
   in
     { model
-    | open = True
-    , left = calculateLeft window parent dropdown model
-    , top = calculateTop window parent dropdown model
+      | left = calculateLeft window parent dropdown model
+      , top = calculateTop window parent dropdown model
+      , open = True
     }
 
+
+{-| Decides position from the given arguments and `Space`.
+-}
 decideSide : Space -> Float -> Float -> Float -> Float -> Float
 decideSide side positiveOptimal negativeOptimal bound size =
   case side of
@@ -291,29 +338,45 @@ decideSide side positiveOptimal negativeOptimal bound size =
         negativeOptimal
       else
         positiveOptimal
+
     Negative ->
       if negativeOptimal < 0 then
         positiveOptimal
       else
         negativeOptimal
 
+
+{-| Decides the favored size from the given arguments.
+-}
 favored : Dropdown -> Float -> Float -> Float -> Float -> Float
 favored model high low bound size =
   let
-    positiveOptimal = low + model.offset
-    negativeOptimal = high - size - model.offset
+    positiveOptimal =
+      low + model.offset
+
+    negativeOptimal =
+      high - size - model.offset
   in
     decideSide model.favoring positiveOptimal negativeOptimal bound size
 
+
+{-| Decides the alignment position from the given arguments.
+-}
 align : Dropdown -> Float -> Float -> Float -> Float -> Float
 align model high low bound size =
   let
-    positiveOptimal = high
-    negativeOptimal = low - size
+    positiveOptimal =
+      high
+
+    negativeOptimal =
+      low - size
   in
     decideSide model.alignTo positiveOptimal negativeOptimal bound size
 
-calculateLeft : { width: Float, height: Float } -> Dimensions -> Dimensions -> Dropdown -> Float
+
+{-| Calucates the left position from the given arguments.
+-}
+calculateLeft : { width : Float, height : Float } -> Dimensions -> Dimensions -> Dropdown -> Float
 calculateLeft window parent dropdown model =
   let
     maxiumum =
@@ -323,12 +386,16 @@ calculateLeft window parent dropdown model =
       case model.direction of
         Horizontal ->
           favored model parent.left parent.right window.width dropdown.width
+
         Vertical ->
           align model parent.left parent.right window.width dropdown.width
   in
     min maxiumum optimal
 
-calculateTop : { width: Float, height: Float } -> Dimensions -> Dimensions -> Dropdown -> Float
+
+{-| Calucates the top position from the given arguments.
+-}
+calculateTop : { width : Float, height : Float } -> Dimensions -> Dimensions -> Dropdown -> Float
 calculateTop window parent dropdown model =
   let
     maxiumum =
@@ -338,6 +405,7 @@ calculateTop window parent dropdown model =
       case model.direction of
         Horizontal ->
           align model parent.top parent.bottom window.height dropdown.height
+
         Vertical ->
           favored model parent.top parent.bottom window.height dropdown.height
   in

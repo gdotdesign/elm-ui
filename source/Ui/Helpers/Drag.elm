@@ -1,20 +1,11 @@
-module Ui.Helpers.Drag exposing (..)
+module Ui.Helpers.Drag exposing
+  ( Drag, Model, init, onMove, onEnd, lift, end, liftHandler, diff
+  , relativePosition, relativePercentPosition )
 
 {-| Low level helper functions for creating drag interactions.
 
-    drag = Drag.init
-
-    -- Later on when the mouse is down
-    Drag.lift position drag
-
-    -- During move calulate things when necessary
-    distanceMoved = Drag.diff position drag
-
-    -- When the mouse is released
-    Drag.end drag
-
 # Model
-@docs Drag, Model, init, emptyDimensions
+@docs Drag, Model, init
 
 # Events
 @docs onMove, onEnd
@@ -25,6 +16,7 @@ module Ui.Helpers.Drag exposing (..)
 # Functions
 @docs diff, relativePosition, relativePercentPosition
 -}
+
 import Html.Events exposing (on)
 import Html
 
@@ -47,12 +39,17 @@ type alias Drag =
   , dragging : Bool
   }
 
-{-|-}
+
+{-| Representation of a model that supports drag:
+  - **uid** - The unique identifier of the model
+  - **drag** - The drag model
+-}
 type alias Model a =
   { a
-  | uid : String
-  , drag : Drag
+    | uid : String
+    , drag : Drag
   }
+
 
 {-| Initializes a drag model.
 -}
@@ -63,14 +60,23 @@ init =
   , dragging = False
   }
 
-{-|-}
+
+{-| A envent handler for a drag.
+-}
 liftHandler : (Position -> msg) -> Html.Attribute msg
 liftHandler msg =
-  on "mousedown"
-    (Json.map (\pos -> msg { top = toFloat pos.y, left = toFloat pos.x } ) Mouse.position)
+  on "mousedown" (Json.map (convertPosition msg) Mouse.position)
 
 
-{-|-}
+{-| Converts a position into an msg.
+-}
+convertPosition : (Position -> msg) -> Mouse.Position -> msg
+convertPosition msg pos =
+  msg { top = toFloat pos.y, left = toFloat pos.x }
+
+
+{-| Empty dimensinos used as a fallback.
+-}
 emptyDimensions : Dimensions
 emptyDimensions =
   { height = 0
@@ -81,22 +87,26 @@ emptyDimensions =
   , top = 0
   }
 
-{-|-}
+
+{-| Subscribe to move events of a drag.
+-}
 onMove : (Position -> msg) -> Model a -> Sub msg
 onMove msg ({ drag } as model) =
   if drag.dragging then
-    Mouse.moves (\{ x, y } -> msg { top = toFloat y, left = toFloat x })
+    Mouse.moves (convertPosition msg)
   else
     Sub.none
 
 
-{-|-}
+{-| Subscribe to end events of a drag.
+-}
 onEnd : msg -> Model a -> Sub msg
 onEnd msg ({ drag } as model) =
   if drag.dragging then
-    Mouse.ups (\_ -> msg)
+    Mouse.ups (always msg)
   else
     Sub.none
+
 
 {-| Calculates the difference between the start position and the given position.
 -}
@@ -142,16 +152,15 @@ lift position ({ drag } as model) =
   in
     { model
       | drag =
-        { drag
-        | startPosition = position
-        , dimensions = dimensions
-        , dragging = True
-        }
+          { drag
+            | startPosition = position
+            , dimensions = dimensions
+            , dragging = True
+          }
     }
 
 
-{-| Handles the "mouseup" event, if the given pressed value is False
-stopping the drag.
+{-| Ends a drag.
 -}
 end : Model a -> Model a
 end ({ drag } as model) =

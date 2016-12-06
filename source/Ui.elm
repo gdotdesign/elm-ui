@@ -249,7 +249,7 @@ link msg url target_ =
       case msg of
         Just action ->
           [ unobtrusiveClick action
-          , onKeys
+          , onKeys True
               [ ( 13, action )
               , ( 32, action )
               ]

@@ -318,7 +318,7 @@ render model =
         , onBlur Blur
         , onMouseDown Toggle
         , onFocus Focus
-        , onKeys
+        , onKeys True
             ([ ( 27, Close )
              , ( 13, Enter )
              , ( 40, Next )

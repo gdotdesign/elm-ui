@@ -190,7 +190,7 @@ render locale model =
     Picker.view
       { address = Picker
       , attributes =
-        [ onKeys
+        [ onKeys True
           [ ( 40, Increment )
           , ( 38, Decrement )
           , ( 39, Increment )

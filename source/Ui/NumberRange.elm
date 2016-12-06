@@ -285,7 +285,7 @@ render model =
       else
         [ Drag.liftHandler Lift
         , on "dblclick" (Json.succeed Edit)
-        , onKeys
+        , onKeys True
             [ ( 40, Decrement )
             , ( 38, Increment )
             , ( 37, Decrement )

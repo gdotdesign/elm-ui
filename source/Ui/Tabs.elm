@@ -131,7 +131,7 @@ renderTabHandle address model index ( title, contents ) =
         ++ (Ui.enabledActions
               model
               [ onClick (address action)
-              , onKeys
+              , onKeys True
                   [ ( 13, address action )
                   , ( 32, address action )
                   ]

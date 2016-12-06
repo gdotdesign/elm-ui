@@ -204,9 +204,7 @@ render tags model =
     actions =
       Ui.enabledActions
         model
-        [ onKeys
-            [ ( 13, Create )
-            ]
+        [ onKeys True [ ( 13, Create ) ]
         ]
   in
     node
@@ -250,7 +248,7 @@ renderTag model tag =
           "android-close"
           True
           ([ onClick (Remove tag.id)
-           , onKeys [ ( 13, Remove tag.id ) ]
+           , onKeys True [ ( 13, Remove tag.id ) ]
            ]
             ++ (Ui.tabIndex model)
           )

@@ -14,7 +14,7 @@ module Html.Events.Extra exposing (..)
 -}
 
 import Html.Events.Options exposing (preventDefaultOptions, stopOptions)
-import Html.Events exposing (on, keyCode, onWithOptions)
+import Html.Events exposing (on, keyCode, onWithOptions, defaultOptions)
 import Html
 
 import Json.Decode as Json exposing (field)
@@ -150,9 +150,16 @@ is pressed from the give list.
            , ( 27, Esc )
            ]
 -}
-onKeys : List ( Int, msg ) -> Html.Attribute msg
-onKeys mappings =
-  onWithOptions "keydown" preventDefaultOptions (keysDecoder mappings)
+onKeys : Bool -> List ( Int, msg ) -> Html.Attribute msg
+onKeys shouldPreventDefault mappings =
+  let
+    options =
+      if shouldPreventDefault then
+        preventDefaultOptions
+      else
+        defaultOptions
+  in
+    onWithOptions "keydown" options (keysDecoder mappings)
 
 
 {-| Capture [load](https://developer.mozilla.org/en-US/docs/Web/Events/load)

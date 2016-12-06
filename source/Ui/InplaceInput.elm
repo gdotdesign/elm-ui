@@ -226,7 +226,7 @@ form model =
   in
     Ui.Container.column
       [ onEnter model.ctrlSave Save
-      , onKeys [ ( 27, Close ) ]
+      , onKeys False [ ( 27, Close ) ]
       ]
       [ Html.map Textarea (Ui.Textarea.view model.textarea)
       , Ui.Container.row

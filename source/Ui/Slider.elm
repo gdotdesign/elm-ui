@@ -147,7 +147,7 @@ render model =
 
     actions =
       [ Drag.liftHandler Lift
-      , onKeys
+      , onKeys True
           [ ( 40, Increment )
           , ( 38, Decrement )
           , ( 37, Increment )

@@ -42,7 +42,10 @@ update action model =
       Dropdown.update msg model
 
     Toggle ->
-      Dropdown.toggle model
+      if DOM.contains ("[id='" ++ model.uid ++ "']:focus") then
+        Dropdown.toggle model
+      else
+        model
 
     Focus ->
       Dropdown.open model
@@ -70,7 +73,7 @@ view ({ address } as viewModel) model =
         ([ onFocusOut (address Blur)
         , onFocus (address Focus)
         , onBlur (address Blur)
-        , onKeys
+        , onKeys False
             [ ( 13, (address Toggle) )
             , ( 27, (address Close) )
             ]

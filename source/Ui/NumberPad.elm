@@ -201,7 +201,7 @@ render ({ address } as viewModel) model =
     actions =
       Ui.enabledActions
         model
-        [ onKeys
+        [ onKeys False
             [ ( 8, address Delete )
             , ( 46, address Delete )
             , ( 48, address (Pressed 0) )

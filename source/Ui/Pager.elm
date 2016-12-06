@@ -19,7 +19,6 @@ import Html.Lazy
 
 import Json.Decode as Json
 import Json.Encode as JE
-import List.Extra
 
 
 {-| Representation of a pager:

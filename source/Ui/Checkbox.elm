@@ -172,7 +172,7 @@ attributes model =
       Ui.enabledActions
         model
         [ onClick Toggle
-        , onKeys
+        , onKeys True
             [ ( 13, Toggle )
             , ( 32, Toggle )
             ]

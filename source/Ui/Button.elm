@@ -208,7 +208,7 @@ attributes msg model =
     actions =
       Ui.enabledActions model
         [ onClick msg
-        , onKeys
+        , onKeys True
             [ ( 13, msg )
             , ( 32, msg )
             ]

@@ -148,7 +148,7 @@ render model =
     actions =
       Ui.enabledActions
         model
-        [ onKeys
+        [ onKeys True
             [ ( 40, Decrement )
             , ( 38, Increment )
             , ( 37, Decrement )

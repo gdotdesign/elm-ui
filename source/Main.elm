@@ -5,7 +5,6 @@ import Date.Extra.Format
 import List.Extra
 import Ext.Color
 import Ext.Date
-import Color
 import Task
 import Date
 import Time
@@ -197,7 +196,7 @@ init =
   in
     { calendar =
         Showcase.init
-          (\_ -> Ui.Calendar.init (Ext.Date.createDate 2015 5 1))
+          (\_ -> Ui.Calendar.init ())
           Ui.Calendar.update
           (Ui.Calendar.onChange CalendarChanged)
           (\_ -> Sub.none)
@@ -367,7 +366,7 @@ init =
         ]
     , datePicker =
         Showcase.init
-          (\_ -> Ui.DatePicker.init (Ext.Date.now ()))
+          (\_ -> Ui.DatePicker.init ())
           Ui.DatePicker.update
           (\_ -> Sub.none)
           (\model -> Ui.DatePicker.subscriptions model)
@@ -375,14 +374,14 @@ init =
     , notifications = Ui.NotificationCenter.init 4000 400
     , fileInput =
         Showcase.init
-          (\_ -> Ui.FileInput.init "image/*")
+          (\_ -> Ui.FileInput.init ())
           Ui.FileInput.update
           (Ui.FileInput.onChange FileChanged)
           (\_ -> Sub.none)
     , input =
         Showcase.init
           (\_ ->
-            Ui.Input.init ""
+            Ui.Input.init ()
               |> Ui.Input.placeholder "Type here..."
               |> Ui.Input.showClearIcon True
           )
@@ -432,19 +431,19 @@ init =
         }
     , checkbox3 =
         Showcase.init
-          (\_ -> Ui.Checkbox.init False)
+          (\_ -> Ui.Checkbox.init ())
           Ui.Checkbox.update
           (Ui.Checkbox.onChange Checkbox3Changed)
           (\_ -> Sub.none)
     , checkbox2 =
         Showcase.init
-          (\_ -> Ui.Checkbox.init False)
+          (\_ -> Ui.Checkbox.init ())
           Ui.Checkbox.update
           (Ui.Checkbox.onChange Checkbox2Changed)
           (\_ -> Sub.none)
     , checkbox =
         Showcase.init
-          (\_ -> Ui.Checkbox.init False)
+          (\_ -> Ui.Checkbox.init ())
           Ui.Checkbox.update
           (Ui.Checkbox.onChange CheckboxChanged)
           (\_ -> Sub.none)
@@ -496,8 +495,8 @@ init =
             Ui.Chooser.init ()
             |> Ui.Chooser.items data
             |> Ui.Chooser.placeholder "Select a country..."
+            |> Ui.Chooser.deselectable True
             |> Ui.Chooser.searchable True
-            |> Ui.Chooser.multiple True
           )
           Ui.Chooser.update
           (Ui.Chooser.onChange ChooserChanged)

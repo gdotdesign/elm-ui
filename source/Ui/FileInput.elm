@@ -62,15 +62,15 @@ type Msg
 
 {-| Initializes a file input with the given accept value.
 
-    fileInput = Ui.FileInput.init "image/*"
+    fileInput = Ui.FileInput.init ()
 -}
-init : String -> Model
-init accept =
+init : () -> Model
+init _ =
   { uid = Uid.uid ()
   , readonly = False
   , disabled = False
-  , accept = accept
   , file = Nothing
+  , accept = "*/*"
   }
 
 

@@ -53,14 +53,14 @@ type Msg
 
 {-| Initiaizes a checkbox with the given value.
 
-    checkbox = Ui.Checkbox.init False
+    checkbox = Ui.Checkbox.init ()
 -}
-init : Bool -> Model
-init value =
+init : () -> Model
+init _ =
   { uid = Uid.uid ()
   , disabled = False
   , readonly = False
-  , value = value
+  , value = False
   }
 
 

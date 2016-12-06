@@ -21,7 +21,6 @@ module Ui.Input exposing
 -}
 
 import Html.Events exposing (onInput, onClick)
-import Html.Events.Extra exposing (onKeys)
 import Html exposing (node, text)
 import Html.Lazy
 import Html.Attributes
@@ -75,19 +74,19 @@ type Msg
 {-| Initializes an input with a default value and a placeholder.
 
     input =
-      Ui.Input.init "value"
+      Ui.Input.init ()
         |> Ui.Input.placeholder "Type here..."
         |> Ui.Input.showClearIcon True
 -}
-init : String -> Model
-init value =
+init : () -> Model
+init _ =
   { showClearIcon = False
   , placeholder = ""
   , uid = Uid.uid ()
   , disabled = False
   , readonly = False
-  , value = value
   , kind = "text"
+  , value = ""
   }
 
 

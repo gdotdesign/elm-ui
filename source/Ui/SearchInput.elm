@@ -68,7 +68,7 @@ type Msg
 -}
 init : () -> Model
 init _ =
-  { input = Ui.Input.init ""
+  { input = Ui.Input.init ()
   , uid = Uid.uid ()
   , disabled = False
   , readonly = False

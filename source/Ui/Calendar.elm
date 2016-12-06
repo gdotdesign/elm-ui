@@ -68,16 +68,16 @@ type Msg
 
 {-| Initializes a calendar with the given selected date.
 
-    calendar = Ui.Calendar.init (Ext.Date.create 1977 5 25)
+    calendar = Ui.Calendar.init ()
 -}
-init : Date.Date -> Model
-init date =
-  { selectable = True
+init : () -> Model
+init _ =
+  { value = Ext.Date.now ()
+  , date = Ext.Date.now ()
+  , selectable = True
   , disabled = False
   , readonly = False
   , uid = Uid.uid ()
-  , value = date
-  , date = date
   }
 
 

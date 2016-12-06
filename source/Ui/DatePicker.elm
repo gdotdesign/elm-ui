@@ -70,11 +70,11 @@ type Msg
 
 {-| Initializes a date picker with the given date.
 
-    datePicker = Ui.DatePicker.init (Ext.Date.create 1980 5 17)
+    datePicker = Ui.DatePicker.init ()
 -}
-init : Date.Date -> Model
-init date =
-  { calendar = Ui.Calendar.init date
+init : () -> Model
+init _ =
+  { calendar = Ui.Calendar.init ()
   , dropdown = Dropdown.init
   , format = isoDateFormat
   , closeOnSelect = False

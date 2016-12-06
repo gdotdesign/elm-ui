@@ -79,7 +79,7 @@ type Msg
 -}
 init : () -> Model
 init _ =
-  { input = Ui.Input.init ""
+  { input = Ui.Input.init ()
   , removeable = True
   , disabled = False
   , readonly = False

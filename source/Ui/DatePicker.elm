@@ -21,8 +21,9 @@ focused, allowing the user to manipulate the selected date.
 @docs setValue
 -}
 
+import Html exposing (node, div, text, span)
+import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
-import Html exposing (node, div, text)
 import Html.Lazy
 
 import Date.Extra.Format exposing (isoDateFormat, format)
@@ -82,6 +83,7 @@ init _ =
   , readonly = False
   , uid = Uid.uid ()
   }
+    |> Dropdown.offset 5
 
 
 {-| Subscribe to the changes of a date picker.
@@ -189,6 +191,7 @@ render locale model =
   in
     Picker.view
       { address = Picker
+      , class = "ui-date-picker"
       , attributes =
         [ onKeys True
           [ ( 40, Increment )
@@ -198,7 +201,7 @@ render locale model =
           ]
         ]
       , contents =
-          [ text dateText
+          [ span [] [ text dateText ]
           , Ui.icon "calendar" False []
           ]
       , dropdownContents =

@@ -277,9 +277,16 @@ render ({ fields } as model) =
 
     Ui.ColorPanel.setValue Color.black colorPanel
 -}
-setValue : Color -> Model -> Model
+setValue : Color -> Model -> ( Model, Cmd Msg )
 setValue color model =
-  { model | value = Ext.Color.toHsv color }
+  let
+    hsv =
+      Ext.Color.toHsv color
+
+    ( fields, cmd ) =
+      ColorFields.setValue hsv model.fields
+  in
+    ( { model | value = hsv, fields = fields }, Cmd.map Fields cmd )
 
 
 

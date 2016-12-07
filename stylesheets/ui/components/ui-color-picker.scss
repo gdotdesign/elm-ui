@@ -12,11 +12,9 @@ ui-picker {
   ui-picker-input {
     position: relative;
     user-select: none;
+    padding: 6px 9px;
     cursor: pointer;
     display: block;
-
-    padding: 6px 9px;
-    padding-right: 52px;
   }
 
   // Focused state
@@ -32,6 +30,31 @@ ui-picker {
   &.disabled {
     @extend %disabled;
     background: $disabled;
+  }
+
+  // Disabled state
+  &.disabled {
+    filter: saturate(0);
+  }
+
+  // Color text
+  > div {
+    @include ellipsis;
+
+    text-transform: uppercase;
+    flex: 1;
+  }
+
+  ui-color-panel {
+    border: 0;
+  }
+}
+
+.ui-color-picker {
+  ui-picker-input {
+    @include ellipsis;
+
+    padding-right: 52px;
   }
 
   // Color preview on the right side
@@ -55,22 +78,5 @@ ui-picker {
       border-radius: $border-radius;
       flex: 1;
     }
-  }
-
-  // Disabled state
-  &.disabled {
-    filter: saturate(0);
-  }
-
-  // Color text
-  > div {
-    @include ellipsis;
-
-    text-transform: uppercase;
-    flex: 1;
-  }
-
-  ui-color-panel {
-    border: 0;
   }
 }

@@ -38,6 +38,7 @@ type alias ViewModel msg =
   , attributes : List (Html.Attribute msg)
   , contents : List (Html.Html msg)
   , address : Msg -> msg
+  , class : String
   }
 
 
@@ -118,6 +119,7 @@ view ({ address } as viewModel) model =
       [ classList
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
+          , ( viewModel.class, True )
           ]
       ]
         ++ actions

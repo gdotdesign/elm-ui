@@ -17,8 +17,8 @@ focused, allowing the user to manipulate the selected color.
 @docs setValue
 -}
 
+import Html exposing (node, div, text, span)
 import Html.Attributes exposing (style)
-import Html exposing (node, div, text)
 import Html.Lazy
 
 import Ext.Color exposing (Hsv)
@@ -137,8 +137,9 @@ render model =
     Picker.view
       { address = Picker
       , attributes = []
+      , class = "ui-color-picker"
       , contents =
-          [ text color
+          [ span [] [ text color ]
           , node
               "ui-color-picker-rect"
               []
@@ -152,6 +153,10 @@ render model =
 
     Ui.ColorPicker.setValue Color.black colorPicker
 -}
-setValue : Color -> Model -> Model
+setValue : Color -> Model -> ( Model, Cmd Msg )
 setValue color model =
-  { model | colorPanel = Ui.ColorPanel.setValue color model.colorPanel }
+  let
+    ( colorPanel, cmd ) =
+      Ui.ColorPanel.setValue color model.colorPanel
+  in
+    ( { model | colorPanel = colorPanel }, Cmd.map ColorPanel cmd )

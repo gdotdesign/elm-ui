@@ -1,20 +1,21 @@
-ui-date-picker {
-  @extend %picker;
-
-  // Styling
-  display: inline-flex;
-  min-width: 220px;
-
+.ui-date-picker {
   // Icon on the right side
   ui-icon {
     flex: 0 0 30px;
     margin-left: 10px;
+    font-size: 20px;
   }
 
   // Date text
-  > div {
-    @include ellipsis;
-    flex: 1;
+  ui-picker-input {
+    padding-right: 4px;
+    display: flex;
+
+    span {
+      @include ellipsis;
+
+      flex: 1;
+    }
   }
 
   ui-calendar {

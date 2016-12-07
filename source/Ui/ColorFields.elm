@@ -153,6 +153,7 @@ update msg_ ({ inputs } as model) =
               model
       in
         setInputs updatedModel
+          |> sendValue
 
     BlurRed ->
       let
@@ -165,6 +166,7 @@ update msg_ ({ inputs } as model) =
               model
       in
         setInputs updatedModel
+          |> sendValue
 
     BlurBlue ->
       let
@@ -177,6 +179,7 @@ update msg_ ({ inputs } as model) =
               model
       in
         setInputs updatedModel
+          |> sendValue
 
     BlurGreen ->
       let
@@ -189,6 +192,7 @@ update msg_ ({ inputs } as model) =
               model
       in
         setInputs updatedModel
+          |> sendValue
 
     BlurAlpha ->
       let
@@ -201,9 +205,17 @@ update msg_ ({ inputs } as model) =
               model
       in
         setInputs updatedModel
+          |> sendValue
 
     Done _ ->
       ( model, Cmd.none )
+
+
+{-| Sends the value to the cannel.
+-}
+sendValue : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+sendValue (model, cmd) =
+  ( model, Cmd.batch [ Emitter.send model.uid (encodeHsv model.value), cmd ] )
 
 
 {-| Sets the value of a color fields component.
@@ -231,11 +243,8 @@ setInputs model =
       ]
         |> Task.sequence
         |> Task.attempt Done
-
-    sendCommand =
-      Emitter.send model.uid (encodeHsv model.value)
   in
-    ( updatedModel, Cmd.batch [ setCommand, sendCommand ] )
+    ( updatedModel, setCommand  )
 
 
 {-| Updates the inputs to match the current value of a color fields component.

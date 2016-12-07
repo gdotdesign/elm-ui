@@ -176,7 +176,7 @@ update action model =
       ( handleClick model, Cmd.none )
 
     SetValue color ->
-      ({ model | value = color }, Cmd.none)
+      ({ model | value = color }, Emitter.send model.uid (encodeHsv color))
 
     Fields msg ->
       let

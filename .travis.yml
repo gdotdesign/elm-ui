@@ -1,0 +1,23 @@
+language: node_js
+dist: trusty
+node_js:
+  - "node"
+cache:
+  yarn: true
+  directories:
+    - ~/.elm-install
+    - sysconfcpus
+before_install:
+  - | # epic build time improvement
+    if [ ! -d sysconfcpus/bin ];
+    then
+      git clone https://github.com/obmarg/libsysconfcpus.git;
+      cd libsysconfcpus;
+      ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
+      make && make install;
+      cd ..;
+    fi
+script:
+  - yarn elm-install
+  - sysconfcpus/bin/sysconfcpus -n 2 yarn elm-spec
+  - sysconfcpus/bin/sysconfcpus -n 2 yarn docs

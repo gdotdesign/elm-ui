@@ -30,7 +30,7 @@ module Ui.Button exposing
 @docs attributes
 -}
 
-import Html.Attributes exposing (classList)
+import Html.Attributes exposing (attribute)
 import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
@@ -205,6 +205,18 @@ attributes :
   -> List (Html.Attribute msg)
 attributes msg model =
   let
+    disabled =
+      if model.disabled then
+        [ attribute "disabled" "" ]
+      else
+        []
+
+    readonly =
+      if model.readonly then
+        [ attribute "readonly" "" ]
+      else
+        []
+
     actions =
       Ui.enabledActions model
         [ onClick msg
@@ -214,12 +226,12 @@ attributes msg model =
             ]
         ]
   in
-    [ classList
-        [ ( "disabled", model.disabled )
-        , ( "readonly", model.readonly )
-        , ( "ui-button-" ++ model.size, True )
-        , ( "ui-button-" ++ model.kind, True )
-        ]
+    [ [ attribute "size" model.size
+      , attribute "kind" model.kind
+      ]
+    , Ui.tabIndex model
+    , disabled
+    , readonly
+    , actions
     ]
-      ++ (Ui.tabIndex model)
-      ++ actions
+      |> List.concat

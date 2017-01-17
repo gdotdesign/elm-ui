@@ -1,41 +1,62 @@
 module Ui.Styles.Ripple exposing (style)
 
+import Css.Properties exposing (..)
 import Css exposing (..)
 
 style : Node
 style =
   mixin
-    [ property "position" "relative"
-    , property "overflow" "hidden"
-    , selector "&:focus"
-      [ selector "svg"
-        [ property "transition" "320ms cubic-bezier(0.215, 0.61, 0.355, 1)"
-        , property "transform" "scale(1.5)"
-        , property "opacity" "0.3"
+    [ position relative
+    , overflow hidden
+
+    , selector "&:focus svg"
+      [ transition
+        [ { easing = "cubic-bezier(0.215, 0.61, 0.355, 1)"
+          , duration = ms 320
+          , property = "all"
+          , delay = ms 0
+          }
         ]
+      , transform [ (scale 1.5) ]
+      , opacity 0.3
       ]
-    , selector "&:active"
-      [ selector "svg"
-        [ property "opacity" "0.6"
-        ]
+
+    , selector "&:active svg"
+      [ opacity 0.6
       ]
+
     , selectors
-      [ "&:before", "&:after", "> *" ]
-      [ property "position" "relative"
-      , property "z-index" "2"
+      [ "&:before"
+      , "&:after"
+      , "> *"
       ]
+      [ position relative
+      , zIndex 2
+      ]
+
     , selector "svg"
-      [ property "transition" "200ms opacity, 1ms 200ms transform"
-      , property "transform-origin" "0 0"
-      , property "pointer-events" "none"
-      , property "transform" "scale(0)"
-      , property "position" "absolute"
-      , property "overflow" "visible"
-      , property "height" "100%"
-      , property "width" "100%"
-      , property "z-index" "1"
-      , property "opacity" "0"
-      , property "left" "50%"
-      , property "top" "50%"
+      [ transition
+        [ { property = "opacity"
+          , duration = ms 200
+          , easing = "ease"
+          , delay = ms 0
+          }
+        , { property = "transform"
+          , duration = ms 1
+          , easing = "ease"
+          , delay = ms 200
+          }
+        ]
+      , transformOrigin zero zero
+      , transform [ (scale 0) ]
+      , pointerEvents none
+      , position absolute
+      , overflow visible
+      , height (pct 100)
+      , width (pct 100)
+      , left (pct 50)
+      , top (pct 50)
+      , opacity 0
+      , zIndex 1
       ]
     ]

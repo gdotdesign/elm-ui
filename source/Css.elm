@@ -2,12 +2,14 @@ module Css exposing (..)
 
 import Html exposing (text)
 import Regex
+import List.Extra
 
 type Node
   = SelectorNode { name: String, nodes: List Node}
   | PropertyNode String String
   | SelectorsNode (List { name: String, nodes: List Node})
   | Mixin (List Node)
+
 
 mixin : List Node -> Node
 mixin nodes =
@@ -22,8 +24,8 @@ selector base nodes =
   SelectorNode { name = base, nodes = nodes }
 
 property : String -> String -> Node
-property key value =
-  PropertyNode key value
+property =
+  PropertyNode
 
 
 properties : Node -> List (String, String)
@@ -86,20 +88,24 @@ flatten selectors node =
 
     SelectorNode selector ->
       let
-        mixinNodes =
+        mixinNodes nodes =
           List.map (\item ->
             case item of
-              Mixin nodes -> nodes
+              Mixin nodes ->
+                nodes ++ (mixinNodes nodes)
               _ -> [])
-          selector.nodes
+
+          nodes
           |> List.foldr (++) []
+
+        mxNodes =
+          mixinNodes selector.nodes
 
         subSelectors =
           String.split "," selector.name
-          |> Debug.log ""
 
         otherSelectors =
-          (selector.nodes ++ mixinNodes)
+          (mxNodes ++ selector.nodes)
           |> List.map subsSelector
           |> List.foldr (++) []
           |> List.map (flatten [])
@@ -118,15 +124,20 @@ flatten selectors node =
               [ item_ ]
       in
         [ [ { name = selector.name
-            , properties = properties (SelectorNode { name = selector.name, nodes = (selector.nodes ++ mixinNodes)}) }]
+            , properties = properties (SelectorNode { name = selector.name, nodes = (selector.nodes ++ mxNodes)}) }]
         , otherSelectors
         , selectors
         ]
         |> List.concat
 
-embed : Node -> Html.Html msg
-embed node =
-  Html.node "style" [ ] [ text (render (flatten [] node)) ]
+embed : List Node -> Html.Html msg
+embed nodes =
+  let
+    flattened =
+      List.map (flatten []) nodes
+      |> List.foldr (++) []
+  in
+    Html.node "style" [ ] [ text (render flattened) ]
 
 
 render : List { name: String, properties: List (String, String) } -> String
@@ -135,7 +146,9 @@ render selectors =
     renderSelector selector =
       let
         body =
-          List.map (\(key, value) -> "  " ++ key ++ ": " ++ value ++ ";") selector.properties
+          selector.properties
+          |> List.Extra.uniqueBy Tuple.first
+          |> List.map (\(key, value) -> "  " ++ key ++ ": " ++ value ++ ";")
           |> String.join("\n")
       in
         selector.name ++ " {\n" ++ body ++ "\n}"

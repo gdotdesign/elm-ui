@@ -32,6 +32,16 @@ view model =
     [ ]
     [ Ui.Styles.embed
     , Ui.Button.primary "Set" Set
+    , Ui.Button.secondaryBig "Big" Set
+    , Ui.Button.warningSmall "small" Set
+    , Ui.Button.render
+      Set
+      { disabled = True
+      , readonly = False
+      , kind = "primary"
+      , size = "medium"
+      , text = "Hello"
+      }
     , div [ class "result" ] [ text model ]
     ]
 

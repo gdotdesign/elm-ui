@@ -23,14 +23,14 @@ module.exports = function(options) {
   })
 
   browserSync.init({
-    proxy: "localhost:8001",
+    proxy: "localhost:" + options.port,
     logFileChanges: false,
     reloadOnRestart: true,
     notify: false,
     open: false,
-    port: 8002,
+    port: options.port + 1,
     ui: {
-      port: 8003
+      port: options.port + 2
     }
   })
 
@@ -63,7 +63,7 @@ module.exports = function(options) {
     .use(serve(path.resolve('public')))
     .use(router.routes())
 
-  app.listen(8001)
+  app.listen(options.port)
 
-  console.log("Listening on localhost:8001")
+  console.log("Listening on localhost:" + options.port)
 }

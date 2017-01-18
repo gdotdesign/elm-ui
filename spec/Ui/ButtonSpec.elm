@@ -1,19 +1,17 @@
 import Spec exposing (describe, it, Node, context, before, after)
-import Spec.Steps exposing (click, dispatchEvent)
-import Spec.Assertions exposing (Outcome, assert)
+import Spec.Assertions exposing (assert)
+import Spec.Steps exposing (click)
 import Spec.Runner
 
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Html exposing (div, text)
 
-import Json.Encode as Json
-
 import Ui.Container
 import Ui.Button
 import Ui.Styles
 
-import Task exposing (Task)
+import Steps exposing (keyDown)
 
 type alias Model
   = String
@@ -80,13 +78,6 @@ view model =
     , div [ class "result" ] [ text model ]
     ]
 
-keyDown : Int -> String -> Task Never Outcome
-keyDown keyCode selector =
-  dispatchEvent
-    "keydown"
-    (Json.object [("keyCode", Json.int keyCode)])
-    selector
-
 specs : Node
 specs =
   describe "Ui.Button"
@@ -130,7 +121,7 @@ specs =
         , it "not triggers on enter"
           [ keyDown 13 "ui-button[disabled]"
           ]
-        , it "not triggers on enter"
+        , it "not triggers on space"
           [ keyDown 32 "ui-button[disabled]"
           ]
         ]
@@ -141,7 +132,7 @@ specs =
         , it "not triggers on enter"
           [ keyDown 13 "ui-button[readonly]"
           ]
-        , it "not triggers on enter"
+        , it "not triggers on space"
           [ keyDown 32 "ui-button[readonly]"
           ]
         ]

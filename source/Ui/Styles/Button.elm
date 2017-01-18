@@ -53,9 +53,8 @@ style theme =
       ]
 
     , selector "&[disabled]"
-      [ Mixins.disabled
-      , backgroundColor theme.colors.disabled.color
-      , color theme.colors.disabled.bw
+      [ Mixins.disabledColors theme
+      , Mixins.disabled
       ]
 
     , selector "&[readonly]"

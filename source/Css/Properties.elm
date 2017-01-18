@@ -9,6 +9,15 @@ type alias Transition =
   , delay : String
   }
 
+type alias BoxShadow =
+  { x : String
+  , y : String
+  , blur : String
+  , spread : String
+  , color : String
+  , inset : Bool
+  }
+
 zero : String
 zero =
   "0"
@@ -70,9 +79,17 @@ center : String
 center =
   "center"
 
+solid : String
+solid =
+  "solid"
+
 inlineFlex : String
 inlineFlex =
   "inline-flex"
+
+inlineBlock : String
+inlineBlock =
+  "inline-block"
 
 flexDisplay : String
 flexDisplay =
@@ -127,6 +144,10 @@ boxSizing =
 outline : String -> Node
 outline =
   property "outline"
+
+border : String -> Node
+border =
+  property "border"
 
 borderRadius : String -> Node
 borderRadius =
@@ -216,6 +237,14 @@ top : String -> Node
 top =
   property "top"
 
+bottom : String -> Node
+bottom =
+  property "bottom"
+
+right : String -> Node
+right =
+  property "right"
+
 height : String -> Node
 height =
   property "height"
@@ -260,6 +289,25 @@ transform transforms =
 opacity : Float -> Node
 opacity value =
   property "opacity" (toString value)
+
+boxShadow : List BoxShadow -> Node
+boxShadow shadows =
+  let
+    render item =
+      [ item.x
+      , item.y
+      , item.blur
+      , item.spread
+      , item.color
+      , if item.inset then "inset" else ""
+      ]
+        |> String.join " "
+
+    value =
+      List.map render shadows
+        |> String.join ", "
+  in
+    property "box-shadow" value
 
 transition : List Transition -> Node
 transition transitions =

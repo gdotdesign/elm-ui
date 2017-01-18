@@ -75,8 +75,9 @@ flatten : List { name: String, properties: List (String, String) }
         -> List { name: String, properties: List (String, String) }
 flatten selectors node =
   case node of
-    Mixin _ ->
-      selectors
+    Mixin nodes ->
+      List.map (flatten []) nodes
+      |> List.foldr (++) selectors
 
     PropertyNode key value ->
       selectors

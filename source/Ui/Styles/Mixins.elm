@@ -3,12 +3,48 @@ module Ui.Styles.Mixins exposing (..)
 import Css.Properties exposing (..)
 import Css exposing (..)
 
+import Ui.Styles.Theme as Theme exposing (Theme)
+
+focusedIdle : Theme -> Node
+focusedIdle theme =
+  mixin
+    [ transition
+      [ { property = "box-shadow"
+        , duration = ms 400
+        , easing = "linear"
+        , delay = ms 0
+        }
+      ]
+    , boxShadow theme.focusShadowsIdle
+    ]
+
+focused : Theme -> Node
+focused theme =
+  mixin
+    [ transition
+      [ { property = "box-shadow"
+        , duration = ms 200
+        , easing = "linear"
+        , delay = ms 0
+        }
+      ]
+    , boxShadow theme.focusShadows
+    , outline none
+    ]
+
 ellipsis : Node
 ellipsis =
   mixin
     [ textOverflow Css.Properties.ellipsis
     , whiteSpace nowrap
     , overflow hidden
+    ]
+
+disabledColors : Theme -> Node
+disabledColors theme =
+  mixin
+    [ backgroundColor theme.colors.disabled.color
+    , color theme.colors.disabled.bw
     ]
 
 disabled : Node

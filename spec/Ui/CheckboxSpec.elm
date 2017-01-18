@@ -20,6 +20,8 @@ view model =
     , Ui.Checkbox.view model
     , Ui.Checkbox.view { model | disabled = True }
     , Ui.Checkbox.view { model | readonly = True }
+    , Ui.Checkbox.viewToggle model
+    , Ui.Checkbox.viewRadio model
     ]
 
 specs : Node
@@ -33,7 +35,7 @@ specs =
         [ assert.not.elementPresent "ui-checkbox[disabled][tabindex]"
         ]
       ]
-    , context "Redaonly"
+    , context "Readonly"
       [ it "has tabindex"
         [ assert.elementPresent "ui-checkbox[readonly][tabindex]"
         ]

@@ -125,6 +125,10 @@ camelcase@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-3.0.0.tgz#32fc4b9fcdaf845fcdf7e73bb97cac2261f0ab0a"
 
+camelcase@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.0.0.tgz#8b0f90d44be5e281b903b9887349b92595ef07f2"
+
 caseless@~0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.11.0.tgz#715b96ea9841593cc33067923f5ec60ebda4f7d7"
@@ -229,11 +233,12 @@ elm-github-install@^0.3.0:
     tar-fs "1.15.0"
     tmp "^0.0.31"
 
-elm-spec@gdotdesign/elm-spec#1.0.7:
-  version "1.0.7"
-  resolved "https://codeload.github.com/gdotdesign/elm-spec/tar.gz/6f90e44bde6f4534875ed3d57a5021c42382b9de"
+elm-spec@gdotdesign/elm-spec#1.0.8:
+  version "1.0.8"
+  resolved "https://codeload.github.com/gdotdesign/elm-spec/tar.gz/8f41dbcab7c2a996b7056841634d63f65fc94ead"
   dependencies:
     async "^2.1.4"
+    camelcase "^4.0.0"
     colors "^1.1.2"
     elm "^0.18.0"
     elm-github-install "^0.3.0"

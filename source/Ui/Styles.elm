@@ -1,5 +1,10 @@
 module Ui.Styles exposing (..)
 
+{-| This module contains the styles for all components.
+
+@docs embed
+-}
+
 import Css.Properties exposing (..)
 import Css exposing (..)
 
@@ -10,7 +15,8 @@ import Ui.Styles.Theme exposing (default)
 import Ui.Styles.Container as Container
 import Ui.Styles.Button as Button
 
-{-| Renders the stylesheet.
+
+{-| Renders the stylesheet into an HTML tag.
 -}
 embed : Html.Html msg
 embed =

@@ -1,7 +1,15 @@
 module Ui.Styles.Theme exposing (..)
 
+{-| This module contains the theme for the components.
+
+@docs Theme, default
+-}
+
 import Css.Properties exposing (..)
 
+
+{-| Representation of a theme.
+-}
 type alias Theme =
   { borderRadius: String
   , colors:
@@ -16,6 +24,9 @@ type alias Theme =
   , fontFamily: String
   }
 
+
+{-| The default theme.
+-}
 default : Theme
 default =
   { fontFamily = "-apple-system, system-ui, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif"

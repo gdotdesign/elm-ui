@@ -9,6 +9,9 @@
   ],
   "native-modules": true,
   "exposed-modules": [
+    "Ui.Styles.Theme",
+    "Ui.Styles",
+    "Ui.Container",
     "Ui.Button"
   ],
   "dependencies": {
@@ -17,7 +20,7 @@
     "coreytrampe/elm-vendor": "2.0.3 <= v < 3.0.0",
     "rluiten/elm-date-extra": "8.0.0 <= v < 9.0.0",
     "elm-lang/virtual-dom": "2.0.0 <= v < 3.0.0",
-    "gdotdesign/elm-spec": "1.0.7 <= v <= 2.0.0",
+    "gdotdesign/elm-spec": "1.0.8 <= v <= 2.0.0",
     "ggb/numeral-elm": "1.2.1 <= v < 2.0.0",
     "elm-lang/mouse": "1.0.1 <= v < 2.0.0",
     "elm-lang/http": "1.0.0 <= v < 4.0.0",

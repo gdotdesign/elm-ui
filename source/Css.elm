@@ -153,5 +153,7 @@ render selectors =
       in
         selector.name ++ " {\n" ++ body ++ "\n}"
   in
-    List.map renderSelector selectors
+    selectors
+    |> List.filter (.properties >> List.isEmpty >> not)
+    |> List.map renderSelector
     |> String.join "\n"

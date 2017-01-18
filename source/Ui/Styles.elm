@@ -5,8 +5,10 @@ import Css exposing (..)
 
 import Html
 
-import Ui.Styles.Button as Button
 import Ui.Styles.Theme exposing (default)
+
+import Ui.Styles.Container as Container
+import Ui.Styles.Button as Button
 
 {-| Renders the stylesheet.
 -}
@@ -22,14 +24,11 @@ embed =
       [ property "-webkit-tap-highlight-color" "rgba(0,0,0,0)"
       ]
 
-    {-, selector "body"
-      [ backgroundColor default.colors.background.color
-      , color default.colors.background.bw
-      , fontFamily "sans"
-      , fontSize (px 16)
+    , selector "body"
+      [ fontSize (px 16)
       , margin zero
       ]
-    -}
 
     , Button.style default
+    , Container.style
     ]

@@ -74,6 +74,10 @@ inlineFlex : String
 inlineFlex =
   "inline-flex"
 
+flexDisplay : String
+flexDisplay =
+  "flex"
+
 pointer : String
 pointer =
   "pointer"
@@ -82,7 +86,35 @@ borderBox : String
 borderBox =
   "border-box"
 
+column : String
+column =
+  "column"
+
+row : String
+row =
+  "row"
+
+flexStart : String
+flexStart =
+  "flex-start"
+
+flexEnd : String
+flexEnd =
+  "flex-end"
+
+spaceBetween : String
+spaceBetween =
+  "space-between"
+
+spaceAround : String
+spaceAround =
+  "space-around"
+
 -- Properties
+
+flexDirection : String -> Node
+flexDirection =
+  property "flex-direction"
 
 backgroundColor : String -> Node
 backgroundColor =
@@ -119,6 +151,14 @@ padding =
 margin : String -> Node
 margin =
   property "margin"
+
+marginTop : String -> Node
+marginTop =
+  property "margin-top"
+
+marginLeft : String -> Node
+marginLeft =
+  property "margin-left"
 
 fontFamily : String -> Node
 fontFamily =

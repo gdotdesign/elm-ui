@@ -1,9 +1,10 @@
-import Spec exposing (describe, it, Node, context, before, after)
-import Spec.Steps exposing (click, dispatchEvent)
+import Spec exposing (Node, describe, it, context)
 import Spec.Assertions exposing (Outcome, assert)
 import Spec.Runner
 
 import Html exposing (div, text)
+
+import Task exposing (Task)
 
 import Ui.Container
 import Ui.Styles
@@ -16,7 +17,7 @@ type Msg
 
 init : () -> Model
 init _ =
-  "Initial"
+  ""
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -78,6 +79,7 @@ view model =
       ]
     ]
 
+displayAssertions : String -> String -> String -> List (Task Never Outcome)
 displayAssertions selector direction justify =
   [ assert.elementPresent selector
   , assert.styleEquals

@@ -12,6 +12,7 @@ import Html
 
 import Ui.Styles.Theme exposing (default)
 
+import Ui.Styles.ButtonGroup as ButtonGroup
 import Ui.Styles.Container as Container
 import Ui.Styles.Checkbox as Checkbox
 import Ui.Styles.Button as Button
@@ -36,6 +37,7 @@ embed =
       , margin zero
       ]
 
+    , ButtonGroup.style default
     , Checkbox.style default
     , Button.style default
     , Container.style

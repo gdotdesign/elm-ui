@@ -173,6 +173,10 @@ border : String -> Node
 border =
   property "border"
 
+borderLeft : String -> Node
+borderLeft =
+  property "border-left"
+
 borderColor : String -> Node
 borderColor =
   property "border-color"

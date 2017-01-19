@@ -87,6 +87,10 @@ solid : String
 solid =
   "solid"
 
+dashed : String
+dashed =
+  "dashed"
+
 inlineFlex : String
 inlineFlex =
   "inline-flex"
@@ -143,6 +147,10 @@ transparent : String
 transparent =
   "transparent"
 
+wrap : String
+wrap =
+  "wrap"
+
 -- Properties
 
 fill : String -> Node
@@ -152,6 +160,14 @@ fill =
 flex_ : String -> Node
 flex_ =
   property "flex"
+
+flexWrap : String -> Node
+flexWrap =
+  property "flex-wrap"
+
+lineHeight : String -> Node
+lineHeight =
+  property "line-height"
 
 flexDirection : String -> Node
 flexDirection =
@@ -176,6 +192,10 @@ border =
 borderLeft : String -> Node
 borderLeft =
   property "border-left"
+
+borderBottom : String -> Node
+borderBottom =
+  property "border-bottom"
 
 borderColor : String -> Node
 borderColor =
@@ -208,6 +228,10 @@ margin =
 marginTop : String -> Node
 marginTop =
   property "margin-top"
+
+marginBottom : String -> Node
+marginBottom =
+  property "margin-bottom"
 
 marginLeft : String -> Node
 marginLeft =
@@ -301,6 +325,11 @@ userSelect value =
 type Transform
   = Scale Float
   | Rotate Float
+  | Translate3D String String String
+
+translate3d : String -> String -> String -> Transform
+translate3d =
+  Translate3D
 
 scale : Float -> Transform
 scale =
@@ -321,6 +350,7 @@ transform transforms =
       case item of
         Scale value -> "scale(" ++ (toString value) ++ ")"
         Rotate value -> "rotate(" ++ (toString value) ++ "deg)"
+        Translate3D x y z -> "translate3d(" ++ x ++ "," ++ y ++ "," ++ z ++ ")"
 
     value =
       List.map render transforms

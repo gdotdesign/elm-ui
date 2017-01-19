@@ -1,0 +1,113 @@
+module Ui.Styles.Calendar exposing (style)
+
+import Css.Properties exposing (..)
+import Css exposing (..)
+
+import Ui.Styles.Theme as Theme exposing (Theme)
+import Ui.Styles.Mixins as Mixins
+
+style : Theme -> Node
+style theme =
+  selector "ui-calendar"
+    [ border ((px 1) . solid . theme.colors.border)
+    , backgroundColor theme.colors.input.color
+    , borderRadius theme.borderRadius
+    , color theme.colors.input.bw
+    , fontFamily theme.fontFamily
+    , display inlineBlock
+    , padding (px 15)
+
+    , transform [ translate3d zero zero zero ]
+
+    , selector "> ui-container"
+      [ borderBottom ((px 1) . dashed . theme.colors.border)
+      , padding ((px 5) . (px 5) . (px 10) . (px 5))
+      , height (px 45)
+
+      , selector "div"
+        [ justifyContent center
+        , alignItems center
+        , display flex
+        , flex_ "1"
+        ]
+      ]
+
+    , selector "ui-calendar-table"
+      [ justifyContent spaceAround
+      , width (px 300)
+      , flexWrap wrap
+      , display flex
+      ]
+
+    , selector "ui-calendar-header"
+      [ borderBottom ((px 1) . dashed . theme.colors.border)
+      , justifyContent spaceAround
+      , marginBottom (px 5)
+      , width (px 300)
+      , display flex
+
+      , selector "span"
+        [ margin ((px 5) . zero)
+        , textAlign center
+        , fontSize (px 14)
+        , fontWeight 700
+        , width (px 34)
+        , opacity 0.7
+        ]
+      ]
+
+    , selector "ui-calendar-cell"
+      [ borderRadius theme.borderRadius
+      , justifyContent center
+      , lineHeight (px 36)
+      , height (px 34)
+      , width (px 34)
+      , margin (px 4)
+      , display flex
+
+      , selector "&[inactive]"
+        [ opacity 0.25
+        ]
+
+      , selector "&:not(:empty)"
+        [ backgroundColor theme.colors.inputSecondary.color
+        , color theme.colors.inputSecondary.bw
+        ]
+
+      , selectors
+        [ "&:not([inactive]):hover"
+        , "&[selected]"
+        ]
+        [ backgroundColor theme.colors.primary.color
+        , color theme.colors.primary.bw
+        , fontWeight 700
+        , cursor pointer
+        ]
+      ]
+
+    , selector "&[readonly]"
+      [ Mixins.readonly
+
+      , selector "> *"
+        [ pointerEvents none ]
+      ]
+
+    , selector "&[disabled]"
+      [ Mixins.disabled
+
+      , backgroundColor theme.colors.disabled.color
+      , color theme.colors.disabled.bw
+      , borderColor transparent
+
+      , selector "> *"
+        [ pointerEvents none ]
+
+      , selector "ui-calendar-cell"
+        [ selector "&:not(:empty)"
+          [ opacity 0.5 ]
+        , selector "&[selected]"
+          [ backgroundColor theme.colors.disabledSecondary.color
+          ]
+        ]
+      ]
+    ]

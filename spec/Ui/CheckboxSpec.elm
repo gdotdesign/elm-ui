@@ -7,7 +7,6 @@ import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Html exposing (div, text)
 
-
 import Ui.Container
 import Ui.Checkbox
 import Ui.Styles

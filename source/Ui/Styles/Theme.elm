@@ -22,6 +22,7 @@ type alias Theme =
     , primary: { color: String, bw: String}
     , danger: { color: String, bw: String }
     , input: { color: String, bw: String }
+    , inputSecondary: { color: String, bw: String }
     , focus: { color: String, bw: String }
     , border: String
     }
@@ -55,6 +56,7 @@ default =
     , warning = { color = "#FF9730 ", bw = "#FFF" }
     , primary = { color = "#158DD8", bw = "#FFF" }
     , success = { color = "#4DC151", bw = "#FFF" }
+    , inputSecondary = { color = "#f3f3f3", bw="#616161" }
     , input = { color ="#FDFDFD", bw = "#656565" }
     , danger = { color = "#E04141", bw = "#FFF" }
     , focus = { color = "#00C0FF", bw = "#FFF" }

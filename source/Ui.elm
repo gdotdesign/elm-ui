@@ -1,16 +1,15 @@
 module Ui exposing
-  (icon, title, subTitle, panel, spacer, inputGroup, iconAttributes,
-   stylesheetLink, tabIndex, fab, textBlock, enabledActions, breadcrumbs,
-   scrolledPanel, link)
+  ( title, subTitle, panel, spacer, inputGroup, stylesheetLink, tabIndex, fab,
+    textBlock, enabledActions, breadcrumbs, scrolledPanel, link, attributeList )
 
 {-| UI Library for Elm!
 
 # Static Components
-@docs icon, title, subTitle, panel, spacer, stylesheetLink, inputGroup
+@docs title, subTitle, panel, spacer, stylesheetLink, inputGroup
 @docs fab, textBlock, breadcrumbs, scrolledPanel, link
 
 # Helper Functions
-@docs tabIndex, enabledActions, iconAttributes
+@docs tabIndex, enabledActions, attributeList
 -}
 
 import Html.Attributes exposing (classList, attribute, rel, href, class, tabindex, target)
@@ -19,35 +18,6 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 
 import Maybe.Extra exposing (isJust)
-
-
-{-| An icon component from Ionicons.
-
-    Ui.icon "android-download" False [ onClick Download ]
--}
-icon : String -> Bool -> List (Html.Attribute msg) -> Html.Html msg
-icon glyph clickable attributes =
-  node "ui-icon" (iconAttributes glyph clickable attributes) []
-
-
-{-| Attributes for icons.
-
-    Ui.iconAttributes "android-download" False [ onClick Download ]
--}
-iconAttributes :
-  String
-  -> Bool
-  -> List (Html.Attribute msg)
-  -> List (Html.Attribute msg)
-iconAttributes glyph clickable attributes =
-  let
-    classes =
-      classList
-        [ ( "ion-" ++ glyph, True )
-        , ( "clickable", clickable )
-        ]
-  in
-    classes :: attributes
 
 
 {-| Renders a title component.
@@ -169,7 +139,7 @@ fab glyph attributes =
   node
     "ui-fab"
     attributes
-    [ icon glyph False [] ]
+    [ ]
 
 
 {-| Renders a text block.
@@ -216,6 +186,20 @@ breadcrumbs separator items =
       (List.map renderItem items
         |> List.intersperse separator
       )
+
+
+{-|-}
+attributeList : List ( String, Bool ) -> List (Html.Attribute msg)
+attributeList items =
+  let
+    attr ( name, active ) =
+      if active then
+        [ attribute name "" ]
+      else
+        []
+  in
+    List.map attr items
+      |> List.foldr (++) []
 
 
 {-| Renders a panel that have scrolling content.

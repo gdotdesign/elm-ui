@@ -14,6 +14,7 @@ import Ui.Styles.Theme exposing (default)
 
 import Ui.Styles.ButtonGroup as ButtonGroup
 import Ui.Styles.Container as Container
+import Ui.Styles.Calendar as Calendar
 import Ui.Styles.Checkbox as Checkbox
 import Ui.Styles.Button as Button
 
@@ -38,6 +39,7 @@ embed =
       ]
 
     , ButtonGroup.style default
+    , Calendar.style default
     , Checkbox.style default
     , Button.style default
     , Container.style

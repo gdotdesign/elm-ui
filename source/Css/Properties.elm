@@ -43,6 +43,10 @@ em value =
 
 -- Values
 
+inherit : String
+inherit =
+  "inherit"
+
 absolute : String
 absolute =
   "absolute"
@@ -91,9 +95,13 @@ inlineBlock : String
 inlineBlock =
   "inline-block"
 
-flexDisplay : String
-flexDisplay =
+flex : String
+flex =
   "flex"
+
+block : String
+block =
+  "block"
 
 pointer : String
 pointer =
@@ -127,7 +135,23 @@ spaceAround : String
 spaceAround =
   "space-around"
 
+currentColor : String
+currentColor =
+  "currentColor"
+
+transparent : String
+transparent =
+  "transparent"
+
 -- Properties
+
+fill : String -> Node
+fill =
+  property "fill"
+
+flex_ : String -> Node
+flex_ =
+  property "flex"
 
 flexDirection : String -> Node
 flexDirection =
@@ -148,6 +172,10 @@ outline =
 border : String -> Node
 border =
   property "border"
+
+borderColor : String -> Node
+borderColor =
+  property "border-color"
 
 borderRadius : String -> Node
 borderRadius =
@@ -253,6 +281,10 @@ width : String -> Node
 width =
   property "width"
 
+minWidth : String -> Node
+minWidth =
+  property "min-width"
+
 userSelect : String -> Node
 userSelect value =
   Css.mixin
@@ -264,10 +296,15 @@ userSelect value =
 
 type Transform
   = Scale Float
+  | Rotate Float
 
 scale : Float -> Transform
 scale =
   Scale
+
+rotate : Float -> Transform
+rotate =
+  Rotate
 
 transformOrigin : String -> String -> Node
 transformOrigin top left =
@@ -279,6 +316,7 @@ transform transforms =
     render item =
       case item of
         Scale value -> "scale(" ++ (toString value) ++ ")"
+        Rotate value -> "rotate(" ++ (toString value) ++ "deg)"
 
     value =
       List.map render transforms

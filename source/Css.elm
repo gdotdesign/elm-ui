@@ -3,6 +3,7 @@ module Css exposing (..)
 import Html exposing (text)
 import Regex
 import List.Extra
+import Dict
 
 type Node
   = SelectorNode { name: String, nodes: List Node}
@@ -94,8 +95,7 @@ flatten selectors node =
             case item of
               Mixin nodes ->
                 nodes ++ (mixinNodes nodes)
-              _ -> [])
-
+              _ -> [item])
           nodes
           |> List.foldr (++) []
 
@@ -106,7 +106,7 @@ flatten selectors node =
           String.split "," selector.name
 
         otherSelectors =
-          (mxNodes ++ selector.nodes)
+          mxNodes
           |> List.map subsSelector
           |> List.foldr (++) []
           |> List.map (flatten [])
@@ -125,7 +125,7 @@ flatten selectors node =
               [ item_ ]
       in
         [ [ { name = selector.name
-            , properties = properties (SelectorNode { name = selector.name, nodes = (selector.nodes ++ mxNodes)}) }]
+            , properties = properties (SelectorNode { name = selector.name, nodes = mxNodes }) }]
         , otherSelectors
         , selectors
         ]
@@ -139,6 +139,22 @@ embed nodes =
       |> List.foldr (++) []
   in
     Html.node "style" [ ] [ text (render flattened) ]
+
+
+group : List { name: String, properties: List (String, String) } -> List { name: String, properties: List (String, String) }
+group list =
+  let
+    fn item dict =
+      let
+        properties =
+          Dict.get item.name dict
+          |> Maybe.withDefault []
+      in
+        Dict.insert item.name (properties ++ item.properties) dict
+  in
+    List.foldr fn Dict.empty list
+    |> Dict.toList
+    |> List.map (\(key,value) -> { name = key, properties = value })
 
 
 render : List { name: String, properties: List (String, String) } -> String
@@ -155,6 +171,7 @@ render selectors =
         selector.name ++ " {\n" ++ body ++ "\n}"
   in
     selectors
+    |> group
     |> List.filter (.properties >> List.isEmpty >> not)
     |> List.map renderSelector
     |> String.join "\n"

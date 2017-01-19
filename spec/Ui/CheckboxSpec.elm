@@ -7,6 +7,8 @@ import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Html exposing (div, text)
 
+
+import Ui.Container
 import Ui.Checkbox
 import Ui.Styles
 
@@ -17,11 +19,23 @@ view model =
   div
     [ ]
     [ Ui.Styles.embed
-    , Ui.Checkbox.view model
-    , Ui.Checkbox.view { model | disabled = True }
-    , Ui.Checkbox.view { model | readonly = True }
-    , Ui.Checkbox.viewToggle model
-    , Ui.Checkbox.viewRadio model
+    , Ui.Container.column []
+      [ Ui.Container.row []
+        [ Ui.Checkbox.view model
+        , Ui.Checkbox.view { model | disabled = True }
+        , Ui.Checkbox.view { model | readonly = True }
+        ]
+      , Ui.Container.row []
+        [ Ui.Checkbox.viewRadio model
+        , Ui.Checkbox.viewRadio { model | disabled = True }
+        , Ui.Checkbox.viewRadio { model | readonly = True }
+        ]
+      , Ui.Container.row []
+        [ Ui.Checkbox.viewToggle model
+        , Ui.Checkbox.viewToggle { model | disabled = True }
+        , Ui.Checkbox.viewToggle { model | readonly = True }
+        ]
+      ]
     ]
 
 specs : Node

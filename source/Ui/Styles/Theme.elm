@@ -14,6 +14,7 @@ type alias Theme =
   { borderRadius: String
   , colors:
     { background: { color: String, bw: String }
+    , disabledSecondary: { color: String, bw: String }
     , secondary: { color: String, bw: String }
     , disabled: { color: String, bw: String }
     , success: { color: String, bw: String }
@@ -21,6 +22,7 @@ type alias Theme =
     , primary: { color: String, bw: String}
     , danger: { color: String, bw: String }
     , input: { color: String, bw: String }
+    , focus: { color: String, bw: String }
     , border: String
     }
   , fontFamily: String
@@ -47,13 +49,15 @@ default =
     ]
   , colors =
     { background = { color = "#F5F5F5", bw = "#626262" }
-    , disabled = { color = "#d7d7d7", bw = "#565656" }
+    , disabled = { color = "#d7d7d7", bw = "#9a9a9a" }
+    , disabledSecondary = { color = "#979797", bw = "red" }
     , secondary = { color = "#5D7889", bw = "#FFF" }
     , warning = { color = "#FF9730 ", bw = "#FFF" }
     , primary = { color = "#158DD8", bw = "#FFF" }
     , success = { color = "#4DC151", bw = "#FFF" }
     , input = { color ="#FDFDFD", bw = "#656565" }
     , danger = { color = "#E04141", bw = "#FFF" }
+    , focus = { color = "#00C0FF", bw = "#FFF" }
     , border = "#E2E2E2"
     }
   }

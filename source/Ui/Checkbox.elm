@@ -23,11 +23,12 @@ module Ui.Checkbox exposing
 import Html.Attributes exposing (attribute)
 import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
-import Html exposing (node)
+import Html exposing (node, text)
 import Html.Lazy
 
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
+import Ui.Icons
 import Ui
 
 
@@ -106,7 +107,7 @@ render model =
   node
     "ui-checkbox"
     (attributes model)
-    [ Ui.icon "checkmark" False [] ]
+    [ Ui.Icons.checkmark ]
 
 
 {-| Lazily renders a checkbox as a radio.
@@ -149,7 +150,10 @@ renderToggle model =
   node
     "ui-checkbox-toggle"
     (attributes model)
-    [ node "ui-checkbox-toggle-bg" [] []
+    [ node "ui-checkbox-toggle-bg" []
+      [ node "ui-checkbox-toggle-span" [] [ text "ON" ]
+      , node "ui-checkbox-toggle-span" [] [ text "OFF" ]
+      ]
     , node "ui-checkbox-toggle-handle" [] []
     ]
 

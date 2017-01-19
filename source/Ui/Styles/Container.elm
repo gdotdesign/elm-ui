@@ -6,7 +6,7 @@ import Css exposing (..)
 style : Node
 style =
   selector "ui-container"
-    [ display flexDisplay
+    [ display flex
 
     , selector "&[direction=row]"
       [ flexDirection row

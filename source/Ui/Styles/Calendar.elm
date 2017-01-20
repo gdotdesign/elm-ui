@@ -9,7 +9,9 @@ import Ui.Styles.Mixins as Mixins
 style : Theme -> Node
 style theme =
   selector "ui-calendar"
-    [ border ((px 1) . solid . theme.colors.border)
+    [ Mixins.defaults
+
+    , border ((px 1) . solid . theme.colors.border)
     , backgroundColor theme.colors.input.color
     , borderRadius theme.borderRadius
     , color theme.colors.input.bw

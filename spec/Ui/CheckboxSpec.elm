@@ -9,6 +9,10 @@ import Html exposing (div, text)
 
 import Ui.Container
 import Ui.Checkbox
+
+import Ui.Styles.Theme exposing (default)
+import Ui.Styles.Container
+import Ui.Styles.Checkbox
 import Ui.Styles
 
 import Steps exposing (keyDown)
@@ -17,7 +21,10 @@ view : Ui.Checkbox.Model -> Html.Html Ui.Checkbox.Msg
 view model =
   div
     [ ]
-    [ Ui.Styles.embed
+    [ Ui.Styles.embedSome
+      [ Ui.Styles.Checkbox.style default
+      , Ui.Styles.Container.style
+      ]
     , Ui.Container.column []
       [ Ui.Container.row []
         [ Ui.Checkbox.view model

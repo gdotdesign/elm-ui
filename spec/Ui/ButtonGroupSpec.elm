@@ -7,6 +7,10 @@ import Html exposing (div)
 
 import Ui.ButtonGroup
 import Ui.Container
+
+import Ui.Styles.Theme exposing (default)
+import Ui.Styles.ButtonGroup
+import Ui.Styles.Button
 import Ui.Styles
 
 type alias Model
@@ -33,7 +37,10 @@ view : Model -> Html.Html Msg
 view model =
   div
     [ ]
-    [ Ui.Styles.embed
+    [ Ui.Styles.embedSome
+      [ Ui.Styles.ButtonGroup.style default
+      , Ui.Styles.Button.style default
+      ]
     , Ui.ButtonGroup.view model
     ]
 

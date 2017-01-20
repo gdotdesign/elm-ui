@@ -7,6 +7,9 @@ import Html exposing (div, text)
 import Task exposing (Task)
 
 import Ui.Container
+
+import Ui.Styles.Theme exposing (default)
+import Ui.Styles.Container
 import Ui.Styles
 
 type alias Model
@@ -26,7 +29,9 @@ update msg model =
 view : Model -> Html.Html Msg
 view model =
   div []
-    [ Ui.Styles.embed
+    [ Ui.Styles.embedSome
+      [ Ui.Styles.Container.style
+      ]
     , Ui.Container.row []
       [ div [] [ text "a" ]
       , div [] [ text "b" ]

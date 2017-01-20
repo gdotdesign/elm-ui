@@ -9,6 +9,10 @@ import Html exposing (div, text)
 
 import Ui.Container
 import Ui.Calendar
+
+import Ui.Styles.Theme exposing (default)
+import Ui.Styles.Container
+import Ui.Styles.Calendar
 import Ui.Styles
 
 import Steps exposing (keyDown)
@@ -17,7 +21,10 @@ view : Ui.Calendar.Model -> Html.Html Ui.Calendar.Msg
 view model =
   div
     [ ]
-    [ Ui.Styles.embed
+    [ Ui.Styles.embedSome
+      [ Ui.Styles.Calendar.style default
+      , Ui.Styles.Container.style
+      ]
     , Ui.Container.row []
       [ Ui.Calendar.view "en_us" model
       , Ui.Calendar.view "en_us" { model | disabled = True }

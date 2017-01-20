@@ -5,6 +5,14 @@ import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 
+defaults : Node
+defaults =
+  mixin
+    [ property "-webkit-tap-highlight-color" "rgba(0,0,0,0)"
+    , property "-webkit-touch-callout" none
+    , boxSizing borderBox
+    ]
+
 focusedIdle : Theme -> Node
 focusedIdle theme =
   mixin

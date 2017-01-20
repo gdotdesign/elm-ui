@@ -14,7 +14,8 @@ style theme =
       , "ui-checkbox-toggle"
       , "ui-checkbox-radio"
       ]
-      [ Mixins.focusedIdle theme
+      [ Mixins.defaults
+      , Mixins.focusedIdle theme
 
       , fontFamily theme.fontFamily
 

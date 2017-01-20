@@ -10,7 +10,8 @@ import Ui.Styles.Mixins as Mixins
 style : Theme -> Node
 style theme =
   selector "ui-button"
-    [ Ripple.style
+    [ Mixins.defaults
+    , Ripple.style
 
     , fontFamily theme.fontFamily
 

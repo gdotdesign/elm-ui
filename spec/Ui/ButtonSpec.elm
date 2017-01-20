@@ -9,6 +9,10 @@ import Html exposing (div, text)
 
 import Ui.Container
 import Ui.Button
+
+import Ui.Styles.Theme exposing (default)
+import Ui.Styles.Container
+import Ui.Styles.Button
 import Ui.Styles
 
 import Steps exposing (keyDown)
@@ -33,7 +37,10 @@ view : Model -> Html.Html Msg
 view model =
   div
     [ ]
-    [ Ui.Styles.embed
+    [ Ui.Styles.embedSome
+      [ Ui.Styles.Button.style default
+      , Ui.Styles.Container.style
+      ]
     , Ui.Container.column []
       [ Ui.Container.row []
         [ Ui.Button.primary "Primary" Set

@@ -185,6 +185,10 @@ backgroundColor : String -> Node
 backgroundColor =
   property "background-color"
 
+background : String -> Node
+background =
+  property "background"
+
 boxSizing : String -> Node
 boxSizing =
   property "box-sizing"
@@ -228,6 +232,10 @@ cursor =
 padding : String -> Node
 padding =
   property "padding"
+
+paddingLeft : String -> Node
+paddingLeft =
+  property "paddingLeft"
 
 margin : String -> Node
 margin =

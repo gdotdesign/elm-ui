@@ -17,6 +17,7 @@ import Ui.Styles.Container as Container
 import Ui.Styles.Calendar as Calendar
 import Ui.Styles.Checkbox as Checkbox
 import Ui.Styles.Button as Button
+import Ui.Styles.Input as Input
 
 
 {-| Renders the styles for the given components into a HTML tag.
@@ -42,5 +43,6 @@ embed theme =
     , Calendar.style theme
     , Checkbox.style theme
     , Button.style theme
+    , Input.style theme
     , Container.style
     ]

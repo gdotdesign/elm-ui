@@ -155,11 +155,27 @@ uppercase : String
 uppercase =
   "uppercase"
 
+normal : String
+normal =
+  "normal"
+
+breakWord : String
+breakWord =
+  "break-word"
+
+bold : String
+bold =
+  "bold"
+
 -- Properties
 
 textTransform : String -> Node
 textTransform =
   property "text-transform"
+
+wordWrap : String -> Node
+wordWrap =
+  property "word-wrap"
 
 fill : String -> Node
 fill =
@@ -217,9 +233,9 @@ borderRadius : String -> Node
 borderRadius =
   property "border-radius"
 
-fontWeight : Int -> Node
+fontWeight : String -> Node
 fontWeight =
-  toString >> (property "font-weight")
+  property "font-weight"
 
 fontSize : String -> Node
 fontSize =
@@ -228,6 +244,18 @@ fontSize =
 cursor : String -> Node
 cursor =
   property "cursor"
+
+visibility : String -> Node
+visibility =
+  property "visibility"
+
+resize : String -> Node
+resize =
+  property "resize"
+
+content : String -> Node
+content value =
+  property "content" ("\"" ++ value ++ "\"")
 
 padding : String -> Node
 padding =
@@ -328,6 +356,10 @@ width =
 minWidth : String -> Node
 minWidth =
   property "min-width"
+
+minHeight : String -> Node
+minHeight =
+  property "min-height"
 
 userSelect : String -> Node
 userSelect value =

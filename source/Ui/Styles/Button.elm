@@ -21,9 +21,9 @@ style theme =
     , textAlign center
 
     , borderRadius theme.borderRadius
+    , fontWeight bold
     , userSelect none
     , cursor pointer
-    , fontWeight 700
 
     , selector "span"
       [ Mixins.ellipsis

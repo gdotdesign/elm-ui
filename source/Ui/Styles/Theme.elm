@@ -57,7 +57,7 @@ default =
     , primary = { color = "#158DD8", bw = "#FFF" }
     , success = { color = "#4DC151", bw = "#FFF" }
     , inputSecondary = { color = "#f3f3f3", bw="#616161" }
-    , input = { color ="#FDFDFD", bw = "#656565" }
+    , input = { color ="#FDFDFD", bw = "#525252" }
     , danger = { color = "#E04141", bw = "#FFF" }
     , focus = { color = "#00C0FF", bw = "#FFF" }
     , border = "rgba(0,0,0,0.075)"

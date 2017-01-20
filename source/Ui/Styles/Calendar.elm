@@ -67,7 +67,7 @@ style theme =
         , margin ((px 7) . zero)
         , textAlign center
         , fontSize (px 12)
-        , fontWeight 700
+        , fontWeight bold
         , width (px 34)
         , opacity 0.7
         ]
@@ -97,7 +97,7 @@ style theme =
         ]
         [ backgroundColor theme.colors.primary.color
         , color theme.colors.primary.bw
-        , fontWeight 700
+        , fontWeight bold
         , cursor pointer
         ]
       ]

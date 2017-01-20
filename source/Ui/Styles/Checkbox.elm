@@ -91,7 +91,7 @@ style theme =
           [ justifyContent center
           , alignItems center
           , fontSize (px 12)
-          , fontWeight 700
+          , fontWeight bold
           , display flex
           , flex_ "1"
           ]

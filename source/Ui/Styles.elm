@@ -16,6 +16,7 @@ import Ui.Styles.ButtonGroup as ButtonGroup
 import Ui.Styles.Container as Container
 import Ui.Styles.Calendar as Calendar
 import Ui.Styles.Checkbox as Checkbox
+import Ui.Styles.Textarea as Textarea
 import Ui.Styles.Button as Button
 import Ui.Styles.Input as Input
 
@@ -41,6 +42,7 @@ embed theme =
   Css.embed
     [ ButtonGroup.style theme
     , Calendar.style theme
+    , Textarea.style theme
     , Checkbox.style theme
     , Button.style theme
     , Input.style theme

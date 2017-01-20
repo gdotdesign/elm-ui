@@ -5,9 +5,40 @@ import Svg exposing (svg, path)
 
 import Html
 
-checkmark : Html.Html msg
-checkmark =
-  svg [ width "36", height "36", viewBox "0 0 36 36" ]
+
+chevronRight : List (Html.Attribute msg) -> Html.Html msg
+chevronRight attributes =
+  svg
+    ([ width "36", height "36", viewBox "0 0 36 36" ] ++ attributes)
+    [ path
+      [ d """
+          M21.403 17.996L7.963 4c-.34-.345-.33-.916.015-1.27L10.382.27c.345-.353.908-.36
+          1.246-.016l16.415 17.1c.177.176.257.417.24.65.01.24-.07.474-.24.65L11.628
+          35.747c-.338.345-.9.337-1.246-.016l-2.404-2.46c-.346-.354-.354-.925-.016-1.27l13.44-14.004z
+          """
+      ] []
+    ]
+
+
+chevronLeft : List (Html.Attribute msg) -> Html.Html msg
+chevronLeft attributes =
+  svg
+    ([ width "36", height "36", viewBox "0 0 36 36" ] ++ attributes)
+    [ path
+      [ d """
+          M14.597 17.996L28.037
+          4c.34-.345.33-.916-.015-1.27L25.618.27c-.345-.353-.908-.36-1.246-.016L7.957
+          17.344c-.177.178-.257.42-.24.652-.01.24.07.474.24.65l16.415
+          17.1c.338.345.9.337 1.246-.016l2.404-2.46c.346-.354.354-.925.016-1.27l-13.44-14.004z
+          """
+      ] []
+    ]
+
+
+checkmark : List (Html.Attribute msg) -> Html.Html msg
+checkmark attributes =
+  svg
+    ([ width "36", height "36", viewBox "0 0 36 36" ] ++ attributes)
     [ path
       [ d """
         M35.792 5.332L31.04 1.584c-.147-.12-.33-.208-.537-.208-.207

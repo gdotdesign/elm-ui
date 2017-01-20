@@ -17,6 +17,7 @@ style theme =
     , color theme.colors.input.bw
     , fontFamily theme.fontFamily
     , display inlineBlock
+    , userSelect none
     , padding (px 15)
 
     , transform [ translate3d zero zero zero ]
@@ -24,13 +25,26 @@ style theme =
     , selector "> ui-container"
       [ borderBottom ((px 1) . dashed . theme.colors.border)
       , padding ((px 5) . (px 5) . (px 10) . (px 5))
+      , alignItems center
       , height (px 45)
 
       , selector "div"
         [ justifyContent center
+        , position relative
         , alignItems center
         , display flex
+        , top (px 2)
         , flex_ "1"
+        ]
+
+      , selector "svg"
+        [ fill currentColor
+        , cursor pointer
+        , height (px 16)
+        , width (px 16)
+
+        , selector "&:hover"
+          [ fill theme.colors.focus.color ]
         ]
       ]
 
@@ -49,9 +63,10 @@ style theme =
       , display flex
 
       , selector "span"
-        [ margin ((px 5) . zero)
+        [ textTransform uppercase
+        , margin ((px 7) . zero)
         , textAlign center
-        , fontSize (px 14)
+        , fontSize (px 12)
         , fontWeight 700
         , width (px 34)
         , opacity 0.7
@@ -92,6 +107,9 @@ style theme =
 
       , selector "> *"
         [ pointerEvents none ]
+
+      , selector "svg"
+        [ display none ]
       ]
 
     , selector "&[disabled]"
@@ -106,9 +124,12 @@ style theme =
 
       , selector "ui-calendar-cell"
         [ selector "&:not(:empty)"
-          [ opacity 0.5 ]
-        , selector "&[selected]"
           [ backgroundColor theme.colors.disabledSecondary.color
+          , color theme.colors.disabledSecondary.bw
+          , opacity 0.2
+          ]
+        , selector "&[selected]"
+          [ opacity 0.5
           ]
         ]
       ]

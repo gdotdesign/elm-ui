@@ -23,8 +23,8 @@ module Ui.Calendar exposing
 @docs setValue, nextDay, previousDay
 -}
 
-import Html.Events exposing (onMouseDown)
 import Html exposing (node, text, span)
+import Html.Events exposing (onClick)
 import Html.Lazy
 
 import Date.Extra.Config.Configs as DateConfigs
@@ -36,6 +36,7 @@ import Date
 import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui.Container
+import Ui.Icons
 import Ui
 
 
@@ -168,10 +169,10 @@ render locale model =
         |> List.map (renderCell model)
 
     nextAction =
-      Ui.enabledActions model [ onMouseDown NextMonth ]
+      Ui.enabledActions model [ onClick NextMonth ]
 
     previousAction =
-      Ui.enabledActions model [ onMouseDown PreviousMonth ]
+      Ui.enabledActions model [ onClick PreviousMonth ]
 
     -- Header container
     container =
@@ -181,10 +182,10 @@ render locale model =
         , direction = "row"
         }
         []
-        [ -- Ui.icon "chevron-left" (not model.readonly) previousAction
-        node "div" []
+        [ Ui.Icons.chevronLeft previousAction
+        , node "div" []
           [ text (format (DateConfigs.getConfig locale) "%Y - %B" month) ]
-        --, Ui.icon "chevron-right" (not model.readonly) nextAction
+        , Ui.Icons.chevronRight nextAction
         ]
   in
     node
@@ -305,7 +306,7 @@ renderCell model date =
       && model.selectable
       && sameMonth
       then
-        [ onMouseDown (Select date) ]
+        [ onClick (Select date) ]
       else
         []
 

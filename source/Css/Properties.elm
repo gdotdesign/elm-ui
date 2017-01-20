@@ -151,7 +151,15 @@ wrap : String
 wrap =
   "wrap"
 
+uppercase : String
+uppercase =
+  "uppercase"
+
 -- Properties
+
+textTransform : String -> Node
+textTransform =
+  property "text-transform"
 
 fill : String -> Node
 fill =

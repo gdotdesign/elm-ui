@@ -107,7 +107,7 @@ render model =
   node
     "ui-checkbox"
     (attributes model)
-    [ Ui.Icons.checkmark ]
+    [ Ui.Icons.checkmark [] ]
 
 
 {-| Lazily renders a checkbox as a radio.

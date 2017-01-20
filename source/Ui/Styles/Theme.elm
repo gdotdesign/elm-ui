@@ -51,7 +51,7 @@ default =
   , colors =
     { background = { color = "#F5F5F5", bw = "#626262" }
     , disabled = { color = "#d7d7d7", bw = "#9a9a9a" }
-    , disabledSecondary = { color = "#979797", bw = "red" }
+    , disabledSecondary = { color = "#979797", bw = "#e6e6e6" }
     , secondary = { color = "#5D7889", bw = "#FFF" }
     , warning = { color = "#FF9730 ", bw = "#FFF" }
     , primary = { color = "#158DD8", bw = "#FFF" }
@@ -60,6 +60,6 @@ default =
     , input = { color ="#FDFDFD", bw = "#656565" }
     , danger = { color = "#E04141", bw = "#FFF" }
     , focus = { color = "#00C0FF", bw = "#FFF" }
-    , border = "#E2E2E2"
+    , border = "rgba(0,0,0,0.075)"
     }
   }

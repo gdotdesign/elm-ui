@@ -1,7 +1,4 @@
-import Spec exposing (describe, it, Node, context, before, after)
-import Spec.Steps exposing (click, dispatchEvent)
-import Spec.Assertions exposing (assert)
-import Spec.Runner
+import Spec exposing (..)
 
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -55,7 +52,7 @@ specs =
           { selector = "ui-calendar-cell:nth-child(32)[selected]"
           , text = "28"
           }
-        , click "ui-calendar-cell:nth-child(5)"
+        , steps.click "ui-calendar-cell:nth-child(5)"
         , assert.elementPresent "ui-calendar-cell:nth-child(5)[selected]"
         , assert.containsText
           { selector = "ui-calendar-cell:nth-child(5)[selected]"
@@ -67,7 +64,7 @@ specs =
       [ it "changes the month to April"
         [ assert.containsText
           { text = "1987 - May", selector = "ui-calendar ui-container div" }
-        , dispatchEvent "click" (Json.object []) "svg:first-child"
+        , steps.dispatchEvent "click" (Json.object []) "svg:first-child"
         , assert.containsText
           { text = "1987 - April", selector = "ui-calendar ui-container div" }
         , assert.not.elementPresent "ui-calendar-cell[selected]"
@@ -77,7 +74,7 @@ specs =
       [ it "changes the month to June"
         [ assert.containsText
           { text = "1987 - May", selector = "ui-calendar ui-container div" }
-        , dispatchEvent "click" (Json.object []) "svg:last-child"
+        , steps.dispatchEvent "click" (Json.object []) "svg:last-child"
         , assert.containsText
           { text = "1987 - June", selector = "ui-calendar ui-container div" }
         , assert.not.elementPresent "ui-calendar-cell[selected]"
@@ -88,7 +85,7 @@ specs =
         [ it "does not make that cell selected"
           [ assert.elementPresent
             "ui-calendar[disabled] ui-calendar-cell:nth-child(32)[selected]"
-          , click "ui-calendar[disabled] ui-calendar-cell:nth-child(5)"
+          , steps.click "ui-calendar[disabled] ui-calendar-cell:nth-child(5)"
           , assert.not.elementPresent
             "ui-calendar[disabled] ui-calendar-cell:nth-child(5)[selected]"
           , assert.elementPresent
@@ -101,7 +98,7 @@ specs =
             { selector = "ui-calendar[disabled] ui-container div"
             , text = "1987 - May"
             }
-          , dispatchEvent "click" (Json.object [])
+          , steps.dispatchEvent "click" (Json.object [])
             "ui-calendar[disabled] svg:first-child"
           , assert.containsText
             { selector = "ui-calendar[disabled] ui-container div"
@@ -115,7 +112,7 @@ specs =
             { selector = "ui-calendar[disabled] ui-container div"
             , text = "1987 - May"
             }
-          , dispatchEvent "click" (Json.object [])
+          , steps.dispatchEvent "click" (Json.object [])
             "ui-calendar[disabled] svg:last-child"
           , assert.containsText
             { selector = "ui-calendar[disabled] ui-container div"
@@ -132,7 +129,7 @@ specs =
         [ it "does not make that cell selected"
           [ assert.elementPresent
             "ui-calendar[readonly] ui-calendar-cell:nth-child(32)[selected]"
-          , click "ui-calendar[readonly] ui-calendar-cell:nth-child(5)"
+          , steps.click "ui-calendar[readonly] ui-calendar-cell:nth-child(5)"
           , assert.not.elementPresent
             "ui-calendar[readonly] ui-calendar-cell:nth-child(5)[selected]"
           , assert.elementPresent
@@ -143,7 +140,7 @@ specs =
     ]
 
 main =
-  Spec.Runner.runWithProgram
+  runWithProgram
     { subscriptions = \_ -> Sub.none
     , update = Ui.Calendar.update
     , init = \_ ->

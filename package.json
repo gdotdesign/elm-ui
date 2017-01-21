@@ -19,7 +19,7 @@
   "dependencies": {
     "elm": "^0.18.0",
     "elm-github-install": "^0.3.0",
-    "elm-spec": "gdotdesign/elm-spec#1.0.8"
+    "elm-spec": "gdotdesign/elm-spec#1.0.9"
   },
   "engines": {
     "node": ">= 4"

@@ -1,7 +1,4 @@
-import Spec exposing (describe, it, Node, context, before, after)
-import Spec.Steps exposing (click, dispatchEvent, setValue)
-import Spec.Assertions exposing (assert)
-import Spec.Runner
+import Spec exposing (..)
 
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -49,18 +46,15 @@ specs =
       ]
     , context "Clear icon"
       [ before
-        [ setValue
-          { selector = "ui-input:first-child input"
-          , value = "test"
-          }
-        , dispatchEvent "input" (Json.object []) "ui-input:first-child input"
+        [ steps.setValue "test" "ui-input:first-child input"
+        , steps.dispatchEvent "input" (Json.object []) "ui-input:first-child input"
         ]
       , it "should be visible"
         [ assert.elementPresent "ui-input svg"
         ]
       , context "clicking"
         [ it "clears the input"
-          [ dispatchEvent "click" (Json.object []) "ui-input svg"
+          [ steps.dispatchEvent "click" (Json.object []) "ui-input svg"
           , assert.valueEquals
             { selector = "ui-input:first-child input"
             , text = ""
@@ -71,7 +65,7 @@ specs =
     ]
 
 main =
-  Spec.Runner.runWithProgram
+  runWithProgram
     { subscriptions = \_ -> Sub.none
     , update = Ui.Input.update
     , init = \_ ->

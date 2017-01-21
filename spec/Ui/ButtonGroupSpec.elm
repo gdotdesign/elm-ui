@@ -1,7 +1,4 @@
-import Spec exposing (describe, it, Node, context)
-import Spec.Assertions exposing (assert)
-import Spec.Steps exposing (click)
-import Spec.Runner
+import Spec exposing (..)
 
 import Html exposing (div)
 
@@ -77,7 +74,7 @@ specs =
     ]
 
 main =
-  Spec.Runner.runWithProgram
+  runWithProgram
     { subscriptions = \_ -> Sub.none
     , update = update
     , view = view

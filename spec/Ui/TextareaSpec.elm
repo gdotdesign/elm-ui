@@ -1,7 +1,4 @@
-import Spec exposing (describe, it, Node, context, before, after)
-import Spec.Steps exposing (click, dispatchEvent, setValue)
-import Spec.Assertions exposing (assert)
-import Spec.Runner
+import Spec exposing (..)
 
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -76,11 +73,8 @@ specs =
       ]
     , it "fires change events"
       [ assert.containsText { selector = "div.content", text = "" }
-      , setValue
-        { selector = "ui-textarea textarea"
-        , value = "test"
-        }
-      , dispatchEvent "input" (Json.object []) "ui-textarea textarea"
+      , steps.setValue "test" "ui-textarea textarea"
+      , steps.dispatchEvent "input" (Json.object []) "ui-textarea textarea"
       , assert.containsText { selector = "div.content", text = "test" }
       ]
     , context "Disabled"
@@ -96,7 +90,7 @@ specs =
     ]
 
 main =
-  Spec.Runner.runWithProgram
+  runWithProgram
     { subscriptions = subscriptions
     , update = update
     , init = init

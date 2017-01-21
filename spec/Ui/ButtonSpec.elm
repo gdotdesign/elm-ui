@@ -1,7 +1,4 @@
-import Spec exposing (describe, it, Node, context, before, after)
-import Spec.Assertions exposing (assert)
-import Spec.Steps exposing (click)
-import Spec.Runner
+import Spec exposing (..)
 
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -105,7 +102,7 @@ specs =
         [ assert.containsText { text = "Clicked", selector = "div.result" }
         ]
       , it "triggers on click"
-        [ click "ui-button"
+        [ steps.click "ui-button"
         ]
       , it "triggers on enter"
         [ keyDown 13 "ui-button"
@@ -123,7 +120,7 @@ specs =
         ]
       , context "Disabled"
         [ it "not triggers on click"
-          [ click "ui-button[disabled]"
+          [ steps.click "ui-button[disabled]"
           ]
         , it "not triggers on enter"
           [ keyDown 13 "ui-button[disabled]"
@@ -134,7 +131,7 @@ specs =
         ]
       , context "Readonly"
         [ it "should not trigger action on click"
-          [ click "ui-button[readonly]"
+          [ steps.click "ui-button[readonly]"
           ]
         , it "not triggers on enter"
           [ keyDown 13 "ui-button[readonly]"
@@ -147,7 +144,7 @@ specs =
     ]
 
 main =
-  Spec.Runner.runWithProgram
+  runWithProgram
     { subscriptions = \_ -> Sub.none
     , update = update
     , view = view

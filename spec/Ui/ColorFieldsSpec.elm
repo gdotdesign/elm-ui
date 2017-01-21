@@ -1,7 +1,4 @@
-import Spec exposing (describe, it, Node, context, before, after, stepGroup)
-import Spec.Steps exposing (click, dispatchEvent, setValue)
-import Spec.Assertions exposing (Outcome, assert)
-import Spec.Runner
+import Spec exposing (..)
 
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -43,9 +40,9 @@ setField index value expected =
   in
     stepGroup
       ("Setting value to " ++ value ++ " and triggering input on " ++ selector)
-      [ setValue { selector = selector, value = value }
-      , dispatchEvent "input" (Json.object []) selector
-      , dispatchEvent "change" (Json.object []) selector
+      [ steps.setValue value selector
+      , steps.dispatchEvent "input" (Json.object []) selector
+      , steps.dispatchEvent "change" (Json.object []) selector
       , assert.valueEquals { selector = selector, text = expected }
       ]
 
@@ -153,7 +150,7 @@ specs =
     ]
 
 main =
-  Spec.Runner.runWithProgram
+  runWithProgram
     { subscriptions = \_ -> Sub.none
     , update = Ui.ColorFields.update
     , init = Ui.ColorFields.init

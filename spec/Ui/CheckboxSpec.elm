@@ -1,7 +1,4 @@
-import Spec exposing (describe, it, Node, context, before, after)
-import Spec.Assertions exposing (assert)
-import Spec.Steps exposing (click)
-import Spec.Runner
+import Spec exposing (..)
 
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
@@ -68,7 +65,7 @@ specs =
         [ assert.elementPresent "ui-checkbox[checked]"
         ]
       , it "on click"
-        [ click "ui-checkbox"
+        [ steps.click "ui-checkbox"
         ]
       , it "on enter"
         [ keyDown 13 "ui-checkbox"
@@ -86,7 +83,7 @@ specs =
         ]
       , context "Disabled"
         [ it "not toggles on click"
-          [ click "ui-checkbox[disabled]"
+          [ steps.click "ui-checkbox[disabled]"
           ]
         , it "not toggles on enter"
           [ keyDown 13 "ui-checkbox[disabled]"
@@ -97,7 +94,7 @@ specs =
         ]
       , context "Readonly"
         [ it "should not trigger action on click"
-          [ click "ui-checkbox[readonly]"
+          [ steps.click "ui-checkbox[readonly]"
           ]
         , it "not triggers on enter"
           [ keyDown 13 "ui-checkbox[readonly]"
@@ -110,7 +107,7 @@ specs =
     ]
 
 main =
-  Spec.Runner.runWithProgram
+  runWithProgram
     { subscriptions = \_ -> Sub.none
     , update = Ui.Checkbox.update
     , init = Ui.Checkbox.init

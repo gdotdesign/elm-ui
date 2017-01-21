@@ -11,8 +11,16 @@
   "exposed-modules": [
     "Ui.Styles.Theme",
     "Ui.Styles",
+    "Ui.Button",
+    "Ui.ButtonGroup",
+    "Ui.Calendar",
+    "Ui.Checkbox",
+    "Ui.ColorFields",
     "Ui.Container",
-    "Ui.Button"
+    "Ui.Icons",
+    "Ui.Input",
+    "Ui.Textarea",
+    "Ui.Time"
   ],
   "dependencies": {
     "eskimoblood/elm-color-extra": "3.2.3 <= v < 4.0.0",

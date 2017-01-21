@@ -1,11 +1,16 @@
 module Ui.Icons exposing (..)
 
+{-| This module contains icons for the components.
+
+@docs close, checkmark, chevronRight, chevronLeft
+-}
 import Svg.Attributes exposing (d, width, height, viewBox)
 import Svg exposing (svg, path)
 
 import Html
 
-
+{-| Close.
+-}
 close : List (Html.Attribute msg) -> Html.Html msg
 close attributes =
   svg
@@ -26,6 +31,8 @@ close attributes =
     ]
 
 
+{-| Chevron right.
+-}
 chevronRight : List (Html.Attribute msg) -> Html.Html msg
 chevronRight attributes =
   svg
@@ -40,6 +47,8 @@ chevronRight attributes =
     ]
 
 
+{-| Chevron left.
+-}
 chevronLeft : List (Html.Attribute msg) -> Html.Html msg
 chevronLeft attributes =
   svg
@@ -55,6 +64,8 @@ chevronLeft attributes =
     ]
 
 
+{-| Checkmark.
+-}
 checkmark : List (Html.Attribute msg) -> Html.Html msg
 checkmark attributes =
   svg

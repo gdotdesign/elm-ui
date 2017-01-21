@@ -40,9 +40,9 @@ view model =
     div
       [ ]
       [ Ui.Styles.embedSome
-        [ Ui.Styles.IconButton.style default
+        [ Ui.Styles.IconButton.style
         , Ui.Styles.Container.style
-        ]
+        ] default
       , Ui.Container.column []
         [ Ui.Container.row []
           [ Ui.IconButton.view Set

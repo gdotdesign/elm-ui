@@ -3,8 +3,10 @@ module Ui.Styles.Container exposing (style)
 import Css.Properties exposing (..)
 import Css exposing (..)
 
-style : Node
-style =
+import Ui.Styles.Theme as Theme exposing (Theme)
+
+style : Theme -> Node
+style theme =
   selector "ui-container"
     [ display flex
 

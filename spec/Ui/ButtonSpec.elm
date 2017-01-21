@@ -38,9 +38,9 @@ view model =
     div
       [ ]
       [ Ui.Styles.embedSome
-        [ Ui.Styles.Button.style default
-        , Ui.Styles.Container.style
-        ]
+        [ Ui.Styles.Container.style
+        , Ui.Styles.Button.style
+        ] default
       , Ui.Container.column []
         [ Ui.Container.row []
           [ Ui.Button.view Set

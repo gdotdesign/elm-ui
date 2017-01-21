@@ -54,9 +54,9 @@ view { textarea, content } =
   div
     [ ]
     [ Ui.Styles.embedSome
-      [ Ui.Styles.Textarea.style default
+      [ Ui.Styles.Textarea.style
       , Ui.Styles.Container.style
-      ]
+      ] default
     , Ui.Container.row []
       [ Html.map Textarea (Ui.Textarea.view textarea)
       , Html.map Textarea (Ui.Textarea.view { textarea | disabled = True })

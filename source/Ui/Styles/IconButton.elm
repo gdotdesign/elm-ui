@@ -31,8 +31,8 @@ style theme =
       ]
 
     , selector "&[size=medium] ui-icon-button-icon"
-      [ height (px 14)
-      , width (px 14)
+      [ height (px 12)
+      , width (px 12)
       ]
 
     , selector "&[size=big] ui-icon-button-icon"

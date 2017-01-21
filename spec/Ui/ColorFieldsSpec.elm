@@ -22,9 +22,9 @@ view model =
   div
     [ ]
     [ Ui.Styles.embedSome
-      [ Ui.Styles.ColorFields.style default
+      [ Ui.Styles.ColorFields.style
       , Ui.Styles.Container.style
-      ]
+      ] default
     , Ui.Container.column []
       [ Ui.ColorFields.view model
       , Ui.ColorFields.view { model | disabled = True }

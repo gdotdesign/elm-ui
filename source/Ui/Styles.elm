@@ -2,7 +2,7 @@ module Ui.Styles exposing (..)
 
 {-| This module contains the styles for all components.
 
-@docs embed, embedSome, embedDefault, embedAuto, styles
+@docs embed, embedSome, embedDefault
 -}
 
 import Css.Properties exposing (..)
@@ -20,22 +20,12 @@ import Ui.Styles.Textarea as Textarea
 import Ui.Styles.Button as Button
 import Ui.Styles.Input as Input
 
-import Native.Uid
-
-{-|-}
-styles : Theme -> List (String, Node)
-styles theme =
-  [ ("ui-button-group", ButtonGroup.style theme )
-  , ("ui-calendar", Calendar.style theme )
-  , ("ui-button", Button.style theme )
-  , ("ui-container", Container.style )
-  ]
 
 {-| Renders the styles for the given components into a HTML tag.
 -}
-embedSome : List Node -> Html.Html msg
-embedSome nodes =
-  Css.embed nodes
+embedSome : List (Theme -> Node) -> Theme -> Html.Html msg
+embedSome nodes theme =
+  Css.embed (List.map (\fn -> fn theme) nodes)
 
 
 {-| Renders the stylesheet with the default theme into an HTML tag.
@@ -44,37 +34,16 @@ embedDefault : Html.Html msg
 embedDefault =
   embed default
 
-
-{-|-}
-embedAuto : Html.Html msg -> Html.Html msg
-embedAuto input =
-  let
-    tags =
-      Native.Uid.getTags input
-
-    filteredStyles =
-      List.filterMap
-        (\(tag, style) ->
-          if List.member tag tags then
-            Just style
-          else
-            Nothing
-        )
-        (styles default)
-  in
-    embedSome filteredStyles
-
-
 {-| Renders the stylesheet with the given theme into an HTML tag.
 -}
 embed : Theme -> Html.Html msg
 embed theme =
   Css.embed
     [ ButtonGroup.style theme
+    , Container.style theme
     , Calendar.style theme
     , Textarea.style theme
     , Checkbox.style theme
     , Button.style theme
     , Input.style theme
-    , Container.style
     ]

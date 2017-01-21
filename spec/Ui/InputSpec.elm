@@ -21,9 +21,9 @@ view model =
   div
     [ ]
     [ Ui.Styles.embedSome
-      [ Ui.Styles.Input.style default
+      [ Ui.Styles.Input.style
       , Ui.Styles.Container.style
-      ]
+      ] default
     , Ui.Container.row []
       [ Ui.Input.view model
       , Ui.Input.view { model | disabled = True }

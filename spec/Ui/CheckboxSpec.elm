@@ -19,9 +19,9 @@ view model =
   div
     [ ]
     [ Ui.Styles.embedSome
-      [ Ui.Styles.Checkbox.style default
+      [ Ui.Styles.Checkbox.style
       , Ui.Styles.Container.style
-      ]
+      ] default
     , Ui.Container.column []
       [ Ui.Container.row []
         [ Ui.Checkbox.view model

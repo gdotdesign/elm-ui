@@ -29,7 +29,7 @@ view model =
   div []
     [ Ui.Styles.embedSome
       [ Ui.Styles.Container.style
-      ]
+      ] default
     , Ui.Container.row []
       [ div [] [ text "a" ]
       , div [] [ text "b" ]

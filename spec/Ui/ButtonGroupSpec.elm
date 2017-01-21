@@ -35,9 +35,8 @@ view model =
   div
     [ ]
     [ Ui.Styles.embedSome
-      [ Ui.Styles.ButtonGroup.style default
-      , Ui.Styles.Button.style default
-      ]
+      [ Ui.Styles.ButtonGroup.style
+      ] default
     , Ui.ButtonGroup.view model
     ]
 

@@ -8,7 +8,6 @@ import Ui.Container
 import Ui.Calendar
 
 import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
 import Ui.Styles.Calendar
 import Ui.Styles
 
@@ -23,9 +22,8 @@ view model =
   div
     [ ]
     [ Ui.Styles.embedSome
-      [ Ui.Styles.Calendar.style default
-      , Ui.Styles.Container.style
-      ]
+      [ Ui.Styles.Calendar.style
+      ] default
     , Ui.Container.row []
       [ Ui.Calendar.view "en_us" model
       , Ui.Calendar.view "en_us" { model | disabled = True }

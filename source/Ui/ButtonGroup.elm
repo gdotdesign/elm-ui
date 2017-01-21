@@ -1,9 +1,9 @@
-module Ui.ButtonGroup exposing (Model, init, view, render)
+module Ui.ButtonGroup exposing (Model, model, view, render)
 
 {-| Groups a series of buttons together.
 
 # Model
-@docs Model, init
+@docs Model, model
 
 # View
 @docs view, render
@@ -33,13 +33,13 @@ type alias Model msg =
 
 {-| Initializes a button group with the given data.
     buttonGroup =
-      Ui.ButtonGroup.init
+      Ui.ButtonGroup.model
         [ ("Download", Download)
         , ("Export", Export)
         ]
 -}
-init : List ( String, msg ) -> Model msg
-init items =
+model : List ( String, msg ) -> Model msg
+model items =
   { disabled = False
   , readonly = False
   , kind = "primary"

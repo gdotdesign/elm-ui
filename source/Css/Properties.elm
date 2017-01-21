@@ -103,6 +103,10 @@ flex : String
 flex =
   "flex"
 
+stretch : String
+stretch =
+  "stretch"
+
 block : String
 block =
   "block"
@@ -188,6 +192,10 @@ flex_ =
 flexWrap : String -> Node
 flexWrap =
   property "flex-wrap"
+
+alignSelf : String -> Node
+alignSelf =
+  property "align-self"
 
 lineHeight : String -> Node
 lineHeight =
@@ -280,6 +288,10 @@ marginBottom =
 marginLeft : String -> Node
 marginLeft =
   property "margin-left"
+
+marginRight : String -> Node
+marginRight =
+  property "margin-right"
 
 fontFamily : String -> Node
 fontFamily =

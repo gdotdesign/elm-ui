@@ -4,12 +4,13 @@ import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Html exposing (div, text)
 
+import Ui.IconButton
 import Ui.Container
-import Ui.Button
+import Ui.Icons
 
 import Ui.Styles.Theme exposing (default)
+import Ui.Styles.IconButton
 import Ui.Styles.Container
-import Ui.Styles.Button
 import Ui.Styles
 
 import Steps exposing (keyDown)
@@ -33,67 +34,72 @@ update msg model =
 view : Model -> Html.Html Msg
 view model =
   let
-    button = Ui.Button.model "" "primary" "medium"
+    button =
+      Ui.IconButton.model "" (Ui.Icons.close [])
   in
     div
       [ ]
       [ Ui.Styles.embedSome
-        [ Ui.Styles.Button.style default
+        [ Ui.Styles.IconButton.style default
         , Ui.Styles.Container.style
         ]
       , Ui.Container.column []
         [ Ui.Container.row []
-          [ Ui.Button.view Set
+          [ Ui.IconButton.view Set
             { button | text = "Primary",   kind = "primary"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | text = "Secondary", kind = "secondary" }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | text = "Warning",   kind = "warning"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | text = "Success",   kind = "success"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | text = "Danger",    kind = "danger"    }
           ]
         , Ui.Container.row []
-          [ Ui.Button.view Set
+          [ Ui.IconButton.view Set
             { button | size = "big", text = "Primary",   kind = "primary"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | size = "big", text = "Secondary", kind = "secondary" }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | size = "big", text = "Warning",   kind = "warning"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | size = "big", text = "Success",   kind = "success"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | size = "big", text = "Danger",    kind = "danger"    }
           ]
         , Ui.Container.row []
-          [ Ui.Button.view Set
+          [ Ui.IconButton.view Set
             { button | size = "small", text = "Primary",   kind = "primary"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | size = "small", text = "Primary",   kind = "primary"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | size = "small", text = "Primary",   kind = "primary"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | size = "small", text = "Primary",   kind = "primary"   }
-          , Ui.Button.view Set
+          , Ui.IconButton.view Set
             { button | size = "small", text = "Primary",   kind = "primary"   }
           ]
         , Ui.Container.row []
-          [ Ui.Button.render
+          [ Ui.IconButton.render
             Set
-            { disabled = True
+            { glyph = (Ui.Icons.close [])
+            , disabled = True
             , readonly = False
             , kind = "primary"
             , size = "medium"
             , text = "Hello"
+            , side = "left"
             }
-          , Ui.Button.render
+          , Ui.IconButton.render
             Set
-            { disabled = False
+            { glyph = (Ui.Icons.close [])
+            , disabled = False
             , readonly = True
             , kind = "primary"
             , size = "medium"
             , text = "Hello"
+            , side = "left"
             }
           ]
         ]
@@ -104,59 +110,21 @@ specs : Node
 specs =
   describe "Ui.Button"
     [ it "has tabindex"
-      [ assert.elementPresent "ui-button[tabindex]"
-      , assert.elementPresent "ui-button[readonly][tabindex]"
+      [ assert.elementPresent "ui-icon-button[tabindex]"
+      , assert.elementPresent "ui-icon-button[readonly][tabindex]"
       ]
     , context "Disabled"
       [ it "does not have tabindex"
-        [ assert.not.elementPresent "ui-button[disabled][tabindex]"
+        [ assert.not.elementPresent "ui-icon-button[disabled][tabindex]"
         ]
       ]
-    , context "Actions"
-      [ before
-        [ assert.containsText { text = "Initial", selector = "div.result" }
-        ]
-      , after
-        [ assert.containsText { text = "Clicked", selector = "div.result" }
-        ]
-      , it "triggers on click"
-        [ steps.click "ui-button"
-        ]
-      , it "triggers on enter"
-        [ keyDown 13 "ui-button"
-        ]
-      , it "triggers on space"
-        [ keyDown 32 "ui-button"
-        ]
-      ]
-    , context "No actions"
-      [ before
-        [ assert.containsText { text = "Initial", selector = "div.result" }
-        ]
-      , after
-        [ assert.not.containsText { text = "Clicked", selector = "div.result" }
-        ]
-      , context "Disabled"
-        [ it "not triggers on click"
-          [ steps.click "ui-button[disabled]"
-          ]
-        , it "not triggers on enter"
-          [ keyDown 13 "ui-button[disabled]"
-          ]
-        , it "not triggers on space"
-          [ keyDown 32 "ui-button[disabled]"
-          ]
-        ]
-      , context "Readonly"
-        [ it "should not trigger action on click"
-          [ steps.click "ui-button[readonly]"
-          ]
-        , it "not triggers on enter"
-          [ keyDown 13 "ui-button[readonly]"
-          ]
-        , it "not triggers on space"
-          [ keyDown 32 "ui-button[readonly]"
-          ]
+    , context "Icon"
+      [ it "has margin"
+        [ assert.styleEquals
+          { selector = "ui-icon-button span"
+          , style = "margin-left"
+          , value = "0.625em"
+          }
         ]
       ]
     ]

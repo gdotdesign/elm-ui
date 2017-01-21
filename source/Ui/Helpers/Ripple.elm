@@ -8,6 +8,8 @@ module Ui.Helpers.Ripple exposing (..)
 
 import Svg.Attributes exposing (r)
 import Svg exposing (svg, circle)
+
+import Html.Attributes exposing (attribute)
 import Html
 
 
@@ -18,5 +20,5 @@ import Html
 view : Html.Html msg
 view =
   svg
-    []
+    [ attribute "ripple" "" ]
     [ circle [ r "75%" ] [] ]

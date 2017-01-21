@@ -18,7 +18,7 @@ type Msg
 
 init : () -> Model
 init _ =
-  Ui.ButtonGroup.init
+  Ui.ButtonGroup.model
     [ ( "A", Set )
     , ( "B", Set )
     , ( "C", Set )

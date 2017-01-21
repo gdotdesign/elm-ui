@@ -9,7 +9,7 @@ style =
     [ position relative
     , overflow hidden
 
-    , selector "&:focus svg"
+    , selector "&:focus svg[ripple]"
       [ transition
         [ { easing = "cubic-bezier(0.215, 0.61, 0.355, 1)"
           , duration = ms 320
@@ -21,7 +21,7 @@ style =
       , opacity 0.3
       ]
 
-    , selector "&:active svg"
+    , selector "&:active svg[ripple]"
       [ opacity 0.6
       ]
 
@@ -34,7 +34,7 @@ style =
       , zIndex 2
       ]
 
-    , selector "svg"
+    , selector "svg[ripple]"
       [ transition
         [ { property = "opacity"
           , duration = ms 200

@@ -122,6 +122,13 @@ style theme =
         , color theme.colors.disabled.bw
         , borderColor transparent
 
+        , selectors
+          [ "> ui-container"
+          , "ui-calendar-header"
+          ]
+          [ borderBottom ((px 1) . dashed . theme.colors.borderDisabled)
+          ]
+
         , selector "> *"
           [ pointerEvents none ]
 

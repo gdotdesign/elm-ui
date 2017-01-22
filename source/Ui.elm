@@ -12,7 +12,7 @@ module Ui exposing
 @docs tabIndex, enabledActions, attributeList
 -}
 
-import Html.Attributes exposing (classList, attribute, rel, href, class, tabindex, target)
+import Html.Attributes exposing (attribute, rel, href, class, tabindex, target)
 import Html.Events.Extra exposing (onLoad, unobtrusiveClick, onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)

@@ -22,7 +22,6 @@ module Ui.Tagger exposing
 
 import String
 
-import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)
@@ -197,7 +196,7 @@ render tags model =
       }
 
     classes =
-      classList
+      Ui.attributeList
         [ ( "disabled", model.disabled )
         , ( "readonly", model.readonly )
         ]
@@ -210,7 +209,7 @@ render tags model =
   in
     node
       "ui-tagger"
-      (classes :: actions)
+      (classes ++ actions)
       [ Ui.Container.row
           []
           [ Html.map Input (Ui.Input.view updatedInput)

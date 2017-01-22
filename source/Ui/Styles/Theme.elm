@@ -25,6 +25,7 @@ type alias Theme =
     , inputSecondary: { color: String, bw: String }
     , gray: { color: String, bw: String }
     , focus: { color: String, bw: String }
+    , borderDisabled : String
     , border: String
     }
   , fontFamily: String
@@ -62,6 +63,7 @@ default =
     , input = { color ="#FDFDFD", bw = "#525252" }
     , danger = { color = "#E04141", bw = "#FFF" }
     , focus = { color = "#00C0FF", bw = "#FFF" }
-    , border = "rgba(0,0,0,0.075)"
+    , borderDisabled = "#C7C7C7"
+    , border = "#DDD"
     }
   }

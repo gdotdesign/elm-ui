@@ -60,7 +60,62 @@ view { tabs } =
 specs : Node
 specs =
   describe "Ui.Tabs"
-    [
+    [ it "displays tabs"
+      [ assert.elementPresent "ui-tabs-handle:nth-child(3)" ]
+
+    , context "Tabs"
+      [ it "have tabindex"
+        [ assert.elementPresent "ui-tabs-handle:nth-child(1)[tabindex]"
+        , assert.elementPresent "ui-tabs-handle:nth-child(2)[tabindex]"
+        , assert.elementPresent "ui-tabs-handle:nth-child(3)[tabindex]"
+        ]
+      ]
+
+    , context "Swicthing tabs"
+      [ before
+        [ assert.elementPresent "ui-tabs-handle:first-child[selected]"
+        , assert.containsText
+          { selector = "ui-tabs-content"
+          , text = "tab 1"
+          }
+        ]
+      , after
+        [ assert.elementPresent "ui-tabs-handle:nth-child(2)[selected]"
+        , assert.containsText
+          { selector = "ui-tabs-content"
+          , text = "tab 2"
+          }
+        ]
+      , it "selects on click"
+        [ steps.click "ui-tabs-handle:nth-child(2)" ]
+      , it "selects on enter"
+        [ keyDown 13 "ui-tabs-handle:nth-child(2)" ]
+      , it "selects on space"
+        [ keyDown 32 "ui-tabs-handle:nth-child(2)" ]
+      ]
+
+    , context "Disabled"
+      [ it "does not switch tabs"
+        [ assert.elementPresent "ui-tabs[disabled] ui-tabs-handle:first-child[selected]"
+        , steps.click "ui-tabs[disabled] ui-tabs-handle:nth-child(2)"
+        , assert.elementPresent "ui-tabs[disabled] ui-tabs-handle:first-child[selected]"
+        ]
+      , context "Tabs"
+        [ it "does not have tabindex"
+          [ assert.not.elementPresent "ui-tabs[disabled] ui-tabs-handle:nth-child(1)[tabindex]"
+          , assert.not.elementPresent "ui-tabs[disabled] ui-tabs-handle:nth-child(2)[tabindex]"
+          , assert.not.elementPresent "ui-tabs[disabled] ui-tabs-handle:nth-child(3)[tabindex]"
+          ]
+        ]
+      ]
+
+    , context "Readonly"
+      [ it "does not switch tabs"
+        [ assert.elementPresent "ui-tabs[readonly] ui-tabs-handle:first-child[selected]"
+        , steps.click "ui-tabs[readonly] ui-tabs-handle:nth-child(2)"
+        , assert.elementPresent "ui-tabs[readonly] ui-tabs-handle:first-child[selected]"
+        ]
+      ]
     ]
 
 main =

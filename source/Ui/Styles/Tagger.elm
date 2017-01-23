@@ -55,6 +55,7 @@ style theme =
         , selector "svg"
           [ marginLeft (px 10)
           , fill currentColor
+          , cursor pointer
           , height (px 12)
           , width (px 12)
 
@@ -68,5 +69,16 @@ style theme =
             ]
           ]
         ]
+
+      , selector "&[readonly]"
+        [ Mixins.readonly
+
+        , selector "ui-icon-button"
+          [ pointerEvents none
+          ]
+        ]
+
+      , selector "&[disabled]"
+        [ Mixins.disabled ]
       ]
     ]

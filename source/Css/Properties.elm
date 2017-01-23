@@ -119,6 +119,10 @@ borderBox : String
 borderBox =
   "border-box"
 
+contentBox : String
+contentBox =
+  "content-box"
+
 column : String
 column =
   "column"
@@ -171,6 +175,10 @@ bold : String
 bold =
   "bold"
 
+colResize : String
+colResize =
+  "col-resize"
+
 -- Properties
 
 textTransform : String -> Node
@@ -213,6 +221,10 @@ background : String -> Node
 background =
   property "background"
 
+backgroundClip : String -> Node
+backgroundClip =
+  property "background-clip"
+
 boxSizing : String -> Node
 boxSizing =
   property "box-sizing"
@@ -236,6 +248,14 @@ borderBottom =
 borderTop : String -> Node
 borderTop =
   property "border-top"
+
+borderRight : String -> Node
+borderRight =
+  property "border-right"
+
+borderRightColor : String -> Node
+borderRightColor =
+  property "border-right-color"
 
 borderColor : String -> Node
 borderColor =

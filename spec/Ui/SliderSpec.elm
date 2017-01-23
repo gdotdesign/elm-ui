@@ -31,7 +31,7 @@ view model =
     ]
 
 assertPercent value =
-  assert.styleEquals
+  assert.inlineStyleEquals
     { selector = "ui-slider-progress"
     , style = "width"
     , value = (toString value) ++ "%"
@@ -89,7 +89,7 @@ specs =
       [ it "sets the value up to that position"
         [ mouseDown 33 25 "ui-slider"
         , assertPercent 16.5
-        , assert.styleEquals
+        , assert.inlineStyleEquals
           { selector = "ui-slider-handle"
           , style = "left"
           , value = "16.5%"

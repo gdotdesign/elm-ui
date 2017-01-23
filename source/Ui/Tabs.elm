@@ -9,7 +9,6 @@ module Ui.Tabs exposing (ViewModel, Model, Msg, init, update, render, view)
 @docs ViewModel, view, render
 -}
 
-import Html.Attributes exposing (classList)
 import Html.Events.Extra exposing (onKeys)
 import Html.Events exposing (onClick)
 import Html exposing (node, text)

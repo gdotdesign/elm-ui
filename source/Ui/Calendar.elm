@@ -310,7 +310,7 @@ renderCell model date =
       else
         []
 
-    classes =
+    attributes =
       Ui.attributeList
         [ ( "inactive", not sameMonth )
         , ( "selected", value )
@@ -318,5 +318,5 @@ renderCell model date =
   in
     node
       "ui-calendar-cell"
-      (classes ++ click)
+      (attributes ++ click)
       [ text (toString (Date.day date)) ]

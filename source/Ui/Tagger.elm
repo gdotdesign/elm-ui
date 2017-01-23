@@ -195,7 +195,7 @@ render tags model =
       , text = ""
       }
 
-    classes =
+    attributes =
       Ui.attributeList
         [ ( "disabled", model.disabled )
         , ( "readonly", model.readonly )
@@ -209,7 +209,7 @@ render tags model =
   in
     node
       "ui-tagger"
-      (classes ++ actions)
+      (attributes ++ actions)
       [ Ui.Container.row
           []
           [ Html.map Input (Ui.Input.view updatedInput)

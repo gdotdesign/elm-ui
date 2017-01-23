@@ -1,8 +1,6 @@
 module Ui.Button exposing ( Model, model, view, render, attributes )
 
 {-| Basic button component that implements:
-  - **5 different types** (primary, secondary, warning, danger, success)
-  - **3 different sizes** (small, medium, big)
   - **focus state** with animation
   - **disabled state**
   - **readonly state**
@@ -79,7 +77,7 @@ render msg model =
 
 
 {-| Creates the attributes for a button that contains events, tabindex and
-classes.
+other attributes.
 -}
 attributes :
   msg

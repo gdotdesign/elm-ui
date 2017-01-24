@@ -85,10 +85,6 @@ style theme =
       , left zero
       , top zero
       , zIndex 1
-
-      , selector "&:focus"
-        [ outline none
-        ]
       ]
 
     , selector "ui-textarea-mirror"

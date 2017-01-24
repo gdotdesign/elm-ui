@@ -27,6 +27,7 @@ styles theme =
   , fontWeight bold
   , userSelect none
   , cursor pointer
+  , outline none
 
   , selector "span"
     [ Mixins.ellipsis
@@ -35,9 +36,6 @@ styles theme =
 
   , selector "> *"
     [ pointerEvents none ]
-
-  , selector "&:focus"
-    [ outline none ]
 
   , selector "&[size=medium]"
     [ padding (zero . (px 24))

@@ -58,10 +58,10 @@ style theme =
           , cursor pointer
           , height (px 12)
           , width (px 12)
+          , outline none
 
           , selector "&:focus"
             [ fill theme.colors.focus.color
-            , outline none
             ]
 
           , selector "&:hover"

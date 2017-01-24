@@ -42,6 +42,7 @@ style theme =
       , position relative
       , fontWeight bold
       , cursor pointer
+      , outline none
       , top (px 1)
 
       , selector "&[selected]"
@@ -59,7 +60,6 @@ style theme =
         , "&[selected]:focus"
         ]
         [ color theme.colors.focus.color
-        , outline none
         ]
 
       , selector "+ ui-tabs-handle"

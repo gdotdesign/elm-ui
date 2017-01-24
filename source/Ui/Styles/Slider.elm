@@ -18,6 +18,7 @@ style theme =
     , userSelect none
     , height (px 36)
     , display flex
+    , outline none
 
     , selector "*"
       [ pointerEvents none
@@ -86,10 +87,6 @@ style theme =
         [ opacity 0.6 ]
       ]
 
-    , selector "&:focus"
-      [ outline none
-
-      , selector "ui-slider-bar"
-        [ Mixins.focused theme ]
-      ]
+    , selector "&:focus ui-slider-bar"
+      [ Mixins.focused theme ]
     ]

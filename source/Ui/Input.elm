@@ -166,19 +166,22 @@ view model =
 render : Model -> Html.Html Msg
 render model =
   let
+    showClearIcon =
+      not (not model.showClearIcon
+           || model.disabled
+           || model.readonly
+           || model.value == "")
+
     clearIcon =
-      if not model.showClearIcon
-         || model.disabled
-         || model.readonly
-         || model.value == "" then
-        text ""
-      else
+      if showClearIcon then
         Ui.Icons.close [onClick Clear]
+      else
+        text ""
   in
     node
       "ui-input"
       ( Ui.attributeList
-          [ ( "clearable", model.showClearIcon)
+          [ ( "clearable", showClearIcon)
           ]
       )
       [ node

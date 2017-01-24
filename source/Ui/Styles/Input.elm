@@ -59,7 +59,7 @@ style theme =
 
     , selector "&[clearable]"
       [ selector "input"
-        [ paddingLeft (px 30) ]
+        [ paddingRight (px 30) ]
 
       , selector "svg"
         [ fill currentColor

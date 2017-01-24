@@ -295,7 +295,11 @@ padding =
 
 paddingLeft : String -> Node
 paddingLeft =
-  property "paddingLeft"
+  property "padding-left"
+
+paddingRight : String -> Node
+paddingRight =
+  property "padding-right"
 
 margin : String -> Node
 margin =

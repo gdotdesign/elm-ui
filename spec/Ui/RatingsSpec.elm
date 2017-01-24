@@ -13,6 +13,7 @@ import Ui.Styles.Ratings
 import Ui.Styles
 
 import Steps exposing (keyDown)
+import Json.Encode as Json
 
 view : Ui.Ratings.Model -> Html.Html Ui.Ratings.Msg
 view model =
@@ -29,6 +30,20 @@ view model =
       ]
     ]
 
+assertStarFull index =
+  assert.attributeContains
+    { selector = "ui-ratings-star:nth-child(" ++ (toString index) ++ ") path"
+    , attribute = "d"
+    , text = "M23"
+    }
+
+assertStarEmpty index =
+  assert.attributeContains
+    { selector = "ui-ratings-star:nth-child(" ++ (toString index) ++ ") path"
+    , attribute = "d"
+    , text = "M36"
+    }
+
 specs : Node
 specs =
   describe "Ui.Ratings"
@@ -44,6 +59,70 @@ specs =
     , context "Readonly"
       [ it "has tabindex"
         [ assert.elementPresent "ui-ratings[readonly][tabindex]"
+        ]
+      ]
+    , context "Keys"
+      [ before
+        [ steps.click "ui-ratings-star:nth-child(3)" ]
+      , context "Up arrow"
+        [ it "increments the value"
+          [ assertStarEmpty 4
+          , keyDown 38 "ui-ratings"
+          , assertStarFull 4
+          ]
+        ]
+      , context "Right arrow"
+        [ it "increments the value"
+          [ assertStarEmpty 4
+          , keyDown 39 "ui-ratings"
+          , assertStarFull 4
+          ]
+        ]
+      , context "Down arrow"
+        [ it "increments the value"
+          [ assertStarFull 3
+          , keyDown 40 "ui-ratings"
+          , assertStarEmpty 3
+          ]
+        ]
+      , context "Left arrow"
+        [ it "increments the value"
+          [ assertStarFull 3
+          , keyDown 37 "ui-ratings"
+          , assertStarEmpty 3
+          ]
+        ]
+      ]
+    , context "Clicking on a start"
+      [ it "selects stars up until that star"
+        [ assertStarEmpty 1
+        , assertStarEmpty 2
+        , steps.click "ui-ratings-star:nth-child(3)"
+        , assertStarFull 1
+        , assertStarFull 2
+        , assertStarFull 3
+        , assertStarEmpty 4
+        ]
+      ]
+    , context "Selecting"
+      [ before
+        [ assertStarEmpty 1
+        , assertStarEmpty 2
+        , steps.dispatchEvent "mouseenter" (Json.object []) "ui-ratings-star:nth-child(2)"
+        , assertStarFull 1
+        , assertStarFull 2
+        ]
+      , context "Hovering over a star"
+        [ it "sets the temporary value up until that star"
+          [ assertStarEmpty 3
+          ]
+        ]
+      , context "Moving the mouse out of a star"
+        [ it "removes the temporary value"
+          [ steps.dispatchEvent "mouseleave" (Json.object []) "ui-ratings-star:nth-child(2)"
+          , assertStarEmpty 1
+          , assertStarEmpty 2
+          ]
         ]
       ]
     ]

@@ -233,9 +233,21 @@ outline : String -> Node
 outline =
   property "outline"
 
+important : String
+important =
+  "!important"
+
 border : String -> Node
 border =
   property "border"
+
+borderWidth : String -> Node
+borderWidth =
+  property "border-width"
+
+borderStyle : String -> Node
+borderStyle =
+  property "border-style"
 
 borderLeft : String -> Node
 borderLeft =

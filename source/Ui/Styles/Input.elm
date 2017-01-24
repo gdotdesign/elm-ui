@@ -1,4 +1,4 @@
-module Ui.Styles.Input exposing (style)
+module Ui.Styles.Input exposing (style, inputStyle)
 
 import Css.Properties exposing (..)
 import Css exposing (..)
@@ -15,47 +15,7 @@ style theme =
     , display inlineBlock
     , position relative
 
-    , selector "input"
-      [ Mixins.focusedIdle theme
-      , Mixins.defaults
-
-      , border ((px 1) . solid . theme.colors.border)
-      , backgroundColor theme.colors.input.color
-      , borderRadius theme.borderRadius
-      , fontFamily theme.fontFamily
-      , padding ((px 6) . (px 9))
-      , color currentColor
-      , lineHeight (px 16)
-      , fontSize (px 16)
-      , width (pct 100)
-      , height (px 36)
-
-      , selector "&::-webkit-input-placeholder"
-        [ lineHeight (px 22)
-        ]
-
-      , selector "&[disabled]"
-        [ Mixins.disabledColors theme
-        , Mixins.disabled
-
-        , borderColor transparent
-        ]
-
-      , selector "&[readonly]"
-        [ Mixins.readonly
-
-        , selectors
-          [ "&::-moz-selection"
-          , "&::selection"
-          ]
-          [ background transparent
-          ]
-        ]
-
-      , selector "&:focus"
-        [ Mixins.focused theme
-        ]
-      ]
+    , inputStyle theme
 
     , selector "&[clearable]"
       [ selector "input"
@@ -74,5 +34,50 @@ style theme =
           , cursor pointer
           ]
         ]
+      ]
+    ]
+
+
+inputStyle : Theme -> Node
+inputStyle theme =
+  selector "input"
+    [ Mixins.focusedIdle theme
+    , Mixins.defaults
+
+    , border ((px 1) . solid . theme.colors.border)
+    , backgroundColor theme.colors.input.color
+    , borderRadius theme.borderRadius
+    , fontFamily theme.fontFamily
+    , color theme.colors.input.bw
+    , padding ((px 6) . (px 9))
+    , lineHeight (px 16)
+    , fontSize (px 16)
+    , width (pct 100)
+    , height (px 36)
+
+    , selector "&::-webkit-input-placeholder"
+      [ lineHeight (px 22)
+      ]
+
+    , selector "&[disabled]"
+      [ Mixins.disabledColors theme
+      , Mixins.disabled
+
+      , borderColor transparent
+      ]
+
+    , selector "&[readonly]"
+      [ Mixins.readonly
+
+      , selectors
+        [ "&::-moz-selection"
+        , "&::selection"
+        ]
+        [ background transparent
+        ]
+      ]
+
+    , selector "&:focus"
+      [ Mixins.focused theme
       ]
     ]

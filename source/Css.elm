@@ -9,8 +9,13 @@ type Node
   = SelectorNode { name: String, nodes: List Node}
   | PropertyNode String String
   | SelectorsNode (List { name: String, nodes: List Node})
+  | KeyFrames String (List (String, List Node))
   | Mixin (List Node)
 
+
+keyframes : String -> List (String, List Node) -> Node
+keyframes =
+  KeyFrames
 
 mixin : List Node -> Node
 mixin nodes =
@@ -42,15 +47,15 @@ properties node =
         List.map getProperty props
         |> List.foldr (++) []
 
-      SelectorsNode _ ->
-        []
-
       SelectorNode item ->
         List.map getProperty item.nodes
         |> List.foldr (++) []
 
       PropertyNode key value ->
         [(key, value)]
+
+      _ ->
+        []
 
 
 substituteSelector selectors item =
@@ -76,6 +81,9 @@ flatten : List { name: String, properties: List (String, String) }
         -> List { name: String, properties: List (String, String) }
 flatten selectors node =
   case node of
+    KeyFrames _ _ ->
+      selectors
+
     Mixin nodes ->
       List.map (flatten []) nodes
       |> List.foldr (++) selectors
@@ -131,14 +139,61 @@ flatten selectors node =
         ]
         |> List.concat
 
+getKeyFrames : List Node -> String
+getKeyFrames nodes =
+  let
+    getFrame node =
+      case node of
+        KeyFrames name data -> [(name, data)]
+        SelectorNode nd -> frames nd.nodes
+        SelectorsNode nd ->
+          List.map (.nodes >> frames) nd
+          |> List.foldr (++) []
+        Mixin nds -> frames nds
+        PropertyNode _ _ -> []
+
+    frames nds =
+      List.map getFrame nds
+        |> List.foldr (++) []
+
+    allKeyframes = frames nodes
+
+    renderBody (step, properties) =
+      let
+        prop nd =
+          case nd of
+            PropertyNode key value -> [(key, value)]
+            _ -> []
+
+        props =
+          List.map prop properties
+          |> List.foldr (++) []
+      in
+        step ++ "{\n" ++ (renderProperties props) ++ "\n}"
+
+    renderKeyframe (name, body) =
+      let
+        renderedBody =
+          List.map renderBody body
+          |> String.join "\n"
+      in
+        "@keyframes " ++ name ++ " {\n"
+        ++ (renderedBody) ++ "\n}"
+  in
+    List.map renderKeyframe allKeyframes
+    |> String.join ""
+
 embed : List Node -> Html.Html msg
 embed nodes =
   let
+    keyframes =
+      getKeyFrames nodes
+
     flattened =
       List.map (flatten []) nodes
       |> List.foldr (++) []
   in
-    Html.node "style" [ ] [ text (render flattened) ]
+    Html.node "style" [ ] [ text (keyframes ++ (render flattened)) ]
 
 
 group : List { name: String, properties: List (String, String) } -> List { name: String, properties: List (String, String) }
@@ -156,19 +211,17 @@ group list =
     |> Dict.toList
     |> List.map (\(key,value) -> { name = key, properties = value })
 
+renderProperties properties  =
+  properties
+    |> List.Extra.uniqueBy Tuple.first
+    |> List.map (\(key, value) -> "  " ++ key ++ ": " ++ value ++ ";")
+    |> String.join("\n")
 
 render : List { name: String, properties: List (String, String) } -> String
 render selectors =
   let
     renderSelector selector =
-      let
-        body =
-          selector.properties
-          |> List.Extra.uniqueBy Tuple.first
-          |> List.map (\(key, value) -> "  " ++ key ++ ": " ++ value ++ ";")
-          |> String.join("\n")
-      in
-        selector.name ++ " {\n" ++ body ++ "\n}"
+      selector.name ++ " {\n" ++ (renderProperties selector.properties) ++ "\n}"
   in
     selectors
     |> group

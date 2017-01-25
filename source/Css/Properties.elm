@@ -18,6 +18,17 @@ type alias BoxShadow =
   , inset : Bool
   }
 
+type alias Animation =
+  { name : String
+  , duration : String
+  , easing : String
+  , delay : String
+  , iterationCount : String
+  , direction : String
+  , fillMode : String
+  , playState : String
+  }
+
 zero : String
 zero =
   "0"
@@ -417,6 +428,10 @@ minHeight : String -> Node
 minHeight =
   property "min-height"
 
+maxHeight : String -> Node
+maxHeight =
+  property "max-height"
+
 userSelect : String -> Node
 userSelect value =
   Css.mixin
@@ -429,11 +444,26 @@ userSelect value =
 type Transform
   = Scale Float
   | Rotate Float
+  | TranslateX String
+  | TranslateY String
+  | Translate String String
   | Translate3D String String String
 
 translate3d : String -> String -> String -> Transform
 translate3d =
   Translate3D
+
+translate : String -> String -> Transform
+translate =
+  Translate
+
+translateX : String -> Transform
+translateX =
+  TranslateX
+
+translateY : String -> Transform
+translateY =
+  TranslateY
 
 scale : Float -> Transform
 scale =
@@ -454,6 +484,9 @@ transform transforms =
       case item of
         Scale value -> "scale(" ++ (toString value) ++ ")"
         Rotate value -> "rotate(" ++ (toString value) ++ "deg)"
+        Translate x y -> "translate(" ++ x ++ "," ++ y ++ ")"
+        TranslateX x -> "translateX(" ++ x ++ ")"
+        TranslateY y -> "translateY(" ++ y ++ ")"
         Translate3D x y z -> "translate3d(" ++ x ++ "," ++ y ++ "," ++ z ++ ")"
 
     value =
@@ -484,6 +517,27 @@ boxShadow shadows =
         |> String.join ", "
   in
     property "box-shadow" value
+
+animation : List Animation -> Node
+animation animations =
+  let
+    render item =
+      [ item.name
+      , item.duration
+      , item.easing
+      , item.delay
+      , item.iterationCount
+      , item.direction
+      , item.fillMode
+      , item.playState
+      ]
+        |> String.join " "
+
+    value =
+      List.map render animations
+        |> String.join ", "
+  in
+    property "animation" value
 
 transition : List Transition -> Node
 transition transitions =

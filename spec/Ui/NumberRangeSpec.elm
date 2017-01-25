@@ -1,8 +1,6 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
+import Html exposing (div)
 
 import Ui.NumberRange
 import Ui.Container

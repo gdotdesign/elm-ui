@@ -181,7 +181,7 @@ getKeyFrames nodes =
         ++ (renderedBody) ++ "\n}"
   in
     List.map renderKeyframe allKeyframes
-    |> String.join ""
+    |> String.join "\n"
 
 embed : List Node -> Html.Html msg
 embed nodes =

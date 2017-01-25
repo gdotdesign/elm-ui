@@ -31,6 +31,9 @@ type alias Theme =
   , fontFamily: String
   , focusShadows: List BoxShadow
   , focusShadowsIdle: List BoxShadow
+  , zIndexes :
+    { notifications : Int
+    }
   }
 
 
@@ -65,5 +68,8 @@ default =
     , focus = { color = "#00C0FF", bw = "#FFF" }
     , borderDisabled = "#C7C7C7"
     , border = "#DDD"
+    }
+  , zIndexes =
+    { notifications = 2000
     }
   }

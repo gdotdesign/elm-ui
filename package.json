@@ -1,20 +1,7 @@
 {
-  "name": "elm-ui",
-  "version": "1.0.0",
-  "description": "UI Libary in Elm",
   "scripts": {
     "docs": "elm-make --docs=documentation.json",
     "start": "elm-reactor -p 8002"
-  },
-  "homepage": "https://github.com/gdotdesign/elm-ui#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gdotdesign/elm-ui.git"
-  },
-  "author": "",
-  "license": "BSD-2-Clause",
-  "bugs": {
-    "url": "https://github.com/gdotdesign/elm-ui/issues"
   },
   "dependencies": {
     "elm": "^0.18.0",

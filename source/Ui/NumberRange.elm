@@ -59,8 +59,8 @@ import Ui
   - **drag** - The drag model
 -}
 type alias Model =
-  { keyboardStep : Float
-  , inputValue : String
+  { inputValue : Maybe String
+  , keyboardStep : Float
   , startValue : Float
   , dragStep : Float
   , drag : Drag.Drag
@@ -102,13 +102,13 @@ type Msg
 -}
 init : () -> Model
 init _ =
-  { uid = Uid.uid ()
+  { inputValue = Nothing
+  , uid = Uid.uid ()
   , keyboardStep = 1
   , drag = Drag.init
   , disabled = False
   , readonly = False
   , editing = False
-  , inputValue = ""
   , startValue = 0
   , min = -(1 / 0)
   , max = (1 / 0)
@@ -214,7 +214,7 @@ update msg model =
       ( Drag.end model, Cmd.none )
 
     Input value ->
-      ( { model | inputValue = value }, Cmd.none )
+      ( { model | inputValue = Just value }, Cmd.none )
 
     Blur ->
       endEdit model
@@ -243,18 +243,22 @@ edit value select model =
     val =
       toFixed model.round value
 
+    selector =
+      DOM.idSelector model.uid
+
     selectOrFocus =
       if select then
-        DOM.select (DOM.idSelector model.uid)
+        DOM.focus selector
+        |> Task.andThen (\_ -> DOM.select selector)
       else
-        DOM.focus (DOM.idSelector model.uid)
+        DOM.focus selector
 
     cmd =
-      DOM.setValue val (DOM.idSelector model.uid)
+      DOM.setValue val selector
         |> Task.andThen (\_ -> selectOrFocus)
         |> Task.attempt NoOpTask
   in
-    ( { model | editing = True, inputValue = val }, cmd )
+    ( { model | editing = True, inputValue = Just val }, cmd )
 
 
 {-| Lazily renders a number range.
@@ -350,10 +354,13 @@ setValue value model =
     task =
       DOM.setValue val (DOM.idSelector model.uid)
   in
-    if model.value == value then
+    if model.value == value
+    && model.inputValue == Nothing
+    then
       ( model, Cmd.none)
     else
-      ( { model | value = clamped }, Task.attempt NoOpTask task )
+      ( { model | value = clamped, inputValue = Nothing }
+      , Task.attempt NoOpTask task )
 
 
 {-| Formats the given value.
@@ -418,6 +425,7 @@ endEdit model =
     value =
       if model.editing then
         model.inputValue
+          |> Maybe.withDefault "0"
           |> String.toFloat
           |> Result.withDefault 0
       else

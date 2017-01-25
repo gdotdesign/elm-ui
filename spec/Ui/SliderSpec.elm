@@ -12,8 +12,8 @@ import Ui.Styles.Container
 import Ui.Styles.Slider
 import Ui.Styles
 
-import Steps exposing (keyDown)
 import Json.Encode as Json
+import Steps exposing (..)
 
 view : Ui.Slider.Model -> Html.Html Ui.Slider.Msg
 view model =
@@ -36,24 +36,6 @@ assertPercent value =
     , style = "width"
     , value = (toString value) ++ "%"
     }
-
-mouseMove top left =
-  steps.dispatchEvent "mousemove"
-  (Json.object
-    [ ( "pageX", Json.int left )
-    , ( "pageY", Json.int top )
-    ]
-  )
-  "document"
-
-mouseDown left top selector =
-  steps.dispatchEvent "mousedown"
-  (Json.object
-    [ ( "pageX", Json.int left )
-    , ( "pageY", Json.int top )
-    ]
-  )
-  "ui-slider"
 
 specs : Node
 specs =
@@ -103,13 +85,7 @@ specs =
         , assertPercent 16.5
         , mouseMove 300 300
         , assertPercent 100
-        , steps.dispatchEvent
-          "mouseup"
-          (Json.object
-            [ ( "pageX", Json.int 0 )
-            , ( "pageY", Json.int 0 )
-            ])
-          "document"
+        , mouseUp
         , mouseMove 0 0
         , assertPercent 100
         ]

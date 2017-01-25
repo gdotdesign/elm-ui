@@ -136,10 +136,10 @@ style theme =
           [ selector "&:not(:empty)"
             [ backgroundColor theme.colors.disabledSecondary.color
             , color theme.colors.disabledSecondary.bw
-            , opacity 0.2
+            , opacity 0.5
             ]
           , selector "&[selected]"
-            [ opacity 0.5
+            [ opacity 1
             ]
           ]
         ]

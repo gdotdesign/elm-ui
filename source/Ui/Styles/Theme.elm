@@ -53,7 +53,7 @@ default =
   , colors =
     { background = { color = "#F5F5F5", bw = "#626262" }
     , disabled = { color = "#d7d7d7", bw = "#9a9a9a" }
-    , disabledSecondary = { color = "#979797", bw = "#e6e6e6" }
+    , disabledSecondary = { color = "#a9a9a9", bw = "#cecece" }
     , secondary = { color = "#5D7889", bw = "#FFF" }
     , warning = { color = "#FF9730 ", bw = "#FFF" }
     , primary = { color = "#158DD8", bw = "#FFF" }

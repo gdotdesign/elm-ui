@@ -179,6 +179,10 @@ colResize : String
 colResize =
   "col-resize"
 
+auto : String
+auto =
+  "auto"
+
 -- Properties
 
 textTransform : String -> Node

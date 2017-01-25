@@ -3,7 +3,7 @@ module Ui.Icons exposing (..)
 {-| This module contains icons for the components.
 
 @docs icon, close, checkmark, chevronRight, chevronLeft, plus, search
-@docs starFull, starEmpty
+@docs starFull, starEmpty, backspace
 -}
 
 import Svg.Attributes exposing (d, width, height, viewBox)
@@ -122,3 +122,24 @@ icon iconPath attributes =
   svg
     ([ width "36", height "36", viewBox "0 0 36 36" ] ++ attributes)
     [ path [ d iconPath ] [] ]
+
+
+{-| Backspace
+-}
+backspace : List (Html.Attribute msg) -> Html.Html msg
+backspace =
+  icon
+    """
+    M35.082 6.578c-.626-.626-1.424-.953-2.325-.953H11.813c-1.71
+    0-3.074.66-4.058 2L0 17.995 7.763 28.3l.012.017.013.016c.486.624 1.014
+    1.105 1.617 1.437.712.392 1.522.608 2.407.608h20.954c1.84 0 3.234-1.565
+    3.234-3.445v-18c0-.902-.292-1.726-.918-2.352zM29.07
+    23.365c.108.107.167.25.167.402 0 .15-.06.295-.167.4l-1.534
+    1.54c-.11.113-.255.168-.4.168-.146 0-.29-.055-.4-.167l-5.36-5.376-5.36
+    5.376c-.11.112-.256.167-.4.167-.146
+    0-.29-.055-.4-.167l-1.536-1.54c-.107-.106-.167-.25-.167-.4
+    0-.152.06-.296.167-.403L19.062 18l-5.396-5.365c-.22-.22-.22-.58
+    0-.803l1.533-1.54c.106-.108.25-.167.4-.167.15 0 .294.06.4.166l5.375 5.312
+    5.375-5.31c.106-.108.25-.167.4-.167.15 0 .294.06.4.166l1.534
+    1.542c.222.222.222.582 0 .803L23.69 18l5.38 5.365z
+    """

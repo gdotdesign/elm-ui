@@ -34,6 +34,7 @@
     "Ui.IconButton",
     "Ui.Icons",
     "Ui.Input",
+    "Ui.NumberPad",
     "Ui.NumberRange",
     "Ui.Pager",
     "Ui.Ratings",

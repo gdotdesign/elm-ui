@@ -1,7 +1,7 @@
 module Ext.Color exposing (..)
 
-{-| This module provides utility functions for colors and the ability to convert
-colors to HSV format.
+{-| This module provides utility functions for colors and the ability to
+convert colors to HSV format.
 
 # Representations
 @docs Hsv, Rgba

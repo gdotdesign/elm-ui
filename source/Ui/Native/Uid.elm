@@ -1,6 +1,7 @@
 module Ui.Native.Uid exposing (..)
 
 {-| Natively generate unique hash ids.
+
 # Functions
 @docs uid
 -}

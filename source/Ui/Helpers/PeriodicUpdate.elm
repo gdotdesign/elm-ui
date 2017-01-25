@@ -1,7 +1,9 @@
-effect module Ui.Helpers.PeriodicUpdate where { subscription = MySub } exposing (listen)
+effect module Ui.Helpers.PeriodicUpdate
+  where { subscription = MySub }
+  exposing (listen)
 
 {-| Effects module for calling all the subscribers simultaneously every 5
-seconds, created for an mainly used in Ui.Time.
+seconds, created for and mainly used in Ui.Time.
 
 @docs listen
 -}

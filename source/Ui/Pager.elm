@@ -1,4 +1,5 @@
-module Ui.Pager exposing (Model, Msg, init, update, view, render, select)
+module Ui.Pager exposing
+  (ViewModel, Model, Msg, init, update, view, render, select)
 
 {-| Pager Component.
 
@@ -34,7 +35,7 @@ type alias Model =
 
 
 {-| Representation of the view model of a pager.
-  - **address** - The address of messages
+  - **address** - The address for the messages
   - **pages** - The pages to display
 -}
 type alias ViewModel msg =
@@ -50,7 +51,7 @@ type Msg
   | End Int
 
 
-{-| Initailizes a pager with the given page as active.
+{-| Initailizes a pager.
 
     pager = Ui.Pager.init ()
 -}
@@ -64,7 +65,7 @@ init _ =
 
 {-| Updates a pager.
 
-    Ui.Pager.update msg pager
+    updatedPager = Ui.Pager.update msg pager
 -}
 update : Msg -> Model -> Model
 update action model =
@@ -78,7 +79,11 @@ update action model =
 
 {-| Lazily renders a pager.
 
-    Ui.Pager.view Pager pages pager
+    Ui.Pager.view
+      { address = Pager
+      , pages = pages
+      }
+      pager
 -}
 view : ViewModel msg -> Model -> Html.Html msg
 view viewModel model =
@@ -87,7 +92,11 @@ view viewModel model =
 
 {-| Renders a pager.
 
-    Ui.Pager.render Pager pages pager
+    Ui.Pager.render
+      { address = Pager
+      , pages = pages
+      }
+      pager
 -}
 render : ViewModel msg -> Model -> Html.Html msg
 render { address, pages } model =
@@ -99,33 +108,36 @@ render { address, pages } model =
 
         attributes =
           if List.member index model.left then
-            [ attribute "animating" ""
+            [ onTransitionEnd (decoder (address (End index)))
             , style [ ( "left", "-100%" ) ]
-            , onTransitionEnd (decoder (address (End index)))
+            , attribute "animating" ""
             ]
           else if List.member index model.center then
-            [ style [ ( "left", "0%" ) ]
+            [ onTransitionEnd (decoder (address (Active index)))
+            , style [ ( "left", "0%" ) ]
             , attribute "animating" ""
-            , onTransitionEnd (decoder (address (Active index)))
             ]
           else if index == model.active then
             [ style [ ( "left", "0%" ) ]
             ]
           else
-            [ style [ ( "left", "100%" ), ( "visibility", "hidden" ) ]
+            [ style
+              [ ( "visibility", "hidden" )
+              , ( "left", "100%" )
+              ]
             ]
       in
-        node "ui-page" ((property "_page" (JE.string (toString index))) :: attributes) [ page ]
+        node "ui-page"
+          ((property "_page" (JE.string (toString index))) :: attributes)
+          [ page ]
   in
-    node
-      "ui-pager"
-      []
-      (List.indexedMap renderPage pages)
+    node "ui-pager" [] (List.indexedMap renderPage pages)
 
 
 {-| Selects the page with the given index.
 
-    Ui.Pager.select 0 pager -- Selects the first page
+    -- Selects the first page
+    updatedPager = Ui.Pager.select 0 pager
 -}
 select : Int -> Model -> Model
 select page model =

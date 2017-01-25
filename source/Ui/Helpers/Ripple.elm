@@ -1,6 +1,6 @@
 module Ui.Helpers.Ripple exposing (..)
 
-{-| This is a module for adding a ripple effect to a HTML element.
+{-| This is a module for adding a ripple effect to an HTML element.
 
 # View
 @docs view

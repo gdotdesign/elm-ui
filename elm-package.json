@@ -9,18 +9,41 @@
   ],
   "native-modules": true,
   "exposed-modules": [
+    "Ext.Color",
+    "Ext.Date",
+    "Ext.Number",
+
+    "Html.Events.Extra",
+    "Html.Events.Options",
+
+    "Ui.Helpers.Drag",
+    "Ui.Helpers.Emitter",
+    "Ui.Helpers.PeriodicUpdate",
+    "Ui.Helpers.Ripple",
+    "Ui.Native.Uid",
+
     "Ui.Styles.Theme",
     "Ui.Styles",
+
     "Ui.Button",
     "Ui.ButtonGroup",
     "Ui.Calendar",
     "Ui.Checkbox",
     "Ui.ColorFields",
     "Ui.Container",
+    "Ui.IconButton",
     "Ui.Icons",
     "Ui.Input",
+    "Ui.NumberRange",
+    "Ui.Pager",
+    "Ui.Ratings",
+    "Ui.SearchInput",
+    "Ui.Slider",
+    "Ui.Tabs",
+    "Ui.Tagger",
     "Ui.Textarea",
-    "Ui.Time"
+    "Ui.Time",
+    "Ui"
   ],
   "dependencies": {
     "eskimoblood/elm-color-extra": "3.2.3 <= v < 4.0.0",

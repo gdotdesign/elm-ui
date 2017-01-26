@@ -16,14 +16,13 @@ style theme =
 
       , border ((px 1) . solid . theme.colors.border)
       , backgroundColor theme.colors.input.color
+      , transform [ translate3d zero zero zero ]
       , borderRadius theme.borderRadius
       , color theme.colors.input.bw
       , fontFamily theme.fontFamily
       , display inlineBlock
       , userSelect none
       , padding (px 15)
-
-      , transform [ translate3d zero zero zero ]
 
       , selector "> ui-container"
         [ borderBottom ((px 1) . dashed . theme.colors.border)

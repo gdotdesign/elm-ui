@@ -48,6 +48,14 @@ px : Int -> String
 px value =
   (toString value) ++ "px"
 
+vh : Int -> String
+vh value =
+  (toString value) ++ "vh"
+
+vw : Int -> String
+vw value =
+  (toString value) ++ "vw"
+
 em : Float -> String
 em value =
   (toString value) ++ "em"
@@ -431,6 +439,10 @@ minHeight =
 maxHeight : String -> Node
 maxHeight =
   property "max-height"
+
+maxWidth : String -> Node
+maxWidth =
+  property "max-width"
 
 userSelect : String -> Node
 userSelect value =

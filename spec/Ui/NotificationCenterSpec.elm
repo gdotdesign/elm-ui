@@ -54,11 +54,6 @@ view { notifications } =
     , button [ onClick Notify ] [ text "Notify" ]
     ]
 
-assertValue value =
-  assert.containsText
-    { selector = "ui-number-pad-value"
-    , text = toString value
-    }
 
 specs : Node
 specs =

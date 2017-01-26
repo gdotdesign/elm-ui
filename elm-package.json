@@ -34,6 +34,8 @@
     "Ui.IconButton",
     "Ui.Icons",
     "Ui.Input",
+    "Ui.Layout",
+    "Ui.Loader",
     "Ui.Modal",
     "Ui.NotificationCenter",
     "Ui.NumberPad",

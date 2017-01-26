@@ -63,7 +63,18 @@ assertValue value =
 specs : Node
 specs =
   describe "Ui.NotificationCenter"
-    [
+    [ it "displays notificaitons"
+      [ assert.not.elementPresent "ui-notification"
+      , steps.click "button"
+      , assert.elementPresent "ui-notification"
+      ]
+    , it "clicking on notification hides it"
+      [ assert.not.elementPresent "ui-notification"
+      , steps.click "button"
+      , assert.elementPresent "ui-notification"
+      , steps.click "ui-notification"
+      , assert.elementPresent "ui-notification[ui-notification-hide]"
+      ]
     ]
 
 main =

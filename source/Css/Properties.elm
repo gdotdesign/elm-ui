@@ -178,6 +178,10 @@ wrap : String
 wrap =
   "wrap"
 
+preWrap : String
+preWrap =
+  "pre-wrap"
+
 uppercase : String
 uppercase =
   "uppercase"
@@ -202,6 +206,10 @@ auto : String
 auto =
   "auto"
 
+italic : String
+italic =
+  "italic"
+
 -- Properties
 
 textTransform : String -> Node
@@ -211,6 +219,10 @@ textTransform =
 wordWrap : String -> Node
 wordWrap =
   property "word-wrap"
+
+wordBreak : String -> Node
+wordBreak =
+  property "word-break"
 
 fill : String -> Node
 fill =
@@ -316,6 +328,10 @@ fontSize : String -> Node
 fontSize =
   property "font-size"
 
+fontStyle : String -> Node
+fontStyle =
+  property "font-style"
+
 cursor : String -> Node
 cursor =
   property "cursor"
@@ -330,6 +346,10 @@ resize =
 
 content : String -> Node
 content value =
+  property "content" value
+
+contentString : String -> Node
+contentString value =
   property "content" ("\"" ++ value ++ "\"")
 
 padding : String -> Node

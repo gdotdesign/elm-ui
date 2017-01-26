@@ -4,14 +4,19 @@ module Ui.Textarea exposing
 
 {-| Textarea which uses a mirror object to render the contents the same way,
 thus creating an automatically growing textarea.
+
 # Model
 @docs Model, Msg, init, update
+
 # Events
 @docs onChange
+
 # DSL
 @docs placeholder, enterAllowed, defaultValue
+
 # View
 @docs view, render
+
 # Functions
 @docs setValue
 -}
@@ -22,6 +27,7 @@ import Html exposing (node, textarea, text, br)
 import Html.Events exposing (onInput)
 import Html.Lazy
 
+import Regex exposing (Regex)
 import String
 import Task
 import List
@@ -177,10 +183,30 @@ setValue value model =
     ( { model | value = value }, Task.attempt Done task )
 
 
+{-| Regexp for matching emtpy lines.
+-}
+spaceRegex : Regex
+spaceRegex =
+  Regex.regex "^\\s*$"
+
+
 {-| Processes the value for the mirror object.
 -}
 process : String -> List (Html.Html Msg)
 process value =
-  String.split "\n" value
-    |> List.map (\data -> node "span-line" [] [ text data ])
-    |> List.intersperse (br [] [])
+  let
+    renderLine data =
+      let
+        isEmpty =
+          Regex.contains spaceRegex data
+
+        attributes =
+          Ui.attributeList
+            [ ("empty", isEmpty )
+            ]
+      in
+        node "span-line" attributes [ text data ]
+  in
+    String.split "\n" value
+      |> List.map renderLine
+      |> List.intersperse (br [] [])

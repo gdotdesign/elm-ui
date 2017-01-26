@@ -1,8 +1,6 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
+import Html exposing (div)
 
 import Ui.Container
 import Ui.Checkbox
@@ -12,7 +10,7 @@ import Ui.Styles.Container
 import Ui.Styles.Checkbox
 import Ui.Styles
 
-import Steps exposing (keyDown)
+import Steps exposing (..)
 
 view : Ui.Checkbox.Model -> Html.Html Ui.Checkbox.Msg
 view model =

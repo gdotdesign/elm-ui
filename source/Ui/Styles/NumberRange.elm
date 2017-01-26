@@ -25,11 +25,11 @@ style theme =
       , borderStyle solid
       , position absolute
       , marginTop (px -5)
+      , contentString ""
       , top (pct 50)
       , opacity 0.5
       , height zero
       , width zero
-      , content ""
       , zIndex 1
       ]
 

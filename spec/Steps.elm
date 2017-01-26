@@ -4,6 +4,13 @@ import Spec exposing (steps, Outcome)
 import Task exposing (Task)
 import Json.Encode as Json
 
+dispatchInput : String -> Task Never Outcome
+dispatchInput selector =
+  steps.dispatchEvent
+    "input"
+    (Json.object [])
+    selector
+
 clickSvg : String -> Task Never Outcome
 clickSvg selector =
   steps.dispatchEvent

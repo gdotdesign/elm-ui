@@ -56,9 +56,9 @@ style theme =
 
     , selector "&:after"
       [ position absolute
+      , contentString ""
       , bottom (px -24)
       , height (px 24)
-      , content ""
       , right zero
       , left zero
       , zIndex 2
@@ -85,6 +85,13 @@ style theme =
       , left zero
       , top zero
       , zIndex 1
+
+      , Mixins.placeholder
+        [ textOverflow ellipsis
+        , whiteSpace nowrap
+        , overflow hidden
+        , display block
+        ]
       ]
 
     , selector "ui-textarea-mirror"
@@ -97,8 +104,8 @@ style theme =
       , userSelect none
       , display block
 
-      , selector "span-line:empty:before"
-        [ content "a"
+      , selector "span-line[empty]:before"
+        [ contentString "a"
         ]
       ]
     ]

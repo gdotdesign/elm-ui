@@ -2,8 +2,10 @@ module Ui.Time exposing (Model, Msg, init, subscriptions, update, view, render)
 
 {-| A component that displays time with a formatting function (defaults to
 relative time like: 10 minutes ago).
+
 # Model
 @docs Model, Msg, init, subscriptions, update
+
 # View
 @docs view, render
 -}

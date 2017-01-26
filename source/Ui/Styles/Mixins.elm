@@ -5,6 +5,18 @@ import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 
+placeholder : List Node -> Node
+placeholder nodes =
+  mixin
+    [ selectors
+      [ "&::-webkit-input-placeholder"
+      , "&::-moz-placeholder"
+      , "&:-ms-input-placeholder"
+      , "&:-moz-placeholder"
+      ] nodes
+    ]
+
+
 defaults : Node
 defaults =
   mixin

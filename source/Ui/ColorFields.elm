@@ -19,8 +19,8 @@ along with the ability to set it with a hex (#FFFFFF) value.
 
 import Html.Attributes exposing ( type_, defaultValue, id, spellcheck
                                 , readonly, disabled )
-import Html exposing (node, div, input, text, span)
 import Html.Events exposing (onBlur, onInput, on)
+import Html exposing (node, input, text)
 import Html.Lazy
 
 import Ext.Color exposing (Hsv, decodeHsv, encodeHsv)

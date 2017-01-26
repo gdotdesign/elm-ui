@@ -11,6 +11,7 @@ style : Theme -> Node
 style theme =
   mixin
     [ Container.style theme
+
     , selector "ui-calendar"
       [ Mixins.defaults
 

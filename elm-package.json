@@ -33,6 +33,7 @@
     "Ui.Container",
     "Ui.IconButton",
     "Ui.Icons",
+    "Ui.Image",
     "Ui.InplaceInput",
     "Ui.Input",
     "Ui.Layout",

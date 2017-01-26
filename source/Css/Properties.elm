@@ -240,6 +240,10 @@ backgroundColor : String -> Node
 backgroundColor =
   property "background-color"
 
+backgroundSize : String -> Node
+backgroundSize =
+  property "background-size"
+
 background : String -> Node
 background =
   property "background"
@@ -247,6 +251,10 @@ background =
 backgroundClip : String -> Node
 backgroundClip =
   property "background-clip"
+
+backgroundPositionX : String -> Node
+backgroundPositionX =
+  property "background-position-x"
 
 boxSizing : String -> Node
 boxSizing =

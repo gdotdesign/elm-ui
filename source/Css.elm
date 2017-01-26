@@ -193,7 +193,7 @@ embed nodes =
       List.map (flatten []) nodes
       |> List.foldr (++) []
   in
-    Html.node "style" [ ] [ text (keyframes ++ (render flattened)) ]
+    Html.node "style" [ ] [ text (keyframes ++ "\n\n" ++ (render flattened)) ]
 
 
 group : List { name: String, properties: List (String, String) } -> List { name: String, properties: List (String, String) }

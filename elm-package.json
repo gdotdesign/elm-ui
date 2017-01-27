@@ -17,9 +17,12 @@
     "Html.Events.Options",
 
     "Ui.Helpers.Drag",
+    "Ui.Helpers.Dropdown",
     "Ui.Helpers.Emitter",
     "Ui.Helpers.PeriodicUpdate",
     "Ui.Helpers.Ripple",
+
+    "Ui.Native.Scrolls",
     "Ui.Native.Uid",
 
     "Ui.Styles.Theme",
@@ -31,6 +34,7 @@
     "Ui.Checkbox",
     "Ui.ColorFields",
     "Ui.Container",
+    "Ui.DropdownMenu",
     "Ui.IconButton",
     "Ui.Icons",
     "Ui.Image",

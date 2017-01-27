@@ -33,6 +33,7 @@ type alias Theme =
   , focusShadowsIdle: List BoxShadow
   , zIndexes :
     { notifications : Int
+    , dropdown : Int
     , modal : Int
     }
   }
@@ -72,6 +73,7 @@ default =
     }
   , zIndexes =
     { notifications = 2000
-    , modal = 1000
+    , dropdown = 1000
+    , modal = 100
     }
   }

@@ -38,6 +38,17 @@ mouseMove top left =
   "document"
 
 
+clickOn : String -> Int -> Int -> Task Never Outcome
+clickOn selector top left =
+  steps.dispatchEvent "click"
+  (Json.object
+    [ ( "pageX", Json.int left )
+    , ( "pageY", Json.int top )
+    ]
+  )
+  selector
+
+
 mouseDown : Int -> Int -> String -> Task Never Outcome
 mouseDown left top selector =
   steps.dispatchEvent "mousedown"

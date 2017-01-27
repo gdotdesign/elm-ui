@@ -1,11 +1,11 @@
 module Ui exposing
-  ( title, subTitle, panel, spacer, inputGroup, stylesheetLink, tabIndex, fab,
+  ( title, subTitle, panel, inputGroup, stylesheetLink, tabIndex, fab,
     textBlock, enabledActions, breadcrumbs, scrolledPanel, link, attributeList )
 
 {-| UI Library for Elm!
 
 # Static Components
-@docs title, subTitle, panel, spacer, stylesheetLink, inputGroup
+@docs title, subTitle, panel, stylesheetLink, inputGroup
 @docs fab, textBlock, breadcrumbs, scrolledPanel, link
 
 # Helper Functions
@@ -119,15 +119,6 @@ enabledActions model attributes =
     []
   else
     attributes
-
-
-{-| Renders a spacer element.
-
-    Ui.spacer
--}
-spacer : Html.Html msg
-spacer =
-  node "ui-spacer" [] []
 
 
 {-| Renders a floating action button.

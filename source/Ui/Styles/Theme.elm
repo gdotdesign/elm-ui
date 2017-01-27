@@ -12,6 +12,14 @@ import Css.Properties exposing (..)
 -}
 type alias Theme =
   { borderRadius: String
+  , header :
+    { colors :
+      { backgroundBottom : String
+      , backgroundTop : String
+      , border : String
+      , text : String
+      }
+    }
   , colors:
     { background: { color: String, bw: String }
     , disabledSecondary: { color: String, bw: String }
@@ -34,6 +42,7 @@ type alias Theme =
   , zIndexes :
     { notifications : Int
     , dropdown : Int
+    , header : Int
     , modal : Int
     }
   }
@@ -75,5 +84,15 @@ default =
     { notifications = 2000
     , dropdown = 1000
     , modal = 100
+    , header = 50
+    }
+  , header =
+    { colors =
+      { backgroundBottom = "#158DD8"
+      , backgroundTop = "#1692df"
+      , border = "#137fc2"
+      , text = "#FFF"
+      }
+    ,
     }
   }

@@ -26,7 +26,7 @@ import Dict
 the control key or the middle mouse button is not pressed.
 
 It works this way to not to hinder the browsers basic ability to open
-the link on in new pages.
+the link in new pages.
 -}
 unobtrusiveClick : msg -> Html.Attribute msg
 unobtrusiveClick msg =

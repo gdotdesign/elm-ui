@@ -35,6 +35,7 @@
     "Ui.ColorFields",
     "Ui.Container",
     "Ui.DropdownMenu",
+    "Ui.Header",
     "Ui.IconButton",
     "Ui.Icons",
     "Ui.Image",

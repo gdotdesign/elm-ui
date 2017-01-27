@@ -1,7 +1,6 @@
 import Spec exposing (..)
 
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
 import Html exposing (div, text)
 
 import Ui.Container
@@ -12,7 +11,7 @@ import Ui.Styles.Container
 import Ui.Styles.Button
 import Ui.Styles
 
-import Steps exposing (keyDown)
+import Steps exposing (..)
 
 type alias Model
   = String

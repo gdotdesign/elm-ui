@@ -222,7 +222,11 @@ form model =
       , onKeys False [ ( 27, Close ) ]
       ]
       [ Html.map Textarea (Ui.Textarea.view model.textarea)
-      , Ui.Container.row
+      , Ui.Container.view
+          { compact = True
+          , direction = "row"
+          , align = "stretch"
+          }
           []
           [ Ui.Button.view
               Save
@@ -232,7 +236,6 @@ form model =
               , size = "medium"
               , text = "Save"
               }
-          , Ui.spacer
           , Ui.Button.view
               Close
               { disabled = False

@@ -69,7 +69,19 @@ view ({ disabled, readonly } as model) =
 specs : Node
 specs =
   describe "Ui.DatePicker"
-    [
+    [ it "has tabindex"
+      [ assert.elementPresent "ui-picker[ui-date-picker][tabindex]"
+      ]
+    , context "disabled"
+      [ it "does not have tabindex"
+        [ assert.not.elementPresent "ui-picker[ui-date-picker][disabled][tabindex]"
+        ]
+      ]
+    , context "readonly"
+      [ it "has tabindex"
+        [ assert.elementPresent "ui-picker[ui-date-picker][readonly][tabindex]"
+        ]
+      ]
     ]
 
 main =

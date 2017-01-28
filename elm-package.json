@@ -19,6 +19,7 @@
     "Ui.Helpers.Drag",
     "Ui.Helpers.Dropdown",
     "Ui.Helpers.Emitter",
+    "Ui.Helpers.Picker",
     "Ui.Helpers.PeriodicUpdate",
     "Ui.Helpers.Ripple",
 
@@ -34,6 +35,7 @@
     "Ui.Checkbox",
     "Ui.ColorFields",
     "Ui.Container",
+    "Ui.DatePicker",
     "Ui.DropdownMenu",
     "Ui.Header",
     "Ui.IconButton",

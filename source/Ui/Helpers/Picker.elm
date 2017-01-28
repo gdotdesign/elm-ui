@@ -37,6 +37,7 @@ type alias ViewModel msg =
   { dropdownContents : List (Html.Html msg)
   , attributes : List (Html.Attribute msg)
   , contents : List (Html.Html msg)
+  , keyActions : List (Int, msg)
   , address : Msg -> msg
   , class : String
   }
@@ -102,9 +103,9 @@ view ({ address } as viewModel) model =
          , onFocus (address Focus)
          , onBlur (address Blur)
          , onKeys False
-            [ ( 13, (address Toggle) )
-            , ( 27, (address Close) )
-            ]
+            ([ ( 13, (address Toggle) )
+             , ( 27, (address Close) )
+             ] ++ viewModel.keyActions)
          ]
           ++ viewModel.attributes
         )

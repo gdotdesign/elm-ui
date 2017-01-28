@@ -13,4 +13,21 @@ style theme =
   mixin
     [ Calendar.style theme
     , Picker.style theme
+
+    , selector "*[ui-date-picker] ui-calendar"
+      [ borderColor transparent
+      ]
+
+    , selector "ui-date-picker-content"
+      [ Mixins.ellipsis
+
+      , marginRight (px 10)
+
+      , selector "+ svg"
+        [ fill currentColor
+        , marginLeft auto
+        , height (px 16)
+        , width (px 16)
+        ]
+      ]
     ]

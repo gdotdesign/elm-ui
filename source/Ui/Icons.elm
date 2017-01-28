@@ -3,12 +3,29 @@ module Ui.Icons exposing (..)
 {-| This module contains icons for the components.
 
 @docs icon, close, checkmark, chevronRight, chevronLeft, plus, search
-@docs starFull, starEmpty, backspace
+@docs starFull, starEmpty, backspace, calendar
 -}
 
 import Svg.Attributes exposing (d, width, height, viewBox)
 import Svg exposing (svg, path)
 import Html
+
+{-| Calendar
+-}
+calendar : List (Html.Attribute msg) -> Html.Html msg
+calendar =
+  icon
+    """
+    M9 0C7.578 0 6.428 1.15 6.428 2.572v2.57c0 1.423 1.15 2.573 2.572 2.573
+    1.422 0 2.572-1.15 2.572-2.572v-2.57C11.572 1.15 10.422 0 9 0zm18 0c-1.422
+    0-2.572 1.15-2.572 2.572v2.57c0 1.423 1.15 2.573 2.572 2.573 1.422 0
+    2.572-1.15 2.572-2.572v-2.57C29.572 1.15 28.422 0 27 0zM.643 2.572c-.354
+    0-.643.29-.643.643v32.142c0 .354.29.643.643.643h34.714c.354 0
+    .643-.29.643-.643V3.215c0-.354-.29-.643-.643-.643h-4.5v3.27C30.857 7.65
+    28.993 9 27.064 9c-1.928 0-3.92-1.35-3.92-3.158v-3.27H12.856v3.27C12.857
+    7.65 10.93 9 9 9 7.07 9 5.143 7.65 5.143 5.842v-3.27h-4.5zm3.214
+    9h28.286v20.57H3.857v-20.57z
+    """
 
 
 {-| Star empty

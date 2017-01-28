@@ -21,8 +21,7 @@ focused, allowing the user to manipulate the selected date.
 @docs setValue
 -}
 
-import Html exposing (node, div, text, span)
-import Html.Events.Extra exposing (onKeys)
+import Html exposing (node, text)
 import Html.Lazy
 
 import Date.Extra.Format exposing (isoDateFormat, format)
@@ -34,6 +33,7 @@ import Ui.Helpers.Dropdown as Dropdown exposing (Dropdown)
 import Ui.Helpers.Picker as Picker
 import Ui.Native.Uid as Uid
 import Ui.Calendar
+import Ui.Icons
 import Ui
 
 
@@ -191,17 +191,16 @@ render locale model =
     Picker.view
       { address = Picker
       , class = "ui-date-picker"
-      , attributes =
-        [ onKeys True
-          [ ( 40, Increment )
-          , ( 38, Decrement )
-          , ( 39, Increment )
-          , ( 37, Decrement )
-          ]
+      , attributes = []
+      , keyActions =
+        [ ( 40, Increment )
+        , ( 38, Decrement )
+        , ( 39, Increment )
+        , ( 37, Decrement )
         ]
       , contents =
-          [ span [] [ text dateText ]
-          --, Ui.icon "calendar" False []
+          [ node "ui-date-picker-content" [] [ text dateText ]
+          , Ui.Icons.calendar []
           ]
       , dropdownContents =
         [ Html.map Calendar (Ui.Calendar.view locale model.calendar) ]

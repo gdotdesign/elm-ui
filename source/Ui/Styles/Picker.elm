@@ -20,17 +20,18 @@ style theme =
       , borderRadius theme.borderRadius
       , fontFamily theme.fontFamily
       , color theme.colors.input.bw
-      , display inlineFlex
       , minWidth (px 220)
       , height (px 36)
 
       , selector "ui-picker-input"
         [ padding ((px 6) . (px 9))
-        , lineHeight (px 23)
+        , alignItems center
         , position relative
         , userSelect none
         , cursor pointer
-        , display block
+        , height (px 22)
+        , display flex
+        , flex_ "1"
         ]
 
       , selector "&:focus"
@@ -39,6 +40,15 @@ style theme =
 
       , selector "&[readonly] ui-picker-input"
         [ Mixins.readonly
+        ]
+
+      , selector "&[disabled] ui-picker-input"
+        [ Mixins.disabledColors theme
+        , Mixins.disabled
+
+        , property "-webkit-filter" "saturate(0)"
+        , property "filter" "saturate(0)"
+        , borderColor transparent
         ]
       ]
     ]

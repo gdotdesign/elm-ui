@@ -39,7 +39,7 @@ type alias ViewModel msg =
   , contents : List (Html.Html msg)
   , keyActions : List (Int, msg)
   , address : Msg -> msg
-  , class : String
+  , kind : String
   }
 
 
@@ -120,7 +120,7 @@ view ({ address } as viewModel) model =
       [ Ui.attributeList
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
-          , ( viewModel.class, True )
+          , ( viewModel.kind, True )
           ]
       , actions
       , Ui.tabIndex model

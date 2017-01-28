@@ -1,8 +1,17 @@
 module Steps exposing (..)
 
+import Spec.Assertions exposing (pass, error)
 import Spec exposing (steps, Outcome)
 import Task exposing (Task)
 import Json.Encode as Json
+import DOM
+
+focus : String -> Task Never Outcome
+focus selector =
+  DOM.focus selector
+  |> Task.map (\_ -> pass ("Focused " ++ selector))
+  |> Task.onError (\err ->
+    Task.succeed (error ("Could not focus element " ++ selector)))
 
 dispatchInput : String -> Task Never Outcome
 dispatchInput selector =

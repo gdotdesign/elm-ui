@@ -11,6 +11,7 @@ import Ui.Styles.Container
 import Ui.Styles
 
 import Steps exposing (..)
+import Json.Encode as Json
 
 type alias Model =
   { enabled : Ui.DatePicker.Model
@@ -72,14 +73,41 @@ specs =
     [ it "has tabindex"
       [ assert.elementPresent "ui-picker[ui-date-picker][tabindex]"
       ]
-    , context "disabled"
+    , context "Disabled"
       [ it "does not have tabindex"
         [ assert.not.elementPresent "ui-picker[ui-date-picker][disabled][tabindex]"
         ]
       ]
-    , context "readonly"
+    , context "Readonly"
       [ it "has tabindex"
         [ assert.elementPresent "ui-picker[ui-date-picker][readonly][tabindex]"
+        ]
+      ]
+    , context "Open"
+      [ before
+        [ assert.not.elementPresent "ui-dropdown-panel[open]"
+        , focus "ui-picker"
+        , assert.elementPresent "ui-dropdown-panel[open]"
+        ]
+      , it "toggles on mousedown"
+        [ steps.dispatchEvent "mousedown" (Json.object []) "ui-picker-input"
+        , assert.not.elementPresent "ui-dropdown-panel[open]"
+        , steps.dispatchEvent "mousedown" (Json.object []) "ui-picker-input"
+        , assert.elementPresent "ui-dropdown-panel[open]"
+        ]
+      , context "Keys"
+        [ it "toggles on enter"
+          [ keyDown 13 "ui-picker"
+          , assert.not.elementPresent "ui-dropdown-panel[open]"
+          , keyDown 13 "ui-picker"
+          , assert.elementPresent "ui-dropdown-panel[open]"
+          ]
+        , it "closes on esc"
+          [ keyDown 27 "ui-picker"
+          , assert.not.elementPresent "ui-dropdown-panel[open]"
+          , keyDown 27 "ui-picker"
+          , assert.not.elementPresent "ui-dropdown-panel[open]"
+          ]
         ]
       ]
     ]

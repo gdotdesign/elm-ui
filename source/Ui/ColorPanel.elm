@@ -30,6 +30,8 @@ import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
+import Ext.Number
+
 import DOM exposing (Position)
 
 {-| Representation of a color panel:
@@ -134,8 +136,8 @@ onChange msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ Drag.onMove MoveAlpha model.alphaDrag
-    , ColorFields.onChange SetValue model.fields
+    [ ColorFields.onChange SetValue model.fields
+    , Drag.onMove MoveAlpha model.alphaDrag
     , Drag.onMove MoveHue model.hueDrag
     , Drag.onMove MoveRect model.drag
     , Drag.onEnd End model.alphaDrag
@@ -218,7 +220,7 @@ render ({ fields } as model) =
       "linear-gradient(90deg, " ++ colorTransparent ++ "," ++ colorFull ++ ")"
 
     asPercent value =
-      (toString (value * 100)) ++ "%"
+      (toString (Ext.Number.roundTo 2 (value * 100))) ++ "%"
 
     action act =
       Ui.enabledActions
@@ -288,10 +290,6 @@ setValue color model =
       ColorFields.setValue hsv model.fields
   in
     ( { model | value = hsv, fields = fields }, Cmd.map Fields cmd )
-
-
-
---------------------------------- PRIVATE --------------------------------------
 
 
 {-| Updates a color panel color by coordinates.

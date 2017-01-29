@@ -57,6 +57,7 @@ style theme =
       , property "-moz-appearance" "textfield"
       , padding ((px 3) . (px 4) . (px 4))
       , borderRadius theme.borderRadius
+      , color theme.colors.input.bw
       , fontFamily theme.fontFamily
       , textTransform uppercase
       , boxSizing borderBox

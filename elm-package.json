@@ -33,6 +33,7 @@
     "Ui.ButtonGroup",
     "Ui.Calendar",
     "Ui.Checkbox",
+    "Ui.ColorPanel",
     "Ui.ColorFields",
     "Ui.Container",
     "Ui.DatePicker",

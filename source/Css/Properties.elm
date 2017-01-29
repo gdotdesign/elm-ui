@@ -198,6 +198,10 @@ bold : String
 bold =
   "bold"
 
+rowResize : String
+rowResize =
+  "row-resize"
+
 colResize : String
 colResize =
   "col-resize"
@@ -312,6 +316,10 @@ borderRightColor : String -> Node
 borderRightColor =
   property "border-right-color"
 
+borderTopColor : String -> Node
+borderTopColor =
+  property "border-top-color"
+
 borderColor : String -> Node
 borderColor =
   property "border-color"
@@ -359,6 +367,10 @@ padding =
 paddingLeft : String -> Node
 paddingLeft =
   property "padding-left"
+
+paddingTop : String -> Node
+paddingTop =
+  property "padding-top"
 
 paddingRight : String -> Node
 paddingRight =

@@ -9,10 +9,8 @@ import Ui.Styles.Mixins as Mixins
 style : Theme -> Node
 style theme =
   mixin
-    [ selector "*[dropdown]"
-      [ Mixins.defaults
-      , display inlineBlock
-      ]
+    [ Mixins.defaults
+    , display inlineBlock
 
     , selector "ui-dropdown-panel"
       [ border ((px 1) . solid . theme.colors.border)

@@ -43,7 +43,6 @@ import DOM.Window
 import Ui.Native.Scrolls as Scrolls
 import Ui
 
-
 {-| Representation of the direction where the dropdown opens:
     * Horizontal - either left or right
     * Vertical - either top or bottom

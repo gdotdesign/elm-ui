@@ -18,6 +18,7 @@
 
     "Ui.Helpers.Drag",
     "Ui.Helpers.Dropdown",
+    "Ui.Helpers.Env",
     "Ui.Helpers.Emitter",
     "Ui.Helpers.Picker",
     "Ui.Helpers.Intendable",
@@ -25,6 +26,7 @@
     "Ui.Helpers.Ripple",
 
     "Ui.Native.Scrolls",
+    "Ui.Native.FileManager",
     "Ui.Native.Uid",
 
     "Ui.Styles.Theme",
@@ -74,8 +76,10 @@
     "gdotdesign/elm-spec": "1.0.12 <= v <= 2.0.0",
     "gdotdesign/elm-dom": "0.1.5 <= v < 1.0.0",
     "ggb/numeral-elm": "1.2.1 <= v < 2.0.0",
+    "Skinney/murmur3": "2.0.4 <= v < 3.0.0",
     "elm-lang/window": "1.0.1 <= v < 2.0.0",
     "elm-lang/mouse": "1.0.1 <= v < 2.0.0",
+    "elm-lang/lazy": "2.0.0 <= v < 3.0.0",
     "elm-lang/http": "1.0.0 <= v < 4.0.0",
     "elm-lang/html": "2.0.0 <= v < 3.0.0",
     "elm-lang/core": "5.0.0 <= v < 6.0.0",

@@ -18,10 +18,14 @@ module Ui.Container exposing
 @docs column, columnEnd, columnCenter
 -}
 
-import Html.Attributes exposing (attribute)
+import Html.Attributes exposing (attribute, property)
 import Html exposing (node)
 import Html.Lazy
 
+import Ui.Styles.Container
+import Ui.Styles
+
+import Lazy exposing (Lazy)
 
 {-| Representation of a container:
   - **align** - Either "start", "center", "space-between", "space-around" or "end"
@@ -119,6 +123,13 @@ columnOptions =
   }
 
 
+{-| Default style attributes.
+-}
+defaultStyleAttributes : Lazy (List (Html.Attribute msg))
+defaultStyleAttributes =
+  Ui.Styles.attributes Ui.Styles.Container.defaultStyle
+
+
 {-| Returns basic attributes for a container.
 -}
 basAttributes : Model -> List (Html.Attribute msg)
@@ -132,4 +143,4 @@ basAttributes model =
   in
     [ attribute "direction" model.direction
     , attribute "align" model.align
-    ] ++ compact
+    ] ++ compact ++ (Lazy.force defaultStyleAttributes)

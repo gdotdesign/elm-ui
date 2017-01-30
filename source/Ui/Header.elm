@@ -23,6 +23,7 @@ import Html exposing (node, text)
 import Maybe.Extra exposing (isJust)
 
 import Ui.Helpers.Ripple as Ripple
+import Ui.Link
 import Ui
 
 
@@ -98,7 +99,7 @@ icon model =
     ((itemAttributes model)
       ++ [ style [ ( "font-size", (toString model.size) ++ "px" ) ] ]
     )
-    [ Ui.link model.action
+    [ Ui.Link.view model.action
         model.link
         model.target
         [ Ripple.view
@@ -121,7 +122,7 @@ title : Title msg -> Html.Html msg
 title model =
   node "ui-header-title"
     (itemAttributes model)
-    [ Ui.link model.action
+    [ Ui.Link.view model.action
         model.link
         model.target
         [ node "span" [] [ text model.text ]
@@ -160,7 +161,7 @@ item : Item msg -> Html.Html msg
 item model =
   node "ui-header-item"
     (itemAttributes model)
-    [ Ui.link model.action
+    [ Ui.Link.view model.action
         model.link
         model.target
         [ node "span" [] [ text model.text ]
@@ -195,7 +196,12 @@ iconItem model =
   in
     node "ui-header-icon-item"
       (itemAttributes model)
-      [ Ui.link model.action model.link model.target (Ripple.view :: children) ]
+      [ Ui.Link.view
+          model.action
+          model.link
+          model.target
+          (Ripple.view :: children)
+      ]
 
 
 {-| Returns attributes for an item.

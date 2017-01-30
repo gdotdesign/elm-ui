@@ -6,8 +6,6 @@ import Ui.Container
 import Ui.DropdownMenu
 
 import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.DropdownMenu
 import Ui.Styles
 
 import Steps exposing (..)
@@ -46,11 +44,8 @@ view : Model -> Html.Html Msg
 view { dropdown } =
   div
     [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.DropdownMenu.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.DropdownMenu.view viewModel dropdown
+    [ Ui.DropdownMenu.view viewModel dropdown
+    , Ui.Container.row [] []
     ]
 
 (=>) = (,)

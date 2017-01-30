@@ -1,13 +1,17 @@
-module Ui.Styles.Container exposing (style)
+module Ui.Styles.Container exposing (style, defaultStyle)
 
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 
+defaultStyle : Node
+defaultStyle =
+  style Theme.default
+
 style : Theme -> Node
 style theme =
-  selector "ui-container"
+  mixin
     [ display flex
 
     , selector "&[direction=row]"

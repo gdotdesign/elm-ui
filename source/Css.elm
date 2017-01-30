@@ -183,8 +183,8 @@ getKeyFrames nodes =
     List.map renderKeyframe allKeyframes
     |> String.join "\n"
 
-embed : List Node -> Html.Html msg
-embed nodes =
+resolve : List Node -> String
+resolve nodes =
   let
     keyframes =
       getKeyFrames nodes
@@ -193,8 +193,11 @@ embed nodes =
       List.map (flatten []) nodes
       |> List.foldr (++) []
   in
-    Html.node "style" [ ] [ text (keyframes ++ "\n\n" ++ (render flattened)) ]
+    (keyframes ++ "\n\n" ++ (render flattened))
 
+embed : List Node -> Html.Html msg
+embed nodes =
+  Html.node "style" [ ] [ text (resolve nodes) ]
 
 group : List { name: String, properties: List (String, String) } -> List { name: String, properties: List (String, String) }
 group list =

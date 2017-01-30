@@ -6,11 +6,6 @@ import Html exposing (div, text)
 import Ui.Container
 import Ui.Button
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.Button
-import Ui.Styles
-
 import Steps exposing (..)
 
 type alias Model
@@ -36,11 +31,7 @@ view model =
   in
     div
       [ ]
-      [ Ui.Styles.embedSome
-        [ Ui.Styles.Container.style
-        , Ui.Styles.Button.style
-        ] default
-      , Ui.Container.column []
+      [ Ui.Container.column []
         [ Ui.Container.row []
           [ Ui.Button.view Set
             { button | text = "Primary",   kind = "primary"   }

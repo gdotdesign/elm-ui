@@ -1,6 +1,18 @@
 var _gdotdesign$elm_ui$Native_Styles = function() {
   var currentStyles = {}
 
+  if(window.MutationObserver) {
+    new MutationObserver(function (mutations) {
+      patchStyles()
+    }).observe(document.body, { childList: true, subtree: true });
+  } else {
+    var id = setInterval(function(){
+      // TODO: Check if emspec finished...
+      if(document.querySelector('[class^=row]')) { clearInterval(id) }
+      patchStyles()
+    })
+  }
+
   function patchStyles(){
     var currentNode
     var tags = {}
@@ -18,6 +30,7 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
 
     for(var id in nextStyles) {
       if(currentStyles[id]) {
+        nextStyles[id] = currentStyles[id]
         delete currentStyles[id]
       } else {
         var style = document.createElement('style')

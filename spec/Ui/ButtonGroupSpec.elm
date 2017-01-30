@@ -48,7 +48,7 @@ specs =
         [ assert.styleEquals
           { selector = "ui-button:first-child"
           , style = "border-radius"
-          , value = "2px 0px 0px 2px"
+          , value = "2px"
           }
         ]
       ]

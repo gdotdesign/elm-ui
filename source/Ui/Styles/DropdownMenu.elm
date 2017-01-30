@@ -1,4 +1,4 @@
-module Ui.Styles.DropdownMenu exposing (style, defaultStyleAttributes)
+module Ui.Styles.DropdownMenu exposing (style, defaultStyle)
 
 import Css.Properties exposing (..)
 import Css exposing (..)
@@ -6,17 +6,10 @@ import Css exposing (..)
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Dropdown as Dropdown
 import Ui.Styles.Mixins as Mixins
-import Ui.Styles
+import Ui.Styles exposing (Style)
 
-import Lazy exposing (Lazy)
-import Html
-
-defaultStyleAttributes : List (Html.Attribute msg)
-defaultStyleAttributes =
-  Lazy.force defaultStyleAttributesLazy
-
-defaultStyleAttributesLazy : Lazy (List (Html.Attribute msg))
-defaultStyleAttributesLazy =
+defaultStyle : Style
+defaultStyle =
   Ui.Styles.attributes (style Theme.default)
 
 style : Theme -> Node

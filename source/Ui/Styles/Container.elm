@@ -4,10 +4,11 @@ import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
+import Ui.Styles exposing (Style)
 
-defaultStyle : Node
+defaultStyle : Style
 defaultStyle =
-  style Theme.default
+  Ui.Styles.attributes (style Theme.default)
 
 style : Theme -> Node
 style theme =

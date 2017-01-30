@@ -9,8 +9,6 @@ import Ui.Styles.Button
 style : Theme -> Node
 style theme =
   selector "ui-icon-button"
-    (Ui.Styles.Button.styles theme
-    ++
     [ selector "ui-icon-button-icon + span:not(:empty)"
       [ marginLeft (em 0.625)
       ]
@@ -45,4 +43,3 @@ style theme =
       , width (px 10)
       ]
     ]
-    )

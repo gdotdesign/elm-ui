@@ -21,6 +21,9 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
+import Ui.Styles.Button exposing (defaultStyle)
+import Ui.Styles
+
 import Ui.Helpers.Ripple as Ripple
 import Ui
 
@@ -109,6 +112,7 @@ attributes msg model =
     [ [ attribute "size" model.size
       , attribute "kind" model.kind
       ]
+    , Ui.Styles.apply defaultStyle
     , Ui.tabIndex model
     , disabled
     , readonly

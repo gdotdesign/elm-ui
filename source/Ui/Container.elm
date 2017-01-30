@@ -25,8 +25,6 @@ import Html.Lazy
 import Ui.Styles.Container
 import Ui.Styles
 
-import Lazy exposing (Lazy)
-
 {-| Representation of a container:
   - **align** - Either "start", "center", "space-between", "space-around" or "end"
   - **compact** - Whether or not to have spacing between the children
@@ -123,13 +121,6 @@ columnOptions =
   }
 
 
-{-| Default style attributes.
--}
-defaultStyleAttributes : Lazy (List (Html.Attribute msg))
-defaultStyleAttributes =
-  Ui.Styles.attributes Ui.Styles.Container.defaultStyle
-
-
 {-| Returns basic attributes for a container.
 -}
 basAttributes : Model -> List (Html.Attribute msg)
@@ -143,4 +134,4 @@ basAttributes model =
   in
     [ attribute "direction" model.direction
     , attribute "align" model.align
-    ] ++ compact ++ (Lazy.force defaultStyleAttributes)
+    ] ++ compact ++ (Ui.Styles.apply Ui.Styles.Container.defaultStyle)

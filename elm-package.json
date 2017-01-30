@@ -20,6 +20,7 @@
     "Ui.Helpers.Dropdown",
     "Ui.Helpers.Emitter",
     "Ui.Helpers.Picker",
+    "Ui.Helpers.Intendable",
     "Ui.Helpers.PeriodicUpdate",
     "Ui.Helpers.Ripple",
 
@@ -33,6 +34,7 @@
     "Ui.ButtonGroup",
     "Ui.Calendar",
     "Ui.Checkbox",
+    "Ui.Chooser",
     "Ui.ColorPanel",
     "Ui.ColorPicker",
     "Ui.ColorFields",
@@ -53,6 +55,7 @@
     "Ui.NumberRange",
     "Ui.Pager",
     "Ui.Ratings",
+    "Ui.ScrolledPanel",
     "Ui.SearchInput",
     "Ui.Slider",
     "Ui.Tabs",

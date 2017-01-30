@@ -45,6 +45,20 @@ type alias Theme =
     , header : Int
     , modal : Int
     }
+  , chooser :
+    { hoverColors : { background : String, text : String }
+    , selectedColors : { background : String, text : String }
+    , selectedHoverColors : { background : String, text : String }
+    , intendedColors : { background : String, text : String }
+    , intendedHoverColors : { background : String, text : String }
+    , selectedIntendedColors : { background : String, text : String }
+    , selectedIntendedHoverColors : { background : String, text : String }
+    }
+  , scrollbar :
+    { thumbColor : String
+    , thumbHoverColor : String
+    , trackColor : String
+    }
   }
 
 
@@ -85,6 +99,20 @@ default =
     , dropdown = 1000
     , modal = 100
     , header = 50
+    }
+  , chooser =
+    { hoverColors = { background = "#f0f0f0", text = "#626262" }
+    , selectedColors = { background = "#158DD8", text = "#FFF" }
+    , selectedHoverColors = { background = "#1f97e2", text = "#FFF" }
+    , intendedColors = { background = "#EEE", text = "#626262" }
+    , intendedHoverColors = { background = "#DDD", text = "#626262" }
+    , selectedIntendedColors = { background = "#1070ac", text = "#FFF" }
+    , selectedIntendedHoverColors = { background = "#0c5989", text = "#FFF" }
+    }
+  , scrollbar =
+    { thumbColor = "#d0d0d0"
+    , thumbHoverColor = "#b8b8b8"
+    , trackColor = "#e9e9e9"
     }
   , header =
     { colors =

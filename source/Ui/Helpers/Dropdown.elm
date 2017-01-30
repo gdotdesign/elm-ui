@@ -1,15 +1,15 @@
 module Ui.Helpers.Dropdown exposing
   ( Direction(..), Side(..), Msg, Dropdown, Model, init, update, subscriptions
-  , favoring, alignTo, offset, direction, open, close, toggle, view )
+  , favoring, alignTo, offset, direction, open, close, toggle, view, render )
 
 {-| This is a module for creating components that have a dropdown.
 
 ```
 colorPicker =
   Ui.ColorPicker.init ()
-    |> Dropdown.direction Horizontal -- open to left or right
-    |> Dropdown.favoring Left -- open to left if there is space
     |> Dropdown.alignTo Top -- align it to the top of the trigger element
+    |> Dropdown.favoring Left -- open to left if there is space
+    |> Dropdown.direction Horizontal -- open to left or right
     |> Dropdown.offset 5
 ```
 
@@ -26,12 +26,13 @@ colorPicker =
 @docs open, close, toggle
 
 # Rendering
-@docs view
+@docs view, render
 
 -}
 
 import Html.Attributes exposing (style, id, attribute)
 import Html exposing (node)
+import Html.Lazy
 
 import Window
 import Mouse
@@ -219,10 +220,17 @@ update msg model =
       close model
 
 
-{-| Renders a dropdown.
+{-| Renders a dropdown lazily.
 -}
 view : ViewModel msg -> Model a -> Html.Html msg
 view viewModel model =
+  Html.Lazy.lazy2 render viewModel model
+
+
+{-| Renders a dropdown.
+-}
+render : ViewModel msg -> Model a -> Html.Html msg
+render viewModel model =
   let
     attributes =
       [ attribute "dropdown" ""

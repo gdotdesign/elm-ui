@@ -1,7 +1,8 @@
 {
   "scripts": {
     "docs": "elm-make --docs=documentation.json",
-    "start": "elm-reactor -p 8002"
+    "start": "elm-reactor -p 8002",
+    "spec": "elm-spec -f progress"
   },
   "dependencies": {
     "elm": "^0.18.0",

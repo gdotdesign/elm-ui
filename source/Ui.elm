@@ -1,12 +1,12 @@
 module Ui exposing
   ( title, subTitle, panel, inputGroup, stylesheetLink, tabIndex, fab,
-    textBlock, enabledActions, breadcrumbs, scrolledPanel, link, attributeList )
+    textBlock, enabledActions, breadcrumbs, link, attributeList )
 
 {-| UI Library for Elm!
 
 # Static Components
 @docs title, subTitle, panel, stylesheetLink, inputGroup
-@docs fab, textBlock, breadcrumbs, scrolledPanel, link
+@docs fab, textBlock, breadcrumbs, link
 
 # Helper Functions
 @docs tabIndex, enabledActions, attributeList
@@ -191,18 +191,6 @@ attributeList items =
   in
     List.map attr items
       |> List.foldr (++) []
-
-
-{-| Renders a panel that have scrolling content.
-
-    Ui.scrolledPanel [ text "Long scrollable text..." ]
--}
-scrolledPanel : List (Html.Html msg) -> Html.Html msg
-scrolledPanel contents =
-  node
-    "ui-scrolled-panel"
-    []
-    [ node "ui-scrolled-panel-wrapper" [] contents ]
 
 
 {-| Non obtrusive link:

@@ -40,7 +40,7 @@ ms : Int -> String
 ms value =
   (toString value) ++ "ms"
 
-pct : Int -> String
+pct : Float -> String
 pct value =
   (toString value) ++ "%"
 
@@ -213,6 +213,10 @@ auto =
 italic : String
 italic =
   "italic"
+
+scroll : String
+scroll =
+  "scroll"
 
 -- Properties
 
@@ -411,6 +415,10 @@ color =
 overflow : String -> Node
 overflow =
   property "overflow"
+
+overflowY : String -> Node
+overflowY =
+  property "overflow-y"
 
 position : String -> Node
 position =

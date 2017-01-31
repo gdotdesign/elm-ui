@@ -1,16 +1,29 @@
-module Ui.Styles.NotificationCenter exposing (style)
+module Ui.Styles.NotificationCenter exposing (..)
 
+{-| Styles for a notification center.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
+import Ui.Styles exposing (Style)
 
-(=>) = (,)
 
+{-| Styles for a notification center using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a notification center using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-notification-center"
+  mixin
     [ Mixins.defaults
 
     , keyframes "ui-notification-show"
@@ -127,3 +140,9 @@ style theme =
         ]
       ]
     ]
+
+
+{-| Inflix 2 tuple.
+-}
+(=>) : a -> b -> ( a , b )
+(=>) = (,)

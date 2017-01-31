@@ -1,14 +1,29 @@
-module Ui.Styles.Pager exposing (style)
+module Ui.Styles.Pager exposing (..)
 
+{-| Styles for a pager.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for a pager using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a pager using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-pager"
+  mixin
     [ Mixins.defaults
 
     , position relative

@@ -1,34 +1,30 @@
-module Ui.Styles exposing (Style, apply, embed, embedSome, embedDefault, attributes)
+module Ui.Styles exposing (Style, apply, attributes)
 
-{-| This module contains the styles for all components.
+{-| This module contains functions to add styles to elements.
 
-@docs Style, apply, embed, embedSome, embedDefault, attributes
+@docs Style, apply, attributes
 -}
-
-import Css.Properties exposing (..)
-import Css exposing (..)
-
 import Html.Attributes exposing (attribute)
 import Html
-import Set
 
-import Ui.Styles.Theme exposing (Theme, default)
-
-import Task exposing (Task)
-import Native.Styles
-
+import Css exposing (Node, resolve)
 import Lazy exposing (Lazy)
 import Json.Encode as Json
+import Native.Styles
 import Murmur3
 
-{-|-}
+
+{-| Representation of a style.
+-}
 type alias Style =
   Lazy
     { id : Int
     , value : String
     }
 
-{-|-}
+
+{-| Converts a style to use it in an element.
+-}
 apply : Style -> List (Html.Attribute msg)
 apply style =
   Lazy.map
@@ -47,7 +43,8 @@ apply style =
     style
   |> Lazy.force
 
-{-| Attributes for styles.
+
+{-| Returns a style from a node.
 -}
 attributes : Node -> Style
 attributes node =
@@ -59,24 +56,3 @@ attributes node =
           resolve [ Css.selector ("[style-id='" ++ (toString id) ++ "']") [ node ] ]
       , id = id
       }
-
-{-| Renders the styles for the given components into a HTML tag.
--}
-embedSome : List (Theme -> Node) -> Theme -> Html.Html msg
-embedSome nodes theme =
-  Css.embed (List.map (\fn -> fn theme) nodes)
-
-
-{-| Renders the stylesheet with the default theme into an HTML tag.
--}
-embedDefault : Html.Html msg
-embedDefault =
-  embed default
-
-{-| Renders the stylesheet with the given theme into an HTML tag.
--}
-embed : Theme -> Html.Html msg
-embed theme =
-  Css.embed
-    [
-    ]

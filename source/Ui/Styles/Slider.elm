@@ -1,16 +1,31 @@
-module Ui.Styles.Slider exposing (style)
+module Ui.Styles.Slider exposing (..)
 
+{-| Styles for a slider.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for a slider using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a slider using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-slider"
+  mixin
     [ Mixins.defaults
-    , boxSizing contentBox
+
     , minWidth (px 100)
     , alignItems center
     , position relative

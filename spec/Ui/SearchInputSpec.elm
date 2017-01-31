@@ -1,35 +1,20 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
-
-import Ui.Container
-import Ui.SearchInput
-
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.SearchInput
-import Ui.Styles
-
-import Steps exposing (keyDown)
-
+import Steps exposing (..)
 import Json.Encode as Json
+import Ui.SearchInput
+import Ui.Container
+import Html
+
 
 view : Ui.SearchInput.Model -> Html.Html Ui.SearchInput.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.SearchInput.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.SearchInput.view model
-      , Ui.SearchInput.view { model | disabled = True }
-      , Ui.SearchInput.view { model | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.SearchInput.view model
+    , Ui.SearchInput.view { model | disabled = True }
+    , Ui.SearchInput.view { model | readonly = True }
     ]
+
 
 specs : Node
 specs =
@@ -63,6 +48,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

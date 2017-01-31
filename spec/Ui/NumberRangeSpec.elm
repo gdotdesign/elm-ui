@@ -1,38 +1,27 @@
 import Spec exposing (..)
 
-import Html exposing (div)
-
-import Ui.NumberRange
-import Ui.Container
-
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.NumberRange
-import Ui.Styles.Container
-import Ui.Styles
-
 import Json.Encode as Json
 import Steps exposing (..)
+import Ui.NumberRange
+import Ui.Container
+import Html
+
 
 view : Ui.NumberRange.Model -> Html.Html Ui.NumberRange.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.NumberRange.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.NumberRange.view model
-      , Ui.NumberRange.view { model | disabled = True }
-      , Ui.NumberRange.view { model | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.NumberRange.view model
+    , Ui.NumberRange.view { model | disabled = True }
+    , Ui.NumberRange.view { model | readonly = True }
     ]
+
 
 assertValue value =
   assert.valueEquals
   { selector = "ui-number-range input"
   , text = toString value
   }
+
 
 specs : Node
 specs =
@@ -159,6 +148,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

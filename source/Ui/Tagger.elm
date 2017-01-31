@@ -35,6 +35,8 @@ import Ui.Icons
 import Ui.Input
 import Ui
 
+import Ui.Styles.Tagger exposing (defaultStyle)
+import Ui.Styles
 
 {-| Represents a tag:
   - **id** - The identifier of the tag
@@ -196,10 +198,14 @@ render tags model =
       }
 
     attributes =
-      Ui.attributeList
+      [ Ui.attributeList
         [ ( "disabled", model.disabled )
         , ( "readonly", model.readonly )
         ]
+      , Ui.Styles.apply defaultStyle
+      , actions
+      ]
+      |> List.concat
 
     actions =
       Ui.enabledActions
@@ -209,7 +215,7 @@ render tags model =
   in
     node
       "ui-tagger"
-      (attributes ++ actions)
+      attributes
       [ Ui.Container.row
           []
           [ Html.map Input (Ui.Input.view updatedInput)

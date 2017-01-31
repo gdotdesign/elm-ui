@@ -30,6 +30,8 @@ import Ui.Native.Uid as Uid
 import Ui.Icons
 import Ui
 
+import Ui.Styles.Ratings exposing (defaultStyle)
+import Ui.Styles
 
 {-| Representation of a ratings component:
   - **hoverValue** - The transient value of the component
@@ -165,6 +167,7 @@ render model =
          [ ( "disabled", model.disabled )
          , ( "readonly", model.readonly )
          ]
+       , Ui.Styles.apply defaultStyle
        , Ui.tabIndex model
        , actions
        ]

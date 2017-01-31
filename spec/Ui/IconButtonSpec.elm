@@ -1,35 +1,34 @@
 import Spec exposing (..)
 
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
 import Html exposing (div, text)
 
 import Ui.IconButton
 import Ui.Container
 import Ui.Icons
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.IconButton
-import Ui.Styles.Container
-import Ui.Styles
+import Steps exposing (..)
 
-import Steps exposing (keyDown)
 
 type alias Model
   = String
 
+
 type Msg
   = Set
+
 
 init : () -> String
 init _ =
   "Initial"
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     Set ->
       ( "Clicked", Cmd.none )
+
 
 view : Model -> Html.Html Msg
 view model =
@@ -39,11 +38,7 @@ view model =
   in
     div
       [ ]
-      [ Ui.Styles.embedSome
-        [ Ui.Styles.IconButton.style
-        , Ui.Styles.Container.style
-        ] default
-      , Ui.Container.column []
+      [ Ui.Container.column []
         [ Ui.Container.row []
           [ Ui.IconButton.view Set
             { button | text = "Primary",   kind = "primary"   }
@@ -106,6 +101,7 @@ view model =
       , div [ class "result" ] [ text model ]
       ]
 
+
 specs : Node
 specs =
   describe "Ui.Button"
@@ -128,6 +124,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

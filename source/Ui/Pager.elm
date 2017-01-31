@@ -21,6 +21,8 @@ import Html.Lazy
 import Json.Decode as Json
 import Json.Encode as JE
 
+import Ui.Styles.Pager exposing (defaultStyle)
+import Ui.Styles
 
 {-| Representation of a pager:
   - **center** - Pages at the center
@@ -131,7 +133,10 @@ render { address, pages } model =
           ((property "_page" (JE.string (toString index))) :: attributes)
           [ page ]
   in
-    node "ui-pager" [] (List.indexedMap renderPage pages)
+    node
+      "ui-pager"
+      (Ui.Styles.apply defaultStyle)
+      (List.indexedMap renderPage pages)
 
 
 {-| Selects the page with the given index.

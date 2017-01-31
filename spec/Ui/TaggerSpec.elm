@@ -1,30 +1,24 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
-
 import Ui.Native.Uid as Uid
+import Json.Encode as Json
+import Steps exposing (..)
 import Ui.Container
 import Ui.Tagger
+import Html
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Tagger
-import Ui.Styles
-
-import Steps exposing (keyDown)
-
-import Json.Encode as Json
 
 type alias Model =
   { tagger : Ui.Tagger.Model
   , tags : List Ui.Tagger.Tag
   }
 
+
 type Msg
   = Tagger Ui.Tagger.Msg
   | Remove String
   | Create String
+
 
 init : () -> Model
 init _ =
@@ -32,12 +26,14 @@ init _ =
   , tags = []
   }
 
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
     [ Ui.Tagger.onRemove Remove model.tagger
     , Ui.Tagger.onCreate Create model.tagger
     ]
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -55,19 +51,15 @@ update msg_ model =
     Remove id ->
       ( { model | tags = List.filter (.id >> (/=) id) model.tags }, Cmd.none )
 
+
 view : Model -> Html.Html Msg
 view { tagger, tags } =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Tagger.style
-      ] default
-    , Ui.Container.row []
-      [ Html.map Tagger (Ui.Tagger.view tags tagger)
-      , Html.map Tagger (Ui.Tagger.view tags { tagger | disabled = True })
-      , Html.map Tagger (Ui.Tagger.view tags { tagger | readonly = True })
-      ]
+  Ui.Container.row []
+    [ Html.map Tagger (Ui.Tagger.view tags tagger)
+    , Html.map Tagger (Ui.Tagger.view tags { tagger | disabled = True })
+    , Html.map Tagger (Ui.Tagger.view tags { tagger | readonly = True })
     ]
+
 
 createTag value =
   stepGroup ("Created tag " ++ value)
@@ -75,6 +67,7 @@ createTag value =
     , steps.dispatchEvent "input" (Json.object []) "ui-tagger ui-input input"
     , steps.click "ui-tagger ui-icon-button"
     ]
+
 
 specs : Node
 specs =
@@ -118,14 +111,15 @@ specs =
       , context "Clicking on the remove button"
         [ it "fires remove event"
           [ assert.elementPresent "ui-tagger-tag:nth-child(2)"
-          , steps.dispatchEvent "click" (Json.object []) "ui-tagger-tag svg"
+          , clickSvg "ui-tagger-tag svg"
           , assert.not.elementPresent "ui-tagger-tag:nth-child(2)"
-          , steps.dispatchEvent "click" (Json.object []) "ui-tagger-tag svg"
+          , clickSvg "ui-tagger-tag svg"
           , assert.not.elementPresent "ui-tagger-tag"
           ]
         ]
       ]
     ]
+
 
 main =
   runWithProgram

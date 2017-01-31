@@ -1,26 +1,23 @@
 import Spec exposing (..)
 
-import Html exposing (div, text)
-
+import Html exposing (text)
+import Steps exposing (..)
 import Ui.Container
 import Ui.Tabs
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.Tabs
-import Ui.Styles
-
-import Steps exposing (..)
 
 type alias Model =
   { tabs : Ui.Tabs.Model }
 
+
 type Msg
   = Tabs Ui.Tabs.Msg
+
 
 init : () -> Model
 init _ =
   { tabs = Ui.Tabs.init () }
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -31,6 +28,8 @@ update msg_ model =
       in
         ( { model | tabs = tabs }, Cmd.map Tabs cmd )
 
+
+viewModel : Ui.Tabs.ViewModel Msg
 viewModel =
   { contents =
     [ ("Tab 1", text "tab 1")
@@ -40,20 +39,15 @@ viewModel =
   , address = Tabs
   }
 
+
 view : Model -> Html.Html Msg
 view { tabs } =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Tabs.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.Tabs.view viewModel tabs
-      , Ui.Tabs.view viewModel { tabs | disabled = True }
-      , Ui.Tabs.view viewModel { tabs | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.Tabs.view viewModel tabs
+    , Ui.Tabs.view viewModel { tabs | disabled = True }
+    , Ui.Tabs.view viewModel { tabs | readonly = True }
     ]
+
 
 specs : Node
 specs =
@@ -115,6 +109,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

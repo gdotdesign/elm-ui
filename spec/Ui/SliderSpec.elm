@@ -1,34 +1,19 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
-
+import Steps exposing (..)
 import Ui.Container
 import Ui.Slider
+import Html
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.Slider
-import Ui.Styles
-
-import Json.Encode as Json
-import Steps exposing (..)
 
 view : Ui.Slider.Model -> Html.Html Ui.Slider.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Slider.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.Slider.view model
-      , Ui.Slider.view { model | disabled = True }
-      , Ui.Slider.view { model | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.Slider.view model
+    , Ui.Slider.view { model | disabled = True }
+    , Ui.Slider.view { model | readonly = True }
     ]
+
 
 assertPercent value =
   assert.inlineStyleEquals
@@ -36,6 +21,7 @@ assertPercent value =
     , style = "width"
     , value = (toString value) ++ "%"
     }
+
 
 specs : Node
 specs =
@@ -124,6 +110,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

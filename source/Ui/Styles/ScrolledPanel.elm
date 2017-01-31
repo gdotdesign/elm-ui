@@ -1,13 +1,28 @@
-module Ui.Styles.ScrolledPanel exposing (style)
+module Ui.Styles.ScrolledPanel exposing (..)
 
+{-| Styles for a scrolled-panel.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for a scrolled-panel using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a scrolled-panel using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-scrolled-panel"
+  mixin
     [ maxHeight inherit
     , position relative
     , height inherit

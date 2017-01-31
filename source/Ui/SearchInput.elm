@@ -35,6 +35,8 @@ import Ui.Input
 import Ui.Icons
 import Ui
 
+import Ui.Styles.SearchInput exposing (defaultStyle)
+import Ui.Styles
 
 {-| Representation of a search input:
   - **timeout** - The duration after which the input is considered settled
@@ -188,7 +190,7 @@ render { input, disabled, readonly } =
   in
     node
       "ui-search-input"
-      []
+      (Ui.Styles.apply defaultStyle)
       [ Html.map Input (Ui.Input.view updatedInput)
       , Ui.Icons.search []
       ]

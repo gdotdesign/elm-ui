@@ -1,15 +1,30 @@
-module Ui.Styles.NumberRange exposing (style)
+module Ui.Styles.NumberRange exposing (..)
 
+{-| Styles for a number-range.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles.Input as Input
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for a number-range using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a number-range using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-number-range"
+  mixin
     [ Mixins.defaults
 
     , Input.inputStyle theme

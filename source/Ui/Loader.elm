@@ -26,6 +26,9 @@ import Html.Lazy
 
 import Process
 import Task
+
+import Ui.Styles.Loader exposing (defaultStyle)
+import Ui.Styles
 import Ui
 
 {-| Representation of a loader:
@@ -112,8 +115,9 @@ render : String -> List (Html.Html msg) -> Model -> Html.Html msg
 render kind content model =
   node
     "ui-loader"
-    ( [ [ attribute "kind" kind ]
-      , Ui.attributeList [ ( "loading", model.shown ) ]
+    ( [ Ui.attributeList [ ( "loading", model.shown ) ]
+      , Ui.Styles.apply defaultStyle
+      , [ attribute "kind" kind ]
       ]
       |> List.concat
     )

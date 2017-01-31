@@ -1,33 +1,27 @@
 import Spec exposing (..)
 
-import Html exposing (div, text, button)
+import Html exposing (div, text, button, node)
 import Html.Events exposing (onClick)
-
+import Steps exposing (..)
+import Json.Encode as Json
 import Ui.Pager
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Pager
-import Ui.Styles
-
-import Css.Properties as Css
-import Css
-
-import Steps exposing (keyDown)
-
-import Json.Encode as Json
 
 type alias Model =
   { pager : Ui.Pager.Model
   }
 
+
 type Msg
   = Pager Ui.Pager.Msg
   | SetPage Int
+
 
 init : () -> Model
 init _ =
   { pager = Ui.Pager.init ()
   }
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -45,19 +39,20 @@ update msg_ model =
     Pager msg ->
       ( { model | pager = Ui.Pager.update msg model.pager }, Cmd.none )
 
+
 view : Model -> Html.Html Msg
 view { pager } =
   div
     [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Pager.style
-      , (\_ ->
-          Css.selector "ui-pager"
-            [ Css.width (Css.px 200)
-            , Css.height (Css.px 200)
-            ]
-        )
-      ] default
+    [ node "style" []
+      [ text
+        """
+        ui-pager {
+          width: 200px;
+          height: 200px;
+        }
+        """
+      ]
     , Ui.Pager.view
       { pages = [ text "A", text "B" ]
       , address = Pager
@@ -65,6 +60,7 @@ view { pager } =
       pager
     , button [ onClick (SetPage 1) ] [ text "Change page" ]
     ]
+
 
 specs : Node
 specs =
@@ -106,6 +102,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

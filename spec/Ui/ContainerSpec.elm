@@ -1,36 +1,32 @@
 import Spec exposing (..)
 
 import Html exposing (div, text)
-
 import Task exposing (Task)
-
 import Ui.Container
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles
 
 type alias Model
   = String
 
+
 type Msg
   = NoOp
+
 
 init : () -> Model
 init _ =
   ""
 
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   ( model, Cmd.none )
 
+
 view : Model -> Html.Html Msg
 view model =
   div []
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
+    [ Ui.Container.row []
       [ div [] [ text "a" ]
       , div [] [ text "b" ]
       , div [] [ text "c" ]
@@ -82,6 +78,7 @@ view model =
       ]
     ]
 
+
 displayAssertions : String -> String -> String -> List (Task Never Outcome)
 displayAssertions selector direction justify =
   [ assert.elementPresent selector
@@ -101,6 +98,7 @@ displayAssertions selector direction justify =
     , selector = selector
     }
   ]
+
 
 specs : Node
 specs =
@@ -179,6 +177,7 @@ specs =
           "flex-end")
       ]
     ]
+
 
 main =
   runWithProgram

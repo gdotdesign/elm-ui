@@ -2,23 +2,20 @@ import Spec exposing (..)
 
 import Html exposing (div, text, button)
 import Html.Events exposing (onClick)
-
+import Steps exposing (..)
 import Ui.Loader
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Loader
-import Ui.Styles
-
-import Steps exposing (..)
 
 type alias Model =
   { loader : Ui.Loader.Model
   }
 
+
 type Msg
   = Loader Ui.Loader.Msg
   | Stop
   | Start
+
 
 init : () -> Model
 init _ =
@@ -26,6 +23,7 @@ init _ =
       Ui.Loader.init ()
         |> Ui.Loader.timeout 0
   }
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -49,14 +47,12 @@ update msg_ model =
         ( { model | loader = loader }
         , Cmd.map Loader cmd )
 
+
 view : Model -> Html.Html Msg
 view { loader } =
   div
     [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Loader.style
-      ] default
-    , Html.map Loader (Ui.Loader.barView loader)
+    [ Html.map Loader (Ui.Loader.barView loader)
     , Html.map Loader (Ui.Loader.overlayView loader)
     , button [ onClick Start ] [ text "Start" ]
     , button [ onClick Stop ] [ text "Stop" ]
@@ -95,6 +91,7 @@ specs =
         }
       ]
     ]
+
 
 main =
   runWithProgram

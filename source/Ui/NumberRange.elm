@@ -42,6 +42,9 @@ import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
+import Ui.Styles.NumberRange exposing (defaultStyle)
+import Ui.Styles
+
 {-| Representation of a number range:
   - **keyboardStep** - The interval to increment / decrement by (per keyboard action)
   - **affix** - The affix string to display (for example px, %, em, s)
@@ -333,10 +336,13 @@ render model =
   in
     node
       "ui-number-range"
-      (Ui.attributeList
+      ( [ Ui.attributeList
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
+        , Ui.Styles.apply defaultStyle
+        ]
+        |> List.concat
       )
       [ inputElement ]
 

@@ -1,34 +1,20 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
-
+import Steps exposing (..)
+import Json.Encode as Json
 import Ui.Container
 import Ui.Ratings
+import Html
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.Ratings
-import Ui.Styles
-
-import Steps exposing (keyDown)
-import Json.Encode as Json
 
 view : Ui.Ratings.Model -> Html.Html Ui.Ratings.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Ratings.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.Ratings.view model
-      , Ui.Ratings.view { model | disabled = True }
-      , Ui.Ratings.view { model | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.Ratings.view model
+    , Ui.Ratings.view { model | disabled = True }
+    , Ui.Ratings.view { model | readonly = True }
     ]
+
 
 assertStarFull index =
   assert.attributeContains
@@ -37,12 +23,14 @@ assertStarFull index =
     , text = "M23"
     }
 
+
 assertStarEmpty index =
   assert.attributeContains
     { selector = "ui-ratings-star:nth-child(" ++ (toString index) ++ ") path"
     , attribute = "d"
     , text = "M36"
     }
+
 
 specs : Node
 specs =
@@ -126,6 +114,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

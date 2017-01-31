@@ -7,12 +7,14 @@ effect module Ui.Helpers.Emitter
     , sendInt
     , sendBool
     , sendNaked
+    , sendFile
     , listen
     , listenString
     , listenFloat
     , listenInt
     , listenBool
     , listenNaked
+    , listenFile
     , decode
     )
 
@@ -21,17 +23,20 @@ different channels that are identified by strings.
 
 # Listining
 @docs listen, listenString, listenFloat, listenInt, listenBool, listenNaked
+@docs listenFile
 
 # Sending Data
-@docs send, sendString, sendFloat, sendInt, sendBool, sendNaked
+@docs send, sendString, sendFloat, sendInt, sendBool, sendNaked, sendFile
 
 # Decodeing
 @docs decode
 
 -}
 
+import Ui.Native.FileManager exposing (File)
 import Json.Decode exposing (Value)
 import Task exposing (Task)
+import Native.FileManager
 import Json.Encode as JE
 
 {-| Representation of a command.
@@ -101,6 +106,15 @@ sendBool id value =
   send id (JE.bool value)
 
 
+{-| Sends a file value to the given channel.
+
+    Ui.Helpers.Emitter.sendFile "channelId" file
+-}
+sendFile : String -> File -> Cmd msg
+sendFile id value =
+  send id (Native.FileManager.identity value)
+
+
 {-| Creates a subscription for the given channel.
 
     Ui.Helpers.Emitter.listen "channelId" HandleValue
@@ -153,6 +167,15 @@ listenInt id tagger =
 listenBool : String -> (Bool -> msg) -> Sub msg
 listenBool id tagger =
   listen id (decodeBool False tagger)
+
+
+{-| Creates a subscription for the given file channel.
+
+    Ui.Helpers.Emitter.listenBool "channelId" HandleFile
+-}
+listenFile : String -> (File -> msg) -> Sub msg
+listenFile id tagger =
+  listen id (Native.FileManager.identitiyTag tagger)
 
 
 {-| Decodes a Json value and maps it to a message with a fallback value.

@@ -1,7 +1,7 @@
 module Ui.Button exposing (Model, model, view, render, attributes)
 
 {-| Basic button component that implements:
-  - **focus state** with animation
+  - **focus state** with ripple effect (Ui.Helpers.Ripple)
   - **disabled state**
   - **readonly state**
 
@@ -26,7 +26,6 @@ import Ui.Styles exposing (Style)
 
 import Ui.Helpers.Ripple as Ripple
 import Ui
-
 
 {-| Representation of a button:
   - **disabled** - Whether or not the button is disabled
@@ -60,7 +59,7 @@ model text kind size =
 
 {-| Lazily renders a button.
 
-    Ui.Button.view address button
+    Ui.Button.view msg button
 -}
 view : msg -> Model -> Html.Html msg
 view msg model =
@@ -68,6 +67,8 @@ view msg model =
 
 
 {-| Renders a button.
+
+    Ui.Button.render msg button
 -}
 render : msg -> Model -> Html.Html msg
 render msg model =
@@ -88,35 +89,21 @@ attributes :
   -> { b | disabled : Bool, kind : String, size : String, readonly : Bool }
   -> List (Html.Attribute msg)
 attributes styles msg model =
-  let
-    disabled =
-      if model.disabled then
-        [ attribute "disabled" "" ]
-      else
-        []
-
-    readonly =
-      if model.readonly then
-        [ attribute "readonly" "" ]
-      else
-        []
-
-    actions =
-      Ui.enabledActions model
-        [ onClick msg
-        , onKeys True
-            [ ( 13, msg )
-            , ( 32, msg )
-            ]
-        ]
-  in
-    [ [ attribute "size" model.size
-      , attribute "kind" model.kind
-      ]
-    , Ui.Styles.apply styles
-    , Ui.tabIndex model
-    , disabled
-    , readonly
-    , actions
+  [ Ui.attributeList
+    [ ( "disabled", model.disabled )
+    , ( "readonly", model.readonly )
     ]
-      |> List.concat
+  , [ attribute "size" model.size
+    , attribute "kind" model.kind
+    ]
+  , Ui.enabledActions model
+    [ onClick msg
+    , onKeys True
+      [ ( 13, msg )
+      , ( 32, msg )
+      ]
+    ]
+  , Ui.Styles.apply styles
+  , Ui.tabIndex model
+  ]
+    |> List.concat

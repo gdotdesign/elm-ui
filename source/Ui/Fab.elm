@@ -9,7 +9,6 @@ import Html exposing (node)
 import Ui.Styles.Fab exposing (defaultStyle)
 import Ui.Styles
 
-
 {-| Renders a floating action button.
 
     Ui.Fab.view (Ui.Icons.plus []) [ onClick Open ]

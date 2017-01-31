@@ -12,11 +12,10 @@ module Ui.ButtonGroup exposing (Model, model, view, render)
 import Html exposing (node)
 import Html.Lazy
 
-import Ui.Button
-
 import Ui.Styles.ButtonGroup exposing (defaultStyle)
 import Ui.Styles
 
+import Ui.Button
 
 {-| Representation of a button group:
   - **disabled** - Whether or not the button group is disabled
@@ -35,6 +34,7 @@ type alias Model msg =
 
 
 {-| Initializes a button group with the given data.
+
     buttonGroup =
       Ui.ButtonGroup.model
         [ ("Download", Download)
@@ -52,6 +52,7 @@ model items =
 
 
 {-| Lazily renders a button group.
+
     Ui.ButtonGroup.view buttonGroup
 -}
 view : Model msg -> Html.Html msg
@@ -60,6 +61,7 @@ view model =
 
 
 {-| Renders a button group.
+
     Ui.ButtonGroup.render buttonGroup
 -}
 render : Model msg -> Html.Html msg

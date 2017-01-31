@@ -45,7 +45,6 @@ import Ui.Styles
   - **readonly** - Whether or not the date picker is readonly
   - **disabled** - Whether or not the date picker is disabled
   - **uid** - The unique identifier of the date picker
-  - **dropdownPosition** - The dropdowns position
   - **calendar** - The model of the calendar
   - **dropdown** - The model of the dropdown
 -}
@@ -72,7 +71,9 @@ type Msg
 
 {-| Initializes a date picker with the given date.
 
-    datePicker = Ui.DatePicker.init ()
+    datePicker =
+      Ui.DatePicker.init ()
+      |> Ui.DatePicker.closeOnSelect true
 -}
 init : () -> Model
 init _ =
@@ -89,13 +90,7 @@ init _ =
 
 {-| Subscribe to the changes of a date picker.
 
-    ...
-    subscriptions =
-      \model ->
-        Ui.DatePicker.onChange
-          DatePickerChanged
-          model.datePicker
-    ...
+    subscriptions = Ui.DatePicker.onChange DatePickerChanged datePicker
 -}
 onChange : (Time.Time -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -104,13 +99,7 @@ onChange msg model =
 
 {-| Subscriptions for a date picker.
 
-    ...
-    subscriptions =
-      \model ->
-        Sub.map
-          DatePicker
-          (Ui.DatePicker.subscriptions model.datePicker)
-    ...
+    subscriptions = Sub.map DatePicker (Ui.DatePicker.subscriptions datePicker)
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -121,10 +110,6 @@ subscriptions model =
 
 
 {-| Sets whether or not to close the dropdown when selecting an other date.
-
-    date
-      |> Ui.DatePicker.init
-      |> Ui.DatePicker.closeOnSelect true
 -}
 closeOnSelect : Bool -> Model -> Model
 closeOnSelect value model =
@@ -133,7 +118,7 @@ closeOnSelect value model =
 
 {-| Updates a date picker.
 
-    Ui.DatePicker.update msg datePicker
+    ( updatedDatePicker, cmd ) = Ui.DatePicker.update msg datePicker
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
@@ -210,7 +195,8 @@ render locale model =
 
 {-| Sets the value of a date picker
 
-    Ui.DatePicker.setValue (Ext.Date.create 1980 5 17) datePicker
+    ( updatedDatePicker, cmd ) =
+      Ui.DatePicker.setValue (Ext.Date.create 1980 5 17) datePicker
 -}
 setValue : Date.Date -> Model -> Model
 setValue date model =

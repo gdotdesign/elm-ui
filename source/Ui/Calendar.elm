@@ -42,7 +42,6 @@ import Ui
 import Ui.Styles.Calendar exposing (defaultStyle)
 import Ui.Styles
 
-
 {-| Representation of a calendar component:
   - **selectable** - Whether or not the user can select a date by clicking on it
   - **disabled** - Whether or not the calendar is disabled
@@ -69,7 +68,7 @@ type Msg
   | NextMonth
 
 
-{-| Initializes a calendar with the given selected date.
+{-| Initializes a calendar.
 
     calendar = Ui.Calendar.init ()
 -}
@@ -93,7 +92,7 @@ selectable value model =
 
 {-| Subscribe to the changes of a calendar.
 
-    Ui.Calendar.onChange CalendarChanged calendar
+    subscription = Ui.Calendar.onChange CalendarChanged calendar
 -}
 onChange : (Time -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -102,7 +101,7 @@ onChange msg model =
 
 {-| Updates a calendar.
 
-    Ui.Calendar.update msg calendar
+    ( updatedCalendar, cmd ) = Ui.Calendar.update msg calendar
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -203,10 +202,8 @@ render locale model =
         |> List.concat
       )
       [ container
-      , node
-          "ui-calendar-header"
-          []
-          (List.map (\item -> span [] [ text item ]) (dayNames locale))
+      , node "ui-calendar-header" []
+        (List.map (\item -> span [] [ text item ]) (dayNames locale))
       , node "ui-calendar-table" [] cells
       ]
 

@@ -140,8 +140,6 @@ title model =
 
 
 {-| Renders a header separator element.
-
-    Ui.Header.separator
 -}
 separator : Html.Html msg
 separator =

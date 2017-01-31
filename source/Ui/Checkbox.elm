@@ -34,7 +34,6 @@ import Ui
 import Ui.Styles.Checkbox exposing (defaultStyle)
 import Ui.Styles
 
-
 {-| Representation of a checkbox:
   - **disabled** - Whether or not the checkbox is disabled
   - **readonly** - Whether or not the checkbox is readonly
@@ -70,7 +69,7 @@ init _ =
 
 {-| Subscribe to the changes of a checkbox.
 
-    Ui.Calendar.onChange CheckboxChanged checkbox
+    subscription = Ui.Calendar.onChange CheckboxChanged checkbox
 -}
 onChange : (Bool -> a) -> Model -> Sub a
 onChange msg model =
@@ -79,7 +78,7 @@ onChange msg model =
 
 {-| Updates a checkbox.
 
-    Ui.Checkbox.update msg checkbox
+    ( updatedCheckbox, cmd ) = Ui.Checkbox.update msg checkbox
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
@@ -154,7 +153,7 @@ renderToggle model =
     "ui-checkbox"
     (attributes "toggle" model)
     [ node "ui-checkbox-toggle-bg" []
-      [ node "ui-checkbox-toggle-span" [] [ text "ON" ]
+      [ node "ui-checkbox-toggle-span" [] [ text "ON"  ]
       , node "ui-checkbox-toggle-span" [] [ text "OFF" ]
       ]
     , node "ui-checkbox-toggle-handle" [] []
@@ -163,7 +162,7 @@ renderToggle model =
 
 {-| Sets the value of a checkbox to the given one.
 
-    Ui.Checkbox.setValue False checkbox
+    updatedCheckbox = Ui.Checkbox.setValue False checkbox
 -}
 setValue : Bool -> Model -> Model
 setValue value model =
@@ -174,41 +173,20 @@ setValue value model =
 -}
 attributes : String -> Model -> List (Html.Attribute Msg)
 attributes kind model =
-  let
-    disabled =
-      if model.disabled then
-        [ attribute "disabled" "" ]
-      else
-        []
-
-    readonly =
-      if model.readonly then
-        [ attribute "readonly" "" ]
-      else
-        []
-
-    checked =
-      if model.value then
-        [ attribute "checked" "" ]
-      else
-        []
-
-    actions =
-      Ui.enabledActions
-        model
-        [ onClick Toggle
-        , onKeys True
-            [ ( 13, Toggle )
-            , ( 32, Toggle )
-            ]
-        ]
-  in
-    [ Ui.Styles.apply defaultStyle
-    , [ attribute "kind" kind ]
-    , Ui.tabIndex model
-    , disabled
-    , readonly
-    , checked
-    , actions
+  [ Ui.attributeList
+    [ ( "disabled", model.disabled )
+    , ( "readonly", model.readonly )
+    , ( "checked",  model.value    )
     ]
-    |> List.concat
+  , Ui.enabledActions model
+    [ onClick Toggle
+    , onKeys True
+        [ ( 13, Toggle )
+        , ( 32, Toggle )
+        ]
+    ]
+  , Ui.Styles.apply defaultStyle
+  , [ attribute "kind" kind ]
+  , Ui.tabIndex model
+  ]
+  |> List.concat

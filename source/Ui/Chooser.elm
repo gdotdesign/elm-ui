@@ -4,7 +4,7 @@ module Ui.Chooser exposing
   , placeholder, closeOnSelect, deselectable, searchable, multiple, items )
 
 {-| This is a component for selecting a single / multiple items
-form a list of choises, with lots of options.
+form a list of choices, with lots of options.
 
 # Model
 @docs Model, Item, Msg, init, subscriptions, update
@@ -48,15 +48,17 @@ import List
 import Ui.Helpers.Intendable as Intendable
 import Ui.Helpers.Dropdown as Dropdown
 import Ui.Helpers.Emitter as Emitter
-import Ui.ScrolledPanel
 import Ui.Native.Uid as Uid
+import Ui.ScrolledPanel
 import Ui
 
 import Ui.Styles.Chooser exposing (defaultStyle)
 import Ui.Styles
 
-
-{-| Representation of an selectable item.
+{-| Representation of an selectable item:
+  - **value - The value of the item (it is sent when selected items change)
+  - **id** - The unique identifier of the item
+  - **label** - The label of the item
 -}
 type alias Item =
   { label : String
@@ -78,7 +80,7 @@ type alias Item =
   - **selected** - A *Set* of values of selected items
   - **uid** - The unique identifier of the chooser
   - **dropdown** - The model for the dropdown
-  - **render** - Function to render the items
+  - **render** - Function to render an item
   - **value** - The value of the input
 -}
 type alias Model =
@@ -120,7 +122,7 @@ type Msg
     chooser =
       Ui.Chooser.init ()
         |> Ui.Chooser.placeholder "Select an item..."
-        |> Ui.Chooser.
+        |> Ui.Chooser.searchable True
 -}
 init : () -> Model
 init _ =
@@ -139,16 +141,12 @@ init _ =
   , value = ""
   , data = []
   }
-    |> intendFirst
     |> Dropdown.offset 5
 
 
 {-| Subscribe to the changes of a chooser.
 
-    ...
-    subscriptions =
-      \model -> Ui.Chooser.onChange ChooserChanged model.chooser
-    ...
+    subscription = Ui.Chooser.onChange ChooserChanged chooser
 -}
 onChange : (Set String -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -204,13 +202,10 @@ items value model =
 
 {-| Subscriptions for a dropdown menu.
 
-    ...
-    subscriptions =
-      \model ->
-        Sub.map
-          DropdownMenu
-          (Ui.DropdownMenu.subscriptions model.dropdownMenu)
-    ...
+    subscriptions model =
+      Sub.map
+        Chooser
+        (Ui.Chooser.subscriptions model.dropdownMenu)
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -219,7 +214,7 @@ subscriptions model =
 
 {-| Updates a chooser.
 
-    Ui.Chooser.update msg chooser
+    ( updatedChoser, cmd ) = Ui.Chooser.update msg chooser
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =

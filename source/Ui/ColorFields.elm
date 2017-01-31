@@ -50,7 +50,12 @@ type alias Inputs =
   }
 
 
-{-| Representation of a color fields component.
+{-| Representation of a color fields component:
+  - **disabled** - Whether or not the color fields is disabled
+  - **readonly** - Whether or not the color fields is readonly
+  - **uid** - The unique identifier of the color fields
+  - **value** - The current value of the a color fields
+  - **inputs** - The inputs to hold spearate values
 -}
 type alias Model =
   { disabled : Bool
@@ -100,13 +105,8 @@ init _ =
 
 {-| Subscribe for the changes of a color panel.
 
-    ...
     subscriptions =
-      \model ->
-        Ui.ColorFields.onChange
-          ColorFieldsChanged
-          model.colorPanel
-    ...
+      Ui.ColorFields.onChange ColorFieldsChanged colorFields
 -}
 onChange : (Hsv -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -116,6 +116,8 @@ onChange msg model =
 
 
 {-| Updates a color fields component.
+
+    ( updatedColorFields, cmd ) = Ui.ColorFields.update msg colorFields
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ ({ inputs } as model) =

@@ -18,12 +18,14 @@ module Ui.Container exposing
 @docs column, columnEnd, columnCenter
 -}
 
-import Html.Attributes exposing (attribute, property)
+import Html.Attributes exposing (attribute)
 import Html exposing (node)
 import Html.Lazy
 
 import Ui.Styles.Container
 import Ui.Styles
+
+import Ui
 
 {-| Representation of a container:
   - **align** - Either "start", "center", "space-between", "space-around" or "end"
@@ -38,6 +40,7 @@ type alias Model =
 
 
 {-| Lazily renders a container.
+
     Ui.Container.view
       { direction = "row", align = "start", compact = False }
       attributes
@@ -49,6 +52,7 @@ view model attributes children =
 
 
 {-| Renders a container.
+
     Ui.Container.render
       { direction = "row", align = "start", compact = False }
       attributes
@@ -125,13 +129,10 @@ columnOptions =
 -}
 basAttributes : Model -> List (Html.Attribute msg)
 basAttributes model =
-  let
-    compact =
-      if model.compact then
-        [ attribute "compact" "" ]
-      else
-        []
-  in
-    [ attribute "direction" model.direction
+  [ Ui.attributeList [ ( "compact", model.compact ) ]
+  , Ui.Styles.apply Ui.Styles.Container.defaultStyle
+  , [ attribute "direction" model.direction
     , attribute "align" model.align
-    ] ++ compact ++ (Ui.Styles.apply Ui.Styles.Container.defaultStyle)
+    ]
+  ]
+  |> List.concat

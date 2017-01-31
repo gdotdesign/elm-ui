@@ -26,7 +26,6 @@ import Json.Decode as Json
 import Mouse
 import DOM
 
-
 {-| Representation of a dropdown menu:
   - **uid** - The unique identifier for a menu
   - **dropdown** - The model of the dropdown
@@ -67,13 +66,8 @@ init _ =
 
 {-| Subscriptions for a dropdown menu.
 
-    ...
     subscriptions =
-      \model ->
-        Sub.map
-          DropdownMenu
-          (Ui.DropdownMenu.subscriptions model.dropdownMenu)
-    ...
+      Sub.map DropdownMenu (Ui.DropdownMenu.subscriptions dropdownMenu)
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -82,7 +76,7 @@ subscriptions model =
 
 {-| Updates a dropdown menu.
 
-    Ui.DropdownMenu.update msg dropdownMenu
+    ( updatedDropdownMenu, cmd ) = Ui.DropdownMenu.update msg dropdownMenu
 -}
 update : Msg -> Model -> Model
 update action model =
@@ -119,6 +113,13 @@ view viewModel model =
 
 
 {-| Renders a dropdown menu
+
+    Ui.DropdownMenu.render
+      { element : openerElement
+      , address : address
+      , items : items
+      }
+      dropdownMenu
 -}
 render : ViewModel msg -> Model -> Html.Html msg
 render viewModel model =

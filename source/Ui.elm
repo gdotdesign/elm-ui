@@ -1,7 +1,7 @@
 module Ui exposing
   ( stylesheetLink, tabIndex, enabledActions, attributeList )
 
-{-| UI Library for Elm!
+{-| This module provides utility functions for most of the components.
 
 @docs stylesheetLink, tabIndex, enabledActions, attributeList
 -}
@@ -35,7 +35,6 @@ disabled.
 -}
 tabIndex : { a | disabled : Bool } -> List (Html.Attribute msg)
 tabIndex model =
-  -- # TODO: Use Html.Attributes.tabindex when the issue is fixed
   if model.disabled then
     []
   else
@@ -43,7 +42,7 @@ tabIndex model =
 
 
 {-| Retruns the given attributes unless the model is disabled or readonly, in
-that case it returs an empty list. This is usefull when you only want to add
+that case it returns an empty list. This is useful when you only want to add
 for example some event listeners when the component is not disabled or readonly.
 
     -- [ onClick Open ]
@@ -69,7 +68,10 @@ enabledActions model attributes =
     attributes
 
 
-{-| Classlist alternative for setting attributes.
+{-| Class list alternative for setting attributes.
+
+    -- <div disabled>Hello</div>
+    div (Ui.attributeList [ ( "disabled", True ) ]) [ text "Hello" ]
 -}
 attributeList : List ( String, Bool ) -> List (Html.Attribute msg)
 attributeList items =
@@ -81,4 +83,4 @@ attributeList items =
         []
   in
     List.map attr items
-      |> List.foldr (++) []
+      |> List.concat

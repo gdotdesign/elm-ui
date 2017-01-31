@@ -10,7 +10,7 @@ import Svg.Attributes exposing (d, width, height, viewBox)
 import Svg exposing (svg, path)
 import Html
 
-{-| Calendar
+{-| Calendar icon.
 -}
 calendar : List (Html.Attribute msg) -> Html.Html msg
 calendar =
@@ -28,7 +28,7 @@ calendar =
     """
 
 
-{-| Star empty
+{-| Empty star icon.
 -}
 starEmpty : List (Html.Attribute msg) -> Html.Html msg
 starEmpty =
@@ -42,7 +42,7 @@ starEmpty =
     """
 
 
-{-| Star full
+{-| Full star icon.
 -}
 starFull : List (Html.Attribute msg) -> Html.Html msg
 starFull =
@@ -52,7 +52,8 @@ starFull =
     28.397l11.123 6.71L26.18 22.45 36 13.937
     """
 
-{-| Search
+
+{-| Search icon.
 -}
 search : List (Html.Attribute msg) -> Html.Html msg
 search =
@@ -67,14 +68,15 @@ search =
     9.092-5.008 0-9.076-4.077-9.076-9.09 0-5.015 4.068-9.092 9.075-9.092z
     """
 
-{-| Plus
+
+{-| Plus icon.
 -}
 plus : List (Html.Attribute msg) -> Html.Html msg
 plus =
   icon "M0 21h15v15h6V21h15v-6H21V0h-6v15H0"
 
 
-{-| Close.
+{-| Close icon.
 -}
 close : List (Html.Attribute msg) -> Html.Html msg
 close =
@@ -92,7 +94,7 @@ close =
     """
 
 
-{-| Chevron right.
+{-| Right chevron icon.
 -}
 chevronRight : List (Html.Attribute msg) -> Html.Html msg
 chevronRight =
@@ -104,7 +106,7 @@ chevronRight =
     """
 
 
-{-| Chevron left.
+{-| Left chevron icon.
 -}
 chevronLeft : List (Html.Attribute msg) -> Html.Html msg
 chevronLeft =
@@ -117,7 +119,7 @@ chevronLeft =
     """
 
 
-{-| Checkmark.
+{-| Checkmark icon.
 -}
 checkmark : List (Html.Attribute msg) -> Html.Html msg
 checkmark =
@@ -141,7 +143,7 @@ icon iconPath attributes =
     [ path [ d iconPath ] [] ]
 
 
-{-| Backspace
+{-| Backspace icon.
 -}
 backspace : List (Html.Attribute msg) -> Html.Html msg
 backspace =

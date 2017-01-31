@@ -44,6 +44,7 @@ import DOM exposing (Position)
   - **uid** - The unique identifier of the color panel
   - **alphaDrag** - The drag model of the alpha slider
   - **hueDrag** - The drag model of the hue slider
+  - **fields** - The model for the color fields
   - **value** - The current HSV color
 -}
 type alias Model =
@@ -69,12 +70,12 @@ type alias DragModel =
 {-| Messages that a color panel can receive.
 -}
 type Msg
-  = MoveAlpha Position
+  = Fields ColorFields.Msg
+  | LiftAlpha Position
+  | MoveAlpha Position
+  | LiftRect Position
   | MoveRect Position
   | MoveHue Position
-  | LiftAlpha Position
-  | LiftRect Position
-  | Fields ColorFields.Msg
   | LiftHue Position
   | SetValue Hsv
   | End
@@ -111,13 +112,7 @@ initDrag id =
 
 {-| Subscribe for the changes of a color panel.
 
-    ...
-    subscriptions =
-      \model ->
-        Ui.ColorPanel.onChange
-          ColorPanelChanged
-          model.colorPanel
-    ...
+    subscription = Ui.ColorPanel.onChange ColorPanelChanged colorPanel
 -}
 onChange : (Hsv -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -128,13 +123,8 @@ onChange msg model =
 
 {-| Subscriptions for a color panel.
 
-    ...
     subscriptions =
-      \model ->
-        Sub.map
-          ColorPanel
-          (Ui.ColorPanel.subscriptions model.colorPanel)
-    ...
+      Sub.map ColorPanel (Ui.ColorPanel.subscriptions colorPanel)
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -151,7 +141,7 @@ subscriptions model =
 
 {-| Updates a color panel.
 
-    Ui.ColorPanel.update msg colorPanel
+    ( updatedColorPanel, cmd ) = Ui.ColorPanel.update msg colorPanel
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
@@ -284,7 +274,7 @@ render ({ fields } as model) =
 
 {-| Sets the value of a color panel.
 
-    Ui.ColorPanel.setValue Color.black colorPanel
+    ( updatedColorPanel, cmd ) = Ui.ColorPanel.setValue Color.black colorPanel
 -}
 setValue : Color -> Model -> ( Model, Cmd Msg )
 setValue color model =

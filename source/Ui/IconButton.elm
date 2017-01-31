@@ -21,7 +21,7 @@ import Ui.Styles.IconButton exposing (defaultStyle)
 {-| Representation of an icon button:
   - **disabled** - Whether or not the icon button is disabled
   - **readonly** - Whether or not the icon button is readonly
-  - **glyph** - The glyph to use form IonIcons
+  - **glyph** - The glyph to use, usually an SVG node
   - **text** - The text of the icon button
   - **kind** - The type of the icon button
   - **side** - The side to display the icon
@@ -39,6 +39,7 @@ type alias Model msg =
 
 
 {-| Initializes an icon button with a glyph and text.
+
     iconButton =
       Ui.IconButton.model "android-download" Ui.Icons.close
 -}
@@ -55,6 +56,7 @@ model text glyph =
 
 
 {-| Renders an icon button.
+
     Ui.IconButton.render msg model
 -}
 render : msg -> Model msg -> Html.Html msg
@@ -79,6 +81,7 @@ render msg model =
 
 
 {-| Lazily renders an icon button.
+
     Ui.IconButton.view msg model
 -}
 view : msg -> Model msg -> Html.Html msg

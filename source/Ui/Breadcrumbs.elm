@@ -1,6 +1,8 @@
 module Ui.Breadcrumbs exposing (..)
 
 {-| This module provides a view for rendering breadcrumbs.
+  - items in the breadcrumbs are Ui.Link-s
+  - separator can be defined as any Html node
 
 @docs view
 -}
@@ -14,7 +16,7 @@ import Ui.Link
 
 import Maybe
 
-{-| Renders breadcrumbs.
+{-| Renders breadcrumbs with the given separator and contents.
 
     Ui.Breadcrumbs.view
       (text "|")

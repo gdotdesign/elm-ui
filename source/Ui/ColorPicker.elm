@@ -35,8 +35,9 @@ import Ui.Styles
 {-| Representation of a color picker:
   - **disabled** - Whether or not the color picker is disabled
   - **readonly** - Whether or not the color picker is readonly
-  - **open** - Whether or not the color picker is open
+  - **uid** - The unique identifier of the color picker
   - **colorPanel** - The model of a color panel
+  - **dropdown** - The model of the dropdown
 -}
 type alias Model =
   { colorPanel : Ui.ColorPanel.Model
@@ -71,13 +72,7 @@ init _ =
 
 {-| Subscribe to the changes of a color picker.
 
-    ...
-    subscriptions =
-      \model ->
-        Ui.ColorPicker.onChange
-          ColorPickerChanged
-          model.colorPicker
-    ...
+    subscription = Ui.ColorPicker.onChange ColorPickerChanged colorPicker
 -}
 onChange : (Hsv -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -86,13 +81,8 @@ onChange msg model =
 
 {-| Subscriptions for a color picker.
 
-    ...
     subscriptions =
-      \model ->
-        Sub.map
-          ColorPicker
-          (Ui.ColorPicker.subscriptions model.colorPicker)
-    ...
+      Sub.map ColorPicker (Ui.ColorPicker.subscriptions colorPicker)
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -103,6 +93,8 @@ subscriptions model =
 
 
 {-| Updates a color picker.
+
+    ( updatedColorPicker, cmd ) = Ui.ColorPicker.update msg colorPicker
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
@@ -157,7 +149,8 @@ render model =
 
 {-| Sets the value of a color picker.
 
-    Ui.ColorPicker.setValue Color.black colorPicker
+    ( updatedColorPicker, cmd ) =
+      Ui.ColorPicker.setValue Color.black colorPicker
 -}
 setValue : Color -> Model -> ( Model, Cmd Msg )
 setValue color model =

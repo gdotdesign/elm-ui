@@ -6,10 +6,10 @@ module Ui exposing
 @docs stylesheetLink, tabIndex, enabledActions, attributeList
 -}
 
-import Html.Attributes exposing (attribute, rel, href, class, tabindex, target)
+import Html.Attributes exposing (attribute, rel, href, tabindex)
 import Html.Events.Extra exposing (onLoad)
-import Html.Events exposing (onClick)
-import Html exposing (node, text)
+import Html exposing (node)
+
 
 {-| Renders a link tag for a CSS Stylesheet which triggers the given message
 after it's loaded.
@@ -69,19 +69,8 @@ enabledActions model attributes =
     attributes
 
 
-{-| Renders a floating action button.
-
-    Ui.fab "[ onClick Open ]
+{-| Classlist alternative for setting attributes.
 -}
-fab : String -> List (Html.Attribute msg) -> Html.Html msg
-fab glyph attributes =
-  node
-    "ui-fab"
-    attributes
-    [ ]
-
-
-{-|-}
 attributeList : List ( String, Bool ) -> List (Html.Attribute msg)
 attributeList items =
   let

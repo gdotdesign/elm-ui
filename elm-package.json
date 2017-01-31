@@ -44,6 +44,7 @@
     "Ui.Container",
     "Ui.DatePicker",
     "Ui.DropdownMenu",
+    "Ui.Fab",
     "Ui.Header",
     "Ui.IconButton",
     "Ui.Icons",

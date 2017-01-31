@@ -44,6 +44,7 @@ type alias Theme =
     , dropdown : Int
     , header : Int
     , modal : Int
+    , fab : Int
     }
   , breadcrumbs :
     { background : String
@@ -104,6 +105,7 @@ default =
     , dropdown = 1000
     , modal = 100
     , header = 50
+    , fab = 90
     }
   , chooser =
     { hoverColors = { background = "#f0f0f0", text = "#626262" }

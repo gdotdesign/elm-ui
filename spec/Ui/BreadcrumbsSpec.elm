@@ -3,7 +3,6 @@ import Spec exposing (..)
 import Html exposing (text)
 import Ui.Breadcrumbs
 
-
 view : String -> Html.Html msg
 view model =
   Ui.Breadcrumbs.view

@@ -1,14 +1,29 @@
-module Ui.Styles.Modal exposing (style)
+module Ui.Styles.Modal exposing (..)
 
+{-| Styles for a modal.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for a modal using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a modal using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-modal"
+  mixin
     [ Mixins.defaults
 
     , transform [ translate3d zero zero zero ]

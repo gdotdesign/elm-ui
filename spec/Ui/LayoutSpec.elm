@@ -1,21 +1,14 @@
 import Spec exposing (..)
 
 import Html exposing (div, text)
-
 import Ui.Layout
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Layout
-import Ui.Styles
 
 view : String -> Html.Html msg
 view model =
   div
     [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Layout.style
-      ] default
-    , Ui.Layout.website
+    [ Ui.Layout.website
       [ text "header"  ]
       [ text "content" ]
       [ text "footer"  ]
@@ -27,6 +20,7 @@ view model =
       [ text "sidebar" ]
       [ text "content" ]
     ]
+
 
 specs : Node
 specs =

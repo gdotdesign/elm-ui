@@ -36,6 +36,8 @@ import Ui.Native.Uid as Uid
 import Ui.Icons
 import Ui
 
+import Ui.Styles.NumberPad exposing (defaultStyle)
+import Ui.Styles
 
 {-| Representation of a number pad:
   - **disabled** - Whether or not the number pad is disabled
@@ -229,7 +231,8 @@ render ({ address } as viewModel) model =
   in
     node
       "ui-number-pad"
-      ( [ Ui.tabIndex model
+      ( [ Ui.Styles.apply defaultStyle
+        , Ui.tabIndex model
         , actions
         , Ui.attributeList
           [ ( "disabled", model.disabled )

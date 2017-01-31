@@ -1,14 +1,29 @@
-module Ui.Styles.NumberPad exposing (style)
+module Ui.Styles.NumberPad exposing (..)
 
+{-| Styles for a number-pad.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for a number-pad using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a number-pad using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-number-pad"
+  mixin
     [ Mixins.defaults
     , Mixins.focusedIdle theme
 

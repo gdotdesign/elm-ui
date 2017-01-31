@@ -1,23 +1,19 @@
 import Spec exposing (..)
 
-import Html exposing (div, text)
-
+import Html exposing (text)
+import Steps exposing (..)
 import Ui.Container
 import Ui.NumberPad
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.NumberPad
-import Ui.Styles
-
-import Steps exposing (..)
 
 type alias Model =
   { numberPad : Ui.NumberPad.Model
   }
 
+
 type Msg
   = NumberPad Ui.NumberPad.Msg
+
 
 init : () -> Model
 init _ =
@@ -25,6 +21,7 @@ init _ =
       Ui.NumberPad.init ()
         |> Ui.NumberPad.format False
   }
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -35,6 +32,7 @@ update msg_ model =
       in
         ( { model | numberPad = numberPad }, Cmd.map NumberPad cmd )
 
+
 viewModel : Ui.NumberPad.ViewModel Msg
 viewModel =
   { bottomRight = text "a"
@@ -42,26 +40,22 @@ viewModel =
   , address = NumberPad
   }
 
+
 view : Model -> Html.Html Msg
 view { numberPad } =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.NumberPad.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.NumberPad.view viewModel numberPad
-      , Ui.NumberPad.view viewModel { numberPad | disabled = True }
-      , Ui.NumberPad.view viewModel { numberPad | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.NumberPad.view viewModel numberPad
+    , Ui.NumberPad.view viewModel { numberPad | disabled = True }
+    , Ui.NumberPad.view viewModel { numberPad | readonly = True }
     ]
+
 
 assertValue value =
   assert.containsText
     { selector = "ui-number-pad-value"
     , text = toString value
     }
+
 
 specs : Node
 specs =

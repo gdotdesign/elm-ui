@@ -2,27 +2,25 @@ import Spec exposing (..)
 
 import Html exposing (div, text, button)
 import Html.Events exposing (onClick)
-
+import Steps exposing (..)
 import Ui.Modal
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Modal
-import Ui.Styles
-
-import Steps exposing (..)
 
 type alias Model =
   { modal : Ui.Modal.Model
   }
 
+
 type Msg
   = Modal Ui.Modal.Msg
   | Open
+
 
 init : () -> Model
 init _ =
   { modal = Ui.Modal.init
   }
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -42,16 +40,15 @@ viewModel =
   , address = Modal
   }
 
+
 view : Model -> Html.Html Msg
 view { modal } =
   div
     [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Modal.style
-      ] default
-    , Ui.Modal.view viewModel modal
+    [ Ui.Modal.view viewModel modal
     , button [ onClick Open ] [ text "Open" ]
     ]
+
 
 specs : Node
 specs =

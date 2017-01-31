@@ -1,35 +1,20 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
-
+import Steps exposing (..)
 import Ui.Container
 import Ui.Calendar
-
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Calendar
-import Ui.Styles
-
-import Json.Encode as Json
-
 import Ext.Date
+import Html
 
-import Steps exposing (keyDown)
 
 view : Ui.Calendar.Model -> Html.Html Ui.Calendar.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Calendar.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.Calendar.view "en_us" model
-      , Ui.Calendar.view "en_us" { model | disabled = True }
-      , Ui.Calendar.view "en_us" { model | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.Calendar.view "en_us" model
+    , Ui.Calendar.view "en_us" { model | disabled = True }
+    , Ui.Calendar.view "en_us" { model | readonly = True }
     ]
+
 
 specs : Node
 specs =
@@ -62,7 +47,7 @@ specs =
       [ it "changes the month to April"
         [ assert.containsText
           { text = "1987 - May", selector = "ui-calendar ui-container div" }
-        , steps.dispatchEvent "click" (Json.object []) "svg:first-child"
+        , clickSvg "svg:first-child"
         , assert.containsText
           { text = "1987 - April", selector = "ui-calendar ui-container div" }
         , assert.not.elementPresent "ui-calendar-cell[selected]"
@@ -72,7 +57,7 @@ specs =
       [ it "changes the month to June"
         [ assert.containsText
           { text = "1987 - May", selector = "ui-calendar ui-container div" }
-        , steps.dispatchEvent "click" (Json.object []) "svg:last-child"
+        , clickSvg "svg:last-child"
         , assert.containsText
           { text = "1987 - June", selector = "ui-calendar ui-container div" }
         , assert.not.elementPresent "ui-calendar-cell[selected]"
@@ -96,8 +81,7 @@ specs =
             { selector = "ui-calendar[disabled] ui-container div"
             , text = "1987 - May"
             }
-          , steps.dispatchEvent "click" (Json.object [])
-            "ui-calendar[disabled] svg:first-child"
+          , clickSvg "ui-calendar[disabled] svg:first-child"
           , assert.containsText
             { selector = "ui-calendar[disabled] ui-container div"
             , text = "1987 - May"
@@ -110,8 +94,7 @@ specs =
             { selector = "ui-calendar[disabled] ui-container div"
             , text = "1987 - May"
             }
-          , steps.dispatchEvent "click" (Json.object [])
-            "ui-calendar[disabled] svg:last-child"
+          , clickSvg "ui-calendar[disabled] svg:last-child"
           , assert.containsText
             { selector = "ui-calendar[disabled] ui-container div"
             , text = "1987 - May"

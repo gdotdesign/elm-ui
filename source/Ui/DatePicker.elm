@@ -189,8 +189,7 @@ render locale model =
       (format (DateConfigs.getConfig locale) model.format model.calendar.value)
   in
     Picker.view
-      { kind = "ui-date-picker"
-      , address = Picker
+      { address = Picker
       , attributes = []
       , keyActions =
         [ ( 40, Increment )

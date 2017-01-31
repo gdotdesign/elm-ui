@@ -39,7 +39,6 @@ type alias ViewModel msg =
   , contents : List (Html.Html msg)
   , keyActions : List (Int, msg)
   , address : Msg -> msg
-  , kind : String
   }
 
 
@@ -99,16 +98,15 @@ view ({ address } as viewModel) model =
     actions =
       Ui.enabledActions
         model
-        ([ onFocusOut (address Blur)
-         , onFocus (address Focus)
-         , onBlur (address Blur)
-         , onKeys False
-            ([ ( 13, (address Toggle) )
-             , ( 27, (address Close) )
-             ] ++ viewModel.keyActions)
-         ]
-          ++ viewModel.attributes
-        )
+        [ onFocusOut (address Blur)
+        , onFocus (address Focus)
+        , onBlur (address Blur)
+        , onKeys False
+          ([ ( 13, (address Toggle) )
+            , ( 27, (address Close) )
+            ] ++ viewModel.keyActions)
+        ]
+
 
     toggleAction =
       if DOM.contains ("[id='" ++ model.uid ++ "']:focus") then
@@ -120,10 +118,10 @@ view ({ address } as viewModel) model =
       [ Ui.attributeList
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
-          , ( viewModel.kind, True )
           ]
       , actions
       , Ui.tabIndex model
+      , viewModel.attributes
       ]
         |> List.concat
 

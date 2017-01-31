@@ -30,6 +30,9 @@ import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
+import Ui.Styles.ColorPanel exposing (defaultStyle)
+import Ui.Styles
+
 import Ext.Number
 
 import DOM exposing (Position)
@@ -229,10 +232,13 @@ render ({ fields } as model) =
   in
     node
       "ui-color-panel"
-      ( Ui.attributeList
+      ( [ Ui.attributeList
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
+        , Ui.Styles.apply defaultStyle
+        ]
+        |> List.concat
       )
       [ node "ui-color-panel-hsv" []
         [ node "ui-color-panel-box" []

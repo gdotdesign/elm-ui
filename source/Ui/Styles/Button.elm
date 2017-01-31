@@ -1,5 +1,9 @@
-module Ui.Styles.Button exposing (defaultStyle, style)
+module Ui.Styles.Button exposing (..)
 
+{-| Styles for a button.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
@@ -8,24 +12,28 @@ import Ui.Styles.Ripple as Ripple
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
+
+{-| Styles for a button using the default theme.
+-}
 defaultStyle : Style
 defaultStyle =
   Ui.Styles.attributes (style Theme.default)
 
+
+{-| Returns the style node for a button using the given theme.
+-}
 style : Theme -> Node
 style theme =
   mixin
     [ Mixins.defaults
     , Ripple.style
 
+    , borderRadius theme.borderRadius
     , fontFamily theme.fontFamily
-
     , justifyContent center
     , display inlineFlex
     , alignItems center
     , textAlign center
-
-    , borderRadius theme.borderRadius
     , fontWeight bold
     , userSelect none
     , cursor pointer
@@ -37,7 +45,8 @@ style theme =
       ]
 
     , selector "> *"
-      [ pointerEvents none ]
+      [ pointerEvents none
+      ]
 
     , selector "&[size=medium]"
       [ padding (zero . (px 24))

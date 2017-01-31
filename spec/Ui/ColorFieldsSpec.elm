@@ -1,36 +1,21 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
-
-import Ui.ColorFields
-import Ui.Container
-
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.ColorFields
-import Ui.Styles.Container
-import Ui.Styles
-
-import Steps exposing (keyDown)
-
 import Task exposing (Task)
 import Json.Encode as Json
+import Steps exposing (..)
+import Ui.ColorFields
+import Ui.Container
+import Html
+
 
 view : Ui.ColorFields.Model -> Html.Html Ui.ColorFields.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.ColorFields.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.column []
-      [ Ui.ColorFields.view model
-      , Ui.ColorFields.view { model | disabled = True }
-      , Ui.ColorFields.view { model | readonly = True }
-      ]
+  Ui.Container.column []
+    [ Ui.ColorFields.view model
+    , Ui.ColorFields.view { model | disabled = True }
+    , Ui.ColorFields.view { model | readonly = True }
     ]
+
 
 setField : Int -> String -> String -> Task Never Outcome
 setField index value expected =
@@ -45,6 +30,7 @@ setField index value expected =
       , steps.dispatchEvent "change" (Json.object []) selector
       , assert.valueEquals { selector = selector, text = expected }
       ]
+
 
 testPart : String -> Int -> String -> String -> Node
 testPart name index fullHex partialHex =
@@ -89,6 +75,7 @@ testPart name index fullHex partialHex =
         ]
       ]
     ]
+
 
 specs : Node
 specs =

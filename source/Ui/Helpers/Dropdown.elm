@@ -232,8 +232,7 @@ render : ViewModel msg -> Model a -> Html.Html msg
 render viewModel model =
   let
     attributes =
-      [ attribute "dropdown" ""
-      , id model.uid
+      [ id model.uid
       ]
         |> (++) viewModel.attributes
 

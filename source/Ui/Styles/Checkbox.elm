@@ -1,46 +1,55 @@
-module Ui.Styles.Checkbox exposing (style)
+module Ui.Styles.Checkbox exposing (..)
 
+{-| Styles for a checkbox.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for a checkbox using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a checkbox using the given theme.
+-}
 style : Theme -> Node
 style theme =
   mixin
-    [ selectors
-      [ "ui-checkbox"
-      , "ui-checkbox-toggle"
-      , "ui-checkbox-radio"
-      ]
-      [ Mixins.defaults
-      , Mixins.focusedIdle theme
+    [ Mixins.defaults
+    , Mixins.focusedIdle theme
 
-      , fontFamily theme.fontFamily
+    , fontFamily theme.fontFamily
 
-      , border ((px 1) . solid . theme.colors.border)
-      , backgroundColor theme.colors.input.color
-      , color theme.colors.input.bw
-      , display inlineBlock
-      , cursor pointer
+    , border ((px 1) . solid . theme.colors.border)
+    , backgroundColor theme.colors.input.color
+    , color theme.colors.input.bw
+    , display inlineBlock
+    , cursor pointer
 
-      , selector "&[readonly]"
-        [ Mixins.readonly ]
+    , selector "&[readonly]"
+      [ Mixins.readonly ]
 
-      , selector "&[disabled]"
-        [ Mixins.disabledColors theme
-        , Mixins.disabled
+    , selector "&[disabled]"
+      [ Mixins.disabledColors theme
+      , Mixins.disabled
 
-        , borderColor transparent
-        ]
-
-      , selector "&:focus"
-        [ Mixins.focused theme
-        ]
+      , borderColor transparent
       ]
 
-    , selector "ui-checkbox"
+    , selector "&:focus"
+      [ Mixins.focused theme
+      ]
+
+    , selector "&[kind=checkbox]"
       [ borderRadius theme.borderRadius
       , justifyContent center
       , alignItems center
@@ -73,7 +82,7 @@ style theme =
         ]
       ]
 
-    , selector "ui-checkbox-toggle"
+    , selector "&[kind=toggle]"
       [ borderRadius theme.borderRadius
       , justifyContent center
       , display inlineFlex
@@ -125,7 +134,7 @@ style theme =
         [ backgroundColor theme.colors.focus.color ]
       ]
 
-    , selector "ui-checkbox-radio"
+    , selector "&[kind=radio]"
       [ borderRadius (pct 50)
       , position relative
       , height (px 36)
@@ -163,4 +172,4 @@ style theme =
       , selector "&:focus ui-checkbox-radio-circle"
         [ backgroundColor theme.colors.focus.color ]
       ]
-  ]
+    ]

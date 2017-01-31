@@ -85,8 +85,7 @@ flatten selectors node =
       selectors
 
     Mixin nodes ->
-      List.map (flatten []) nodes
-      |> List.foldr (++) selectors
+      selectors
 
     PropertyNode key value ->
       selectors

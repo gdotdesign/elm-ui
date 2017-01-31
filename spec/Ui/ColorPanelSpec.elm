@@ -1,33 +1,20 @@
 import Spec exposing (..)
 
-import Html exposing (div)
-
-import Ui.Container
-import Ui.ColorPanel
-
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.ColorPanel
-import Ui.Styles
-
 import Steps exposing (..)
+import Ui.ColorPanel
+import Ui.Container
+import Html
 
 (=>) = (,)
 
 view : Ui.ColorPanel.Model -> Html.Html Ui.ColorPanel.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.ColorPanel.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.ColorPanel.view model
-      , Ui.ColorPanel.view { model | disabled = True }
-      , Ui.ColorPanel.view { model | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.ColorPanel.view model
+    , Ui.ColorPanel.view { model | disabled = True }
+    , Ui.ColorPanel.view { model | readonly = True }
     ]
+
 
 hueHandleEquals position =
   assert.inlineStyleEquals
@@ -36,12 +23,14 @@ hueHandleEquals position =
     , value = position
     }
 
+
 alphaHandleEquals position =
   assert.inlineStyleEquals
     { selector = "ui-color-panel-alpha ui-color-panel-handle"
     , style = "left"
     , value = position
     }
+
 
 rectHandleEquals top left =
   stepGroup ("Rect handle equals (" ++ top ++ ", " ++ left ++ ")")
@@ -56,6 +45,7 @@ rectHandleEquals top left =
       , value = left
       }
     ]
+
 
 specs : Node
 specs =
@@ -155,6 +145,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

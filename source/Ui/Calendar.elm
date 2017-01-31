@@ -39,6 +39,9 @@ import Ui.Container
 import Ui.Icons
 import Ui
 
+import Ui.Styles.Calendar exposing (defaultStyle)
+import Ui.Styles
+
 
 {-| Representation of a calendar component:
   - **selectable** - Whether or not the user can select a date by clicking on it
@@ -190,11 +193,14 @@ render locale model =
   in
     node
       "ui-calendar"
-      (Ui.attributeList
-        [ ( "selectable", model.selectable )
-        , ( "disabled", model.disabled )
-        , ( "readonly", model.readonly )
+      ( [ Ui.attributeList
+          [ ( "selectable", model.selectable )
+          , ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+        , Ui.Styles.apply defaultStyle
         ]
+        |> List.concat
       )
       [ container
       , node

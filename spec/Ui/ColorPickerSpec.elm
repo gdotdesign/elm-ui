@@ -1,17 +1,11 @@
 import Spec exposing (..)
 
-import Html exposing (div)
-
-import Ui.ColorPicker
-import Ui.Container
-
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.ColorPicker
-import Ui.Styles.Container
-import Ui.Styles
-
 import Steps exposing (..)
 import Json.Encode as Json
+import Ui.ColorPicker
+import Ui.Container
+import Html
+
 
 type alias Model =
   { enabled : Ui.ColorPicker.Model
@@ -19,10 +13,12 @@ type alias Model =
   , readonly : Ui.ColorPicker.Model
   }
 
+
 type Msg
   = Enabled Ui.ColorPicker.Msg
   | Disabled Ui.ColorPicker.Msg
   | Readonly Ui.ColorPicker.Msg
+
 
 init : () -> Model
 init _ =
@@ -31,6 +27,7 @@ init _ =
   , readonly = Ui.ColorPicker.init ()
   }
 
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
@@ -38,6 +35,7 @@ subscriptions model =
     , Sub.map Disabled (Ui.ColorPicker.subscriptions model.disabled)
     , Sub.map Readonly (Ui.ColorPicker.subscriptions model.readonly)
     ]
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -60,35 +58,30 @@ update msg_ model =
       in
         ( { model | enabled = enabled }, Cmd.map Enabled cmd )
 
+
 view : Model -> Html.Html Msg
 view ({ disabled, readonly } as model) =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.ColorPicker.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Html.map Enabled (Ui.ColorPicker.view model.enabled)
-      , Html.map Disabled (Ui.ColorPicker.view { disabled | disabled = True } )
-      , Html.map Readonly (Ui.ColorPicker.view { readonly | readonly = True } )
-      ]
+  Ui.Container.row []
+    [ Html.map Enabled (Ui.ColorPicker.view model.enabled)
+    , Html.map Disabled (Ui.ColorPicker.view { disabled | disabled = True } )
+    , Html.map Readonly (Ui.ColorPicker.view { readonly | readonly = True } )
     ]
+
 
 specs : Node
 specs =
   describe "Ui.ColorPicker"
     [ it "has tabindex"
-      [ assert.elementPresent "ui-picker[ui-color-picker][tabindex]"
+      [ assert.elementPresent "ui-picker[tabindex]"
       ]
     , context "Disabled"
       [ it "does not have tabindex"
-        [ assert.not.elementPresent "ui-picker[ui-color-picker][disabled][tabindex]"
+        [ assert.not.elementPresent "ui-picker[disabled][tabindex]"
         ]
       ]
     , context "Readonly"
       [ it "has tabindex"
-        [ assert.elementPresent "ui-picker[ui-color-picker][readonly][tabindex]"
+        [ assert.elementPresent "ui-picker[readonly][tabindex]"
         ]
       ]
     , context "Open"

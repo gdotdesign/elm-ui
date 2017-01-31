@@ -71,16 +71,16 @@ specs : Node
 specs =
   describe "Ui.DatePicker"
     [ it "has tabindex"
-      [ assert.elementPresent "ui-picker[ui-date-picker][tabindex]"
+      [ assert.elementPresent "ui-picker[tabindex]"
       ]
     , context "Disabled"
       [ it "does not have tabindex"
-        [ assert.not.elementPresent "ui-picker[ui-date-picker][disabled][tabindex]"
+        [ assert.not.elementPresent "ui-picker[disabled][tabindex]"
         ]
       ]
     , context "Readonly"
       [ it "has tabindex"
-        [ assert.elementPresent "ui-picker[ui-date-picker][readonly][tabindex]"
+        [ assert.elementPresent "ui-picker[readonly][tabindex]"
         ]
       ]
     , context "Open"

@@ -29,6 +29,8 @@ import Ui.Helpers.Picker as Picker
 import Ui.Native.Uid as Uid
 import Ui.ColorPanel
 
+import Ui.Styles.ColorPicker exposing (defaultStyle)
+import Ui.Styles
 
 {-| Representation of a color picker:
   - **disabled** - Whether or not the color picker is disabled
@@ -136,9 +138,8 @@ render model =
       Ext.Color.toCSSRgba model.colorPanel.value
   in
     Picker.view
-      { kind = "ui-color-picker"
-      , address = Picker
-      , attributes = []
+      { address = Picker
+      , attributes = Ui.Styles.apply defaultStyle
       , keyActions = []
       , contents =
           [ node "ui-color-picker-text" [] [ text color ]

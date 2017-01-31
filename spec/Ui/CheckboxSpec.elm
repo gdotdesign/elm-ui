@@ -1,43 +1,31 @@
 import Spec exposing (..)
 
-import Html exposing (div)
-
+import Steps exposing (..)
 import Ui.Container
 import Ui.Checkbox
+import Html
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.Checkbox
-import Ui.Styles
-
-import Steps exposing (..)
 
 view : Ui.Checkbox.Model -> Html.Html Ui.Checkbox.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Checkbox.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.column []
-      [ Ui.Container.row []
-        [ Ui.Checkbox.view model
-        , Ui.Checkbox.view { model | disabled = True }
-        , Ui.Checkbox.view { model | readonly = True }
-        ]
-      , Ui.Container.row []
-        [ Ui.Checkbox.viewRadio model
-        , Ui.Checkbox.viewRadio { model | disabled = True }
-        , Ui.Checkbox.viewRadio { model | readonly = True }
-        ]
-      , Ui.Container.row []
-        [ Ui.Checkbox.viewToggle model
-        , Ui.Checkbox.viewToggle { model | disabled = True }
-        , Ui.Checkbox.viewToggle { model | readonly = True }
-        ]
+  Ui.Container.column []
+    [ Ui.Container.row []
+      [ Ui.Checkbox.view model
+      , Ui.Checkbox.view { model | disabled = True }
+      , Ui.Checkbox.view { model | readonly = True }
+      ]
+    , Ui.Container.row []
+      [ Ui.Checkbox.viewRadio model
+      , Ui.Checkbox.viewRadio { model | disabled = True }
+      , Ui.Checkbox.viewRadio { model | readonly = True }
+      ]
+    , Ui.Container.row []
+      [ Ui.Checkbox.viewToggle model
+      , Ui.Checkbox.viewToggle { model | disabled = True }
+      , Ui.Checkbox.viewToggle { model | readonly = True }
       ]
     ]
+
 
 specs : Node
 specs =

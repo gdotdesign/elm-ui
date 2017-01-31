@@ -31,6 +31,9 @@ import Ui.Native.Uid as Uid
 import Ui.Icons
 import Ui
 
+import Ui.Styles.Checkbox exposing (defaultStyle)
+import Ui.Styles
+
 
 {-| Representation of a checkbox:
   - **disabled** - Whether or not the checkbox is disabled
@@ -106,7 +109,7 @@ render : Model -> Html.Html Msg
 render model =
   node
     "ui-checkbox"
-    (attributes model)
+    (attributes "checkbox" model)
     [ Ui.Icons.checkmark [] ]
 
 
@@ -126,8 +129,8 @@ viewRadio model =
 renderRadio : Model -> Html.Html Msg
 renderRadio model =
   node
-    "ui-checkbox-radio"
-    (attributes model)
+    "ui-checkbox"
+    (attributes "radio" model)
     [ node "ui-checkbox-radio-circle" [] []
     ]
 
@@ -148,8 +151,8 @@ viewToggle model =
 renderToggle : Model -> Html.Html Msg
 renderToggle model =
   node
-    "ui-checkbox-toggle"
-    (attributes model)
+    "ui-checkbox"
+    (attributes "toggle" model)
     [ node "ui-checkbox-toggle-bg" []
       [ node "ui-checkbox-toggle-span" [] [ text "ON" ]
       , node "ui-checkbox-toggle-span" [] [ text "OFF" ]
@@ -169,8 +172,8 @@ setValue value model =
 
 {-| Returns attributes for a checkbox.
 -}
-attributes : Model -> List (Html.Attribute Msg)
-attributes model =
+attributes : String -> Model -> List (Html.Attribute Msg)
+attributes kind model =
   let
     disabled =
       if model.disabled then
@@ -200,7 +203,9 @@ attributes model =
             ]
         ]
   in
-    [ Ui.tabIndex model
+    [ Ui.Styles.apply defaultStyle
+    , [ attribute "kind" kind ]
+    , Ui.tabIndex model
     , disabled
     , readonly
     , checked

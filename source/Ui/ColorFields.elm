@@ -36,6 +36,9 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui
 
+import Ui.Styles.ColorFields exposing (defaultStyle)
+import Ui.Styles
+
 {-| Represents the values of the inputs.
 -}
 type alias Inputs =
@@ -347,10 +350,13 @@ render ({ inputs } as model) =
         ]
   in
     node "ui-color-fields"
-      (Ui.attributeList
-        [ ( "disabled", model.disabled )
-        , ( "readonly", model.readonly )
+      ( [ Ui.attributeList
+          [ ( "disabled", model.disabled )
+          , ( "readonly", model.readonly )
+          ]
+        , Ui.Styles.apply defaultStyle
         ]
+        |> List.concat
       )
       [ node "ui-color-fields-column" []
           [ input (baseHexAttributes ++ hexAttributes) []

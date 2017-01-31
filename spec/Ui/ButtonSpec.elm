@@ -2,27 +2,30 @@ import Spec exposing (..)
 
 import Html.Attributes exposing (class)
 import Html exposing (div, text)
-
+import Steps exposing (..)
 import Ui.Container
 import Ui.Button
 
-import Steps exposing (..)
 
 type alias Model
   = String
 
+
 type Msg
   = Set
+
 
 init : () -> String
 init _ =
   "Initial"
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     Set ->
       ( "Clicked", Cmd.none )
+
 
 view : Model -> Html.Html Msg
 view model =
@@ -89,6 +92,7 @@ view model =
         ]
       , div [ class "result" ] [ text model ]
       ]
+
 
 specs : Node
 specs =

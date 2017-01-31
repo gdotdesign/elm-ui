@@ -6,11 +6,11 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
       patchStyles()
     }).observe(document.body, { childList: true, subtree: true });
   } else {
-    var id = setInterval(function(){
-      // TODO: Check if emspec finished...
-      if(document.querySelector('[class^=row]')) { clearInterval(id) }
+    var patch = function(){
       patchStyles()
-    })
+      requestAnimationFrame(patch)
+    }
+    requestAnimationFrame(patch)
   }
 
   function patchStyles(){

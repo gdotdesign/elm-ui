@@ -52,6 +52,9 @@ import Ui.ScrolledPanel
 import Ui.Native.Uid as Uid
 import Ui
 
+import Ui.Styles.Chooser exposing (defaultStyle)
+import Ui.Styles
+
 
 {-| Representation of an selectable item.
 -}
@@ -340,12 +343,16 @@ render model =
       { address = Dropdown
       , tag = "ui-chooser"
       , attributes =
-        Ui.attributeList
-          [ ( "searchable", model.searchable )
-          , ( "open", model.dropdown.open )
-          , ( "disabled", model.disabled )
-          , ( "readonly", model.readonly )
+        ( [ Ui.attributeList
+            [ ( "searchable", model.searchable )
+            , ( "open", model.dropdown.open )
+            , ( "disabled", model.disabled )
+            , ( "readonly", model.readonly )
+            ]
+          , Ui.Styles.apply defaultStyle
           ]
+          |> List.concat
+        )
       , contents = [ (Ui.ScrolledPanel.view children)]
       , children =
         [ input

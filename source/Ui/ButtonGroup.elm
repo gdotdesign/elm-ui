@@ -14,6 +14,9 @@ import Html.Lazy
 
 import Ui.Button
 
+import Ui.Styles.ButtonGroup exposing (defaultStyle)
+import Ui.Styles
+
 
 {-| Representation of a button group:
   - **disabled** - Whether or not the button group is disabled
@@ -63,7 +66,7 @@ render : Model msg -> Html.Html msg
 render model =
   node
     "ui-button-group"
-    []
+    (Ui.Styles.apply defaultStyle)
     (List.map (renderButton model) model.items)
 
 

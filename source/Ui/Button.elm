@@ -1,4 +1,4 @@
-module Ui.Button exposing ( Model, model, view, render, attributes )
+module Ui.Button exposing (Model, model, view, render, attributes)
 
 {-| Basic button component that implements:
   - **focus state** with animation

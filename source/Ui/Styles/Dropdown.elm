@@ -10,7 +10,6 @@ import Css exposing (..)
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 
-
 {-| Returns the style node for a drop-down using the given theme.
 -}
 style : Theme -> Node

@@ -105,11 +105,7 @@ placeholder value model =
 
 {-| Subscribe to the **create** events of a tagger.
 
-    ...
-    subscriptions =
-      \model ->
-        Ui.Tagger.onCreate AddTag model.tagger
-    ...
+    subscriptions = Ui.Tagger.onCreate AddTag tagger
 -}
 onCreate : (String -> msg) -> Model -> Sub msg
 onCreate msg model =
@@ -118,11 +114,7 @@ onCreate msg model =
 
 {-| Subscribe to the **remove** events of a tagger.
 
-    ...
-    subscriptions =
-      \model ->
-        Ui.Tagger.onRemove RemoveTag model.tagger
-    ...
+    subscriptions = Ui.Tagger.onRemove RemoveTag tagger
 -}
 onRemove : (String -> msg) -> Model -> Sub msg
 onRemove msg model =
@@ -131,7 +123,7 @@ onRemove msg model =
 
 {-| Updates a tagger.
 
-    Ui.Tagger.update msg tagger
+    ( updatedTagger, cmd ) = Ui.Tagger.update msg tagger
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
@@ -230,7 +222,7 @@ render tags model =
 
 {-| Sets the value of a taggers input.
 
-    Ui.Tagger.setValue "" tagger
+    ( updatedTagger, cmd ) = Ui.Tagger.setValue "" tagger
 -}
 setValue : String -> Model -> ( Model, Cmd Msg)
 setValue value model =

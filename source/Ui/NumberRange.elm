@@ -29,11 +29,10 @@ import Html exposing (node, input)
 import Html.Lazy
 
 import Ext.Number exposing (toFixed)
+import Json.Decode as Json
 import Result
 import String
 import Task
-
-import Json.Decode as Json
 
 import DOM exposing (Position)
 
@@ -166,10 +165,7 @@ round value model =
 
 {-| Subscribe to the changes of a number range.
 
-    ...
-    subscriptions =
-      \model -> Ui.NumberRange.onChange NumberRangeChanged model.numberRange
-    ...
+    subscriptions = Ui.NumberRange.onChange NumberRangeChanged numberRange
 -}
 onChange : (Float -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -178,13 +174,8 @@ onChange msg model =
 
 {-| Subscriptions for a number range.
 
-    ...
     subscriptions =
-      \model ->
-        Sub.map
-          NumberRange
-          (Ui.NumberRange.subscriptions model.numberRange)
-    ...
+      Sub.map NumberRange (Ui.NumberRange.subscriptions numberRange)
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -196,7 +187,7 @@ subscriptions model =
 
 {-| Updates a number range.
 
-    Ui.NumberRange.update msg numberRange
+    ( updatedNumberRange, cmd ) = Ui.NumberRange.update msg numberRange
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -349,7 +340,8 @@ render model =
 
 {-| Sets the value of a number range.
 
-    Ui.NumberRange.setValue 1 numberRange
+    ( updatedNumberRange, cmd ) =
+      Ui.NumberRange.setValue 1 numberRange
 -}
 setValue : Float -> Model -> ( Model, Cmd Msg )
 setValue value model =
@@ -400,7 +392,7 @@ decrement model =
     |> sendValue
 
 
-{-| Sends the value to the signal
+{-| Sends the value to the app.
 -}
 sendValue : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 sendValue (model, cmd) =

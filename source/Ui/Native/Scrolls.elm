@@ -13,7 +13,6 @@ import Dom.LowLevel as Dom
 import Json.Decode as Json
 import Process
 
-
 {-| Subscribe to scrolls anywhere on screen.
 -}
 scrolls : msg -> Sub msg

@@ -21,7 +21,6 @@ import Json.Decode as Json exposing (field)
 
 import Dict
 
-
 {-| Creates an attribute for the **click** event that will stop the event if
 the control key or the middle mouse button is not pressed.
 

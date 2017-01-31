@@ -85,6 +85,7 @@ update msg model =
 
 
 {-| Lazily renders a loader.
+
     Ui.Loader.view loader
 -}
 view : String -> List (Html.Html msg) -> Model -> Html.Html msg
@@ -93,6 +94,7 @@ view kind content model =
 
 
 {-| Lazily renders a loader as an overlay.
+
     Ui.Loader.overlayView loader
 -}
 overlayView : Model -> Html.Html msg
@@ -101,6 +103,7 @@ overlayView model =
 
 
 {-| Lazily renders a loader as a bar.
+
     Ui.Loader.barView loader
 -}
 barView : Model -> Html.Html msg
@@ -109,6 +112,7 @@ barView model =
 
 
 {-| Rendes a loader.
+
     Ui.Loader.render kind contents loader
 -}
 render : String -> List (Html.Html msg) -> Model -> Html.Html msg
@@ -125,6 +129,7 @@ render kind content model =
 
 
 {-| Finishes the loading process.
+
     updatedLoader = Ui.Loader.finish loader
 -}
 finish : Model -> Model
@@ -133,6 +138,7 @@ finish model =
 
 
 {-| Starts the loading process.
+
     ( updatedLoader, cmd ) = Ui.Loader.start loader
 -}
 start : Model -> ( Model, Cmd Msg )

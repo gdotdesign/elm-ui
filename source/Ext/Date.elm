@@ -24,7 +24,6 @@ import Native.DateTime
 import Array
 import Date
 
-
 {-| Returns the current date.
 
     Ext.Date.now ()

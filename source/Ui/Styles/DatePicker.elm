@@ -12,7 +12,6 @@ import Ui.Styles.Picker as Picker
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-
 {-| Styles for a container using the default theme.
 -}
 defaultStyle : Style

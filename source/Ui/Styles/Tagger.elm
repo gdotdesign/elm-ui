@@ -17,7 +17,6 @@ defaultStyle : Style
 defaultStyle =
   Ui.Styles.attributes (style Theme.default)
 
-
 {-| Returns the style node for a tagger using the given theme.
 -}
 style : Theme -> Node

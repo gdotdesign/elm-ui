@@ -27,7 +27,6 @@ import DOM.Window
 
 import Mouse
 
-
 {-| Representation of a drag:
   - **mouseStartPosition** - The start position of the mouse
   - **dimensions** - The associated element's dimensions
@@ -61,14 +60,14 @@ init =
   }
 
 
-{-| A envent handler for a drag.
+{-| A event handler for a drag.
 -}
 liftHandler : (Position -> msg) -> Html.Attribute msg
 liftHandler msg =
   on "mousedown" (Json.map (convertPosition msg) Mouse.position)
 
 
-{-| Converts a position into an msg.
+{-| Converts a position into a message.
 -}
 convertPosition : (Position -> msg) -> Mouse.Position -> msg
 convertPosition msg pos =
@@ -108,7 +107,7 @@ onEnd msg ({ drag } as model) =
     Sub.none
 
 
-{-| Calculates the difference between the start position and the given position.
+{-| Returns the difference between the start position and the given position.
 -}
 diff : Position -> Model a -> Position
 diff { left, top } ({ drag } as model) =

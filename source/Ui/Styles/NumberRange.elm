@@ -12,7 +12,6 @@ import Ui.Styles.Mixins as Mixins
 import Ui.Styles.Input as Input
 import Ui.Styles exposing (Style)
 
-
 {-| Styles for a number-range using the default theme.
 -}
 defaultStyle : Style

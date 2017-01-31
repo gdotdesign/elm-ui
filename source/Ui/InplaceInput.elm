@@ -115,13 +115,7 @@ ctrlSave value model =
 
 {-| Subscribe to the changes of an inplace input.
 
-    ...
-    subscriptions =
-      \model ->
-        Ui.InplaceInput.onChange
-          InplaceInputChanged
-          model.inplaceInput
-    ...
+    subscription = Ui.InplaceInput.onChange InplaceInputChanged inplaceInput
 -}
 onChange : (String -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -129,7 +123,7 @@ onChange msg model =
 
 
 {-| Updates an inplace input.
-    Ui.InplaceInput.update msg inplaceInput
+    ( updatedInplaceInput, cmd ) = Ui.InplaceInput.update msg inplaceInput
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =

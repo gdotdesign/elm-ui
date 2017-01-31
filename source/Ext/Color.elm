@@ -29,7 +29,6 @@ import Color exposing (Color)
 import Json.Decode as JD
 import Json.Encode as JE
 
-
 {-| HSV color type.
 -}
 type alias Hsv =

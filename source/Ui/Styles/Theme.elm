@@ -7,7 +7,6 @@ module Ui.Styles.Theme exposing (..)
 
 import Css.Properties exposing (..)
 
-
 {-| Representation of a theme.
 -}
 type alias Theme =

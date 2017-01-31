@@ -29,7 +29,6 @@ import Json.Decode as Json
 import Native.FileManager
 import Http
 
-
 {-| The type of the files content.
 -}
 type Data

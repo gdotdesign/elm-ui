@@ -13,7 +13,6 @@ import Task exposing (Task)
 import Ext.Date
 import Process
 
-
 {-| The state containing the process ID and subscribers.
 -}
 type alias State msg =

@@ -22,7 +22,6 @@ import Html.Lazy
 
 import Ui.Helpers.PeriodicUpdate as PeriodicUpdate
 
-
 {-| Representation of a time component:
   - **tooltipFormat** - The format of the tooltip (title)
   - **format** - The function to format the date
@@ -59,9 +58,8 @@ init date =
 
 
 {-| Subscriptions for a time component.
-    ...
-    subscriptions = \model-> Sub.map Time Ui.Time.subscriptions
-    ...
+
+    subscriptions = Sub.map Time Ui.Time.subscriptions
 -}
 subscriptions : Sub Msg
 subscriptions =
@@ -69,7 +67,8 @@ subscriptions =
 
 
 {-| Updates a time component.
-    Ui.Time.update msg time
+
+    ( updatedTime, cmd ) = Ui.Time.update msg time
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -79,6 +78,7 @@ update msg model =
 
 
 {-| Lazily renders a time component.
+
     Ui.Time.view time
 -}
 view : Model -> Html.Html msg
@@ -87,6 +87,7 @@ view model =
 
 
 {-| Renders a time component.
+
     Ui.Time.render time
 -}
 render : Model -> Html.Html msg

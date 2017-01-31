@@ -11,7 +11,6 @@ import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-
 {-| Styles for a notification center using the default theme.
 -}
 defaultStyle : Style

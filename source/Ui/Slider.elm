@@ -75,10 +75,7 @@ init _ =
 
 {-| Subscribe to the changes of a slider.
 
-    ...
-    subscriptions =
-      \model -> Ui.Slider.onChange SliderChanged model.slider
-    ...
+    subscriptions = Ui.Slider.onChange SliderChanged slider
 -}
 onChange : (Float -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -87,13 +84,7 @@ onChange msg model =
 
 {-| Subscriptions for a slider.
 
-    ...
-    subscriptions =
-      \model ->
-        Sub.map
-          Slider
-          (Ui.Slider.subscriptions model.slider)
-    ...
+    subscriptions = Sub.map Slider (Ui.Slider.subscriptions slider)
 -}
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -105,7 +96,7 @@ subscriptions model =
 
 {-| Updates a slider.
 
-    Ui.Slider.update msg slider
+    ( updatedSlider, cmd ) = Ui.Slider.update msg slider
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action ({ drag } as model) =
@@ -181,6 +172,8 @@ render model =
 
 
 {-| Sets the value of the slider.
+
+    updatedSlider = Ui.Slider.setValue 10 slider
 -}
 setValue : Float -> Model -> Model
 setValue value model =
@@ -218,7 +211,7 @@ decrement model =
     |> sendValue
 
 
-{-| Sends the value to the valueAddress.
+{-| Sends the value to the app.
 -}
 sendValue : Model -> ( Model, Cmd Msg )
 sendValue model =

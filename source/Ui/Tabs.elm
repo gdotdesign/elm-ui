@@ -20,7 +20,6 @@ import Ui.Styles.Tabs exposing (defaultStyle)
 import Ui.Styles
 import Ui
 
-
 {-| Representation of a tabs component:
   - **readonly** - Whether or not the component is readonly
   - **disabled** - Whether or not the component is disabled
@@ -63,7 +62,7 @@ init _ =
 
 {-| Updates a tabs component.
 
-    Ui.Tabs.update msg tabs
+    ( updatedTabs, cmd ) = Ui.Tabs.update msg tabs
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
@@ -126,10 +125,6 @@ render { contents, address } model =
       [ node "ui-tabs-handles" [] tabs
       , node "ui-tabs-content" [] [ activeTab ]
       ]
-
-
-
------------------------------------ PRIVATE ------------------------------------
 
 
 {-| Renders a tab handle.

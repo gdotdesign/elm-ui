@@ -11,7 +11,6 @@ import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Button as Button
 import Ui.Styles exposing (Style)
 
-
 {-| Styles for an icon-button using the default theme.
 -}
 defaultStyle : Style

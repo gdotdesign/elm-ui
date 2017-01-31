@@ -1,6 +1,6 @@
 module Ui.Input exposing
-  ( Model, Msg, init, onChange, update, view, render, placeholder, showClearIcon
-  , setValue, kind )
+  ( Model, Msg, init, onChange, update, view, render, placeholder
+  , showClearIcon, setValue, kind )
 
 {-| Component for single line text based input (wrapper for the input HTML tag).
 
@@ -23,6 +23,7 @@ module Ui.Input exposing
 import Html.Events exposing (onInput, onClick)
 import Html exposing (node, text)
 import Html.Lazy
+
 import Html.Attributes
   exposing
     ( defaultValue
@@ -45,21 +46,20 @@ import Ui.Styles
 import Task
 import DOM
 
-
 {-| Representation of an input:
   - **placeholder** - The text to display when there is no value
+  - **showClearIcon** - Whether or not to show the clear icon
   - **disabled** - Whether or not the input is disabled
   - **readonly** - Whether or not the input is readonly
-  - **showClearIcon** - Whether or not to show the clear icon
   - **uid** - The unique identifier of the input
   - **kind** - The type of the input
   - **value** - The value
 -}
 type alias Model =
   { placeholder : String
+  , showClearIcon : Bool
   , disabled : Bool
   , readonly : Bool
-  , showClearIcon : Bool
   , value : String
   , kind : String
   , uid : String
@@ -100,7 +100,6 @@ placeholder value model =
   { model | placeholder = value }
 
 
-
 {-| Sets the placeholder of an input.
 -}
 kind : String -> Model -> Model
@@ -110,10 +109,7 @@ kind value model =
 
 {-| Subscribe to the changes of an input.
 
-    ...
-    subscriptions =
-      \model -> Ui.Input.onChange InputChanged model.input
-    ...
+    subscription = Ui.Input.onChange InputChanged input
 -}
 onChange : (String -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -122,7 +118,7 @@ onChange msg model =
 
 {-| Updates an input.
 
-    Ui.Input.update msg input
+    ( updatedInput, cmd ) = Ui.Input.update msg input
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =

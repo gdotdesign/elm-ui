@@ -68,6 +68,7 @@ type Msg
 
 
 {-| Initializes a textarea with a default value and a placeholder.
+
     textarea =
       Ui.Textarea.init ()
         |> Ui.Textarea.placeholder "Placeholder"
@@ -85,10 +86,8 @@ init _ =
 
 
 {-| Subscribe for the changes of a textarea.
-    ...
-    subscriptions =
-      \model -> Ui.Textarea.onChange TextareaChanged model.textarea
-    ...
+
+    subscriptions = Ui.Textarea.onChange TextareaChanged textarea
 -}
 onChange : (String -> a) -> Model -> Sub a
 onChange msg model =
@@ -117,7 +116,8 @@ defaultValue value model =
 
 
 {-| Updates a textarea.
-    Ui.Textarea.update msg textarea
+
+    ( updatedTextarea, cmd ) = Ui.Textarea.update msg textarea
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -130,6 +130,7 @@ update msg model =
 
 
 {-| Lazily renders a textarea.
+
     Ui.Textarea.view textarea
 -}
 view : Model -> Html.Html Msg
@@ -138,6 +139,7 @@ view model =
 
 
 {-| Renders a textarea.
+
     Ui.Textarea.render textarea
 -}
 render : Model -> Html.Html Msg
@@ -175,7 +177,8 @@ render model =
 
 
 {-| Sets the value of the given textarea.
-    Ui.Textarea.setValue "new value" textarea
+
+    ( updatedTextarea, cmd ) = Ui.Textarea.setValue "new value" textarea
 -}
 setValue : String -> Model -> (Model, Cmd Msg)
 setValue value model =

@@ -1,8 +1,14 @@
 module Ui.Styles.Ripple exposing (style)
 
+{-| Styles for the ripple effect.
+
+@docs style
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
+{-| Returns the style node for the ripple effect.
+-}
 style : Node
 style =
   mixin

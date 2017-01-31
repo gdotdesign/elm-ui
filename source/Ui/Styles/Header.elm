@@ -12,7 +12,6 @@ import Ui.Styles.Mixins as Mixins
 import Ui.Styles.Ripple as Ripple
 import Ui.Styles exposing (Style)
 
-
 {-| Styles for a header using the default theme.
 -}
 defaultStyle : Style

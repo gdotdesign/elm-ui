@@ -101,10 +101,7 @@ init _ =
 
 {-| Subscribe to the changes of a number pad.
 
-    ...
-    subscriptions =
-      \model -> Ui.NumberPad.onChange NumberPadChanged model.numberPad
-    ...
+    subscriptions = Ui.NumberPad.onChange NumberPadChanged numberPad
 -}
 onChange : (Int -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -141,7 +138,7 @@ prefix value model =
 
 {-| Updates a number pad.
 
-    Ui.NumberPad.update msg numberPad
+    ( updatedNumberPad, cmd ) = Ui.NumberPad.update msg numberPad
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -261,15 +258,11 @@ render ({ address } as viewModel) model =
 
 {-| Sets the value of a number pad.
 
-    Ui.NumberPad.setValue 10 numberPad
+    updatedNumberPad = Ui.NumberPad.setValue 10 numberPad
 -}
 setValue : Int -> Model -> Model
 setValue value model =
   { model | value = clampValue value model }
-
-
-
------------------------------------ PRIVATE ------------------------------------
 
 
 {-| Renders a digit button.

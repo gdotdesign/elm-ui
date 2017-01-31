@@ -1,9 +1,6 @@
-module Ui.Layout exposing (..)
+module Ui.Layout exposing (sidebar, app, website)
 
 {-| Module that provides flexbox layouts for most common use cases.
-
-# Models
-@docs Content
 
 # Views
 @docs sidebar, app, website
@@ -13,7 +10,6 @@ import Html exposing (node)
 
 import Ui.Styles.Layout exposing (defaultStyle)
 import Ui.Styles
-
 
 {-| Alias for list of Html elements.
 -}

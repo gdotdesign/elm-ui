@@ -15,7 +15,6 @@ import Ui.Styles exposing (Style)
 
 import Regex
 
-
 {-| Styles for a checkbox using the default theme.
 -}
 defaultStyle : Style

@@ -8,7 +8,6 @@ module Ext.Number exposing (..)
 
 import Native.Number
 
-
 {-| Formats a number using fixed-point notation. It's the direct wrapper for
 JavaScripts [toFixed](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed).
 

@@ -34,10 +34,10 @@ import Ui.Styles.Ratings exposing (defaultStyle)
 import Ui.Styles
 
 {-| Representation of a ratings component:
-  - **hoverValue** - The transient value of the component
   - **clearable** - Whether or not the component is clearable
   - **disabled** - Whether or not the component is disabled
   - **readonly** - Whether or not the component is readonly
+  - **hoverValue** - The transient value of the component
   - **value** - The current value of the component (0..1)
   - **uid** - The unique identifier of the input
   - **size** - The number of starts to display
@@ -81,11 +81,7 @@ init _ =
 
 {-| Subscribe to the changes of a ratings components.
 
-    ...
-    subscriptions =
-      \model ->
-        Ui.Ratings.onChange RatingsChanged model.ratings
-    ...
+    subscriptions = Ui.Ratings.onChange RatingsChanged ratings
 -}
 onChange : (Float -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -100,6 +96,8 @@ size value model =
 
 
 {-| Updates a ratings component.
+
+    ( updatedRatings, cmd ) = Ui.Ratings.update msg ratings
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =

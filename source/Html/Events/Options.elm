@@ -8,7 +8,6 @@ module Html.Events.Options exposing (..)
 
 import Html.Events exposing (Options)
 
-
 {-| Prevent default options.
 -}
 preventDefaultOptions : Options

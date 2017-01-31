@@ -19,7 +19,6 @@ import Ui
 
 import DOM
 
-
 {-| Represents a picker.
 -}
 type alias Model a =

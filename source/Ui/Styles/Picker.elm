@@ -1,5 +1,9 @@
-module Ui.Styles.Picker exposing (style)
+module Ui.Styles.Picker exposing (..)
 
+{-| Styles for a picker.
+
+@docs style
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
@@ -7,6 +11,8 @@ import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Dropdown as Dropdown
 import Ui.Styles.Mixins as Mixins
 
+{-| Returns the style node for a picker using the given theme.
+-}
 style : Theme -> Node
 style theme =
   mixin

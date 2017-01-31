@@ -12,7 +12,6 @@ import Ui.Styles.Dropdown as Dropdown
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-
 {-| Styles for a drop-down menu using the default theme.
 -}
 defaultStyle : Style

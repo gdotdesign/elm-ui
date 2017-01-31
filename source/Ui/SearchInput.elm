@@ -104,13 +104,7 @@ timeout value model =
 
 {-| Subscribe to the changes of a search input.
 
-    ...
-    subscriptions =
-      \model ->
-        Ui.SearchInput.onChange
-          SearchInputChanged
-          model.searchInput
-    ...
+    subscriptions = Ui.SearchInput.onChange SearchInputChanged searchInput
 -}
 onChange : (String -> msg) -> Model -> Sub msg
 onChange msg model =
@@ -119,7 +113,7 @@ onChange msg model =
 
 {-| Updates a search input.
 
-    Ui.SearchInput.update msg searchInput
+    ( updatedSearchInput, cmd ) = Ui.SearchInput.update msg searchInput
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -198,7 +192,8 @@ render { input, disabled, readonly } =
 
 {-| Sets the value of a search input.
 
-    Ui.SearchInput.setValue "new value" searchInput
+    ( updatedSearchInput, cmd ) =
+      Ui.SearchInput.setValue "new value" searchInput
 -}
 setValue : String -> Model -> ( Model, Cmd Msg)
 setValue value model =

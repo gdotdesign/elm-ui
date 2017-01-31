@@ -1,11 +1,18 @@
 module Ui.Styles.Mixins exposing (..)
 
+{-| This module contains mixins for the components styles.
+
+@docs placeholder, defaults, focused, focusedIdle, ellipsis, disabled
+@docs disabledColors, disabledCursor, readonlyCursor, readonly
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Regex
 
+{-| Mixis in the selectors for styling the placeholder.
+-}
 placeholder : List Node -> Node
 placeholder nodes =
   mixin
@@ -18,6 +25,8 @@ placeholder nodes =
     ]
 
 
+{-| Mixins in the default values.
+-}
 defaults : Node
 defaults =
   mixin
@@ -26,6 +35,9 @@ defaults =
     , boxSizing borderBox
     ]
 
+
+{-| Mixins in the idle focused state.
+-}
 focusedIdle : Theme -> Node
 focusedIdle theme =
   mixin
@@ -39,6 +51,9 @@ focusedIdle theme =
     , boxShadow theme.focusShadowsIdle
     ]
 
+
+{-| Mixins in the focused state.
+-}
 focused : Theme -> Node
 focused theme =
   mixin
@@ -53,6 +68,9 @@ focused theme =
     , outline none
     ]
 
+
+{-| Mixins in the properties to make text use ellipsis.
+-}
 ellipsis : Node
 ellipsis =
   mixin
@@ -61,6 +79,9 @@ ellipsis =
     , overflow hidden
     ]
 
+
+{-| Mixis in the disabled colors.
+-}
 disabledColors : Theme -> Node
 disabledColors theme =
   mixin
@@ -68,6 +89,9 @@ disabledColors theme =
     , color theme.colors.disabled.bw
     ]
 
+
+{-| The value for the disabled cursor.
+-}
 disabledCursor : String
 disabledCursor =
   """
@@ -81,6 +105,8 @@ disabledCursor =
   |> Regex.replace Regex.All (Regex.regex "\\n\\s*") (\_ -> "")
 
 
+{-| The value for the readonly cursor.
+-}
 readonlyCursor : String
 readonlyCursor =
   """
@@ -93,6 +119,9 @@ readonlyCursor =
   """
   |> Regex.replace Regex.All (Regex.regex "\\n\\s*") (\_ -> "")
 
+
+{-| Mixins in the disabled cursor and makes the node not selectable.
+-}
 disabled : Node
 disabled =
   mixin
@@ -100,6 +129,9 @@ disabled =
     , userSelect none
     ]
 
+
+{-| Mixins in the readonly cursor.
+-}
 readonly : Node
 readonly =
   mixin

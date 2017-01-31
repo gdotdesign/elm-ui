@@ -8,7 +8,6 @@ module Ui.Helpers.Intendable exposing (..)
 
 import List.Extra exposing (last, find, findIndex, splitAt)
 
-
 {-| Returns the first item of a list.
 -}
 first : List String -> Maybe String

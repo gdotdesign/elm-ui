@@ -12,7 +12,6 @@ import Svg exposing (svg, circle)
 import Html.Attributes exposing (attribute)
 import Html
 
-
 {-| Renders an SVG element witch a circle for the ripple.
 
     ripple = Ui.Helpers.Ripple.view

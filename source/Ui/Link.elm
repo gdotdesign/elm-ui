@@ -1,6 +1,6 @@
 module Ui.Link exposing (Model, view)
 
-{-| Non obtrusive link:
+{-| Non obtrusive link element:
 - Mouse middle click doesn't tigger the message
 - Ctrl click doesn't trigger the message
 - Enter or Space triggers the message
@@ -15,8 +15,11 @@ import Html exposing (node)
 
 import Maybe.Extra exposing (isJust)
 
-
-{-| Representation of a link.
+{-| Representation of a link:
+  - **contents** - The contents of the link, usually just text
+  - **target** - The value for the target attribute
+  - **url** - The value for the href attribute
+  - **msg** - The message to trigger
 -}
 type alias Model msg =
   { contents : List (Html.Html msg)
@@ -69,10 +72,10 @@ view { msg, url, target, contents } =
           []
   in
     node "a"
-      ( [ tabIndex
+      ( [ targetAttribute
         , hrefAttribute
         , attributes
-        , targetAttribute
+        , tabIndex
         ]
         |> List.concat
       ) contents

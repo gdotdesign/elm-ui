@@ -34,7 +34,6 @@ import Json.Decode exposing (Value)
 import Task exposing (Task)
 import Json.Encode as JE
 
-
 {-| Representation of a command.
 -}
 type MyCmd msg

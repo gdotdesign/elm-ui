@@ -10,7 +10,6 @@ import Css exposing (..)
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles exposing (Style)
 
-
 {-| Styles for a scrolled-panel using the default theme.
 -}
 defaultStyle : Style

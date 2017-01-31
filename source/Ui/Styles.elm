@@ -13,7 +13,6 @@ import Json.Encode as Json
 import Native.Styles
 import Murmur3
 
-
 {-| Representation of a style.
 -}
 type alias Style =

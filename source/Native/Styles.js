@@ -8,6 +8,7 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
   } else {
     var patch = function(){
       patchStyles()
+      if(document.querySelector('[class^=container-]')) { return }
       requestAnimationFrame(patch)
     }
     requestAnimationFrame(patch)

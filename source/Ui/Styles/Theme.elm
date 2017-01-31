@@ -45,6 +45,11 @@ type alias Theme =
     , header : Int
     , modal : Int
     }
+  , breadcrumbs :
+    { background : String
+    , borderColor : String
+    , text : String
+    }
   , chooser :
     { hoverColors : { background : String, text : String }
     , selectedColors : { background : String, text : String }
@@ -108,6 +113,11 @@ default =
     , intendedHoverColors = { background = "#DDD", text = "#626262" }
     , selectedIntendedColors = { background = "#1070ac", text = "#FFF" }
     , selectedIntendedHoverColors = { background = "#0c5989", text = "#FFF" }
+    }
+  , breadcrumbs =
+    { background = "#f1f1f1"
+    , borderColor = "#d2d2d2"
+    , text = "#4a4a4a"
     }
   , scrollbar =
     { thumbColor = "#d0d0d0"

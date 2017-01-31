@@ -34,6 +34,7 @@
 
     "Ui.Button",
     "Ui.ButtonGroup",
+    "Ui.Breadcrumbs",
     "Ui.Calendar",
     "Ui.Checkbox",
     "Ui.Chooser",

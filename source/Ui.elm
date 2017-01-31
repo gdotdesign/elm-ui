@@ -81,43 +81,6 @@ fab glyph attributes =
     [ ]
 
 
-{-| Renders breadcrumbs.
-
-    Ui.breadcrumbs
-      (text "|")
-      [ ("Home", Just Home)
-      , ("Posts", Just Posts)
-      , ("Post", Just (Post 1))
-      ]
--}
-breadcrumbs : Html.Html msg -> List ( String, Maybe msg ) -> Html.Html msg
-breadcrumbs separator items =
-  let
-    renderItem ( label, action_ ) =
-      let
-        attributes =
-          case action_ of
-            Just action ->
-              [ onClick action
-              , class "clickable"
-              ]
-
-            Nothing ->
-              []
-      in
-        node
-          "ui-breadcrumb"
-          attributes
-          [ node "span" [] [ text label ] ]
-  in
-    node
-      "ui-breadcrumbs"
-      []
-      (List.map renderItem items
-        |> List.intersperse separator
-      )
-
-
 {-|-}
 attributeList : List ( String, Bool ) -> List (Html.Attribute msg)
 attributeList items =

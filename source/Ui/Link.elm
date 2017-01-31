@@ -1,12 +1,12 @@
-module Ui.Link exposing (view)
+module Ui.Link exposing (Model, view)
 
 {-| Non obtrusive link:
-- Ctrl click doesn't trigger the message
 - Mouse middle click doesn't tigger the message
+- Ctrl click doesn't trigger the message
 - Enter or Space triggers the message
 - Simple click triggers the message
 
-@docs view
+@docs Model, view
 -}
 
 import Html.Events.Extra exposing (unobtrusiveClick, onKeys)
@@ -15,10 +15,21 @@ import Html exposing (node)
 
 import Maybe.Extra exposing (isJust)
 
+
+{-| Representation of a link.
+-}
+type alias Model msg =
+  { contents : List (Html.Html msg)
+  , target : Maybe String
+  , url : Maybe String
+  , msg : Maybe msg
+  }
+
+
 {-| Renders a link.
 -}
-view : Maybe msg -> Maybe String -> String -> List (Html.Html msg) -> Html.Html msg
-view msg url target_ =
+view : Model msg -> Html.Html msg
+view { msg, url, target, contents } =
   let
     tabIndex =
       if isJust msg || isJust url then
@@ -39,14 +50,29 @@ view msg url target_ =
         Nothing ->
           []
 
+    targetAttribute =
+      case ( url, target ) of
+        ( Just _, Just value ) ->
+          [ Html.Attributes.target value
+          ]
+
+        _ ->
+          []
+
     hrefAttribute =
       case url of
         Just value ->
           [ href value
-          , target target_
           ]
 
         Nothing ->
           []
   in
-    node "a" (tabIndex ++ hrefAttribute ++ attributes)
+    node "a"
+      ( [ tabIndex
+        , hrefAttribute
+        , attributes
+        , targetAttribute
+        ]
+        |> List.concat
+      ) contents

@@ -101,12 +101,15 @@ icon model =
     ((itemAttributes model)
       ++ [ style [ ( "font-size", (toString model.size) ++ "px" ) ] ]
     )
-    [ Ui.Link.view model.action
-        model.link
-        model.target
-        [ Ripple.view
-        , model.glyph
-        ]
+    [ Ui.Link.view
+        { target = Just model.target
+        , msg = model.action
+        , url = model.link
+        , contents =
+          [ Ripple.view
+          , model.glyph
+          ]
+        }
     ]
 
 
@@ -124,12 +127,15 @@ title : Title msg -> Html.Html msg
 title model =
   node "ui-header-title"
     (itemAttributes model)
-    [ Ui.Link.view model.action
-        model.link
-        model.target
-        [ node "span" [] [ text model.text ]
-        , Ripple.view
-        ]
+    [ Ui.Link.view
+        { target = Just model.target
+        , msg = model.action
+        , url = model.link
+        , contents =
+          [ node "span" [] [ text model.text ]
+          , Ripple.view
+          ]
+        }
     ]
 
 
@@ -163,12 +169,15 @@ item : Item msg -> Html.Html msg
 item model =
   node "ui-header-item"
     (itemAttributes model)
-    [ Ui.Link.view model.action
-        model.link
-        model.target
-        [ node "span" [] [ text model.text ]
-        , Ripple.view
-        ]
+    [ Ui.Link.view
+        { target = Just model.target
+        , msg = model.action
+        , url = model.link
+        , contents =
+          [ node "span" [] [ text model.text ]
+          , Ripple.view
+          ]
+        }
     ]
 
 
@@ -199,10 +208,11 @@ iconItem model =
     node "ui-header-icon-item"
       (itemAttributes model)
       [ Ui.Link.view
-          model.action
-          model.link
-          model.target
-          (Ripple.view :: children)
+          { contents = (Ripple.view :: children)
+          , target = Just model.target
+          , msg = model.action
+          , url = model.link
+          }
       ]
 
 

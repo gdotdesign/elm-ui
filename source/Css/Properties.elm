@@ -224,6 +224,10 @@ textTransform : String -> Node
 textTransform =
   property "text-transform"
 
+textDecoration : String -> Node
+textDecoration =
+  property "text-decoration"
+
 wordWrap : String -> Node
 wordWrap =
   property "word-wrap"

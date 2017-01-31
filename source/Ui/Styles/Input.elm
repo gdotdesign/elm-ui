@@ -1,14 +1,29 @@
-module Ui.Styles.Input exposing (style, inputStyle)
+module Ui.Styles.Input exposing (..)
 
+{-| Styles for an input.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for an input using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for an input using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-input"
+  mixin
     [ Mixins.defaults
 
     , color theme.colors.input.bw
@@ -38,6 +53,8 @@ style theme =
     ]
 
 
+{-| Returns a style node for an input element.
+-}
 inputStyle : Theme -> Node
 inputStyle theme =
   selector "input"

@@ -26,6 +26,8 @@ import Ui.Helpers.Ripple as Ripple
 import Ui.Link
 import Ui
 
+import Ui.Styles.Header exposing (defaultStyle)
+import Ui.Styles
 
 {-| Representation of a header title.
 -}
@@ -79,7 +81,7 @@ type alias Item msg =
 -}
 view : List (Html.Html msg) -> Html.Html msg
 view children =
-  node "ui-header" [] children
+  node "ui-header" (Ui.Styles.apply defaultStyle) children
 
 
 {-| Renders a header icon element which can link to an other page and / or

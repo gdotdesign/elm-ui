@@ -1,29 +1,19 @@
 import Spec exposing (..)
 
-import Html exposing (div)
-
-import Ui.Container
-import Ui.InplaceInput
-
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.InplaceInput
-import Ui.Styles
-
 import Steps exposing (..)
+import Ui.InplaceInput
+import Ui.Container
+import Html
+
 
 view : Ui.InplaceInput.Model -> Html.Html Ui.InplaceInput.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.InplaceInput.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.InplaceInput.view model
-      , Ui.InplaceInput.view { model | disabled = True }
-      , Ui.InplaceInput.view { model | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.InplaceInput.view model
+    , Ui.InplaceInput.view { model | disabled = True }
+    , Ui.InplaceInput.view { model | readonly = True }
     ]
+
 
 specs : Node
 specs =
@@ -74,6 +64,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

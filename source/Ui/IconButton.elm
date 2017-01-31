@@ -16,6 +16,7 @@ import Ui.Button exposing (attributes)
 import Ui.Helpers.Ripple as Ripple
 import Ui
 
+import Ui.Styles.IconButton exposing (defaultStyle)
 
 {-| Representation of an icon button:
   - **disabled** - Whether or not the icon button is disabled
@@ -73,7 +74,7 @@ render msg model =
   in
     node
       "ui-icon-button"
-      (attributes msg model)
+      (attributes defaultStyle msg model)
       ([ Ripple.view ] ++ children)
 
 

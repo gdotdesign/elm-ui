@@ -29,6 +29,7 @@ style : Theme -> Node
 style theme =
   mixin
     [ Mixins.defaults
+
     , Input.inputStyle theme
     , Dropdown.style theme
 

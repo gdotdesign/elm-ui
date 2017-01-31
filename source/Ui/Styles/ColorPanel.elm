@@ -8,7 +8,6 @@ import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
-import Ui.Styles.ColorFields as ColorFields
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 

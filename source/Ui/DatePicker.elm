@@ -36,6 +36,8 @@ import Ui.Calendar
 import Ui.Icons
 import Ui
 
+import Ui.Styles.DatePicker exposing (defaultStyle)
+import Ui.Styles
 
 {-| Representation of a date picker:
   - **closeOnSelect** - Whether or not to close the dropdown after selecting
@@ -189,8 +191,8 @@ render locale model =
       (format (DateConfigs.getConfig locale) model.format model.calendar.value)
   in
     Picker.view
-      { address = Picker
-      , attributes = []
+      { attributes = Ui.Styles.apply defaultStyle
+      , address = Picker
       , keyActions =
         [ ( 40, Increment )
         , ( 38, Decrement )

@@ -8,7 +8,7 @@ import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
-import Ui.Styles.Button as Button
+import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
 
@@ -24,7 +24,9 @@ defaultStyle =
 style : Theme -> Node
 style theme =
   mixin
-    [ selector "ui-button"
+    [ Mixins.defaults
+
+    , selector "ui-button"
       [ selector "+ ui-button"
         [ borderLeft ((px 1) . solid . "rgba(0, 0, 0, 0.15)")
         ]

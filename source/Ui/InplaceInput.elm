@@ -37,6 +37,9 @@ import Ui.Textarea
 import Ui.Button
 import Ui
 
+import Ui.Styles.InplaceInput exposing (defaultStyle)
+import Ui.Styles
+
 
 {-| Represents an inplace input:
   - **required** - Whether or not to disable the save button if the value is empty
@@ -183,7 +186,7 @@ render model =
       else
         display model
   in
-    node "ui-inplace-input" [] [ content ]
+    node "ui-inplace-input" (Ui.Styles.apply defaultStyle) [ content ]
 
 
 {-| Opens an inplace input and focuses the textarea.

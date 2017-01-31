@@ -1,29 +1,23 @@
 import Spec exposing (..)
 
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
 import Html exposing (div, text)
-
+import Json.Encode as Json
+import Steps exposing (..)
 import Ui.Container
 import Ui.Textarea
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.Textarea
-import Ui.Styles
-
-import Steps exposing (keyDown)
-
-import Json.Encode as Json
 
 type alias Model =
   { textarea : Ui.Textarea.Model
   , content : String
   }
 
+
 type Msg
   = Textarea Ui.Textarea.Msg
   | Changed String
+
 
 init : () -> Model
 init _ =
@@ -33,9 +27,11 @@ init _ =
   , content = ""
   }
 
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Ui.Textarea.onChange Changed model.textarea
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -49,21 +45,19 @@ update msg_ model =
     Changed content ->
       ( { model | content = content }, Cmd.none )
 
+
 view : Model -> Html.Html Msg
 view { textarea, content } =
   div
     [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Textarea.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
+    [ Ui.Container.row []
       [ Html.map Textarea (Ui.Textarea.view textarea)
       , Html.map Textarea (Ui.Textarea.view { textarea | disabled = True })
       , Html.map Textarea (Ui.Textarea.view { textarea | readonly = True })
       ]
     , div [ class "content" ] [ text content ]
     ]
+
 
 specs : Node
 specs =
@@ -88,6 +82,7 @@ specs =
         ]
       ]
     ]
+
 
 main =
   runWithProgram

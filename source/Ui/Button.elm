@@ -22,7 +22,7 @@ import Html exposing (node, text)
 import Html.Lazy
 
 import Ui.Styles.Button exposing (defaultStyle)
-import Ui.Styles
+import Ui.Styles exposing (Style)
 
 import Ui.Helpers.Ripple as Ripple
 import Ui
@@ -73,7 +73,7 @@ render : msg -> Model -> Html.Html msg
 render msg model =
   node
     "ui-button"
-    (attributes msg model)
+    (attributes defaultStyle msg model)
     [ Ripple.view
     , node "span" [] [ text model.text ]
     ]
@@ -83,10 +83,11 @@ render msg model =
 other attributes.
 -}
 attributes :
-  msg
+  Style
+  -> msg
   -> { b | disabled : Bool, kind : String, size : String, readonly : Bool }
   -> List (Html.Attribute msg)
-attributes msg model =
+attributes styles msg model =
   let
     disabled =
       if model.disabled then
@@ -112,7 +113,7 @@ attributes msg model =
     [ [ attribute "size" model.size
       , attribute "kind" model.kind
       ]
-    , Ui.Styles.apply defaultStyle
+    , Ui.Styles.apply styles
     , Ui.tabIndex model
     , disabled
     , readonly

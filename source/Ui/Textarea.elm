@@ -36,6 +36,9 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui
 
+import Ui.Styles.Textarea exposing (defaultStyle)
+import Ui.Styles
+
 import DOM
 
 {-| Representation of a textarea:
@@ -164,7 +167,7 @@ render model =
   in
     node
       "ui-textarea"
-      []
+      (Ui.Styles.apply defaultStyle)
       [ textarea attributes []
       , node "ui-textarea-background" [] []
       , node "ui-textarea-mirror" [] (process model.value)

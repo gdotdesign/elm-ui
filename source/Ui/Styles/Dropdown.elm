@@ -1,11 +1,18 @@
-module Ui.Styles.Dropdown exposing (style)
+module Ui.Styles.Dropdown exposing (..)
 
+{-| Styles for a drop-down.
+
+@docs style
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 
+
+{-| Returns the style node for a drop-down using the given theme.
+-}
 style : Theme -> Node
 style theme =
   mixin

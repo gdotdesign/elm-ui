@@ -1,15 +1,32 @@
-module Ui.Styles.IconButton exposing (style)
+module Ui.Styles.IconButton exposing (..)
 
+{-| Styles for an icon-button.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
-import Ui.Styles.Button
+import Ui.Styles.Button as Button
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for an icon-button using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for an icon-button using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-icon-button"
-    [ selector "ui-icon-button-icon + span:not(:empty)"
+  mixin
+    [ Button.style theme
+
+    , selector "ui-icon-button-icon + span:not(:empty)"
       [ marginLeft (em 0.625)
       ]
 

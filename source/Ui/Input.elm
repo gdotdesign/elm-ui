@@ -39,6 +39,9 @@ import Ui.Native.Uid as Uid
 import Ui.Icons
 import Ui
 
+import Ui.Styles.Input exposing (defaultStyle)
+import Ui.Styles
+
 import Task
 import DOM
 
@@ -180,9 +183,12 @@ render model =
   in
     node
       "ui-input"
-      ( Ui.attributeList
+      ( [ Ui.attributeList
           [ ( "clearable", showClearIcon)
           ]
+        , Ui.Styles.apply defaultStyle
+        ]
+        |> List.concat
       )
       [ node
           "input"

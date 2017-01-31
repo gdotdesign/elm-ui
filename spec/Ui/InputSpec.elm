@@ -1,35 +1,20 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
-import Html exposing (div, text)
-
+import Json.Encode as Json
+import Steps exposing (..)
 import Ui.Container
 import Ui.Input
+import Html
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Container
-import Ui.Styles.Input
-import Ui.Styles
-
-import Steps exposing (keyDown)
-
-import Json.Encode as Json
 
 view : Ui.Input.Model -> Html.Html Ui.Input.Msg
 view model =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Input.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Ui.Input.view model
-      , Ui.Input.view { model | disabled = True }
-      , Ui.Input.view { model | readonly = True }
-      ]
+  Ui.Container.row []
+    [ Ui.Input.view model
+    , Ui.Input.view { model | disabled = True }
+    , Ui.Input.view { model | readonly = True }
     ]
+
 
 specs : Node
 specs =
@@ -64,6 +49,7 @@ specs =
       ]
     ]
 
+
 main =
   runWithProgram
     { subscriptions = \_ -> Sub.none
@@ -71,5 +57,6 @@ main =
     , init = \_ ->
       Ui.Input.init ()
       |> Ui.Input.showClearIcon True
+      |> Ui.Input.placeholder "Type something..."
     , view = view
     } specs

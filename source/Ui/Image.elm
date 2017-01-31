@@ -14,6 +14,8 @@ import Html.Attributes exposing (src)
 import Html exposing (node, img)
 import Html.Lazy
 
+import Ui.Styles.Image exposing (defaultStyle)
+import Ui.Styles
 import Ui
 
 {-| Representation of an image:
@@ -71,6 +73,10 @@ render : Model -> Html.Html Msg
 render model =
   node
     "ui-image"
-    ( Ui.attributeList [ ("loaded", model.loaded ) ] )
+    ( [ Ui.attributeList [ ("loaded", model.loaded ) ]
+      , Ui.Styles.apply defaultStyle
+      ]
+      |> List.concat
+    )
     [ img [ src model.src, onLoad Loaded ] []
     ]

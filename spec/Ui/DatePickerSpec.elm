@@ -1,17 +1,11 @@
 import Spec exposing (..)
 
-import Html exposing (div)
-
-import Ui.DatePicker
-import Ui.Container
-
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.DatePicker
-import Ui.Styles.Container
-import Ui.Styles
-
 import Steps exposing (..)
 import Json.Encode as Json
+import Ui.DatePicker
+import Ui.Container
+import Html
+
 
 type alias Model =
   { enabled : Ui.DatePicker.Model
@@ -19,10 +13,12 @@ type alias Model =
   , readonly : Ui.DatePicker.Model
   }
 
+
 type Msg
   = Enabled Ui.DatePicker.Msg
   | Disabled Ui.DatePicker.Msg
   | Readonly Ui.DatePicker.Msg
+
 
 init : () -> Model
 init _ =
@@ -30,6 +26,7 @@ init _ =
   , disabled = Ui.DatePicker.init ()
   , readonly = Ui.DatePicker.init ()
   }
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg_ model =
@@ -52,20 +49,15 @@ update msg_ model =
       in
         ( { model | enabled = enabled }, Cmd.map Enabled cmd )
 
+
 view : Model -> Html.Html Msg
 view ({ disabled, readonly } as model) =
-  div
-    [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.DatePicker.style
-      , Ui.Styles.Container.style
-      ] default
-    , Ui.Container.row []
-      [ Html.map Enabled (Ui.DatePicker.view "en_us" model.enabled)
-      , Html.map Disabled (Ui.DatePicker.view "en_us" { disabled | disabled = True } )
-      , Html.map Readonly (Ui.DatePicker.view "en_us" { readonly | readonly = True } )
-      ]
+  Ui.Container.row []
+    [ Html.map Enabled (Ui.DatePicker.view "en_us" model.enabled)
+    , Html.map Disabled (Ui.DatePicker.view "en_us" { disabled | disabled = True } )
+    , Html.map Readonly (Ui.DatePicker.view "en_us" { readonly | readonly = True } )
     ]
+
 
 specs : Node
 specs =

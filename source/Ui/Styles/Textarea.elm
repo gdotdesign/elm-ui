@@ -1,14 +1,29 @@
-module Ui.Styles.Textarea exposing (style)
+module Ui.Styles.Textarea exposing (..)
 
+{-| Styles for an textarea.
+
+@docs style, defaultStyle
+-}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
+import Ui.Styles exposing (Style)
 
+
+{-| Styles for a textarea using the default theme.
+-}
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes (style Theme.default)
+
+
+{-| Returns the style node for a textarea using the given theme.
+-}
 style : Theme -> Node
 style theme =
-  selector "ui-textarea"
+  mixin
     [ Mixins.defaults
 
     , fontFamily theme.fontFamily

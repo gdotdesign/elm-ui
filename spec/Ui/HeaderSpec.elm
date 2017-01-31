@@ -1,28 +1,26 @@
 import Spec exposing (..)
 
-import Html.Attributes exposing (class)
-import Html exposing (div, text, p)
 
+import Html exposing (div, text, p)
+import Json.Encode as Json
+import Steps exposing (..)
 import Ui.Header
 import Ui.Icons
 import Ui
 
-import Ui.Styles.Theme exposing (default)
-import Ui.Styles.Header
-import Ui.Styles
-
-import Json.Encode as Json
-import Steps exposing (..)
 
 type alias Model
   = String
 
+
 type Msg
   = Set
+
 
 init : () -> String
 init _ =
   "Initial"
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -30,14 +28,12 @@ update msg model =
     Set ->
       ( "Set", Cmd.none )
 
+
 view : Model -> Html.Html Msg
 view model =
   div
     [ ]
-    [ Ui.Styles.embedSome
-      [ Ui.Styles.Header.style
-      ] default
-    , Ui.Header.view
+    [ Ui.Header.view
         [ Ui.Header.title
           { text = "Hello World"
           , action = Just Set
@@ -71,6 +67,7 @@ view model =
         ]
     , p [] [ text model ]
     ]
+
 
 specs : Node
 specs =

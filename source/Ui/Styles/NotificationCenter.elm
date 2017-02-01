@@ -73,7 +73,7 @@ style theme =
     , top (px 20)
 
     , flexDirection column
-    , alignItems center
+    , alignItems flexEnd
     , display flex
 
     , selector "ui-notification"

@@ -37,9 +37,9 @@ style theme =
 
     , selector "> ui-container"
       [ borderBottom ((px 1) . dashed . theme.colors.border)
-      , padding ((px 5) . (px 5) . (px 10) . (px 5))
+      , padding (zero . (px 5) . (px 10) . (px 5))
       , alignItems center
-      , height (px 45)
+      , height (px 35)
 
       , selector "div"
         [ justifyContent center

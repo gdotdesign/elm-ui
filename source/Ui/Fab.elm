@@ -2,6 +2,7 @@ module Ui.Fab exposing (view)
 
 {-| This module provides a view for a floating action button.
 
+# View
 @docs view
 -}
 import Html exposing (node)

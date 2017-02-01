@@ -56,7 +56,7 @@ import Ui.Styles.Chooser exposing (defaultStyle)
 import Ui.Styles
 
 {-| Representation of an selectable item:
-  - **value - The value of the item (it is sent when selected items change)
+  - **value** - The value of the item (it is sent when selected items change)
   - **id** - The unique identifier of the item
   - **label** - The label of the item
 -}

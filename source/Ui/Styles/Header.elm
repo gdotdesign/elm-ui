@@ -128,6 +128,8 @@ item theme =
       , borderRight ((px 1) . solid . transparent)
       , borderLeft ((px 1) . solid . transparent)
       , transform [ translate3d zero zero zero ]
+      , textDecoration none
+      , color currentColor
       , position relative
       , cursor pointer
       , transition

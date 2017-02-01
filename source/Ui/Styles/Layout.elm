@@ -28,7 +28,7 @@ style theme =
 
     , selector "ui-layout-app-wrapper"
       [ flexDirection column
-      , minHeight (vh 11)
+      , minHeight inherit
       , display flex
       , flex_ "1"
       ]

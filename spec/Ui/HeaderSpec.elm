@@ -37,7 +37,7 @@ view model =
         [ Ui.Header.title
           { text = "Hello World"
           , action = Just Set
-          , link = Nothing
+          , link = Just "/"
           , target = ""
           }
         , Ui.Header.spacer

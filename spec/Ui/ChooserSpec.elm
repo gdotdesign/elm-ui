@@ -31,7 +31,7 @@ specs =
 
 main =
   runWithProgram
-    { subscriptions = \_ -> Sub.none
+    { subscriptions = Ui.Chooser.subscriptions
     , update = Ui.Chooser.update
     , init = \() ->
       Ui.Chooser.init ()

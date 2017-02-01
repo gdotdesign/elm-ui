@@ -338,7 +338,8 @@ render model =
       { address = Dropdown
       , tag = "ui-chooser"
       , attributes =
-        ( [ Ui.attributeList
+        ( [ [ onPreventDefault "mousedown" NoOp ]
+          , Ui.attributeList
             [ ( "searchable", model.searchable )
             , ( "open", model.dropdown.open )
             , ( "disabled", model.disabled )

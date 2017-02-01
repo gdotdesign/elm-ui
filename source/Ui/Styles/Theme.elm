@@ -84,7 +84,7 @@ default =
     , { x = "0", y = "0", blur = px 4, spread = "0", color = "rgba(0,192,255,.5)", inset = True }
     ]
   , colors =
-    { background = { color = "#F5F5F5", bw = "#626262" }
+    { background = { color = "#F5F5F5", bw = "#707070" }
     , disabled = { color = "#d7d7d7", bw = "#9a9a9a" }
     , disabledSecondary = { color = "#a9a9a9", bw = "#cecece" }
     , secondary = { color = "#5D7889", bw = "#FFF" }
@@ -93,7 +93,7 @@ default =
     , success = { color = "#4DC151", bw = "#FFF" }
     , gray = { color = "#E9E9E9", bw="#444" }
     , inputSecondary = { color = "#f3f3f3", bw="#616161" }
-    , input = { color ="#FDFDFD", bw = "#525252" }
+    , input = { color ="#FDFDFD", bw = "#707070" }
     , danger = { color = "#E04141", bw = "#FFF" }
     , focus = { color = "#00C0FF", bw = "#FFF" }
     , borderDisabled = "#C7C7C7"
@@ -107,11 +107,11 @@ default =
     , fab = 90
     }
   , chooser =
-    { hoverColors = { background = "#f0f0f0", text = "#626262" }
+    { hoverColors = { background = "#f0f0f0", text = "#707070" }
     , selectedColors = { background = "#158DD8", text = "#FFF" }
     , selectedHoverColors = { background = "#1f97e2", text = "#FFF" }
-    , intendedColors = { background = "#EEE", text = "#626262" }
-    , intendedHoverColors = { background = "#DDD", text = "#626262" }
+    , intendedColors = { background = "#EEE", text = "#707070" }
+    , intendedHoverColors = { background = "#DDD", text = "#707070" }
     , selectedIntendedColors = { background = "#1070ac", text = "#FFF" }
     , selectedIntendedHoverColors = { background = "#0c5989", text = "#FFF" }
     }

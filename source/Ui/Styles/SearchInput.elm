@@ -39,7 +39,11 @@ style theme =
       , top (px 11)
       ]
 
-    , selector "ui-input input"
-      [ paddingLeft (px 34)
+    , selector "ui-input"
+      [ width (pct 100)
+
+      , selector "input"
+        [ paddingLeft (px 34)
+        ]
       ]
     ]

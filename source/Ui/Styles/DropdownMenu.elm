@@ -26,7 +26,7 @@ style theme =
   mixin
     [ Dropdown.style theme
     , selector "ui-dropdown-menu-item"
-      [ padding ((px 9) . (px 14))
+      [ padding ((px 10) . (px 14))
       , display flex
 
       , selector "+ ui-dropdown-menu-item"
@@ -40,6 +40,12 @@ style theme =
       , selector "&:hover"
         [ color theme.colors.focus.color
         , cursor pointer
+        ]
+
+      , selector "svg"
+        [ fill currentColor
+        , height (px 16)
+        , width (px 16)
         ]
 
       , selector "ui-dropdown-menu-items"

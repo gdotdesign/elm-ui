@@ -338,8 +338,7 @@ render model =
       { address = Dropdown
       , tag = "ui-chooser"
       , attributes =
-        ( [ [ onPreventDefault "mousedown" NoOp ]
-          , Ui.attributeList
+        ( [ Ui.attributeList
             [ ( "searchable", model.searchable )
             , ( "open", model.dropdown.open )
             , ( "disabled", model.disabled )
@@ -349,7 +348,11 @@ render model =
           ]
           |> List.concat
         )
-      , contents = [ (Ui.ScrolledPanel.view children)]
+      , contents =
+        [ Ui.ScrolledPanel.view
+          [ onPreventDefault "mousedown" NoOp ]
+          children
+        ]
       , children =
         [ input
           ([ Html.Attributes.placeholder placeholder_

@@ -13,9 +13,13 @@ import Ui.Styles
 
     Ui.ScrolledPanel.view [ text "Long scrollable text..." ]
 -}
-view : List (Html.Html msg) -> Html.Html msg
-view contents =
+view : List (Html.Attribute msg) ->  List (Html.Html msg) -> Html.Html msg
+view attributes contents =
   node
     "ui-scrolled-panel"
-    (Ui.Styles.apply defaultStyle)
+    ( [ Ui.Styles.apply defaultStyle
+      , attributes
+      ]
+      |> List.concat
+    )
     [ node "ui-scrolled-panel-wrapper" [] contents ]

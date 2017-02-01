@@ -1,9 +1,10 @@
 import Spec exposing (..)
 
-import Html exposing (button, div, text)
+import Html exposing (button, div, text, span)
 
-import Ui.Container
 import Ui.DropdownMenu
+import Ui.Container
+import Ui.Icons
 
 import Ui.Styles.Theme exposing (default)
 import Ui.Styles
@@ -32,7 +33,10 @@ update msg_ model =
 
 viewModel =
   { items =
-    [ Ui.DropdownMenu.item [] [ text "tab 1" ]
+    [ Ui.DropdownMenu.item []
+      [ Ui.Icons.calendar []
+      , span [] [ text "tab 1" ]
+      ]
     , Ui.DropdownMenu.item [] [ text "tab 2" ]
     , Ui.DropdownMenu.item [] [ text "tab 3" ]
     ]

@@ -58,6 +58,10 @@ style theme =
         , opacity 0.6
         ]
 
+      , selector "ui-color-panel-handle"
+        [ opacity 0.6
+        ]
+
       , selector "ui-color-fields"
         [ borderTopColor "rgba(0, 0, 0, 0.1)"
 
@@ -113,20 +117,21 @@ style theme =
         , position relative
         , cursor colResize
         , flex_ "0 0 16px"
-        , boxShadow
-          [ { color = "rgba(0,0,0,0.2)"
-            , spread = (px 1)
-            , blur = (px 1)
-            , inset = True
-            , x = zero
-            , y = zero
-            }
-          ]
 
         , selector "ui-color-panel-alpha-background"
-          [ pointerEvents none
+          [ borderRadius theme.borderRadius
+          , pointerEvents none
           , height (px 16)
           , display block
+          , boxShadow
+            [ { color = "rgba(0,0,0,0.2)"
+              , spread = (px 1)
+              , blur = (px 1)
+              , inset = True
+              , x = zero
+              , y = zero
+              }
+            ]
           ]
 
         , selector "ui-color-panel-handle"

@@ -162,7 +162,7 @@ item theme =
       ]
 
     , selector "span"
-      [ height (px 16)
+      [ height (px 18)
       ]
 
     , selector "a"

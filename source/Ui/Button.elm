@@ -1,9 +1,9 @@
 module Ui.Button exposing (Model, model, view, render, attributes)
 
-{-| Basic button component that implements:
+{-| Thie module provides a basic button component with the following features:
   - **focus state** with ripple effect (Ui.Helpers.Ripple)
-  - **disabled state**
-  - **readonly state**
+  - **disabled state** with a custom cursor
+  - **readonly state** with a custom cursor
 
 # Model
 @docs Model, model

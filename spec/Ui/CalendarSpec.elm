@@ -13,6 +13,7 @@ view model =
     [ Ui.Calendar.view "en_us" model
     , Ui.Calendar.view "en_us" { model | disabled = True }
     , Ui.Calendar.view "en_us" { model | readonly = True }
+    , Ui.Calendar.view "en_us" { model | selectable = False }
     ]
 
 

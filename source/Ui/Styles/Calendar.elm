@@ -104,8 +104,10 @@ style theme =
         [ backgroundColor theme.colors.inputSecondary.color
         , color theme.colors.inputSecondary.bw
         ]
+      ]
 
-      , selectors
+    , selector "&[selectable] ui-calendar-cell"
+      [ selectors
         [ "&:not([inactive]):hover"
         , "&[selected]"
         ]

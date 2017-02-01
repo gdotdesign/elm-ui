@@ -2,7 +2,7 @@ module Ui.ColorFields exposing
   (Model, Msg, init, update, onChange, view, render, setValue)
 
 {-| A component for manipulating a color's red, green, blue and alpha values
-along with the ability to set it with a hex (#FFFFFF) value.
+along with the ability to set it with a hex (FFFFFF) value.
 
 # Model
 @docs Model, Msg, init, update
@@ -17,8 +17,7 @@ along with the ability to set it with a hex (#FFFFFF) value.
 @docs render, view
 -}
 
-import Html.Attributes exposing ( type_, defaultValue, id, spellcheck
-                                , readonly, disabled )
+import Html.Attributes exposing ( type_, defaultValue, id, spellcheck )
 import Html.Events exposing (onBlur, onInput, on)
 import Html exposing (node, input, text)
 import Html.Lazy
@@ -103,7 +102,7 @@ init _ =
     |> updateInputs
 
 
-{-| Subscribe for the changes of a color panel.
+{-| Subscribe for the changes of a color fields.
 
     subscriptions =
       Ui.ColorFields.onChange ColorFieldsChanged colorFields
@@ -224,6 +223,9 @@ sendValue (model, cmd) =
 
 
 {-| Sets the value of a color fields component.
+
+    ( updatedColorFields, cmd ) =
+      Ui.ColorFields.setValue Color.black colorfields
 -}
 setValue : Hsv -> Model -> ( Model, Cmd Msg )
 setValue value model =
@@ -301,18 +303,17 @@ renderInput name min max msg blurMsg value model =
       ]
 
     attributes =
-      if model.disabled || model.readonly then
-        if model.readonly then
-          [ readonly True ]
-        else
-          [ disabled True ]
-      else
-        [ on "change" (Json.succeed blurMsg)
+      [ Ui.attributeList
+        [ ( "disabled", model.disabled )
+        , ( "readonly", model.readonly )
+        ]
+      , [ on "change" (Json.succeed blurMsg)
         , Html.Attributes.min min
         , Html.Attributes.max max
         , onInput msg
         ]
-
+      ]
+      |> List.concat
   in
     node "ui-color-fields-column" []
       [ input (baseAttributes ++ attributes) []
@@ -340,16 +341,16 @@ render ({ inputs } as model) =
       ]
 
     hexAttributes =
-      if model.readonly || model.disabled then
-        if model.readonly then
-          [ readonly True ]
-        else
-          [ disabled True ]
-      else
-        [ on "change" (Json.succeed BlurHex)
+      [ Ui.attributeList
+        [ ( "disabled", model.disabled )
+        , ( "readonly", model.readonly )
+        ]
+      , [ on "change" (Json.succeed BlurHex)
         , onBlur BlurHex
         , onInput Hex
         ]
+      ]
+      |> List.concat
   in
     node "ui-color-fields"
       ( [ Ui.attributeList

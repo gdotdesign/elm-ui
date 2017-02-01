@@ -92,15 +92,15 @@ style theme =
       , selector "&:focus"
         [ Mixins.focused theme ]
 
+      , selector "&[readonly]"
+        [ Mixins.readonly
+        ]
+
       , selector "&[disabled]"
         [ Mixins.disabledColors theme
         , Mixins.disabled
 
         , border transparent
-        ]
-
-      , selector "&[readonly]"
-        [ Mixins.readonly
         ]
       ]
     ]

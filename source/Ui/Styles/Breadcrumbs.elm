@@ -42,6 +42,7 @@ style theme =
       , selector "a"
         [ textDecoration none
         , color currentColor
+        , cursor pointer
         , outline none
 
         , selector "&:hover"

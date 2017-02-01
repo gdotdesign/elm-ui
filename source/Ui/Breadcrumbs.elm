@@ -4,6 +4,7 @@ module Ui.Breadcrumbs exposing (..)
   - items in the breadcrumbs are Ui.Link-s
   - separator can be defined as any Html node
 
+# View
 @docs view
 -}
 

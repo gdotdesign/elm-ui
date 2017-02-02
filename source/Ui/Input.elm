@@ -123,14 +123,8 @@ onChange msg model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    Done result ->
-      let
-        _ =
-          case result of
-            Err error -> Debug.log "Could not set value:" (toString error)
-            Ok _ -> ""
-      in
-        ( model, Cmd.none )
+    Done _ ->
+      ( model, Cmd.none )
 
     Input value ->
       ( { model | value = value }, Emitter.sendString model.uid value )
@@ -209,10 +203,20 @@ render model =
 setValue : String -> Model -> ( Model, Cmd Msg)
 setValue value model =
   let
-    task =
-      DOM.setValue value (DOM.idSelector model.uid)
+    selector =
+      DOM.idSelector model.uid
+
+    equals =
+      case DOM.getValueSync selector of
+        Ok currentValue -> model.value == value && currentValue == value
+        Err _ -> False
   in
-    ( { model | value = value }, Task.attempt Done task )
+    if equals then
+      ( model, Cmd.none )
+    else
+      ( { model | value = value }
+      , Task.attempt Done (DOM.setValue value selector)
+      )
 
 
 {-| Sets whether or not to show a clear icon for an input.

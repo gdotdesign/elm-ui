@@ -3,6 +3,7 @@ module Ui exposing
 
 {-| This module provides utility functions for most of the components.
 
+# Functions
 @docs stylesheetLink, tabIndex, enabledActions, attributeList
 -}
 

@@ -6,7 +6,11 @@ module Ui.Link exposing (Model, view)
 - Enter or Space triggers the message
 - Simple click triggers the message
 
-@docs Model, view
+# Model
+@docs Model
+
+# View
+@docs view
 -}
 
 import Html.Events.Extra exposing (unobtrusiveClick, onKeys)

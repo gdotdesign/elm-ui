@@ -43,13 +43,20 @@ style theme =
       , wordBreak breakWord
       , lineHeight (px 24)
       , whiteSpace preWrap
-      , cursor pointer
       , display block
 
       , selector "&:empty:before"
         [ content "attr(placeholder)"
-        , cursor pointer
         , opacity 0.5
+        ]
+      ]
+
+    , selector "&:not([disabled]):not([readonly])"
+      [ selectors
+        [ "ui-inplace-input-content"
+        , "ui-inplace-input-content:empty:before"
+        ]
+        [ cursor pointer
         ]
       ]
     ]

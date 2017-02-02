@@ -180,13 +180,23 @@ render model =
 
     ( updatedTextarea, cmd ) = Ui.Textarea.setValue "new value" textarea
 -}
-setValue : String -> Model -> (Model, Cmd Msg)
+setValue : String -> Model -> ( Model, Cmd Msg)
 setValue value model =
   let
-    task =
-      DOM.setValue value (DOM.idSelector model.uid)
+    selector =
+      DOM.idSelector model.uid
+
+    equals =
+      case DOM.getValueSync selector of
+        Ok currentValue -> model.value == value && currentValue == value
+        Err _ -> False
   in
-    ( { model | value = value }, Task.attempt Done task )
+    if equals then
+      ( model, Cmd.none )
+    else
+      ( { model | value = value }
+      , Task.attempt Done (DOM.setValue value selector)
+      )
 
 
 {-| Regexp for matching emtpy lines.

@@ -2,6 +2,7 @@ module Ui.Icons exposing (..)
 
 {-| This module contains icons for the components.
 
+# Icons
 @docs icon, close, checkmark, chevronRight, chevronLeft, plus, search
 @docs starFull, starEmpty, backspace, calendar
 -}

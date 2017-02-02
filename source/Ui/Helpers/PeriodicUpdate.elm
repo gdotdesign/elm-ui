@@ -5,6 +5,7 @@ effect module Ui.Helpers.PeriodicUpdate
 {-| Effects module for calling all the subscribers simultaneously every 5
 seconds, created for and mainly used in Ui.Time.
 
+# Subscription
 @docs listen
 -}
 

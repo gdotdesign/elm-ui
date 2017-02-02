@@ -180,7 +180,16 @@ render model =
       else
         display model
   in
-    node "ui-inplace-input" (Ui.Styles.apply defaultStyle) [ content ]
+    node
+      "ui-inplace-input"
+      ( [ Ui.Styles.apply defaultStyle
+        , Ui.attributeList
+         [ ( "disabled", model.disabled )
+         , ( "readonly", model.readonly )
+         ]
+        ]
+        |> List.concat
+      ) [ content ]
 
 
 {-| Opens an inplace input and focuses the textarea.

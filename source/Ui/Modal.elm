@@ -114,15 +114,18 @@ render viewModel model =
     backdrop =
       [ node "ui-modal-backdrop" closeAction [] ]
 
+    closeEvent =
+      onClick (viewModel.address Close)
+
     closeAction =
       if model.closable && model.backdrop then
-        [ onClick (viewModel.address Close) ]
+        [ closeEvent ]
       else
         []
 
     closeIcon =
       if model.closable then
-        [ Ui.Icons.close closeAction ]
+        [ Ui.Icons.close [ closeEvent ] ]
       else
         []
   in

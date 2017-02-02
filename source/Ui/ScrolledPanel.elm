@@ -2,6 +2,7 @@ module Ui.ScrolledPanel exposing (view)
 
 {-| This module provides a view for scrolled panels.
 
+# View
 @docs view
 -}
 import Html exposing (node)

@@ -77,7 +77,7 @@ type Msg
     tagger =
       Ui.Tagger.init ()
         |> Ui.Tagger.removeable False
-        |> Ui.tagger.placeholder "Add tag..."
+        |> Ui.Tagger.placeholder "Add tag..."
 -}
 init : () -> Model
 init _ =

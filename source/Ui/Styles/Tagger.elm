@@ -45,6 +45,10 @@ style theme =
       , margin (zero . (px -5))
       ]
 
+    , selector "ui-input"
+      [ flex_ "1"
+      ]
+
     , selector "ui-tagger-tag"
       [ margin (px 5)
 

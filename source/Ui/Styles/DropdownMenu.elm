@@ -8,7 +8,6 @@ import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
-import Ui.Styles.Dropdown as Dropdown
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
@@ -24,7 +23,8 @@ defaultStyle =
 style : Theme -> Node
 style theme =
   mixin
-    [ Dropdown.style theme
+    [ display inlineBlock
+
     , selector "ui-dropdown-menu-item"
       [ padding ((px 10) . (px 14))
       , display flex

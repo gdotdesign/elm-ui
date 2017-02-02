@@ -16,14 +16,14 @@ import Ui.Styles.Mixins as Mixins
 style : Theme -> Node
 style theme =
   mixin
-    [ Dropdown.style theme
-    , Mixins.focusedIdle theme
+    [ Mixins.focusedIdle theme
 
     , border ((px 1) . solid . theme.colors.border)
     , backgroundColor theme.colors.input.color
     , borderRadius theme.borderRadius
     , fontFamily theme.fontFamily
     , color theme.colors.input.bw
+    , display inlineBlock
     , minWidth (px 220)
     , height (px 36)
 
@@ -33,7 +33,7 @@ style theme =
       , position relative
       , userSelect none
       , cursor pointer
-      , height (px 22)
+      , height (px 24)
       , display flex
       , flex_ "1"
       ]

@@ -8,7 +8,6 @@ import Css.Properties exposing (..)
 import Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
-import Ui.Styles.Dropdown as Dropdown
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles.Input as Input
 import Ui.Styles exposing (Style)
@@ -30,7 +29,6 @@ style theme =
     [ Mixins.defaults
 
     , Input.inputStyle theme
-    , Dropdown.style theme
 
     , color theme.colors.input.bw
     , display inlineBlock
@@ -108,7 +106,7 @@ style theme =
         ]
       ]
 
-    , selector "ui-dropdown-panel"
+    , selector "ui-dropdown-panel[style-id]"
       [ maxHeight (px 250)
       , padding (px 5)
       , display flex

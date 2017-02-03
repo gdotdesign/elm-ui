@@ -53,7 +53,7 @@ style theme =
       , height (px 36)
 
       , selector "span"
-        [ lineHeight (px 38) ]
+        [ lineHeight (px 36) ]
       ]
 
     , selector "&[size=big]"

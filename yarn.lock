@@ -233,9 +233,9 @@ elm-github-install@^0.3.0:
     tar-fs "1.15.0"
     tmp "^0.0.31"
 
-elm-spec@gdotdesign/elm-spec#1.0.12:
-  version "1.0.12"
-  resolved "https://codeload.github.com/gdotdesign/elm-spec/tar.gz/8b3d46f00c675b144e67221756add7098f7e793d"
+elm-spec@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/elm-spec/-/elm-spec-1.1.0.tgz#e2a8e7e6cd82412312ca03f12755b72b4d68f1c7"
   dependencies:
     async "^2.1.4"
     camelcase "^4.0.0"

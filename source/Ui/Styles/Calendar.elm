@@ -106,7 +106,7 @@ style theme =
         ]
       ]
 
-    , selector "&[selectable] ui-calendar-cell"
+    , selector "&:not([disabled])[selectable] ui-calendar-cell"
       [ selectors
         [ "&:not([inactive]):hover"
         , "&[selected]"

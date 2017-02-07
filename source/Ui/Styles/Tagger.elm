@@ -89,5 +89,10 @@ style theme =
       ]
 
     , selector "&[disabled]"
-      [ Mixins.disabled ]
+      [ Mixins.disabled
+
+      , selector "ui-tagger-tag"
+        [ Mixins.disabledColors theme
+        ]
+      ]
     ]

@@ -37,4 +37,34 @@ style theme =
     , selector "ui-color-picker-text"
       [ Mixins.ellipsis
       ]
+
+    , selector "ui-color-picker-rect"
+      [ backgroundColor "#DDD"
+      , property "background-image"
+         ( "linear-gradient(45deg, #F5F5F5 25%, transparent 25%, transparent 75%, #F5F5F5 75%, #F5F5F5),"
+          ++ "linear-gradient(45deg, #F5F5F5 25%, transparent 25%, transparent 75%, #F5F5F5 75%, #F5F5F5)" )
+      , property "background-position" "0 0, 9px 9px"
+      , property "background-size" "18px 18px"
+      , borderRadius theme.borderRadius
+      , position absolute
+      , display flex
+      , width (px 36)
+      , bottom (px 5)
+      , right (px 4)
+      , top (px 4)
+
+      , selector "ui-color-picker-background"
+        [ boxShadow
+          [ { color = "rgba(0,0,0,0.2)"
+            , spread = (px 1)
+            , blur = (px 1)
+            , inset = True
+            , y = zero
+            , x = zero
+            }
+          ]
+        , borderRadius theme.borderRadius
+        , flex_ "1"
+        ]
+      ]
     ]

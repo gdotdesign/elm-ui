@@ -113,7 +113,13 @@ style theme =
         ]
 
       , selector "ui-color-panel-alpha"
-        [ borderRadius theme.borderRadius
+        [ backgroundColor "#DDD"
+        , property "background-image"
+           ( "linear-gradient(45deg, #F5F5F5 25%, transparent 25%, transparent 75%, #F5F5F5 75%, #F5F5F5),"
+            ++ "linear-gradient(45deg, #F5F5F5 25%, transparent 25%, transparent 75%, #F5F5F5 75%, #F5F5F5)" )
+        , property "background-position" "0 0, 9px 9px"
+        , property "background-size" "18px 18px"
+        , borderRadius theme.borderRadius
         , position relative
         , cursor colResize
         , flex_ "0 0 16px"

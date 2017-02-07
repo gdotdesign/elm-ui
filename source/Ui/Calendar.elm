@@ -5,7 +5,7 @@ module Ui.Calendar exposing
 {-| Simple calendar component:
   - Change month by clicking on arrows on the left or right in the header
   - Select a date by clicking on it
-  - Can be render in a given locale
+  - Can be rendered in a given locale
 
 # Model
 @docs Model, Msg, init, update
@@ -210,7 +210,7 @@ render locale model =
 
 {-| Sets the value of a calendar.
 
-    ( updatedCalendar, msg ) =
+    updatedCalendar =
       Ui.Calendar.setValue (Ext.Date.createDate 1977 5 25) calendar
 -}
 setValue : Date.Date -> Model -> Model

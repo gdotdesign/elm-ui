@@ -71,7 +71,7 @@ view model =
 
 specs : Node
 specs =
-  describe "Ui.Button"
+  describe "Ui.Header"
     [ context "Clicking on items"
       [ it "calls sends the given message"
         [ assert.containsText { selector = "p", text = "Initial"}

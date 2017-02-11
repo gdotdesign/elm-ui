@@ -10,10 +10,14 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
       theme[key] = value
     })
 
-    document.querySelectorAll('style[id]').forEach(function(element){
-      if (!element.raw) { return }
-      element.innerHTML = replaceVars(element.raw)
-    })
+    var styles = document.querySelectorAll('style[id]')
+
+    for(var index in styles) {
+      var element = styles[index]
+      if (element.raw) {
+        element.innerHTML = replaceVars(element.raw)
+      }
+    }
   }
 
   if(window.MutationObserver) {

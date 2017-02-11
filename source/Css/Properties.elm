@@ -29,6 +29,10 @@ type alias Animation =
   , playState : String
   }
 
+var : String -> String
+var name =
+  "var(--" ++ name ++ ")"
+
 zero : String
 zero =
   "0"

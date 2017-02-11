@@ -1,5 +1,20 @@
 var _gdotdesign$elm_ui$Native_Styles = function() {
+  var theme = {}
   var currentStyles = {}
+
+  var setVariables = function(vars) {
+    var varsArray = _elm_lang$core$Native_List.toArray(vars)
+    varsArray.forEach(function(obj){
+      var key = obj._0
+      var value = obj._1
+      theme[key] = value
+    })
+
+    document.querySelectorAll('style[id]').forEach(function(element){
+      if (!element.raw) { return }
+      element.innerHTML = replaceVars(element.raw)
+    })
+  }
 
   if(window.MutationObserver) {
     new MutationObserver(function (mutations) {
@@ -12,6 +27,15 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
       requestAnimationFrame(patch)
     }
     requestAnimationFrame(patch)
+  }
+
+  function replaceVars(string){
+    var result = string
+    for(var key in theme) {
+      var value = theme[key]
+      result = result.replace('var(--' + key + ')', value)
+    }
+    return result
   }
 
   function patchStyles(){
@@ -35,7 +59,8 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
         delete currentStyles[id]
       } else {
         var style = document.createElement('style')
-        style.innerHTML = nextStyles[id]
+        style.raw = nextStyles[id]
+        style.innerHTML = replaceVars(nextStyles[id])
         style.setAttribute('id', id)
         document.head.appendChild(style)
         nextStyles[id] = style
@@ -51,6 +76,6 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
 
   /* Interface */
   return {
-    patchStyles: patchStyles
+    setVariables: setVariables
   }
 }()

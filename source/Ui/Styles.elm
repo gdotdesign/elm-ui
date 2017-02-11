@@ -1,8 +1,8 @@
-module Ui.Styles exposing (Style, apply, attributes)
+module Ui.Styles exposing (..)
 
 {-| This module contains functions to add styles to elements.
 
-@docs Style, apply, attributes
+@docs Style, apply, attributes, registerVariables
 -}
 import Html.Attributes exposing (attribute)
 import Html
@@ -12,6 +12,11 @@ import Lazy exposing (Lazy)
 import Json.Encode as Json
 import Native.Styles
 import Murmur3
+
+{-|-}
+registerVariables : List (String, String) -> List (String, String)
+registerVariables vars =
+  Native.Styles.setVariables vars
 
 {-| Representation of a style.
 -}

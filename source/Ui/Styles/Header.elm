@@ -2,123 +2,139 @@ module Ui.Styles.Header exposing (..)
 
 {-| Styles for a header.
 
-@docs style, defaultStyle
+@docs style, variables
 -}
 import Css.Properties exposing (..)
 import Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
+import Ui.Styles.Theme as Theme exposing (default)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles.Ripple as Ripple
 import Ui.Styles exposing (Style)
 
-{-| Styles for a header using the default theme.
+import Html
+
+{-| Variables for the styles of a button.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+variables : List (String, String)
+variables =
+  [ ("ui-header-background-bottom", default.header.colors.backgroundBottom)
+  , ("ui-header-background-top", default.header.colors.backgroundTop)
+  , ("ui-header-separator-color", default.header.colors.border)
+  , ("ui-header-z-index", (toString default.zIndexes.header))
+  , ("ui-header-text-shadow-color", "rgba(0,0,0,0.3)")
+  , ("ui-header-color", default.header.colors.text)
+  , ("ui-header-shadow-color", "rgba(0,0,0,0.1)")
+  , ("ui-header-font-family", default.fontFamily)
+  , ("ui-header-font-size", (px 20))
+  , ("ui-header-height", (px 60))
+  ]
+    |> Ui.Styles.registerVariables
 
 
 {-| Returns the style node for a header using the given theme.
 -}
-style theme =
-  mixin
-    [ background
-        ( "linear-gradient(" ++
-          theme.header.colors.backgroundTop  ++
-          ", " ++
-          theme.header.colors.backgroundBottom ++
-          ")"
-        )
-      , zIndex theme.zIndexes.header
-      , fontFamily theme.fontFamily
-      , padding (zero . (px 20))
-      , position relative
-      , flex_ "0 0 auto"
+style : List (Html.Attribute msg)
+style =
+  [ background
+      ( "linear-gradient(" ++
+        (var "ui-header-background-top")  ++
+        ", " ++
+        (var "ui-header-background-bottom") ++
+        ")"
+      )
+    , property "z-index" (var "ui-header-z-index")
+    , fontFamily (var "ui-header-font-family")
+    , padding (zero . (px 20))
+    , position relative
+    , flex_ "0 0 auto"
 
-      , flexDirection row
-      , alignItems center
-      , display flex
+    , flexDirection row
+    , alignItems center
+    , display flex
 
-      , height (px 60)
+    , height (var "ui-header-height")
 
-      , boxShadow
-        [ { color = "rgba(0,0,0,0.1)"
-          , blur = (px 3)
-          , inset = False
-          , spread = zero
-          , y = (px 2)
-          , x = zero
-          }
-        , { color = "rgba(0,0,0,0.1)"
-          , blur = (px 10)
-          , inset = False
-          , spread = zero
-          , y = zero
-          , x = zero
-          }
-        ]
-
-    , selector "ui-header-separator"
-      [ background theme.header.colors.border
-      , margin (zero . (px 8))
-      , height (px 40)
-      , width (px 2)
+    , boxShadow
+      [ { color = (var "ui-header-shadow-color")
+        , blur = (px 3)
+        , inset = False
+        , spread = zero
+        , y = (px 2)
+        , x = zero
+        }
+      , { color = (var "ui-header-shadow-color")
+        , blur = (px 10)
+        , inset = False
+        , spread = zero
+        , y = zero
+        , x = zero
+        }
       ]
 
-    , selector "ui-header-spacer"
-      [ flex_ "1"
+  , selector "ui-header-separator"
+    [ background (var "ui-header-separator-color")
+    , margin (zero . (px 8))
+    , height (pct 60)
+    , width (px 2)
+    ]
+
+  , selector "ui-header-spacer"
+    [ flex_ "1"
+    ]
+
+  , selector "ui-header-title"
+    [ item
+    ]
+
+  , selector "ui-header-item"
+    [ item
+    ]
+
+  , selector "ui-header-icon-item"
+    [ item
+
+    , selector "svg:not([ripple])"
+      [ height (var "ui-header-font-size")
+      , width (var "ui-header-font-size")
+      , fill currentColor
       ]
 
-    , selector "ui-header-title"
-      [ item theme
-      , fontSize (px 20)
+    , selectors
+      [ "svg + span"
+      , "span + svg"
       ]
-
-    , selector "ui-header-item"
-      [ item theme
-      ]
-
-    , selector "ui-header-icon-item"
-      [ item theme
-
-      , selector "svg:not([ripple])"
-        [ fill currentColor
-        , height (px 20)
-        , width (px 20)
-        ]
-
-      , selectors
-        [ "svg + span"
-        , "span + svg"
-        ]
-        [ marginLeft (px 12)
-        ]
-      ]
-
-    , selector "ui-header-icon"
-      [ item theme
-
-      , selector "svg:not([ripple])"
-        [ fill currentColor
-        , height (px 20)
-        , width (px 20)
-        ]
+      [ marginLeft (px 12)
       ]
     ]
 
+  , selector "ui-header-icon"
+    [ item
+
+    , selector "svg:not([ripple])"
+      [ height (var "ui-header-font-size")
+      , width (var "ui-header-font-size")
+      , fill currentColor
+      ]
+    ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes
+  |> Ui.Styles.apply
 
 {-| Returns a style node for an header item.
 -}
-item : Theme -> Node
-item theme =
+item : Node
+item =
   mixin
-    [ property "-webkit-filter" "drop-shadow(0px 1px 0px rgba(0,0,0,0.3))"
-    , property "filter" "drop-shadow(0px 1px 0px rgba(0,0,0,0.3))"
+    [ property "-webkit-filter"
+      ("drop-shadow(0px 1px 0px " ++ (var "ui-header-text-shadow-color") ++ ")")
+    , property "filter"
+      ("drop-shadow(0px 1px 0px " ++ (var "ui-header-text-shadow-color") ++ ")")
 
-    , color theme.header.colors.text
+    , fontSize (var "ui-header-font-size")
+    , color (var "ui-header-color")
     , margin (zero . (px 2))
-    , fontSize (px 18)
     , fontWeight bold
     , height inherit
 
@@ -162,7 +178,7 @@ item theme =
       ]
 
     , selector "span"
-      [ height (px 18)
+      [ height (var "ui-header-font-size")
       ]
 
     , selector "a"

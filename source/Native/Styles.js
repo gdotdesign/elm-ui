@@ -37,7 +37,7 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
     var result = string
     for(var key in theme) {
       var value = theme[key]
-      result = result.replace('var(--' + key + ')', value)
+      result = result.replace(new RegExp('var\\(--' + key + '\\)', 'g'), value)
     }
     return result
   }

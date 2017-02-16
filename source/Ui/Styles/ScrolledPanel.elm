@@ -4,8 +4,8 @@ module Ui.Styles.ScrolledPanel exposing (..)
 
 @docs style, defaultStyle
 -}
-import Css.Properties exposing (..)
-import Css exposing (..)
+import Ui.Css.Properties exposing (..)
+import Ui.Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles exposing (Style)

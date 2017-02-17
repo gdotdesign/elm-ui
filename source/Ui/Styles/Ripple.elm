@@ -4,8 +4,8 @@ module Ui.Styles.Ripple exposing (style)
 
 @docs style
 -}
-import Css.Properties exposing (..)
-import Css exposing (..)
+import Ui.Css.Properties exposing (..)
+import Ui.Css exposing (..)
 
 {-| Returns the style node for the ripple effect.
 -}

@@ -7,7 +7,7 @@ module Ui.Styles exposing (Style, apply, attributes)
 import Html.Attributes exposing (attribute)
 import Html
 
-import Css exposing (Node, resolve)
+import Ui.Css exposing (Node, resolve)
 import Lazy exposing (Lazy)
 import Json.Encode as Json
 import Native.Styles
@@ -52,6 +52,6 @@ attributes node =
       id = Murmur3.hashString 0 (toString node)
     in
       { value =
-          resolve [ Css.selector ("[style-id='" ++ (toString id) ++ "']") [ node ] ]
+          resolve [ Ui.Css.selector ("[style-id='" ++ (toString id) ++ "']") [ node ] ]
       , id = id
       }

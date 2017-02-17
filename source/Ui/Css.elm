@@ -1,4 +1,4 @@
-module Css exposing (..)
+module Ui.Css exposing (..)
 
 import Html exposing (text)
 import Regex

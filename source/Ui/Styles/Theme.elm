@@ -5,7 +5,7 @@ module Ui.Styles.Theme exposing (..)
 @docs Theme, default
 -}
 
-import Css.Properties exposing (..)
+import Ui.Css.Properties exposing (..)
 
 {-| Representation of a theme.
 -}

@@ -5,8 +5,8 @@ module Ui.Styles.Mixins exposing (..)
 @docs placeholder, defaults, focused, focusedIdle, ellipsis, disabled
 @docs disabledColors, disabledCursor, readonlyCursor, readonly
 -}
-import Css.Properties exposing (..)
-import Css exposing (..)
+import Ui.Css.Properties exposing (..)
+import Ui.Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
 import Regex
@@ -74,7 +74,7 @@ focused theme =
 ellipsis : Node
 ellipsis =
   mixin
-    [ textOverflow Css.Properties.ellipsis
+    [ textOverflow Ui.Css.Properties.ellipsis
     , whiteSpace nowrap
     , overflow hidden
     ]

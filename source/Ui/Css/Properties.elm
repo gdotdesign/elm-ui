@@ -1,6 +1,6 @@
-module Css.Properties exposing (..)
+module Ui.Css.Properties exposing (..)
 
-import Css exposing (Node, property)
+import Ui.Css exposing (Node, property)
 
 type alias Transition =
   { easing : String
@@ -498,7 +498,7 @@ maxWidth =
 
 userSelect : String -> Node
 userSelect value =
-  Css.mixin
+  Ui.Css.mixin
     [ property "-webkit-user-select" value
     , property "-moz-user-select" value
     , property "-ms-user-select" value

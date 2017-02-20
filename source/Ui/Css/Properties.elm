@@ -1,7 +1,5 @@
 module Ui.Css.Properties exposing (..)
 
-import Ui.Css exposing (Node, property)
-
 type alias Transition =
   { easing : String
   , duration : String
@@ -28,6 +26,10 @@ type alias Animation =
   , fillMode : String
   , playState : String
   }
+
+property : String -> String -> (String, String)
+property =
+  (,)
 
 zero : String
 zero =
@@ -220,71 +222,71 @@ scroll =
 
 -- Properties
 
-textTransform : String -> Node
+textTransform : String -> (String, String)
 textTransform =
   property "text-transform"
 
-textDecoration : String -> Node
+textDecoration : String -> (String, String)
 textDecoration =
   property "text-decoration"
 
-wordWrap : String -> Node
+wordWrap : String -> (String, String)
 wordWrap =
   property "word-wrap"
 
-wordBreak : String -> Node
+wordBreak : String -> (String, String)
 wordBreak =
   property "word-break"
 
-fill : String -> Node
+fill : String -> (String, String)
 fill =
   property "fill"
 
-flex_ : String -> Node
+flex_ : String -> (String, String)
 flex_ =
   property "flex"
 
-flexWrap : String -> Node
+flexWrap : String -> (String, String)
 flexWrap =
   property "flex-wrap"
 
-alignSelf : String -> Node
+alignSelf : String -> (String, String)
 alignSelf =
   property "align-self"
 
-lineHeight : String -> Node
+lineHeight : String -> (String, String)
 lineHeight =
   property "line-height"
 
-flexDirection : String -> Node
+flexDirection : String -> (String, String)
 flexDirection =
   property "flex-direction"
 
-backgroundColor : String -> Node
+backgroundColor : String -> (String, String)
 backgroundColor =
   property "background-color"
 
-backgroundSize : String -> Node
+backgroundSize : String -> (String, String)
 backgroundSize =
   property "background-size"
 
-background : String -> Node
+background : String -> (String, String)
 background =
   property "background"
 
-backgroundClip : String -> Node
+backgroundClip : String -> (String, String)
 backgroundClip =
   property "background-clip"
 
-backgroundPositionX : String -> Node
+backgroundPositionX : String -> (String, String)
 backgroundPositionX =
   property "background-position-x"
 
-boxSizing : String -> Node
+boxSizing : String -> (String, String)
 boxSizing =
   property "box-sizing"
 
-outline : String -> Node
+outline : String -> (String, String)
 outline =
   property "outline"
 
@@ -292,218 +294,217 @@ important : String
 important =
   "!important"
 
-border : String -> Node
+border : String -> (String, String)
 border =
   property "border"
 
-borderWidth : String -> Node
+borderWidth : String -> (String, String)
 borderWidth =
   property "border-width"
 
-borderStyle : String -> Node
+borderStyle : String -> (String, String)
 borderStyle =
   property "border-style"
 
-borderLeft : String -> Node
+borderLeft : String -> (String, String)
 borderLeft =
   property "border-left"
 
-borderBottom : String -> Node
+borderBottom : String -> (String, String)
 borderBottom =
   property "border-bottom"
 
-borderTop : String -> Node
+borderTop : String -> (String, String)
 borderTop =
   property "border-top"
 
-borderRight : String -> Node
+borderRight : String -> (String, String)
 borderRight =
   property "border-right"
 
-borderRightColor : String -> Node
+borderRightColor : String -> (String, String)
 borderRightColor =
   property "border-right-color"
 
-borderTopColor : String -> Node
+borderTopColor : String -> (String, String)
 borderTopColor =
   property "border-top-color"
 
-borderColor : String -> Node
+borderColor : String -> (String, String)
 borderColor =
   property "border-color"
 
-borderRadius : String -> Node
+borderRadius : String -> (String, String)
 borderRadius =
   property "border-radius"
 
-fontWeight : String -> Node
+fontWeight : String -> (String, String)
 fontWeight =
   property "font-weight"
 
-fontSize : String -> Node
+fontSize : String -> (String, String)
 fontSize =
   property "font-size"
 
-fontStyle : String -> Node
+fontStyle : String -> (String, String)
 fontStyle =
   property "font-style"
 
-cursor : String -> Node
+cursor : String -> (String, String)
 cursor =
   property "cursor"
 
-visibility : String -> Node
+visibility : String -> (String, String)
 visibility =
   property "visibility"
 
-resize : String -> Node
+resize : String -> (String, String)
 resize =
   property "resize"
 
-content : String -> Node
+content : String -> (String, String)
 content value =
   property "content" value
 
-contentString : String -> Node
+contentString : String -> (String, String)
 contentString value =
   property "content" ("\"" ++ value ++ "\"")
 
-padding : String -> Node
+padding : String -> (String, String)
 padding =
   property "padding"
 
-paddingLeft : String -> Node
+paddingLeft : String -> (String, String)
 paddingLeft =
   property "padding-left"
 
-paddingTop : String -> Node
+paddingTop : String -> (String, String)
 paddingTop =
   property "padding-top"
 
-paddingRight : String -> Node
+paddingRight : String -> (String, String)
 paddingRight =
   property "padding-right"
 
-margin : String -> Node
+margin : String -> (String, String)
 margin =
   property "margin"
 
-marginTop : String -> Node
+marginTop : String -> (String, String)
 marginTop =
   property "margin-top"
 
-marginBottom : String -> Node
+marginBottom : String -> (String, String)
 marginBottom =
   property "margin-bottom"
 
-marginLeft : String -> Node
+marginLeft : String -> (String, String)
 marginLeft =
   property "margin-left"
 
-marginRight : String -> Node
+marginRight : String -> (String, String)
 marginRight =
   property "margin-right"
 
-fontFamily : String -> Node
+fontFamily : String -> (String, String)
 fontFamily =
   property "font-family"
 
-zIndex : Int -> Node
+zIndex : Int -> (String, String)
 zIndex value =
   property "z-index" (toString value)
 
-color : String -> Node
+color : String -> (String, String)
 color =
   property "color"
 
-overflow : String -> Node
+overflow : String -> (String, String)
 overflow =
   property "overflow"
 
-overflowY : String -> Node
+overflowY : String -> (String, String)
 overflowY =
   property "overflow-y"
 
-position : String -> Node
+position : String -> (String, String)
 position =
   property "position"
 
-display : String -> Node
+display : String -> (String, String)
 display =
   property "display"
 
-alignItems : String -> Node
+alignItems : String -> (String, String)
 alignItems =
   property "align-items"
 
-justifyContent : String -> Node
+justifyContent : String -> (String, String)
 justifyContent =
   property "justify-content"
 
-textAlign : String -> Node
+textAlign : String -> (String, String)
 textAlign =
   property "text-align"
 
-pointerEvents : String -> Node
+pointerEvents : String -> (String, String)
 pointerEvents =
   property "pointer-events"
 
-textOverflow : String -> Node
+textOverflow : String -> (String, String)
 textOverflow =
   property "text-overflow"
 
-whiteSpace : String -> Node
+whiteSpace : String -> (String, String)
 whiteSpace =
   property "white-space"
 
-left : String -> Node
+left : String -> (String, String)
 left =
   property "left"
 
-top : String -> Node
+top : String -> (String, String)
 top =
   property "top"
 
-bottom : String -> Node
+bottom : String -> (String, String)
 bottom =
   property "bottom"
 
-right : String -> Node
+right : String -> (String, String)
 right =
   property "right"
 
-height : String -> Node
+height : String -> (String, String)
 height =
   property "height"
 
-width : String -> Node
+width : String -> (String, String)
 width =
   property "width"
 
-minWidth : String -> Node
+minWidth : String -> (String, String)
 minWidth =
   property "min-width"
 
-minHeight : String -> Node
+minHeight : String -> (String, String)
 minHeight =
   property "min-height"
 
-maxHeight : String -> Node
+maxHeight : String -> (String, String)
 maxHeight =
   property "max-height"
 
-maxWidth : String -> Node
+maxWidth : String -> (String, String)
 maxWidth =
   property "max-width"
 
-userSelect : String -> Node
+userSelect : String -> List (String, String)
 userSelect value =
-  Ui.Css.mixin
-    [ property "-webkit-user-select" value
-    , property "-moz-user-select" value
-    , property "-ms-user-select" value
-    , property "user-select" value
-    ]
+  [ property "-webkit-user-select" value
+  , property "-moz-user-select" value
+  , property "-ms-user-select" value
+  , property "user-select" value
+  ]
 
 type Transform
   = Scale Float
@@ -537,11 +538,11 @@ rotate : Float -> Transform
 rotate =
   Rotate
 
-transformOrigin : String -> String -> Node
+transformOrigin : String -> String -> (String, String)
 transformOrigin top left =
   property "transform-origin" (top ++ " " ++ left)
 
-transform : List Transform -> Node
+transform : List Transform -> (String, String)
 transform transforms =
   let
     render item =
@@ -559,11 +560,11 @@ transform transforms =
   in
     property "transform" value
 
-opacity : Float -> Node
+opacity : Float -> (String, String)
 opacity value =
   property "opacity" (toString value)
 
-boxShadow : List BoxShadow -> Node
+boxShadow : List BoxShadow -> (String, String)
 boxShadow shadows =
   let
     render item =
@@ -582,7 +583,7 @@ boxShadow shadows =
   in
     property "box-shadow" value
 
-animation : List Animation -> Node
+animation : List Animation -> (String, String)
 animation animations =
   let
     render item =
@@ -603,7 +604,7 @@ animation animations =
   in
     property "animation" value
 
-transition : List Transition -> Node
+transition : List Transition -> (String, String)
 transition transitions =
   let
     render item =

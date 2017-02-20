@@ -18,12 +18,12 @@ module Ui.Container exposing
 @docs column, columnEnd, columnCenter
 -}
 
+import Html.Styles exposing (styles, selector)
 import Html.Attributes exposing (attribute)
 import Html exposing (node)
 import Html.Lazy
 
-import Ui.Styles.Container
-import Ui.Styles
+import Ui.Css.Properties exposing (..)
 
 import Ui
 
@@ -129,10 +129,37 @@ columnOptions =
 -}
 basAttributes : Model -> List (Html.Attribute msg)
 basAttributes model =
-  [ Ui.attributeList [ ( "compact", model.compact ) ]
-  , Ui.Styles.apply Ui.Styles.Container.defaultStyle
-  , [ attribute "direction" model.direction
-    , attribute "align" model.align
+  let
+    align =
+      case model.align of
+        "space-between" -> spaceBetween
+        "space-around" -> spaceAround
+        "start" -> flexStart
+        "center" -> center
+        "end" -> flexEnd
+        _ -> ""
+
+    selectors =
+      if model.compact then
+        []
+      else
+        case model.direction of
+          "column" ->
+            [ selector "* + *"
+              [ marginTop (px 10) ]
+            ]
+
+          "row" ->
+            [ selector "* + *"
+              [ marginLeft (px 10) ]
+            ]
+
+          _ -> []
+  in
+    [ styles
+      [ flexDirection model.direction
+      , justifyContent align
+      , display flex
+      ]
+      selectors
     ]
-  ]
-  |> List.concat

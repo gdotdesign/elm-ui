@@ -107,12 +107,12 @@ specs =
       [ context "compact"
         [ it "does not add space between elements"
           [ assert.not.styleEquals
-            { selector = "ui-container[direction=row][compact] div:nth-child(2)"
+            { selector = "ui-container:nth-of-type(7) div:nth-child(2)"
             , style = "margin-left"
             , value = "10px"
             }
           , assert.not.styleEquals
-            { selector = "ui-container[direction=column][compact] div:nth-child(2)"
+            { selector = "ui-container:nth-of-type(8) div:nth-child(2)"
             , style = "margin-top"
             , value = "10px"
             }
@@ -121,7 +121,7 @@ specs =
       , context "row"
         [ it "adds space between elements"
           [ assert.styleEquals
-            { selector = "ui-container[direction=row] div:nth-child(2)"
+            { selector = "ui-container:nth-of-type(1) div:nth-child(2)"
             , style = "margin-left"
             , value = "10px"
             }
@@ -130,12 +130,12 @@ specs =
       , context "column"
         [ it "adds space between elements"
           [ assert.not.styleEquals
-            { selector = "ui-container[direction=column] div:first-child"
+            { selector = "ui-container:nth-of-type(4) div:first-child"
             , style = "margin-top"
             , value = "10px"
             }
           , assert.styleEquals
-            { selector = "ui-container[direction=column] div:nth-child(2)"
+            { selector = "ui-container:nth-of-type(4) div:nth-child(2)"
             , style = "margin-top"
             , value = "10px"
             }
@@ -145,34 +145,34 @@ specs =
     , context "row"
       [ it "start"
         (displayAssertions
-          "ui-container[direction=row][align=start]"
+          "ui-container:nth-of-type(1)"
           "row"
           "flex-start")
       , it "center"
         (displayAssertions
-          "ui-container[direction=row][align=center]"
+          "ui-container:nth-of-type(2)"
           "row"
           "center")
       , it "end"
         (displayAssertions
-          "ui-container[direction=row][align=end]"
+          "ui-container:nth-of-type(3)"
           "row"
           "flex-end")
       ]
     , context "column"
       [ it "start"
         (displayAssertions
-          "ui-container[direction=column][align=start]"
+          "ui-container:nth-of-type(4)"
           "column"
           "flex-start")
       , it "center"
         (displayAssertions
-          "ui-container[direction=column][align=center]"
+          "ui-container:nth-of-type(5)"
           "column"
           "center")
       , it "end"
         (displayAssertions
-          "ui-container[direction=column][align=end]"
+          "ui-container:nth-of-type(6)"
           "column"
           "flex-end")
       ]

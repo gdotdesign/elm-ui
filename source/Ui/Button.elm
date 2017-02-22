@@ -84,7 +84,7 @@ render msg model =
 other attributes.
 -}
 attributes :
-  Style
+  Html.Attribute msg
   -> msg
   -> { b | disabled : Bool, kind : String, size : String, readonly : Bool }
   -> List (Html.Attribute msg)
@@ -103,7 +103,7 @@ attributes styles msg model =
       , ( 32, msg )
       ]
     ]
-  , Ui.Styles.apply styles
+  , [ styles ]
   , Ui.tabIndex model
   ]
     |> List.concat

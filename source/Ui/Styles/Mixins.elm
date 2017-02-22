@@ -119,7 +119,7 @@ readonlyCursor =
 -}
 disabled : List (String, String)
 disabled =
-  [ cursor ("url(\"data:image/svg+xml;utf8," ++ disabledCursor ++ "\") 24 15, auto !important")
+  [ cursor ("url(\"data:image/svg+xml;utf8," ++ disabledCursor ++ "\") 24 15, auto")
   ] ++ userSelect none
 
 

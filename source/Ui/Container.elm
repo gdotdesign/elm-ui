@@ -145,12 +145,12 @@ basAttributes model =
       else
         case model.direction of
           "column" ->
-            [ selector "* + *"
+            [ selector "> * + *"
               [ marginTop (px 10) ]
             ]
 
           "row" ->
-            [ selector "* + *"
+            [ selector "> * + *"
               [ marginLeft (px 10) ]
             ]
 

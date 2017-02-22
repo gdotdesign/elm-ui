@@ -33,25 +33,28 @@ specs =
   describe "Ui.Button"
     [ context "First button"
       [ it "has rounded corners on the left side"
-        [ assert.containsText
-          { selector = "style[id='3559938210']"
-          , text = "border-radius: 2px 0px 0px 2px"
+        [ assert.styleEquals
+          { selector = "ui-button"
+          , style = "border-radius"
+          , value = "2px 0px 0px 2px"
           }
         ]
       ]
     , context "Middle buttons"
       [ it "has no rounded borders"
-        [ assert.containsText
-          { selector = "style[id='3559938210']"
-          , text = "border-radius: 0px"
+        [ assert.styleEquals
+          { selector = "ui-button:nth-of-type(2)"
+          , style = "border-radius"
+          , value = "0px"
           }
         ]
       ]
     , context "Last button"
       [ it "has rounded corners on the right side"
-        [assert.containsText
-          { selector = "style[id='3559938210']"
-          , text = "border-radius: 0px 2px 2px 0px"
+        [ assert.styleEquals
+          { selector = "ui-button:last-child"
+          , style = "border-radius"
+          , value = "0px 2px 2px 0px"
           }
         ]
       ]

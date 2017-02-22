@@ -5,17 +5,19 @@ module Ui.Styles.Ripple exposing (style)
 @docs style
 -}
 import Ui.Css.Properties exposing (..)
-import Ui.Css exposing (..)
+
+import Html.Styles exposing (Style, selector, pseudo)
 
 {-| Returns the style node for the ripple effect.
 -}
-style : Node
+style : { base: List (String, String), selectors: List Style }
 style =
-  mixin
+  { base =
     [ position relative
     , overflow hidden
-
-    , selector "&:focus svg[ripple]"
+    ]
+  , selectors =
+    [ pseudo ":focus svg[ripple]"
       [ transition
         [ { easing = "cubic-bezier(0.215, 0.61, 0.355, 1)"
           , duration = ms 320
@@ -27,15 +29,21 @@ style =
       , opacity 0.3
       ]
 
-    , selector "&:active svg[ripple]"
+    , pseudo ":active svg[ripple]"
       [ opacity 0.6
       ]
 
-    , selectors
-      [ "&:before"
-      , "&:after"
-      , "> *"
+    , pseudo ":before"
+      [ position relative
+      , zIndex 2
       ]
+
+    , pseudo ":after"
+      [ position relative
+      , zIndex 2
+      ]
+
+    , selector "> *"
       [ position relative
       , zIndex 2
       ]
@@ -66,3 +74,4 @@ style =
       , zIndex 1
       ]
     ]
+  }

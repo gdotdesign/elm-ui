@@ -68,7 +68,7 @@ render : Model msg -> Html.Html msg
 render model =
   node
     "ui-button-group"
-    (Ui.Styles.apply defaultStyle)
+    [ defaultStyle ]
     (List.map (renderButton model) model.items)
 
 

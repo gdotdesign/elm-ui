@@ -17,6 +17,7 @@ focused, allowing the user to manipulate the selected color.
 @docs setValue
 -}
 
+import Html.Events.Extra exposing (onPreventDefault)
 import Html exposing (node, div, text, span)
 import Html.Attributes exposing (style)
 import Html.Lazy
@@ -53,6 +54,7 @@ type alias Model =
 type Msg
   = ColorPanel Ui.ColorPanel.Msg
   | Picker Picker.Msg
+  | NoOp
 
 
 {-| Initializes a color picker with the given color.
@@ -99,6 +101,9 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
+    NoOp ->
+      ( model, Cmd.none )
+
     Picker act ->
       ( Picker.update act model, Cmd.none )
 
@@ -142,7 +147,10 @@ render model =
             ]
           ]
       , dropdownContents =
-        [ Html.map ColorPanel (Ui.ColorPanel.view model.colorPanel)
+        [ node "ui-color-picker-panel"
+          [ onPreventDefault "mousedown" NoOp ]
+          [ Html.map ColorPanel (Ui.ColorPanel.view model.colorPanel)
+          ]
         ]
       } model
 

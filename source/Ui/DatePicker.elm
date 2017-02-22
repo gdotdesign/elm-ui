@@ -21,6 +21,7 @@ focused, allowing the user to manipulate the selected date.
 @docs setValue
 -}
 
+import Html.Events.Extra exposing (onPreventDefault)
 import Html exposing (node, text)
 import Html.Lazy
 
@@ -67,6 +68,7 @@ type Msg
   | Select Time.Time
   | Increment
   | Decrement
+  | NoOp
 
 
 {-| Initializes a date picker with the given date.
@@ -123,6 +125,9 @@ closeOnSelect value model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
+    NoOp ->
+      ( model, Cmd.none )
+
     Calendar act ->
       let
         ( calendar, effect ) =
@@ -141,7 +146,7 @@ update action model =
         ( updatedModel, Cmd.none )
 
     Picker act ->
-      (Picker.update act model, Cmd.none)
+      ( Picker.update act model, Cmd.none )
 
     Decrement ->
       ( { model | calendar = Ui.Calendar.previousDay model.calendar }
@@ -189,7 +194,11 @@ render locale model =
           , Ui.Icons.calendar []
           ]
       , dropdownContents =
-        [ Html.map Calendar (Ui.Calendar.view locale model.calendar) ]
+        [ node "ui-date-picker-calendar"
+          [ onPreventDefault "mousedown" NoOp ]
+          [ Html.map Calendar (Ui.Calendar.view locale model.calendar)
+          ]
+        ]
       } model
 
 

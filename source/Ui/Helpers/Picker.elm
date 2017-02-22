@@ -101,7 +101,7 @@ view ({ address } as viewModel) model =
         , onFocus (address Focus)
         , onBlur (address Blur)
         , onKeys False
-          ([ ( 13, (address Toggle) )
+          ( [ ( 13, (address Toggle) )
             , ( 27, (address Close) )
             ] ++ viewModel.keyActions)
         ]

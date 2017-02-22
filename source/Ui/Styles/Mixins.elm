@@ -6,88 +6,83 @@ module Ui.Styles.Mixins exposing (..)
 @docs disabledColors, disabledCursor, readonlyCursor, readonly
 -}
 import Ui.Css.Properties exposing (..)
-import Ui.Css exposing (..)
 
 import Ui.Styles.Theme as Theme exposing (Theme)
+
+import Html.Styles exposing (Style, pseudo, selector)
+import Html
+
 import Regex
 
 {-| Mixis in the selectors for styling the placeholder.
 -}
-placeholder : List Node -> Node
+placeholder : List (String, String) -> List Style
 placeholder nodes =
-  mixin
-    [ selectors
-      [ "&::-webkit-input-placeholder"
-      , "&::-moz-placeholder"
-      , "&:-ms-input-placeholder"
-      , "&:-moz-placeholder"
-      ] nodes
-    ]
+  [ pseudo "::-webkit-input-placeholder" nodes
+  , pseudo "::-moz-placeholder" nodes
+  , pseudo ":-ms-input-placeholder" nodes
+  , pseudo ":-moz-placeholder" nodes
+  ]
 
 
 {-| Mixins in the default values.
 -}
-defaults : Node
+defaults : List (String, String)
 defaults =
-  mixin
-    [ property "-webkit-tap-highlight-color" "rgba(0,0,0,0)"
-    , property "-webkit-touch-callout" none
-    , boxSizing borderBox
-    ]
+  [ property "-webkit-tap-highlight-color" "rgba(0,0,0,0)"
+  , property "-webkit-touch-callout" none
+  , boxSizing borderBox
+  ]
 
 
 {-| Mixins in the idle focused state.
 -}
-focusedIdle : Theme -> Node
+focusedIdle : Theme -> List (String, String)
 focusedIdle theme =
-  mixin
-    [ transition
-      [ { property = "box-shadow"
-        , duration = ms 400
-        , easing = "linear"
-        , delay = ms 0
-        }
-      ]
-    , boxShadow theme.focusShadowsIdle
+  [ transition
+    [ { property = "box-shadow"
+      , duration = ms 400
+      , easing = "linear"
+      , delay = ms 0
+      }
     ]
+  , boxShadow theme.focusShadowsIdle
+  ]
 
 
 {-| Mixins in the focused state.
 -}
-focused : Theme -> Node
+focused : Theme -> List (String, String)
 focused theme =
-  mixin
-    [ transition
-      [ { property = "box-shadow"
-        , duration = ms 200
-        , easing = "linear"
-        , delay = ms 0
-        }
-      ]
-    , boxShadow theme.focusShadows
-    , outline none
+  [ transition
+    [ { property = "box-shadow"
+      , duration = ms 200
+      , easing = "linear"
+      , delay = ms 0
+      }
     ]
+  , boxShadow theme.focusShadows
+  , outline none
+  ]
 
 
 {-| Mixins in the properties to make text use ellipsis.
 -}
-ellipsis : Node
+ellipsis : List (String, String)
 ellipsis =
-  mixin
-    [ textOverflow Ui.Css.Properties.ellipsis
-    , whiteSpace nowrap
-    , overflow hidden
-    ]
+  [ textOverflow Ui.Css.Properties.ellipsis
+  , whiteSpace nowrap
+  , overflow hidden
+  ]
 
 
 {-| Mixis in the disabled colors.
 -}
-disabledColors : Theme -> Node
+disabledColors : Theme -> List (String, String)
 disabledColors theme =
-  mixin
-    [ backgroundColor theme.colors.disabled.color
-    , color theme.colors.disabled.bw
-    ]
+  [ backgroundColor theme.colors.disabled.color
+  , color theme.colors.disabled.bw
+  ]
 
 
 {-| The value for the disabled cursor.
@@ -122,18 +117,15 @@ readonlyCursor =
 
 {-| Mixins in the disabled cursor and makes the node not selectable.
 -}
-disabled : Node
+disabled : List (String, String)
 disabled =
-  mixin
-    [ cursor ("url(\"data:image/svg+xml;utf8," ++ disabledCursor ++ "\") 24 15, auto !important")
-    , userSelect none
-    ]
+  [ cursor ("url(\"data:image/svg+xml;utf8," ++ disabledCursor ++ "\") 24 15, auto !important")
+  ] ++ userSelect none
 
 
 {-| Mixins in the readonly cursor.
 -}
-readonly : Node
+readonly : List (String, String)
 readonly =
-  mixin
-    [ cursor ("url(\"data:image/svg+xml;utf8," ++ readonlyCursor ++ "\") 26 12, auto")
-    ]
+  [ cursor ("url(\"data:image/svg+xml;utf8," ++ readonlyCursor ++ "\") 26 12, auto")
+  ]

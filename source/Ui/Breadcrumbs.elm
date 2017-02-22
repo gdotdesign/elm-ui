@@ -12,7 +12,6 @@ import Html.Attributes exposing (attribute)
 import Html exposing (node)
 
 import Ui.Styles.Breadcrumbs exposing (defaultStyle)
-import Ui.Styles
 import Ui.Link
 
 import Maybe
@@ -57,4 +56,4 @@ view separator items =
       in
         node "ui-breadcrumb" attributes [ Ui.Link.view item ]
   in
-    node "ui-breadcrumbs" (Ui.Styles.apply defaultStyle) renderedItems
+    node "ui-breadcrumbs" [ defaultStyle ] renderedItems

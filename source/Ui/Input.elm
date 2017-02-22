@@ -100,7 +100,7 @@ placeholder value model =
   { model | placeholder = value }
 
 
-{-| Sets the placeholder of an input.
+{-| Sets the kind (type) of an input.
 -}
 kind : String -> Model -> Model
 kind value model =

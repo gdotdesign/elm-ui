@@ -140,7 +140,7 @@ update msg_ ({ inputs } as model) =
       let
         updatedModel =
           case Color.Convert.hexToColor inputs.hex of
-            Just color ->
+            Ok color ->
               let
                 alpha =
                   Ext.Color.hsvToRgb model.value
@@ -153,7 +153,7 @@ update msg_ ({ inputs } as model) =
               in
                 { model | value = value }
 
-            Nothing ->
+            Err _ ->
               model
       in
         setInputs updatedModel

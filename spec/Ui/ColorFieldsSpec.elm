@@ -113,6 +113,21 @@ specs =
             , text = "0"
             }
           ]
+        , it "handles short hex values"
+            [ setField 1 "AB0" "#AABB00"
+            , assert.valueEquals
+              { selector = "ui-color-fields-column:nth-child(2) input"
+              , text = "170"
+              }
+            , assert.valueEquals
+              { selector = "ui-color-fields-column:nth-child(3) input"
+              , text = "187"
+              }
+            , assert.valueEquals
+              { selector = "ui-color-fields-column:nth-child(4) input"
+              , text = "0"
+              }
+            ]
         ]
       , context "alpha"
         [ context "negative number"

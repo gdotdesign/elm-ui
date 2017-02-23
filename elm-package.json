@@ -71,7 +71,7 @@
     "Ui"
   ],
   "dependencies": {
-    "eskimoblood/elm-color-extra": "3.2.3 <= v < 4.0.0",
+    "eskimoblood/elm-color-extra": "5.0.0 <= v < 6.0.0",
     "elm-community/maybe-extra": "3.0.0 <= v < 4.0.0",
     "elm-community/list-extra": "4.0.0 <= v < 5.0.0",
     "coreytrampe/elm-vendor": "2.0.3 <= v < 3.0.0",

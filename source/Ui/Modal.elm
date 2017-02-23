@@ -128,6 +128,19 @@ render viewModel model =
         [ Ui.Icons.close [ closeEvent ] ]
       else
         []
+
+    footer =
+      if List.isEmpty viewModel.footer then
+        text ""
+      else
+        node "ui-modal-footer" [] viewModel.footer
+
+    header =
+      if String.isEmpty viewModel.title then
+        text ""
+      else
+        node "ui-modal-header"[]
+          ([ node "ui-modal-title" [] [ text viewModel.title ] ] ++ closeIcon)
   in
     node
       "ui-modal"
@@ -137,10 +150,9 @@ render viewModel model =
         |> List.concat
       )
       ([ node "ui-modal-wrapper" []
-        [ node "ui-modal-header"[]
-          ([ node "ui-modal-title" [] [ text viewModel.title ] ] ++ closeIcon)
+        [ header
         , node "ui-modal-content" [] viewModel.contents
-        , node "ui-modal-footer" [] viewModel.footer
+        , footer
         ]
        ] ++ (if model.backdrop then backdrop else [] ))
 

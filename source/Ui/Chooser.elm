@@ -1,7 +1,8 @@
 module Ui.Chooser exposing
   ( Model, Item, Msg, init, onChange, update, view, render, subscriptions
   , close, toggleItem, getFirstSelected, updateData, selectFirst, setValue
-  , placeholder, closeOnSelect, deselectable, searchable, multiple, items )
+  , placeholder, closeOnSelect, deselectable, searchable, multiple, items
+  , renderWhenClosed )
 
 {-| This is a component for selecting a single / multiple items
 form a list of choices, with lots of options.
@@ -14,6 +15,7 @@ form a list of choices, with lots of options.
 
 # DSL
 @docs placeholder, closeOnSelect, deselectable, searchable, multiple, items
+@docs renderWhenClosed
 
 # View
 @docs view, render
@@ -86,6 +88,7 @@ type alias Item =
 type alias Model =
   { render : Item -> Html.Html Msg
   , dropdown : Dropdown.Dropdown
+  , renderWhenClosed : Bool
   , selected : Set String
   , placeholder : String
   , closeOnSelect : Bool
@@ -128,6 +131,7 @@ init : () -> Model
 init _ =
   { render = (\item -> text item.label)
   , dropdown = Dropdown.init
+  , renderWhenClosed = True
   , closeOnSelect = False
   , deselectable = False
   , selected = Set.empty
@@ -198,6 +202,13 @@ multiple value model =
 items : List Item -> Model -> Model
 items value model =
   { model | data = value }
+
+
+{-| Sets whether to render the items when the chooser is closed.
+-}
+renderWhenClosed : Bool -> Model -> Model
+renderWhenClosed value model =
+  { model | renderWhenClosed = value }
 
 
 {-| Subscriptions for a dropdown menu.
@@ -296,7 +307,10 @@ render : Model -> Html.Html Msg
 render model =
   let
     children =
-      (List.map (Html.Lazy.lazy2 renderItem model) (items_ model))
+      if model.dropdown.open || (not model.dropdown.open && model.renderWhenClosed) then
+        (List.map (Html.Lazy.lazy2 renderItem model) (items_ model))
+      else
+        []
 
     val =
       if model.dropdown.open && model.searchable then

@@ -1,17 +1,25 @@
 var _gdotdesign$elm_ui$Native_Styles = function() {
   var currentStyles = {}
 
-  if(window.MutationObserver) {
-    new MutationObserver(function (mutations) {
-      patchStyles()
-    }).observe(document.body, { childList: true, subtree: true });
-  } else {
-    var patch = function(){
-      patchStyles()
-      if(document.querySelector('[class^=container-]')) { return }
+  var setupObserver = function () {
+    if(window.MutationObserver) {
+      new MutationObserver(function (mutations) {
+        patchStyles()
+      }).observe(document.body, { childList: true, subtree: true });
+    } else {
+      var patch = function(){
+        patchStyles()
+        if(document.querySelector('[class^=container-]')) { return }
+        requestAnimationFrame(patch)
+      }
       requestAnimationFrame(patch)
     }
-    requestAnimationFrame(patch)
+  }
+
+  if (document.body) {
+    setupObserver()
+  } else {
+    document.addEventListener('DOMContentLoaded', setupObserver)
   }
 
   function patchStyles(){

@@ -16,15 +16,15 @@ import Regex
 
 {-| Styles for a chooser using the default theme.
 -}
-defaultStyle : String -> Style
-defaultStyle emptyContent =
-  Ui.Styles.attributes <| style Theme.default emptyContent
+defaultStyle : Style
+defaultStyle =
+  Ui.Styles.attributes <| style Theme.default
 
 
 {-| Returns the style node for a chooser using the given theme.
 -}
-style : Theme -> String -> Node
-style theme emptyContent =
+style : Theme -> Node
+style theme =
   mixin
     [ Mixins.defaults
 
@@ -110,16 +110,13 @@ style theme emptyContent =
       [ maxHeight (px 250)
       , padding (px 5)
       , display flex
-
-      , selector "ui-scrolled-panel-wrapper:empty:before"
-        [ contentString emptyContent
-        , fontStyle italic
-        , padding (px 12)
-        , display block
-        , opacity 0.5
-        ]
       ]
-
+    , selector "ui-chooser-empty-content"
+      [ fontStyle italic
+      , padding (px 12)
+      , display block
+      , opacity 0.5
+      ]
     , selector "ui-chooser-item"
       [ Mixins.ellipsis
 

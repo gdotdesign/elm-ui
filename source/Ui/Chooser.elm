@@ -92,7 +92,7 @@ type alias Model =
   , renderWhenClosed : Bool
   , selected : Set String
   , placeholder : String
-  , emptyContent : String
+  , emptyContent : Html.Html Msg
   , closeOnSelect : Bool
   , deselectable : Bool
   , intended : String
@@ -138,7 +138,7 @@ init _ =
   , deselectable = False
   , selected = Set.empty
   , placeholder = ""
-  , emptyContent = "No items to display!"
+  , emptyContent = text "No items to display!"
   , searchable = False
   , multiple = False
   , disabled = False
@@ -173,7 +173,7 @@ placeholder value model =
 
 {-| Sets the text for when there are no items to display.
 -}
-emptyContent : String -> Model -> Model
+emptyContent : Html.Html Msg -> Model -> Model
 emptyContent value model =
   { model | emptyContent = value }
 
@@ -315,10 +315,14 @@ view model =
 render : Model -> Html.Html Msg
 render model =
   let
-    children =
+    children = 
       if model.dropdown.open || (not model.dropdown.open && model.renderWhenClosed) then
-        (List.map (Html.Lazy.lazy2 renderItem model) (items_ model))
-      else
+        if List.length (items_ model) > 0 then
+           (List.map (Html.Lazy.lazy2 renderItem model) (items_ model))
+        else
+          [ node "ui-chooser-empty-content" [] [ model.emptyContent ]
+          ]
+      else  
         []
 
     val =
@@ -367,7 +371,7 @@ render model =
             , ( "disabled", model.disabled )
             , ( "readonly", model.readonly )
             ]
-          , Ui.Styles.apply (defaultStyle model.emptyContent)
+          , Ui.Styles.apply defaultStyle
           ]
           |> List.concat
         )

@@ -14,17 +14,17 @@ import Ui.Styles exposing (Style)
 
 import Regex
 
-{-| Styles for a checkbox using the default theme.
+{-| Styles for a chooser using the default theme.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+defaultStyle : String -> Style
+defaultStyle emptyContent =
+  Ui.Styles.attributes <| style Theme.default emptyContent
 
 
-{-| Returns the style node for a checkbox using the given theme.
+{-| Returns the style node for a chooser using the given theme.
 -}
-style : Theme -> Node
-style theme =
+style : Theme -> String -> Node
+style theme emptyContent =
   mixin
     [ Mixins.defaults
 
@@ -112,7 +112,7 @@ style theme =
       , display flex
 
       , selector "ui-scrolled-panel-wrapper:empty:before"
-        [ contentString "No items to display!"
+        [ contentString emptyContent
         , fontStyle italic
         , padding (px 12)
         , display block

@@ -27,17 +27,31 @@ specs : Node
 specs =
   describe "Ui.Chooser"
     [
+        it "Placeholder should be 'Select something...'"
+        [ assert.attributeEquals 
+            { text = "Select something..."
+            , selector = "input"
+            , attribute = "placeholder"
+            }
+        ]
     ]
+
+-- test default placeholder
+-- test if placeholder records exists
+-- change placeholder as above
+-- unit test placeholder
+
+init : Ui.Chooser.Model
+init = Ui.Chooser.init ()
+      |> Ui.Chooser.placeholder "Select something..."
+      |> Ui.Chooser.items items
+      |> Ui.Chooser.deselectable True
+      |> Ui.Chooser.multiple True
 
 main =
   runWithProgram
     { subscriptions = Ui.Chooser.subscriptions
     , update = Ui.Chooser.update
-    , init = \() ->
-      Ui.Chooser.init ()
-      |> Ui.Chooser.placeholder "Select something..."
-      |> Ui.Chooser.items items
-      |> Ui.Chooser.deselectable True
-      |> Ui.Chooser.multiple True
+    , init = \() -> init
     , view = view
     } specs

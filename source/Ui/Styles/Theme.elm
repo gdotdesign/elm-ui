@@ -41,6 +41,7 @@ type alias Theme =
   , zIndexes :
     { notifications : Int
     , dropdown : Int
+    , drawer : Int
     , header : Int
     , modal : Int
     , fab : Int
@@ -102,6 +103,7 @@ default =
   , zIndexes =
     { notifications = 2000
     , dropdown = 1000
+    , drawer = 500
     , modal = 100
     , header = 50
     , fab = 90

@@ -12,12 +12,16 @@ or the right side of the window that is hidden by default.
 # Functions
 @docs toggle
 -}
-import Html.Attributes exposing (classList, style, href, class)
+import Html.Events.Extra exposing (onTransitionEnd)
+import Html.Attributes exposing (property, style)
 import Html.Events exposing (onClick)
 import Html exposing (node, text, a)
 
 import Ui.Styles.DrawerMenu exposing (defaultStyle)
 import Ui.Styles
+
+import Json.Decode as Json
+import Json.Encode as JE
 
 import Ui.Icons
 import Ui.Link
@@ -34,7 +38,8 @@ type Side
   - **visible** - Whether or not the drawer menu is open
 -}
 type alias Model =
-  { bottom : Int
+  { contentsShown : Bool
+  , bottom : Int
   , open : Bool
   , side : Side
   , top : Int
@@ -51,6 +56,21 @@ type alias ViewModel msg =
   }
 
 
+{-| Representation of a link:
+  - **contents** - The contents of the link, usually just text
+  - **target** - The value for the target attribute
+  - **url** - The value for the href attribute
+  - **msg** - The message to trigger
+-}
+type alias Item msg =
+  { contents : List (Html.Html msg)
+  , icon : Maybe (Html.Html msg)
+  , target : Maybe String
+  , url : Maybe String
+  , msg : Maybe msg
+  }
+
+
 {-| Initializes a drawer menu.
 
     menu =
@@ -61,7 +81,8 @@ type alias ViewModel msg =
 -}
 init : Model
 init =
-  { open = False
+  { contentsShown = False
+  , open = False
   , side = Left
   , bottom = 0
   , top = 0
@@ -71,7 +92,8 @@ init =
 {-| Messages that a drawer menu can receive.
 -}
 type Msg
-  = Close
+  = HideContents
+  | Close
 
 
 {-| Updates a drawer menu
@@ -82,40 +104,85 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     Close ->
-      { model | open = False }
+      close model
+
+    HideContents ->
+      { model | contentsShown = False }
 
 
 {-| Renders a drawer menu.
 -}
 view : ViewModel msg -> Model -> Html.Html msg
 view { address, contents } model =
-  node "ui-drawer-menu"
-    ( [ Ui.Styles.apply defaultStyle
-      , Ui.attributeList [ ("open", model.open) ]
-      ]
-      |> List.concat
-    )
-    [ node "ui-drawer-menu-backdrop" [ onClick (address Close) ] []
-    , node "ui-drawer-menu-main" []
-      [ node "ui-drawer-menu-contents" [] contents
-      , node "ui-drawer-menu-close" [ onClick (address Close) ] [ Ui.Icons.close [] ]
-      ]
-    ]
+  let
+    transitionEvent =
+      if not model.open then
+        let
+          decoder =
+            Json.at
+              [ "target", "_menu" ]
+              (Json.succeed (address HideContents))
+        in
+          [ onTransitionEnd decoder
+          , property "_menu" (JE.string "0")
+          ]
+      else
+        []
 
-
-item : Ui.Link.Model msg -> Html.Html msg -> Html.Html msg
-item ({ target, url, msg, contents } as link) icon =
-  node "ui-drawer-menu-item" []
-    [ Ui.Link.view
-      { link | contents =
-        [ node "ui-drawer-menu-item-contents" [] contents
-        , node "ui-drawer-menu-item-icon" [] [ icon ]
+    mainContents =
+      if model.contentsShown then
+        contents
+      else
+        []
+  in
+    node "ui-drawer-menu"
+      ( [ Ui.Styles.apply defaultStyle
+        , Ui.attributeList [ ( "open", model.open ) ]
+        , transitionEvent
         ]
-      }
-    ]
+        |> List.concat
+      )
+      [ node "ui-drawer-menu-backdrop" [ onClick (address Close) ] []
+      , node "ui-drawer-menu-main" [] mainContents
+      ]
+
+title : String -> Html.Html msg
+title value =
+  node "ui-drawer-menu-title" [] [ text value ]
+
+devider : Html.Html msg
+devider =
+  node "ui-drawer-menu-devider" [] []
+
+item : Item msg -> Html.Html msg
+item { target, url, msg, contents, icon }  =
+  let
+    iconNode =
+      case icon of
+        Just svg ->
+          node "ui-drawer-menu-item-icon" [] [ svg ]
+
+        Nothing ->
+          text ""
+  in
+    node "ui-drawer-menu-item" []
+      [ Ui.Link.view
+        { target = target
+        , url = url
+        , msg = msg
+        , contents =
+          [ iconNode
+          , node "ui-drawer-menu-item-contents" [] contents
+          ]
+        }
+      ]
 
 
 
 open : Model -> Model
 open model =
-  { model | open = True }
+  { model | open = True, contentsShown = True }
+
+close : Model -> Model
+close model =
+  { model | open = False }

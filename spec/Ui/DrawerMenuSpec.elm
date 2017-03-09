@@ -10,6 +10,7 @@ import Ui.DrawerMenu
 import Ui.Icons
 import Ui
 
+import Ui.Icons
 
 type alias Model =
   { menu : Ui.DrawerMenu.Model
@@ -18,8 +19,8 @@ type alias Model =
 
 type Msg
   = Menu Ui.DrawerMenu.Msg
+  | Close
   | Open
-
 
 init : () -> Model
 init _ =
@@ -35,6 +36,9 @@ update msg_ model =
     Open ->
       ( { model | menu = Ui.DrawerMenu.open model.menu }, Cmd.none )
 
+    Close ->
+      ( { model | menu = Ui.DrawerMenu.close model.menu }, Cmd.none )
+
 
 view : Model -> Html.Html Msg
 view model =
@@ -43,13 +47,30 @@ view model =
     [ Ui.DrawerMenu.view
       { address = Menu
       , contents =
-        [ Ui.DrawerMenu.item
-          { contents = [ text "Hello" ]
+        [ Ui.DrawerMenu.title "Menu"
+        , Ui.DrawerMenu.item
+          { contents = [ text "Calendar" ]
           , target = Nothing
+          , msg = Just Close
           , url = Nothing
-          , msg = Nothing
+          , icon = Just (Ui.Icons.calendar [])
           }
-          (text "icon")
+        , Ui.DrawerMenu.devider
+        , Ui.DrawerMenu.item
+          { contents = [ text "Work board" ]
+          , target = Nothing
+          , msg = Just Close
+          , url = Nothing
+          , icon = Nothing
+          }
+        , Ui.DrawerMenu.item
+          { contents = [ text "Designs" ]
+          , target = Nothing
+          , msg = Just Close
+          , url = Nothing
+          , icon = Nothing
+          }
+        , Ui.DrawerMenu.devider
         ]
       }
       model.menu

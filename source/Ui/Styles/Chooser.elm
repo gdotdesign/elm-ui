@@ -111,12 +111,14 @@ style theme =
       , padding (px 5)
       , display flex
       ]
+
     , selector "ui-chooser-empty-content"
       [ fontStyle italic
       , padding (px 12)
       , display block
       , opacity 0.5
       ]
+
     , selector "ui-chooser-item"
       [ Mixins.ellipsis
 

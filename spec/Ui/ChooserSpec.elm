@@ -7,13 +7,6 @@ import Ui.Chooser
 
 import Steps exposing (..)
 
-items : List Ui.Chooser.Item
-items =
-  [ { id = "0", label = "Superman", value = "superman" }
-  , { id = "1", label = "Batman", value = "batman" }
-  , { id = "2", label = "Hello", value = "hello" }
-  ]
-
 view : Ui.Chooser.Model -> Html.Html Ui.Chooser.Msg
 view model =
   Ui.Container.row []
@@ -26,25 +19,26 @@ view model =
 specs : Node
 specs =
   describe "Ui.Chooser"
-    [
-        it "Placeholder should be 'Select something...'"
+    [ it "Placeholder should be 'Select something...'"
         [ assert.attributeEquals 
             { text = "Select something..."
             , selector = "input"
             , attribute = "placeholder"
             }
         ]
+    , it "emptyContent should be 'No items.'"
+        [ assert.containsText 
+            { text = "No items."
+            , selector = "ui-chooser-empty-content"
+            }
+        ]
     ]
 
--- test default placeholder
--- test if placeholder records exists
--- change placeholder as above
--- unit test placeholder
 
 init : Ui.Chooser.Model
 init = Ui.Chooser.init ()
       |> Ui.Chooser.placeholder "Select something..."
-      |> Ui.Chooser.items items
+      |> Ui.Chooser.emptyContent (Html.text "No items.")
       |> Ui.Chooser.deselectable True
       |> Ui.Chooser.multiple True
 

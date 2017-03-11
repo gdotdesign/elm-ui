@@ -14,14 +14,14 @@ import Ui.Styles exposing (Style)
 
 import Regex
 
-{-| Styles for a checkbox using the default theme.
+{-| Styles for a chooser using the default theme.
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+  Ui.Styles.attributes <| style Theme.default
 
 
-{-| Returns the style node for a checkbox using the given theme.
+{-| Returns the style node for a chooser using the given theme.
 -}
 style : Theme -> Node
 style theme =
@@ -110,14 +110,13 @@ style theme =
       [ maxHeight (px 250)
       , padding (px 5)
       , display flex
+      ]
 
-      , selector "ui-scrolled-panel-wrapper:empty:before"
-        [ contentString "No items to display!"
-        , fontStyle italic
-        , padding (px 12)
-        , display block
-        , opacity 0.5
-        ]
+    , selector "ui-chooser-empty-content"
+      [ fontStyle italic
+      , padding (px 12)
+      , display block
+      , opacity 0.5
       ]
 
     , selector "ui-chooser-item"

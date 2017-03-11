@@ -1,8 +1,9 @@
 module Ui.Chooser exposing
   ( Model, Item, Msg, init, onChange, update, view, render, subscriptions
   , close, toggleItem, getFirstSelected, updateData, selectFirst, setValue
-  , placeholder, closeOnSelect, deselectable, searchable, multiple, items
-  , renderWhenClosed )
+  , placeholder, emptyContent, closeOnSelect, deselectable, searchable
+  , multiple, items, renderWhenClosed
+  )
 
 {-| This is a component for selecting a single / multiple items
 form a list of choices, with lots of options.
@@ -14,7 +15,7 @@ form a list of choices, with lots of options.
 @docs onChange
 
 # DSL
-@docs placeholder, closeOnSelect, deselectable, searchable, multiple, items
+@docs placeholder, emptyContent, closeOnSelect, deselectable, searchable, multiple, items
 @docs renderWhenClosed
 
 # View
@@ -91,6 +92,7 @@ type alias Model =
   , renderWhenClosed : Bool
   , selected : Set String
   , placeholder : String
+  , emptyContent : Html.Html Msg
   , closeOnSelect : Bool
   , deselectable : Bool
   , intended : String
@@ -135,11 +137,12 @@ init _ =
   , closeOnSelect = False
   , deselectable = False
   , selected = Set.empty
+  , placeholder = ""
+  , emptyContent = text "No items to display!"
   , searchable = False
   , multiple = False
   , disabled = False
   , readonly = False
-  , placeholder = ""
   , uid = Uid.uid ()
   , intended = ""
   , value = ""
@@ -167,6 +170,12 @@ onChange msg model =
 placeholder : String -> Model -> Model
 placeholder value model =
   { model | placeholder = value }
+
+{-| Sets the text for when there are no items to display.
+-}
+emptyContent : Html.Html Msg -> Model -> Model
+emptyContent value model =
+  { model | emptyContent = value }
 
 
 {-| Sets whether or not to close the dropdown when selecting an item.
@@ -306,10 +315,14 @@ view model =
 render : Model -> Html.Html Msg
 render model =
   let
-    children =
+    children = 
       if model.dropdown.open || (not model.dropdown.open && model.renderWhenClosed) then
-        (List.map (Html.Lazy.lazy2 renderItem model) (items_ model))
-      else
+        if List.length (items_ model) > 0 then
+           (List.map (Html.Lazy.lazy2 renderItem model) (items_ model))
+        else
+          [ node "ui-chooser-empty-content" [] [ model.emptyContent ]
+          ]
+      else  
         []
 
     val =

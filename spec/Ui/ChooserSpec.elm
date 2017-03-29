@@ -7,13 +7,6 @@ import Ui.Chooser
 
 import Steps exposing (..)
 
-items : List Ui.Chooser.Item
-items =
-  [ { id = "0", label = "Superman", value = "superman" }
-  , { id = "1", label = "Batman", value = "batman" }
-  , { id = "2", label = "Hello", value = "hello" }
-  ]
-
 view : Ui.Chooser.Model -> Html.Html Ui.Chooser.Msg
 view model =
   Ui.Container.row []
@@ -26,18 +19,33 @@ view model =
 specs : Node
 specs =
   describe "Ui.Chooser"
-    [
+    [ it "Placeholder should be 'Select something...'"
+        [ assert.attributeEquals 
+            { text = "Select something..."
+            , selector = "input"
+            , attribute = "placeholder"
+            }
+        ]
+    , it "emptyContent should be 'No items.'"
+        [ assert.containsText 
+            { text = "No items."
+            , selector = "ui-chooser-empty-content"
+            }
+        ]
     ]
+
+
+init : Ui.Chooser.Model
+init = Ui.Chooser.init ()
+      |> Ui.Chooser.placeholder "Select something..."
+      |> Ui.Chooser.emptyContent (Html.text "No items.")
+      |> Ui.Chooser.deselectable True
+      |> Ui.Chooser.multiple True
 
 main =
   runWithProgram
     { subscriptions = Ui.Chooser.subscriptions
     , update = Ui.Chooser.update
-    , init = \() ->
-      Ui.Chooser.init ()
-      |> Ui.Chooser.placeholder "Select something..."
-      |> Ui.Chooser.items items
-      |> Ui.Chooser.deselectable True
-      |> Ui.Chooser.multiple True
+    , init = \() -> init
     , view = view
     } specs

@@ -1,4 +1,8 @@
 var _gdotdesign$elm_ui$Native_Styles = function() {
+  if(typeof document === "undefined") {
+    return {patchStyles: function() {}};
+  }
+
   var currentStyles = {}
 
   var setupObserver = function () {

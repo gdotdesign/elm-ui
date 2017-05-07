@@ -1,3 +1,6 @@
+// Make sure we have a window object...
+if(typeof window === "undefined") { window = {}; }
+
 //download.js v4.1, by dandavis; 2008-2015. [CCBY2] see http://danml.com/download.html for tests/usage
 window.download = function(data, strFileName, strMimeType) {
   var self = window, // this script is only for browsers anyway...

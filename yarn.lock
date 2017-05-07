@@ -62,13 +62,7 @@ assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
 
-async@^2.0.1:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.1.2.tgz#612a4ab45ef42a70cde806bad86ee6db047e8385"
-  dependencies:
-    lodash "^4.14.0"
-
-async@^2.1.4:
+async@^2.0.1, async@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/async/-/async-2.1.4.tgz#2d2160c7788032e4dd6cbe2502f1f9a2c8f6cde4"
   dependencies:
@@ -193,7 +187,7 @@ cssom@0.3.x, "cssom@>= 0.3.0 < 0.4.0":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/cssom/-/cssom-0.3.1.tgz#c9e37ef2490e64f6d1baa10fda852257082c25d3"
 
-"cssstyle@>= 0.2.36 < 0.3.0":
+"cssstyle@>= 0.2.36 < 0.3.0", cssstyle@^0.2.37:
   version "0.2.37"
   resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-0.2.37.tgz#541097234cb2513c83ceed3acddc27ff27987d54"
   dependencies:
@@ -223,9 +217,9 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-elm-github-install@^0.3.0:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/elm-github-install/-/elm-github-install-0.3.1.tgz#1875d2fddb2d654297bb32c9b1bfcac95dca71ce"
+elm-github-install@^1.0.0, elm-github-install@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/elm-github-install/-/elm-github-install-1.0.1.tgz#8be5847f5d586078c0d3f658f56dc4fad4f988ff"
   dependencies:
     adm-zip "^0.4.7"
     request "2.74.0"
@@ -233,15 +227,16 @@ elm-github-install@^0.3.0:
     tar-fs "1.15.0"
     tmp "^0.0.31"
 
-elm-spec@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/elm-spec/-/elm-spec-1.1.0.tgz#e2a8e7e6cd82412312ca03f12755b72b4d68f1c7"
+elm-spec@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/elm-spec/-/elm-spec-1.1.1.tgz#eff5cbdca32f0a81d449eec9176436d07fc99a59"
   dependencies:
     async "^2.1.4"
     camelcase "^4.0.0"
     colors "^1.1.2"
+    cssstyle "^0.2.37"
     elm "^0.18.0"
-    elm-github-install "^0.3.0"
+    elm-github-install "^1.0.1"
     globby "^6.1.0"
     indent-string "^3.0.0"
     jsdom "^9.9.1"
@@ -363,7 +358,7 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.0.5:
+glob@^7.0.0, glob@^7.0.3:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.1.tgz#805211df04faaf1c63a3600306cdf5ade50b2ec8"
   dependencies:
@@ -867,13 +862,7 @@ resolve@^1.1.6:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
 
-rimraf@2:
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.5.4.tgz#96800093cbf1a0c86bd95b4625467535c29dfa04"
-  dependencies:
-    glob "^7.0.5"
-
-rimraf@~2.2.6:
+rimraf@2, rimraf@~2.2.6:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 

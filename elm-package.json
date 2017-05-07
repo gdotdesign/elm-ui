@@ -72,23 +72,29 @@
   ],
   "dependencies": {
     "eskimoblood/elm-color-extra": "5.0.0 <= v < 6.0.0",
-    "elm-community/maybe-extra": "3.0.0 <= v < 4.0.0",
-    "elm-community/list-extra": "4.0.0 <= v < 5.0.0",
+    "elm-community/maybe-extra": "4.0.0 <= v < 5.0.0",
+    "elm-community/list-extra": "5.0.1 <= v < 6.0.0",
     "coreytrampe/elm-vendor": "2.0.3 <= v < 3.0.0",
-    "rluiten/elm-date-extra": "8.0.0 <= v < 9.0.0",
-    "elm-lang/virtual-dom": "2.0.0 <= v < 3.0.0",
-    "gdotdesign/elm-spec": "1.1.0 <= v <= 2.0.0",
+    "rluiten/elm-date-extra": "8.5.1 <= v < 9.0.0",
+    "elm-lang/virtual-dom": "2.0.4 <= v < 3.0.0",
+    "gdotdesign/elm-spec": "1.1.1 <= v <= 2.0.0",
     "gdotdesign/elm-dom": "1.0.0 <= v < 2.0.0",
-    "ggb/numeral-elm": "1.2.1 <= v < 2.0.0",
+    "ggb/numeral-elm": "1.4.0 <= v < 2.0.0",
     "Skinney/murmur3": "2.0.4 <= v < 3.0.0",
     "elm-lang/window": "1.0.1 <= v < 2.0.0",
     "elm-lang/mouse": "1.0.1 <= v < 2.0.0",
     "elm-lang/lazy": "2.0.0 <= v < 3.0.0",
     "elm-lang/http": "1.0.0 <= v < 4.0.0",
     "elm-lang/html": "2.0.0 <= v < 3.0.0",
-    "elm-lang/core": "5.0.0 <= v < 6.0.0",
+    "elm-lang/core": "5.1.1 <= v < 6.0.0",
     "elm-lang/dom": "1.1.1 <= v < 2.0.0",
     "elm-lang/svg": "2.0.0 <= v < 3.0.0"
+  },
+  "dependency-sources": {
+    "mdgriffith/style-elements": {
+      "url": "https://github.com/j-panasiuk/style-elements.git",
+      "ref": "0c69288f0becdfeaa6230d9aa9a197aee5a7e79f"
+    }
   },
   "elm-version": "0.18.0 <= v < 0.19.0"
 }

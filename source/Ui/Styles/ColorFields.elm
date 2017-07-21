@@ -15,7 +15,7 @@ import Ui.Styles exposing (Style)
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+  Ui.Styles.attributes "ui-color-fields" (style Theme.default)
 
 
 {-| Returns the style node for a color fields using the given theme.

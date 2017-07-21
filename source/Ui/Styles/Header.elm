@@ -16,7 +16,7 @@ import Ui.Styles exposing (Style)
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+  Ui.Styles.attributes "ui-header" (style Theme.default)
 
 
 {-| Returns the style node for a header using the given theme.

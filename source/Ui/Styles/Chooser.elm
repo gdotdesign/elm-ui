@@ -18,7 +18,7 @@ import Regex
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes <| style Theme.default
+  Ui.Styles.attributes "ui-chooser" (style Theme.default)
 
 
 {-| Returns the style node for a chooser using the given theme.
@@ -106,7 +106,7 @@ style theme =
         ]
       ]
 
-    , selector "ui-dropdown-panel[style-id]"
+    , selector "ui-dropdown-panel"
       [ maxHeight (px 250)
       , padding (px 5)
       , display flex

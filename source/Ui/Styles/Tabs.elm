@@ -15,7 +15,7 @@ import Ui.Styles exposing (Style)
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+  Ui.Styles.attributes "ui-tabs" (style Theme.default)
 
 
 {-| Returns the style node for tabs using the given theme.

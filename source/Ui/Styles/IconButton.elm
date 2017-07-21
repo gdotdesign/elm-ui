@@ -15,7 +15,7 @@ import Ui.Styles exposing (Style)
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+  Ui.Styles.attributes "ui-icon-button" (style Theme.default)
 
 
 {-| Returns the style node for an icon-button using the given theme.

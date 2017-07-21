@@ -34,7 +34,7 @@ specs =
     [ context "First button"
       [ it "has rounded corners on the left side"
         [ assert.containsText
-          { selector = "style[id='3559938210']"
+          { selector = "style[id='ui-button-group']"
           , text = "border-radius: 2px 0px 0px 2px"
           }
         ]
@@ -42,7 +42,7 @@ specs =
     , context "Middle buttons"
       [ it "has no rounded borders"
         [ assert.containsText
-          { selector = "style[id='3559938210']"
+          { selector = "style[id='ui-button-group']"
           , text = "border-radius: 0px"
           }
         ]
@@ -50,7 +50,7 @@ specs =
     , context "Last button"
       [ it "has rounded corners on the right side"
         [assert.containsText
-          { selector = "style[id='3559938210']"
+          { selector = "style[id='ui-button-group']"
           , text = "border-radius: 0px 2px 2px 0px"
           }
         ]

@@ -15,7 +15,7 @@ import Ui.Styles exposing (Style)
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+  Ui.Styles.attributes "ui-inplace-input" (style Theme.default)
 
 
 {-| Returns the style node for an inplace input using the given theme.

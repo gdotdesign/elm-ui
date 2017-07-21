@@ -15,14 +15,14 @@ import Ui.Styles exposing (Style)
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes (style Theme.default)
+  Ui.Styles.attributes "ui-file-input" (style Theme.default)
 
 
 {-| Styles for a file-input using the default theme.
 -}
 defaultStyleDetails : Style
 defaultStyleDetails =
-  Ui.Styles.attributes (styleDetails Theme.default)
+  Ui.Styles.attributes "ui-file-input-details" (styleDetails Theme.default)
 
 
 {-| Returns the style node for a file-input using the given theme.

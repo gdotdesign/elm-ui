@@ -16,7 +16,7 @@ import Ui.Styles exposing (Style)
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes "ui-color-picker" (style Theme.default)
+  Ui.Styles.attributes "[ui-color-picker]" (style Theme.default)
 
 
 {-| Returns the style node for a color picker using the given theme.

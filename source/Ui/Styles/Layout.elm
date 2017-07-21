@@ -15,7 +15,7 @@ import Ui.Styles exposing (Style)
 -}
 defaultStyle : Style
 defaultStyle =
-  Ui.Styles.attributes "ui-layout" (style Theme.default)
+  Ui.Styles.attributes "" (style Theme.default)
 
 
 {-| Returns the style node for layouts using the given theme.
@@ -23,8 +23,14 @@ defaultStyle =
 style : Theme -> Node
 style theme =
   mixin
-    [ minHeight (vh 100)
-    , display flex
+    [ selectors
+      [ "ui-layout-website"
+      , "ui-layout-app"
+      , "ui-layout-sidebar"
+      ]
+      [ minHeight (vh 100)
+      , display flex
+      ]
 
     , selector "ui-layout-app-wrapper"
       [ flexDirection column

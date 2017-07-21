@@ -75,6 +75,10 @@ inputStyle theme =
       [ lineHeight (px 22)
       ]
 
+    , Mixins.placeholder
+      [ opacity 0.75
+      ]
+
     , selector "&[disabled]"
       [ Mixins.disabledColors theme
       , Mixins.disabled

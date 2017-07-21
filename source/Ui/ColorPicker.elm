@@ -18,8 +18,8 @@ focused, allowing the user to manipulate the selected color.
 -}
 
 import Html.Events.Extra exposing (onPreventDefault)
+import Html.Attributes exposing (style, attribute)
 import Html exposing (node, div, text, span)
-import Html.Attributes exposing (style)
 import Html.Lazy
 
 import Ext.Color exposing (Hsv)
@@ -136,7 +136,11 @@ render model =
   in
     Picker.view
       { address = Picker
-      , attributes = Ui.Styles.apply defaultStyle
+      , attributes =
+        [ Ui.Styles.apply defaultStyle
+        , [ attribute "ui-color-picker" "" ]
+        ]
+        |> List.concat
       , keyActions = []
       , contents =
           [ node "ui-color-picker-text" [] [ text color ]

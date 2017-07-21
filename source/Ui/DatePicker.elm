@@ -22,6 +22,7 @@ focused, allowing the user to manipulate the selected date.
 -}
 
 import Html.Events.Extra exposing (onPreventDefault)
+import Html.Attributes exposing (attribute)
 import Html exposing (node, text)
 import Html.Lazy
 
@@ -181,7 +182,11 @@ render locale model =
       (format (DateConfigs.getConfig locale) model.format model.calendar.value)
   in
     Picker.view
-      { attributes = Ui.Styles.apply defaultStyle
+      { attributes =
+        [ Ui.Styles.apply defaultStyle
+        , [ attribute "ui-date-picker" "" ]
+        ]
+        |> List.concat
       , address = Picker
       , keyActions =
         [ ( 40, Increment )

@@ -105,6 +105,7 @@ style theme =
         , whiteSpace nowrap
         , overflow hidden
         , display block
+        , opacity 0.75
         ]
       ]
 

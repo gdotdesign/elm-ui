@@ -18,7 +18,8 @@ along with the ability to set it with a hex (FFFFFF) value.
 -}
 
 import Html.Attributes exposing ( type_, defaultValue, id, spellcheck )
-import Html.Events exposing (onBlur, onInput, on)
+import Html.Events exposing (onBlur, onInput, on, onWithOptions)
+import Html.Events.Options exposing (stopPropagationOptions)
 import Html exposing (node, input, text)
 import Html.Lazy
 
@@ -74,6 +75,7 @@ type Msg
   | Blue String
   | Hex String
   | Red String
+  | DoneSingle
   | BlurGreen
   | BlurAlpha
   | BlurBlue
@@ -211,9 +213,8 @@ update msg_ ({ inputs } as model) =
         setInputs updatedModel
           |> sendValue
 
-    Done _ ->
+    _ ->
       ( model, Cmd.none )
-
 
 {-| Sends the value to the cannel.
 -}
@@ -307,7 +308,8 @@ renderInput name min max msg blurMsg value model =
         [ ( "disabled", model.disabled )
         , ( "readonly", model.readonly )
         ]
-      , [ on "change" (Json.succeed blurMsg)
+      , [ onWithOptions "mousedown" stopPropagationOptions (Json.succeed DoneSingle)
+        , on "change" (Json.succeed blurMsg)
         , Html.Attributes.min min
         , Html.Attributes.max max
         , onInput msg
@@ -345,7 +347,8 @@ render ({ inputs } as model) =
         [ ( "disabled", model.disabled )
         , ( "readonly", model.readonly )
         ]
-      , [ on "change" (Json.succeed BlurHex)
+      , [ onWithOptions "mousedown" stopPropagationOptions (Json.succeed DoneSingle)
+        , on "change" (Json.succeed BlurHex)
         , onBlur BlurHex
         , onInput Hex
         ]

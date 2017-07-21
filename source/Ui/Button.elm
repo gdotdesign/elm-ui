@@ -21,7 +21,7 @@ import Html.Events exposing (onClick)
 import Html exposing (node, text)
 import Html.Lazy
 
-import Ui.Styles.Button exposing (defaultStyle)
+import Ui.Styles.Button exposing (style)
 import Ui.Styles exposing (Style)
 
 import Ui.Helpers.Ripple as Ripple
@@ -74,7 +74,7 @@ render : msg -> Model -> Html.Html msg
 render msg model =
   node
     "ui-button"
-    (attributes defaultStyle msg model)
+    (attributes style msg model)
     [ Ripple.view
     , node "span" [] [ text model.text ]
     ]

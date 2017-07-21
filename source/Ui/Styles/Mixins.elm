@@ -82,11 +82,11 @@ ellipsis =
 
 {-| Mixis in the disabled colors.
 -}
-disabledColors : Theme -> Node
-disabledColors theme =
+disabledColors : String -> Node
+disabledColors prefix =
   mixin
-    [ backgroundColor theme.colors.disabled.color
-    , color theme.colors.disabled.bw
+    [ backgroundColor (var (prefix ++ "-disabled-background") "colors-disabled-background")
+    , color (var (prefix ++ "-disabled-text") "colors-disabled-text")
     ]
 
 

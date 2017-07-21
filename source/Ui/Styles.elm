@@ -8,7 +8,9 @@ module Ui.Styles exposing (Style, apply, attributes)
 import Html.Attributes exposing (attribute)
 import Html
 
+import Ui.Styles.Theme exposing (variables)
 import Ui.Css exposing (Node, resolve)
+
 import Json.Encode as Json
 import Native.Styles
 import Murmur3
@@ -43,6 +45,7 @@ attributes id node =
   { value =
       resolve
         [ Ui.Css.selector id [ node ]
+        , variables
         ]
   , id = id
   }

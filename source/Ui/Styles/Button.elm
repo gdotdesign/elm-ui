@@ -7,105 +7,98 @@ module Ui.Styles.Button exposing (..)
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Ripple as Ripple
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Styles for a button using the default theme.
+{-| Returns the style node for a button.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-button" (style Theme.default)
+style : Style
+style =
+  [ Mixins.defaults
+  , Ripple.style
 
+  , borderRadius (var "ui-button-border-radius" "border-radius")
+  , fontFamily (var "ui-button-font-family" "font-family")
+  , justifyContent center
+  , display inlineFlex
+  , alignItems center
+  , textAlign center
+  , fontWeight bold
+  , userSelect none
+  , cursor pointer
+  , outline none
 
-{-| Returns the style node for a button using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ Mixins.defaults
-    , Ripple.style
+  , selector "span"
+    [ Mixins.ellipsis
+    , alignSelf stretch
+    ]
 
-    , borderRadius theme.borderRadius
-    , fontFamily theme.fontFamily
-    , justifyContent center
-    , display inlineFlex
-    , alignItems center
-    , textAlign center
-    , fontWeight bold
-    , userSelect none
-    , cursor pointer
-    , outline none
+  , selector "> *"
+    [ pointerEvents none
+    ]
+
+  , selector "&[size=medium]"
+    [ padding (zero . (px 24))
+    , fontSize (px 16)
+    , height (px 36)
 
     , selector "span"
-      [ Mixins.ellipsis
-      , alignSelf stretch
+      [ lineHeight (px 36) ]
+    ]
+
+  , selector "&[size=big]"
+    [ padding (zero . (px 30))
+    , fontSize (px 22)
+    , height (px 50)
+
+    , selector "span"
+      [ lineHeight (px 52) ]
+    ]
+
+  , selector "&[size=small]"
+    [ padding (zero . (px 16))
+    , fontSize (px 12)
+    , height (px 26)
+
+    , selector "span"
+      [ lineHeight (px 26) ]
+    ]
+
+  , selector "&[disabled]"
+    [ Mixins.disabledColors "ui-buton"
+    , Mixins.disabled
+    ]
+
+  , selector "&[readonly]"
+    [ Mixins.readonly ]
+
+  , selector "&:not([disabled])"
+    [ selector "&[kind=primary]"
+      [ backgroundColor (var "ui-button-primary-background" "colors-primary-background")
+      , color (var "ui-button-primary-text" "colors-primary-text")
       ]
 
-    , selector "> *"
-      [ pointerEvents none
+    , selector "&[kind=secondary]"
+      [ backgroundColor (var "ui-button-secondary-background" "colors-secondary-background")
+      , color (var "ui-button-secondary-text" "colors-secondary-text")
       ]
 
-    , selector "&[size=medium]"
-      [ padding (zero . (px 24))
-      , fontSize (px 16)
-      , height (px 36)
-
-      , selector "span"
-        [ lineHeight (px 36) ]
+    , selector "&[kind=warning]"
+      [ backgroundColor (var "ui-button-warning-background" "colors-warning-background")
+      , color (var "ui-button-warning-text" "colors-warning-text")
       ]
 
-    , selector "&[size=big]"
-      [ padding (zero . (px 30))
-      , fontSize (px 22)
-      , height (px 50)
-
-      , selector "span"
-        [ lineHeight (px 52) ]
+    , selector "&[kind=success]"
+      [ backgroundColor (var "ui-button-success-background" "colors-success-background")
+      , color (var "ui-button-success-text" "colors-success-text")
       ]
 
-    , selector "&[size=small]"
-      [ padding (zero . (px 16))
-      , fontSize (px 12)
-      , height (px 26)
-
-      , selector "span"
-        [ lineHeight (px 26) ]
-      ]
-
-    , selector "&[disabled]"
-      [ Mixins.disabledColors theme
-      , Mixins.disabled
-      ]
-
-    , selector "&[readonly]"
-      [ Mixins.readonly ]
-
-    , selector "&:not([disabled])"
-      [ selector "&[kind=primary]"
-        [ backgroundColor theme.colors.primary.color
-        , color theme.colors.primary.bw
-        ]
-
-      , selector "&[kind=secondary]"
-        [ backgroundColor theme.colors.secondary.color
-        , color theme.colors.secondary.bw
-        ]
-
-      , selector "&[kind=warning]"
-        [ backgroundColor theme.colors.warning.color
-        , color theme.colors.warning.bw
-        ]
-
-      , selector "&[kind=success]"
-        [ backgroundColor theme.colors.success.color
-        , color theme.colors.success.bw
-        ]
-
-      , selector "&[kind=danger]"
-        [ backgroundColor theme.colors.danger.color
-        , color theme.colors.danger.bw
-        ]
+    , selector "&[kind=danger]"
+      [ backgroundColor (var "ui-button-danger-background" "colors-danger-background")
+      , color (var "ui-button-danger-text" "colors-danger-text")
       ]
     ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-button"

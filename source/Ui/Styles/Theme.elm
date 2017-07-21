@@ -2,10 +2,11 @@ module Ui.Styles.Theme exposing (..)
 
 {-| This module contains the theme for the components.
 
-@docs Theme, default
+@docs Theme, default, variables
 -}
 
 import Ui.Css.Properties exposing (..)
+import Ui.Css exposing (..)
 
 {-| Representation of a theme.
 -}
@@ -65,6 +66,34 @@ type alias Theme =
     , trackColor : String
     }
   }
+
+
+{-| The default variables.
+-}
+variables : Node
+variables =
+  selector "html"
+    [ property "--font-family" "-apple-system, system-ui, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif"
+    , property "--border-radius" "2px"
+
+    , property "--colors-disabled-background" "#D7D7D7"
+    , property "--colors-disabled-text" "#9A9A9A"
+
+    , property "--colors-primary-background" "#158DD8"
+    , property "--colors-primary-text" "#FFF"
+
+    , property "--colors-danger-background" "#E04141"
+    , property "--colors-danger-text" "#FFF"
+
+    , property "--colors-secondary-background" "#5D7889"
+    , property "--colors-secondary-text" "#FFF"
+
+    , property "--colors-success-background" "#4DC151"
+    , property "--colors-success-text" "#FFF"
+
+    , property "--colors-warning-background" "#FF9730"
+    , property "--colors-warning-text" "#FFF"
+    ]
 
 
 {-| The default theme.

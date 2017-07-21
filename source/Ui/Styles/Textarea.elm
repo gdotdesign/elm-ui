@@ -34,7 +34,7 @@ style theme =
     , display block
 
     , selector "ui-textarea-background"
-      [ Mixins.focusedIdle theme
+      [ Mixins.focusedIdle
       , Mixins.defaults
 
       , border ((px 1) . solid . theme.colors.border)
@@ -50,7 +50,7 @@ style theme =
       ]
 
     , selector "textarea:not([disabled]):focus + ui-textarea-background"
-      [ Mixins.focused theme
+      [ Mixins.focused
       ]
 
     , selector "textarea[readonly]"

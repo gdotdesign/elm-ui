@@ -38,8 +38,8 @@ defaults =
 
 {-| Mixins in the idle focused state.
 -}
-focusedIdle : Theme -> Node
-focusedIdle theme =
+focusedIdle : Node
+focusedIdle =
   mixin
     [ transition
       [ { property = "box-shadow"
@@ -48,14 +48,18 @@ focusedIdle theme =
         , delay = ms 0
         }
       ]
-    , boxShadow theme.focusShadowsIdle
+    , boxShadow
+      [ { x = "0", y = "0", blur = "0", spread = (px 1), color = "transparent", inset = True }
+      , { x = "0", y = "0", blur = px 4, spread = "0", color = "transparent", inset = False }
+      , { x = "0", y = "0", blur = px 4, spread = "0", color = "transparent", inset = True }
+      ]
     ]
 
 
 {-| Mixins in the focused state.
 -}
-focused : Theme -> Node
-focused theme =
+focused : Node
+focused =
   mixin
     [ transition
       [ { property = "box-shadow"
@@ -64,7 +68,11 @@ focused theme =
         , delay = ms 0
         }
       ]
-    , boxShadow theme.focusShadows
+    , boxShadow
+      [ { x = "0", y = "0", blur = "0", spread = (px 1), color = "#00C0FF", inset = True }
+      , { x = "0", y = "0", blur = px 4, spread = "0", color = "#62d8ff", inset = False }
+      , { x = "0", y = "0", blur = px 4, spread = "0", color = "#62d8ff", inset = True }
+      ]
     , outline none
     ]
 

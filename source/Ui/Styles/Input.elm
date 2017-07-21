@@ -57,7 +57,7 @@ style theme =
 inputStyle : Theme -> Node
 inputStyle theme =
   selector "input"
-    [ Mixins.focusedIdle theme
+    [ Mixins.focusedIdle
     , Mixins.defaults
 
     , border ((px 1) . solid . theme.colors.border)
@@ -98,6 +98,6 @@ inputStyle theme =
       ]
 
     , selector "&:focus"
-      [ Mixins.focused theme
+      [ Mixins.focused
       ]
     ]

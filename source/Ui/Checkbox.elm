@@ -31,7 +31,7 @@ import Ui.Native.Uid as Uid
 import Ui.Icons
 import Ui
 
-import Ui.Styles.Checkbox exposing (defaultStyle)
+import Ui.Styles.Checkbox exposing (style)
 import Ui.Styles
 
 {-| Representation of a checkbox:
@@ -185,7 +185,7 @@ attributes kind model =
         , ( 32, Toggle )
         ]
     ]
-  , Ui.Styles.apply defaultStyle
+  , Ui.Styles.apply style
   , [ attribute "kind" kind ]
   , Ui.tabIndex model
   ]

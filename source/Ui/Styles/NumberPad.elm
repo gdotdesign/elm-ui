@@ -24,7 +24,7 @@ style : Theme -> Node
 style theme =
   mixin
     [ Mixins.defaults
-    , Mixins.focusedIdle theme
+    , Mixins.focusedIdle
 
     , border ((px 1) . solid . theme.colors.border)
     , backgroundColor theme.colors.input.color
@@ -121,7 +121,7 @@ style theme =
       ]
 
     , selector "&:not([disabled]):focus"
-      [ Mixins.focused theme
+      [ Mixins.focused
       ]
 
     , selector "&[readonly]"

@@ -39,7 +39,7 @@ style theme =
       ]
 
     , selector "ui-slider-bar"
-      [ Mixins.focusedIdle theme
+      [ Mixins.focusedIdle
 
       , border ((px 1) . solid . theme.colors.border)
       , background theme.colors.input.color
@@ -102,5 +102,6 @@ style theme =
       ]
 
     , selector "&:focus ui-slider-bar"
-      [ Mixins.focused theme ]
+      [ Mixins.focused
+      ]
     ]

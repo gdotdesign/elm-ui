@@ -16,7 +16,7 @@ import Ui.Styles.Mixins as Mixins
 style : Theme -> Node
 style theme =
   mixin
-    [ Mixins.focusedIdle theme
+    [ Mixins.focusedIdle
 
     , border ((px 1) . solid . theme.colors.border)
     , backgroundColor theme.colors.input.color
@@ -39,7 +39,7 @@ style theme =
       ]
 
     , selector "&:focus"
-      [ Mixins.focused theme
+      [ Mixins.focused
       ]
 
     , selector "&[readonly] ui-picker-input"

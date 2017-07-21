@@ -141,8 +141,8 @@ style =
 
     , selector "ui-calendar-cell"
       [ selector "&:not(:empty)"
-        [ backgroundColor (varf "ui-calendar-cell-background" "colors-disabled-secondary-background")
-        , color (varf "ui-calendar-cell-color" "colors-disabled-secondary-text")
+        [ backgroundColor (var "ui-calendar-cell-background" "#A9A9A9")
+        , color (var "ui-calendar-cell-color" "#CECECE")
         , opacity 0.5
         ]
       , selector "&[selected]"

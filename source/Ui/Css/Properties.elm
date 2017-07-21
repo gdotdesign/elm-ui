@@ -31,7 +31,11 @@ type alias Animation =
 
 var : String -> String -> String
 var name fallback =
-  "var(--" ++ name ++ ", var(--" ++ fallback ++ "))"
+  "var(--" ++ name ++ ", " ++ fallback ++ ")"
+
+varf : String -> String -> String
+varf name fallback =
+  "var(--" ++ name ++ ", " ++ (var fallback "") ++ ")"
 
 zero : String
 zero =

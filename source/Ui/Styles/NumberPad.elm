@@ -138,7 +138,7 @@ style theme =
 
     , selector "&[disabled]"
       [ Mixins.disabled
-      , Mixins.disabledColors theme
+      , Mixins.disabledColors "ui-number-pad"
       , borderColor transparent
 
       , selectors

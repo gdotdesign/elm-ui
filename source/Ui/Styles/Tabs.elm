@@ -91,7 +91,7 @@ style theme =
         [ "ui-tabs-handle"
         , "ui-tabs-content"
         ]
-        [ Mixins.disabledColors theme
+        [ Mixins.disabledColors "ui-tabs"
         , borderColor theme.colors.borderDisabled
         ]
       ]

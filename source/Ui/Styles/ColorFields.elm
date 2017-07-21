@@ -97,7 +97,7 @@ style theme =
         ]
 
       , selector "&[disabled]"
-        [ Mixins.disabledColors theme
+        [ Mixins.disabledColors "ui-color-fields"
         , Mixins.disabled
 
         , border transparent

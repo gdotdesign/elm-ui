@@ -38,7 +38,7 @@ style theme =
       [ Mixins.readonly ]
 
     , selector "&[disabled]"
-      [ Mixins.disabledColors theme
+      [ Mixins.disabledColors "ui-checkbox"
       , Mixins.disabled
 
       , borderColor transparent

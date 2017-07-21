@@ -74,6 +74,9 @@ variables : Node
 variables =
   selector "html"
     [ property "--font-family" "-apple-system, system-ui, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif"
+
+    , property "--disabled-border-color" "#C7C7C7"
+    , property "--border-color" "#DDD"
     , property "--border-radius" "2px"
 
     , property "--colors-disabled-background" "#D7D7D7"
@@ -93,6 +96,15 @@ variables =
 
     , property "--colors-warning-background" "#FF9730"
     , property "--colors-warning-text" "#FFF"
+
+    , property "--colors-focus-background" "#00C0FF"
+    , property "--colors-focus-text" "#FFF"
+
+    , property "--colors-input-secondary-background" "#F3F3F3"
+    , property "--colors-input-secondary-text" "#616161"
+
+    , property "--colors-input-background" "#FDFDFD"
+    , property "--colors-input-text" "#707070"
     ]
 
 

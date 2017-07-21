@@ -80,7 +80,7 @@ inputStyle theme =
       ]
 
     , selector "&[disabled]"
-      [ Mixins.disabledColors theme
+      [ Mixins.disabledColors "ui-input"
       , Mixins.disabled
 
       , borderColor transparent

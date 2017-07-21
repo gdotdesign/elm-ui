@@ -85,8 +85,8 @@ ellipsis =
 disabledColors : String -> Node
 disabledColors prefix =
   mixin
-    [ backgroundColor (var (prefix ++ "-disabled-background") "colors-disabled-background")
-    , color (var (prefix ++ "-disabled-text") "colors-disabled-text")
+    [ backgroundColor (var (prefix ++ "-disabled-background") (var "colors-disabled-background" ""))
+    , color (var (prefix ++ "-disabled-text") (var "colors-disabled-text" ""))
     ]
 
 

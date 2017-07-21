@@ -23,7 +23,7 @@ defaultStyle =
 style : Theme -> Node
 style theme =
   mixin
-    [ Button.style theme
+    [ Button.base
 
     , selector "ui-icon-button-icon + span:not(:empty)"
       [ marginLeft (em 0.625)

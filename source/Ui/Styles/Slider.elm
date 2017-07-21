@@ -91,7 +91,7 @@ style theme =
       [ Mixins.disabled
 
       , selector "ui-slider-bar"
-        [ Mixins.disabledColors theme
+        [ Mixins.disabledColors "ui-slider"
         ]
 
       , selector "ui-slider-progress"

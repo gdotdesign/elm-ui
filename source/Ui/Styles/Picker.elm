@@ -47,7 +47,7 @@ style theme =
       ]
 
     , selector "&[disabled] ui-picker-input"
-      [ Mixins.disabledColors theme
+      [ Mixins.disabledColors "ui-picker"
       , Mixins.disabled
 
       , property "-webkit-filter" "saturate(0)"

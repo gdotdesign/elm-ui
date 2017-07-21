@@ -11,15 +11,16 @@ import Ui.Styles.Ripple as Ripple
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Returns the style node for a button.
+
+{-| Returns the style mixin for a button.
 -}
-style : Style
-style =
+base : Node
+base =
   [ Mixins.defaults
   , Ripple.style
 
-  , borderRadius (var "ui-button-border-radius" "border-radius")
-  , fontFamily (var "ui-button-font-family" "font-family")
+  , borderRadius (varf "ui-button-border-radius" "border-radius")
+  , fontFamily (varf "ui-button-font-family" "font-family")
   , justifyContent center
   , display inlineFlex
   , alignItems center
@@ -75,30 +76,36 @@ style =
 
   , selector "&:not([disabled])"
     [ selector "&[kind=primary]"
-      [ backgroundColor (var "ui-button-primary-background" "colors-primary-background")
-      , color (var "ui-button-primary-text" "colors-primary-text")
+      [ backgroundColor (varf "ui-button-primary-background" "colors-primary-background")
+      , color (varf "ui-button-primary-text" "colors-primary-text")
       ]
 
     , selector "&[kind=secondary]"
-      [ backgroundColor (var "ui-button-secondary-background" "colors-secondary-background")
-      , color (var "ui-button-secondary-text" "colors-secondary-text")
+      [ backgroundColor (varf "ui-button-secondary-background" "colors-secondary-background")
+      , color (varf "ui-button-secondary-text" "colors-secondary-text")
       ]
 
     , selector "&[kind=warning]"
-      [ backgroundColor (var "ui-button-warning-background" "colors-warning-background")
-      , color (var "ui-button-warning-text" "colors-warning-text")
+      [ backgroundColor (varf "ui-button-warning-background" "colors-warning-background")
+      , color (varf "ui-button-warning-text" "colors-warning-text")
       ]
 
     , selector "&[kind=success]"
-      [ backgroundColor (var "ui-button-success-background" "colors-success-background")
-      , color (var "ui-button-success-text" "colors-success-text")
+      [ backgroundColor (varf "ui-button-success-background" "colors-success-background")
+      , color (varf "ui-button-success-text" "colors-success-text")
       ]
 
     , selector "&[kind=danger]"
-      [ backgroundColor (var "ui-button-danger-background" "colors-danger-background")
-      , color (var "ui-button-danger-text" "colors-danger-text")
+      [ backgroundColor (varf "ui-button-danger-background" "colors-danger-background")
+      , color (varf "ui-button-danger-text" "colors-danger-text")
       ]
     ]
   ]
   |> mixin
-  |> Ui.Styles.attributes "ui-button"
+
+
+{-| Returns the style node for a button.
+-}
+style : Style
+style =
+  Ui.Styles.attributes "ui-button" base

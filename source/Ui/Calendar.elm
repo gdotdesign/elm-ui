@@ -39,7 +39,7 @@ import Ui.Container
 import Ui.Icons
 import Ui
 
-import Ui.Styles.Calendar exposing (defaultStyle)
+import Ui.Styles.Calendar exposing (style)
 import Ui.Styles
 
 {-| Representation of a calendar component:
@@ -197,7 +197,7 @@ render locale model =
           , ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-        , Ui.Styles.apply defaultStyle
+        , Ui.Styles.apply style
         ]
         |> List.concat
       )

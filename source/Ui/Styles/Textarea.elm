@@ -63,7 +63,7 @@ style theme =
       , color theme.colors.disabled.bw
 
       , selector "+ ui-textarea-background"
-        [ Mixins.disabledColors theme
+        [ Mixins.disabledColors "ui-textarea"
         , borderColor transparent
         ]
       ]

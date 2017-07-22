@@ -2,44 +2,37 @@ module Ui.Styles.DatePicker exposing (..)
 
 {-| Styles for a date picker.
 
-@docs style, defaultStyle
+@docs style
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Picker as Picker
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Styles for a container using the default theme.
+{-| Returns the style for a container.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "[ui-date-picker]" (style Theme.default)
+style : Style
+style =
+  [ Picker.style
 
+  , selector "ui-calendar"
+    [ borderColor transparent
+    ]
 
-{-| Returns the style node for a container using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ Picker.style theme
+  , selector "ui-date-picker-content"
+    [ Mixins.ellipsis
 
-    , selector "ui-calendar"
-      [ borderColor transparent
-      ]
+    , marginRight (px 10)
 
-    , selector "ui-date-picker-content"
-      [ Mixins.ellipsis
-
-      , marginRight (px 10)
-
-      , selector "+ svg"
-        [ fill currentColor
-        , marginLeft auto
-        , height (px 16)
-        , width (px 16)
-        ]
+    , selector "+ svg"
+      [ fill currentColor
+      , marginLeft auto
+      , height (px 16)
+      , width (px 16)
       ]
     ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "[ui-date-picker]"

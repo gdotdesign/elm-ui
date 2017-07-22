@@ -7,22 +7,21 @@ module Ui.Styles.Picker exposing (..)
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Dropdown as Dropdown
 import Ui.Styles.Mixins as Mixins
 
-{-| Returns the style node for a picker using the given theme.
+{-| Returns the style for a picker.
 -}
-style : Theme -> Node
-style theme =
+style : Node
+style =
   mixin
     [ Mixins.focusedIdle
 
-    , border ((px 1) . solid . theme.colors.border)
-    , backgroundColor theme.colors.input.color
-    , borderRadius theme.borderRadius
-    , fontFamily theme.fontFamily
-    , color theme.colors.input.bw
+    , border ((px 1) . solid . (varf "ui-picker-border" "border-color"))
+    , backgroundColor (varf "ui-picker-background" "colors-input-background")
+    , borderRadius (varf "ui-picker-border-radius" "border-radius")
+    , fontFamily (varf "ui-picker-font-family" "font-family")
+    , color (varf "ui-picker-text" "colors-input-text")
     , display inlineBlock
     , minWidth (px 220)
     , height (px 36)

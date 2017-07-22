@@ -30,7 +30,7 @@ import Ui.Helpers.Picker as Picker
 import Ui.Native.Uid as Uid
 import Ui.ColorPanel
 
-import Ui.Styles.ColorPicker exposing (defaultStyle)
+import Ui.Styles.ColorPicker
 import Ui.Styles
 
 {-| Representation of a color picker:
@@ -137,7 +137,7 @@ render model =
     Picker.view
       { address = Picker
       , attributes =
-        [ Ui.Styles.apply defaultStyle
+        [ Ui.Styles.apply Ui.Styles.ColorPicker.style
         , [ attribute "ui-color-picker" "" ]
         ]
         |> List.concat

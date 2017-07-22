@@ -38,7 +38,7 @@ import Ui.Calendar
 import Ui.Icons
 import Ui
 
-import Ui.Styles.DatePicker exposing (defaultStyle)
+import Ui.Styles.DatePicker exposing (style)
 import Ui.Styles
 
 {-| Representation of a date picker:
@@ -183,7 +183,7 @@ render locale model =
   in
     Picker.view
       { attributes =
-        [ Ui.Styles.apply defaultStyle
+        [ Ui.Styles.apply style
         , [ attribute "ui-date-picker" "" ]
         ]
         |> List.concat

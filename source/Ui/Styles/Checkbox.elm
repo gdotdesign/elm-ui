@@ -10,7 +10,7 @@ import Ui.Css exposing (..)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Returns the style node for a checkbox using the given.
+{-| Returns the style for a checkbox.
 -}
 style : Style
 style =

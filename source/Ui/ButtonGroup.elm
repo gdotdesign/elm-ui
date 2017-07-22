@@ -12,7 +12,7 @@ module Ui.ButtonGroup exposing (Model, model, view, render)
 import Html exposing (node)
 import Html.Lazy
 
-import Ui.Styles.ButtonGroup exposing (defaultStyle)
+import Ui.Styles.ButtonGroup exposing (style)
 import Ui.Styles
 
 import Ui.Button
@@ -68,7 +68,7 @@ render : Model msg -> Html.Html msg
 render model =
   node
     "ui-button-group"
-    (Ui.Styles.apply defaultStyle)
+    (Ui.Styles.apply style)
     (List.map (renderButton model) model.items)
 
 

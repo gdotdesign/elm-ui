@@ -55,7 +55,7 @@ import Ui.Native.Uid as Uid
 import Ui.ScrolledPanel
 import Ui
 
-import Ui.Styles.Chooser exposing (defaultStyle)
+import Ui.Styles.Chooser exposing (style)
 import Ui.Styles
 
 {-| Representation of an selectable item:
@@ -315,14 +315,14 @@ view model =
 render : Model -> Html.Html Msg
 render model =
   let
-    children = 
+    children =
       if model.dropdown.open || (not model.dropdown.open && model.renderWhenClosed) then
         if List.length (items_ model) > 0 then
            (List.map (Html.Lazy.lazy2 renderItem model) (items_ model))
         else
           [ node "ui-chooser-empty-content" [] [ model.emptyContent ]
           ]
-      else  
+      else
         []
 
     val =
@@ -371,7 +371,7 @@ render model =
             , ( "disabled", model.disabled )
             , ( "readonly", model.readonly )
             ]
-          , Ui.Styles.apply defaultStyle
+          , Ui.Styles.apply style
           ]
           |> List.concat
         )

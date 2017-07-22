@@ -36,7 +36,7 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui
 
-import Ui.Styles.ColorFields exposing (defaultStyle)
+import Ui.Styles.ColorFields exposing (style)
 import Ui.Styles
 
 {-| Represents the values of the inputs.
@@ -360,7 +360,7 @@ render ({ inputs } as model) =
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-        , Ui.Styles.apply defaultStyle
+        , Ui.Styles.apply style
         ]
         |> List.concat
       )

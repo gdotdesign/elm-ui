@@ -2,27 +2,22 @@ module Ui.Styles.ButtonGroup exposing (..)
 
 {-| Styles for a button group.
 
-@docs style, defaultStyle
+@docs style
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Styles for a button group using the default theme.
--}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-button-group" (style Theme.default)
 
-
-{-| Returns the style node for a button group using the given theme.
+{-| Returns the style for a button group.
 -}
-style : Theme -> Node
-style theme =
-  mixin
+style : Style
+style =
+  let
+    borderRadiusVar = varf "ui-button-group-border-radius" "border-radius"
+  in
     [ Mixins.defaults
 
     , selector "ui-button"
@@ -36,12 +31,14 @@ style theme =
 
       , selector "&:first-child"
         [ borderRadius
-            (theme.borderRadius . (px 0) . (px 0) . theme.borderRadius)
+            (borderRadiusVar . (px 0) . (px 0) . borderRadiusVar)
         ]
 
       , selector "&:last-child"
         [ borderRadius
-            ((px 0) . theme.borderRadius . theme.borderRadius . (px 0))
+            ((px 0) . borderRadiusVar . borderRadiusVar . (px 0))
         ]
       ]
     ]
+    |> mixin
+    |> Ui.Styles.attributes "ui-button-group"

@@ -2,190 +2,189 @@ module Ui.Styles.Chooser exposing (..)
 
 {-| Styles for a chooser.
 
-@docs style, defaultStyle
+@docs style
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles.Input as Input
 import Ui.Styles exposing (Style)
 
 import Regex
 
-{-| Styles for a chooser using the default theme.
+{-| Returns the style for a chooser.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-chooser" (style Theme.default)
+style : Style
+style =
+  [ Mixins.defaults
 
 
-{-| Returns the style node for a chooser using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ Mixins.defaults
+  , display inlineBlock
+  , position relative
 
-    , Input.inputStyle theme
+  , selector "&:not([readonly]) input"
+    [ cursor pointer
+    ]
 
-    , color theme.colors.input.bw
-    , display inlineBlock
-    , position relative
+  , selector "input"
+    [ Input.base "ui-chooser"
+    , zIndex 2
+    ]
 
-    , selector "&:not([readonly]) input"
-      [ cursor pointer
+  , selector "&:before"
+    [ borderColor (currentColor . transparent . transparent)
+    , borderWidth ((px 6) . (px 5) . zero)
+    , borderStyle solid
+
+    , pointerEvents none
+
+    , transform [ scale 0.6 ]
+    , opacity 0
+    , transition
+      [ { easing = "ease"
+        , property = "all"
+        , duration = (ms 320)
+        , delay = (ms 0)
+        }
       ]
 
-    , selector "input"
-      [ zIndex 2
-      ]
+    , top "calc(50% - 3px)"
+    , position absolute
+    , contentString ""
+    , right (px 15)
+    , height zero
+    , width zero
+    , zIndex 4
+    ]
 
-    , selector "&:before"
-      [ borderColor (currentColor . transparent . transparent)
-      , borderWidth ((px 6) . (px 5) . zero)
-      , borderStyle solid
-
+  , selectors
+    [ "&:not([searchable])"
+    , "&[searchable]:not([open])"
+    ]
+    [ selector "&::after"
+      [ background
+        ( "linear-gradient(90deg, transparent, " ++
+          (varf "ui-chooser-background" "colors-input-background") ++
+          " 70%)")
+      , borderRadius
+        ( zero .
+          (varf "ui-chooser-border-radius" "border-radius") .
+          (varf "ui-chooser-border-radius" "border-radius") .
+          zero
+        )
       , pointerEvents none
-
-      , transform [ scale 0.6 ]
-      , opacity 0
-      , transition
-        [ { easing = "ease"
-          , property = "all"
-          , duration = (ms 320)
-          , delay = (ms 0)
-          }
-        ]
-
-      , top "calc(50% - 3px)"
       , position absolute
+      , width (pct 33.33)
       , contentString ""
-      , right (px 15)
-      , height zero
-      , width zero
-      , zIndex 4
+      , bottom (px 4)
+      , right (px 4)
+      , top (px 4)
+      , zIndex 3
       ]
 
-    , selectors
+    , selector "&::before"
+      [ transform [ scale 1]
+      , opacity 0.6
+      ]
+    ]
+
+  , selector "&[disabled]"
+    [ selectors
       [ "&:not([searchable])"
       , "&[searchable]:not([open])"
       ]
       [ selector "&::after"
         [ background
-          ("linear-gradient(90deg, transparent, " ++
-          theme.colors.input.color ++ " 70%)")
-        , borderRadius (zero . theme.borderRadius . theme.borderRadius . zero)
-        , pointerEvents none
-        , position absolute
-        , width (pct 33.33)
-        , contentString ""
-        , bottom (px 4)
-        , right (px 4)
-        , top (px 4)
-        , zIndex 3
-        ]
-
-      , selector "&::before"
-        [ transform [ scale 1]
-        , opacity 0.6
-        ]
-      ]
-
-    , selector "&[disabled]"
-      [ selectors
-        [ "&:not([searchable])"
-        , "&[searchable]:not([open])"
-        ]
-        [ selector "&::after"
-          [ background
-            ("linear-gradient(90deg, transparent, " ++
-            theme.colors.disabled.color ++ " 70%)")
-          ]
-        ]
-      ]
-
-    , selector "ui-dropdown-panel"
-      [ maxHeight (px 250)
-      , padding (px 5)
-      , display flex
-      ]
-
-    , selector "ui-chooser-empty-content"
-      [ fontStyle italic
-      , padding (px 12)
-      , display block
-      , opacity 0.5
-      ]
-
-    , selector "ui-chooser-item"
-      [ Mixins.ellipsis
-
-      , borderRadius theme.borderRadius
-      , padding ((px 8) . (px 10))
-      , paddingRight (px 30)
-      , position relative
-      , cursor pointer
-      , display block
-
-      , selector "&[intended]"
-        [ background theme.chooser.intendedColors.background
-        , color theme.chooser.intendedColors.text
-
-        , selector "&:hover"
-          [ background theme.chooser.intendedHoverColors.background
-          , color theme.chooser.intendedHoverColors.text
-          ]
-
-        , selector "&:before"
-          [ content
-            ("url(\"data:image/svg+xml;utf8," ++
-            (chevronRight theme.chooser.intendedColors.text) ++ "\")")
-          , top "calc(50% - 7px)"
-          , position absolute
-          , fill currentColor
-          , right (px 10)
-          ]
-        ]
-
-      , selector "&:hover"
-        [ background theme.chooser.hoverColors.background
-        , color theme.chooser.hoverColors.text
-        ]
-
-      , selector "&[selected]"
-        [ background theme.chooser.selectedColors.background
-        , color theme.chooser.selectedColors.text
-
-        , selector "&:hover"
-          [ background theme.chooser.selectedHoverColors.background
-          , color theme.chooser.selectedHoverColors.text
-          ]
-        ]
-
-      , selector "&[selected][intended]"
-        [ background theme.chooser.selectedIntendedColors.background
-        , color theme.chooser.selectedIntendedColors.text
-
-        , selector "&:hover"
-          [ background theme.chooser.selectedIntendedHoverColors.background
-          , color theme.chooser.selectedIntendedHoverColors.text
-          ]
-
-        , selector "&:before"
-          [ content
-            ("url(\"data:image/svg+xml;utf8," ++
-            (chevronRight theme.chooser.selectedIntendedHoverColors.text) ++
-            "\")")
-          ]
-        ]
-
-      , selector "+ ui-chooser-item"
-        [ marginTop (px 3)
+          ( "linear-gradient(90deg, transparent, " ++
+            (varf "ui-chooser-disabled-background" "colors-disabled-background") ++
+            " 70%)")
         ]
       ]
     ]
+
+  , selector "ui-dropdown-panel"
+    [ maxHeight (px 250)
+    , padding (px 5)
+    , display flex
+    ]
+
+  , selector "ui-chooser-empty-content"
+    [ fontStyle italic
+    , padding (px 12)
+    , display block
+    , opacity 0.5
+    ]
+
+  , selector "ui-chooser-item"
+    [ Mixins.ellipsis
+
+    , borderRadius (varf "ui-chooser-border-radius" "border-radius")
+    , padding ((px 8) . (px 10))
+    , paddingRight (px 30)
+    , position relative
+    , cursor pointer
+    , display block
+
+    , selector "&[intended]"
+      [ background (var "ui-chooser-intended-background" "#EEE")
+      , color (var "ui-chooser-intended-text" "#707070")
+
+      , selector "&:hover"
+        [ background (var "ui-chooser-intended-hover-background" "#DDD")
+        , color (var "ui-chooser-intended-hover-text" "#707070")
+        ]
+
+      , selector "&:before"
+        [ content
+          ("url(\"data:image/svg+xml;utf8," ++
+          (chevronRight (var "ui-chooser-intended-text" "#707070")) ++ "\")")
+        , top "calc(50% - 7px)"
+        , position absolute
+        , fill currentColor
+        , right (px 10)
+        ]
+      ]
+
+    , selector "&:hover"
+      [ background (var "ui-chooser-hover-background" "#F0F0F0")
+      , color (var "ui-chooser-hover-text" "#707070")
+      ]
+
+    , selector "&[selected]"
+      [ background (varf "ui-chooser-selected-background" "colors-primary-background")
+      , color (varf "ui-chooser-selected-text" "colors-primary-text")
+
+      , selector "&:hover"
+        [ background (var "ui-chooser-selected-hover-background" "#1F97E2")
+        , color (var "ui-chooser-selected-hover-text" "#FFFFFF")
+        ]
+      ]
+
+    , selector "&[selected][intended]"
+      [ background (var "ui-chooser-selected-intended-background" "#1070AC")
+      , color (var "ui-chooser-selected-intended-text" "#FFFFFF")
+
+      , selector "&:hover"
+        [ background (var "ui-chooser-selected-intended-hover-background" "#0C5989")
+        , color (var "ui-chooser-selected-intended-hover-text" "#FFFFFF")
+        ]
+
+      , selector "&:before"
+        [ content
+          ("url(\"data:image/svg+xml;utf8," ++
+          (chevronRight (var "ui-chooser-selected-intended-hover-text" "#FFFFFF") ++
+          "\")"))
+        ]
+      ]
+
+    , selector "+ ui-chooser-item"
+      [ marginTop (px 3)
+      ]
+    ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-chooser"
 
 
 {-| Chevron right icon.

@@ -25,11 +25,12 @@ style theme =
   mixin
     [ Mixins.defaults
 
-    , color theme.colors.input.bw
     , display inlineBlock
     , position relative
 
-    , inputStyle theme
+    , selector "input"
+      [ base "ui-input"
+      ]
 
     , selector "&[clearable]"
       [ selector "input"
@@ -54,17 +55,17 @@ style theme =
 
 {-| Returns a style node for an input element.
 -}
-inputStyle : Theme -> Node
-inputStyle theme =
-  selector "input"
+base : String -> Node
+base prefix =
+  mixin
     [ Mixins.focusedIdle
     , Mixins.defaults
 
-    , border ((px 1) . solid . theme.colors.border)
-    , backgroundColor theme.colors.input.color
-    , borderRadius theme.borderRadius
-    , fontFamily theme.fontFamily
-    , color theme.colors.input.bw
+    , border ((px 1) . solid . (varf (prefix ++ "-border-color") "border-color"))
+    , backgroundColor (varf (prefix ++ "-background-color") "colors-input-background")
+    , borderRadius (varf (prefix ++ "-border-radius") "border-radius")
+    , fontFamily (varf (prefix ++ "-font-family") "font-family")
+    , color (varf (prefix ++ "-text") "colors-input-text")
     , padding ((px 6) . (px 9))
     , lineHeight (px 16)
     , fontSize (px 16)
@@ -80,7 +81,7 @@ inputStyle theme =
       ]
 
     , selector "&[disabled]"
-      [ Mixins.disabledColors "ui-input"
+      [ Mixins.disabledColors prefix
       , Mixins.disabled
 
       , borderColor transparent

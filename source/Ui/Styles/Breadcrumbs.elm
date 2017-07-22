@@ -10,7 +10,7 @@ import Ui.Css exposing (..)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Returns the style node for breadcrumbs using the given theme.
+{-| Returns the style for breadcrumbs.
 -}
 style : Style
 style =

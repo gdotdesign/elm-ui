@@ -26,8 +26,6 @@ style theme =
   mixin
     [ Mixins.defaults
 
-    , Input.inputStyle theme
-
     , display inlineBlock
     , position relative
 
@@ -60,7 +58,8 @@ style theme =
       ]
 
     , selector "input"
-      [ textAlign center
+      [ Input.base "ui-number-range"
+      , textAlign center
       , zIndex 0
       ]
 

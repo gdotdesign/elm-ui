@@ -104,7 +104,7 @@ base =
   |> mixin
 
 
-{-| Returns the style node for a button.
+{-| Returns the style for a button.
 -}
 style : Style
 style =

@@ -11,7 +11,7 @@ import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
 
-{-| Returns the style node for a calendar using the given theme.
+{-| Returns the style for a calendar.
 -}
 style : Style
 style =

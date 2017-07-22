@@ -17,7 +17,7 @@ module Ui.ColorPanel exposing
 @docs setValue
 -}
 
-import Html.Attributes exposing (style, id)
+import Html.Attributes exposing (id)
 import Html exposing (node)
 import Html.Lazy
 
@@ -30,7 +30,7 @@ import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
-import Ui.Styles.ColorPanel exposing (defaultStyle)
+import Ui.Styles.ColorPanel exposing (style)
 import Ui.Styles
 
 import Ext.Number
@@ -226,7 +226,7 @@ render ({ fields } as model) =
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-        , Ui.Styles.apply defaultStyle
+        , Ui.Styles.apply style
         ]
         |> List.concat
       )
@@ -235,7 +235,7 @@ render ({ fields } as model) =
             [ node
                 "ui-color-panel-rect"
                 ([ id model.drag.uid
-                 , style
+                 , Html.Attributes.style
                     [ ( "background-color", background )
                     , ( "cursor"
                       , if model.drag.drag.dragging then
@@ -260,7 +260,7 @@ render ({ fields } as model) =
             "ui-color-panel-alpha"
             (id model.alphaDrag.uid :: action LiftAlpha)
             [ node "ui-color-panel-alpha-background"
-              [ style [ ( "background-image", gradient ) ] ] []
+              [ Html.Attributes.style [ ( "background-image", gradient ) ] ] []
             , renderHandle "" (asPercent color.alpha)
             ]
         ]
@@ -403,7 +403,7 @@ renderHandle : String -> String -> Html.Html Msg
 renderHandle top left =
   node
     "ui-color-panel-handle"
-    [ style
+    [ Html.Attributes.style
         [ ( "top", top )
         , ( "left", left )
         ]

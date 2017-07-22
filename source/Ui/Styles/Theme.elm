@@ -40,11 +40,11 @@ type alias Theme =
   , focusShadows: List BoxShadow
   , focusShadowsIdle: List BoxShadow
   , zIndexes :
-    { notifications : Int
-    , dropdown : Int
-    , header : Int
-    , modal : Int
-    , fab : Int
+    { notifications : String
+    , dropdown : String
+    , header : String
+    , modal : String
+    , fab : String
     }
   , breadcrumbs :
     { background : String
@@ -141,11 +141,11 @@ default =
     , border = "#DDD"
     }
   , zIndexes =
-    { notifications = 2000
-    , dropdown = 1000
-    , modal = 100
-    , header = 50
-    , fab = 90
+    { notifications = "2000"
+    , dropdown = "1000"
+    , modal = "100"
+    , header = "50"
+    , fab = "90"
     }
   , chooser =
     { hoverColors = { background = "#f0f0f0", text = "#707070" }

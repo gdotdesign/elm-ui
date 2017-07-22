@@ -26,7 +26,8 @@ style theme =
     [ display inlineBlock
 
     , selector "ui-textarea"
-      [ zIndex 0 ]
+      [ zIndex "0"
+      ]
 
     , selector "ui-button[kind=primary]"
       [ marginRight (px 10)

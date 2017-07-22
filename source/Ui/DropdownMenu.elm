@@ -19,7 +19,7 @@ import Html.Lazy
 import Ui.Helpers.Dropdown as Dropdown exposing (Dropdown)
 import Ui.Native.Uid as Uid
 
-import Ui.Styles.DropdownMenu exposing (defaultStyle)
+import Ui.Styles.DropdownMenu exposing (style)
 import Ui.Styles
 
 import Json.Decode as Json
@@ -127,7 +127,7 @@ render viewModel model =
     { attributes =
       [ on "click" (Json.map (Toggle >> viewModel.address) Mouse.position)
       ]
-      |> (++) (Ui.Styles.apply defaultStyle)
+      |> (++) (Ui.Styles.apply style)
     , address = viewModel.address << Dropdown
     , children = [ viewModel.element ]
     , contents = viewModel.items

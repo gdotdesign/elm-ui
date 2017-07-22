@@ -130,7 +130,7 @@ columnOptions =
 basAttributes : Model -> List (Html.Attribute msg)
 basAttributes model =
   [ Ui.attributeList [ ( "compact", model.compact ) ]
-  , Ui.Styles.apply Ui.Styles.Container.defaultStyle
+  , Ui.Styles.apply Ui.Styles.Container.style
   , [ attribute "direction" model.direction
     , attribute "align" model.align
     ]

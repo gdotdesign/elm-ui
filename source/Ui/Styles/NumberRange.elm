@@ -42,7 +42,7 @@ style theme =
       , opacity 0.5
       , height zero
       , width zero
-      , zIndex 1
+      , zIndex "1"
       ]
 
     , selector "&:after"
@@ -60,7 +60,7 @@ style theme =
     , selector "input"
       [ Input.base "ui-number-range"
       , textAlign center
-      , zIndex 0
+      , zIndex "0"
       ]
 
     , selector "&:not([readonly]):not([disabled]) input"

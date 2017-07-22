@@ -7,47 +7,65 @@ module Ui.Styles.Dropdown exposing (..)
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Styles for a drop-down menu using the default theme.
+{-| Returns the style for a drop-down.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-dropdown-panel" (style Theme.default)
+style : Style
+style =
+  [ backgroundColor (varf "ui-dropdown-panel-background" "colors-input-background")
+  , border ((px 1) . solid . (varf "ui-dropdown-panel-border" "border-color"))
+  , borderRadius (varf "ui-dropdown-panel-border-radius" "border-radius")
+  , fontFamily (varf "ui-dropdown-panel-font-family" "font-family")
+  , color (varf "ui-dropdown-panel-text" "colors-input-text")
+  , zIndex (var "ui-dropdown-panel-z-index" "1000")
 
+  , pointerEvents none
+  , visibility hidden
+  , position fixed
+  , display block
+  , opacity 0
 
-{-| Returns the style node for a drop-down using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ border ((px 1) . solid . theme.colors.border)
-    , backgroundColor theme.colors.input.color
-    , borderRadius theme.borderRadius
-    , fontFamily theme.fontFamily
-    , color theme.colors.input.bw
+  , boxShadow
+    [ { color = "rgba(0,0,0,0.1)"
+      , blur = (px 20)
+      , inset = False
+      , spread = zero
+      , y = (px 5)
+      , x = zero
+      }
+    ]
 
-    , zIndex theme.zIndexes.dropdown
-    , pointerEvents none
-    , visibility hidden
-    , position fixed
-    , display block
-    , opacity 0
+  , transform
+    [ translate3d zero zero zero, translateY (px 10)
+    ]
 
-    , boxShadow
-      [ { color = "rgba(0,0,0,0.1)"
-        , blur = (px 20)
-        , inset = False
-        , spread = zero
-        , y = (px 5)
-        , x = zero
-        }
-      ]
+  , transition
+    [ { property = "opacity"
+      , duration = (ms 150)
+      , easing = "ease"
+      , delay = (ms 0)
+      }
+    , { property = "transform"
+      , duration = (ms 150)
+      , easing = "ease"
+      , delay = (ms 0)
+      }
+    , { property = "visibility"
+      , duration = (ms 1)
+      , delay = (ms 150)
+      , easing = "ease"
+      }
+    ]
+
+  , selector "&[open]"
+    [ pointerEvents auto
+    , visibility visible
+    , opacity 1
 
     , transform
-      [ translate3d zero zero zero, translateY (px 10)
+      [ translate3d zero zero zero, translateY zero
       ]
 
     , transition
@@ -63,36 +81,11 @@ style theme =
         }
       , { property = "visibility"
         , duration = (ms 1)
-        , delay = (ms 150)
         , easing = "ease"
+        , delay = (ms 0)
         }
       ]
-
-    , selector "&[open]"
-      [ pointerEvents auto
-      , visibility visible
-      , opacity 1
-
-      , transform
-        [ translate3d zero zero zero, translateY zero
-        ]
-
-      , transition
-        [ { property = "opacity"
-          , duration = (ms 150)
-          , easing = "ease"
-          , delay = (ms 0)
-          }
-        , { property = "transform"
-          , duration = (ms 150)
-          , easing = "ease"
-          , delay = (ms 0)
-          }
-        , { property = "visibility"
-          , duration = (ms 1)
-          , easing = "ease"
-          , delay = (ms 0)
-          }
-        ]
-      ]
     ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-dropdown-panel"

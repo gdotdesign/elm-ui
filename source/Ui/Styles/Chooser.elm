@@ -29,7 +29,7 @@ style =
 
   , selector "input"
     [ Input.base "ui-chooser"
-    , zIndex 2
+    , zIndex "2"
     ]
 
   , selector "&:before"
@@ -55,7 +55,7 @@ style =
     , right (px 15)
     , height zero
     , width zero
-    , zIndex 4
+    , zIndex "4"
     ]
 
   , selectors
@@ -80,7 +80,7 @@ style =
       , bottom (px 4)
       , right (px 4)
       , top (px 4)
-      , zIndex 3
+      , zIndex "3"
       ]
 
     , selector "&::before"

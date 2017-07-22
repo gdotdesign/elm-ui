@@ -43,7 +43,7 @@ style theme =
       , position relative
       , borderTop zero
       , display block
-      , zIndex 1
+      , zIndex "1"
       ]
 
     , selector "ui-tabs-handle"

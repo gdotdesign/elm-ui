@@ -44,8 +44,8 @@ style theme =
       , position absolute
       , bottom zero
       , right zero
+      , zIndex "0"
       , left zero
-      , zIndex 0
       , top zero
       ]
 
@@ -74,8 +74,8 @@ style theme =
       , bottom (px -24)
       , height (px 24)
       , right zero
+      , zIndex "2"
       , left zero
-      , zIndex 2
       ]
 
     , selector "textarea"
@@ -96,9 +96,9 @@ style theme =
       , resize none
       , margin zero
       , border zero
+      , zIndex "1"
       , left zero
       , top zero
-      , zIndex 1
 
       , Mixins.placeholder
         [ textOverflow ellipsis

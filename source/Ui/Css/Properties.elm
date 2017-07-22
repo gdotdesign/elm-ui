@@ -416,9 +416,9 @@ fontFamily : String -> Node
 fontFamily =
   property "font-family"
 
-zIndex : Int -> Node
+zIndex : String -> Node
 zIndex value =
-  property "z-index" (toString value)
+  property "z-index" value
 
 color : String -> Node
 color =

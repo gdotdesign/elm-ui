@@ -61,7 +61,7 @@ style theme =
       , right zero
       , left zero
       , top zero
-      , zIndex 0
+      , zIndex "0"
       ]
 
     , selector "ui-modal-wrapper"
@@ -72,7 +72,7 @@ style theme =
       , position relative
       , maxHeight (vw 80)
       , maxWidth (vw 80)
-      , zIndex 1
+      , zIndex "1"
 
       , transition
         [ { property = "transform"

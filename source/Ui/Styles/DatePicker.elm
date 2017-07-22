@@ -11,7 +11,7 @@ import Ui.Styles.Picker as Picker
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Returns the style for a container.
+{-| Returns the style for a date picker.
 -}
 style : Style
 style =

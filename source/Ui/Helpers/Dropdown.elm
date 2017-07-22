@@ -40,7 +40,7 @@ import Mouse
 import DOM exposing (Dimensions)
 import DOM.Window
 
-import Ui.Styles.Dropdown exposing (defaultStyle)
+import Ui.Styles.Dropdown
 import Ui.Styles
 
 import Ui.Native.Scrolls as Scrolls
@@ -249,7 +249,7 @@ render viewModel model =
                , ( "top", (toString model.dropdown.top) ++ "px" )
                ]
            ]
-         , Ui.Styles.apply defaultStyle
+         , Ui.Styles.apply Ui.Styles.Dropdown.style
          ] |> List.concat
         )
         viewModel.contents

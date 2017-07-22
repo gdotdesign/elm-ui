@@ -37,7 +37,7 @@ style =
       , "> *"
       ]
       [ position relative
-      , zIndex 2
+      , zIndex "2"
       ]
 
     , selector "svg[ripple]"
@@ -63,6 +63,6 @@ style =
       , left (pct 50)
       , top (pct 50)
       , opacity 0
-      , zIndex 1
+      , zIndex "1"
       ]
     ]

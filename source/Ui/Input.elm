@@ -40,7 +40,7 @@ import Ui.Native.Uid as Uid
 import Ui.Icons
 import Ui
 
-import Ui.Styles.Input exposing (defaultStyle)
+import Ui.Styles.Input exposing (style)
 import Ui.Styles
 
 import Task
@@ -176,7 +176,7 @@ render model =
       ( [ Ui.attributeList
           [ ( "clearable", showClearIcon)
           ]
-        , Ui.Styles.apply defaultStyle
+        , Ui.Styles.apply style
         ]
         |> List.concat
       )

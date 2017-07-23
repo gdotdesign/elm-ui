@@ -2,26 +2,17 @@ module Ui.Styles.Image exposing (..)
 
 {-| Styles for an image.
 
-@docs style, defaultStyle
+@docs style
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles exposing (Style)
 
-{-| Styles for an image using the default theme.
+{-| Returns the style for an image.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-image" (style Theme.default)
-
-
-{-| Returns the style node for an image using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
+style : Style
+style =
     [ display inlineBlock
 
     , selector "img"
@@ -42,3 +33,5 @@ style theme =
       [ opacity 1
       ]
     ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-image"

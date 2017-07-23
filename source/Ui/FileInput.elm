@@ -33,7 +33,7 @@ import Ui.Native.Uid as Uid
 import Ui.Button
 import Ui
 
-import Ui.Styles.FileInput exposing (defaultStyle, defaultStyleDetails)
+import Ui.Styles.FileInput exposing (style, styleDetails)
 import Ui.Styles
 
 {-| Representation of a file input:
@@ -141,7 +141,7 @@ render model =
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-        , Ui.Styles.apply defaultStyle
+        , Ui.Styles.apply style
         , attributes
         ]
         |> List.concat
@@ -184,7 +184,7 @@ renderDetails model =
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-        , Ui.Styles.apply defaultStyleDetails
+        , Ui.Styles.apply styleDetails
         , attributes
         ]
         |> List.concat

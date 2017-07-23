@@ -2,62 +2,55 @@ module Ui.Styles.InplaceInput exposing (..)
 
 {-| Styles for an inplace input.
 
-@docs style, defaultStyle
+@docs style
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Styles for an inplace input using the default theme.
+{-| Returns the style for an inplace input.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-inplace-input" (style Theme.default)
+style : Style
+style =
+  [ display inlineBlock
 
+  , selector "ui-textarea"
+    [ zIndex "0"
+    ]
 
-{-| Returns the style node for an inplace input using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ display inlineBlock
+  , selector "ui-button[kind=primary]"
+    [ marginRight (px 10)
+    ]
 
-    , selector "ui-textarea"
-      [ zIndex "0"
-      ]
+  , selector "ui-button[kind=secondary]"
+    [ marginLeft auto
+    ]
 
-    , selector "ui-button[kind=primary]"
-      [ marginRight (px 10)
-      ]
+  , selector "ui-inplace-input-content"
+    [ fontFamily (varf "ui-inplace-input-font-family" "font-family")
+    , color (varf "ui-inplace-input-text" "colors-input-text")
+    , padding ((px 6) . (px 9))
+    , wordBreak breakWord
+    , lineHeight (px 24)
+    , whiteSpace preWrap
+    , display block
 
-    , selector "ui-button[kind=secondary]"
-      [ marginLeft auto
-      ]
-
-    , selector "ui-inplace-input-content"
-      [ fontFamily theme.fontFamily
-      , color theme.colors.input.bw
-      , padding ((px 6) . (px 9))
-      , wordBreak breakWord
-      , lineHeight (px 24)
-      , whiteSpace preWrap
-      , display block
-
-      , selector "&:empty:before"
-        [ content "attr(placeholder)"
-        , opacity 0.5
-        ]
-      ]
-
-    , selector "&:not([disabled]):not([readonly])"
-      [ selectors
-        [ "ui-inplace-input-content"
-        , "ui-inplace-input-content:empty:before"
-        ]
-        [ cursor pointer
-        ]
+    , selector "&:empty:before"
+      [ content "attr(placeholder)"
+      , opacity 0.5
       ]
     ]
+
+  , selector "&:not([disabled]):not([readonly])"
+    [ selectors
+      [ "ui-inplace-input-content"
+      , "ui-inplace-input-content:empty:before"
+      ]
+      [ cursor pointer
+      ]
+    ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-inplace-input"

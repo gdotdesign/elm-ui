@@ -37,7 +37,7 @@ import Ui.Textarea
 import Ui.Button
 import Ui
 
-import Ui.Styles.InplaceInput exposing (defaultStyle)
+import Ui.Styles.InplaceInput exposing (style)
 import Ui.Styles
 
 
@@ -182,7 +182,7 @@ render model =
   in
     node
       "ui-inplace-input"
-      ( [ Ui.Styles.apply defaultStyle
+      ( [ Ui.Styles.apply style
         , Ui.attributeList
          [ ( "disabled", model.disabled )
          , ( "readonly", model.readonly )

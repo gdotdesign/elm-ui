@@ -7,50 +7,43 @@ module Ui.Styles.Input exposing (..)
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Styles for an input using the default theme.
--}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-input" (style Theme.default)
-
-
 {-| Returns the style node for an input using the given theme.
 -}
-style : Theme -> Node
-style theme =
-  mixin
-    [ Mixins.defaults
+style : Style
+style =
+  [ Mixins.defaults
 
-    , display inlineBlock
-    , position relative
+  , display inlineBlock
+  , position relative
 
-    , selector "input"
-      [ base "ui-input"
-      ]
+  , selector "input"
+    [ base "ui-input"
+    ]
 
-    , selector "&[clearable]"
-      [ selector "input"
-        [ paddingRight (px 30) ]
+  , selector "&[clearable]"
+    [ selector "input"
+      [ paddingRight (px 30) ]
 
-      , selector "svg"
-        [ fill currentColor
-        , position absolute
-        , height (px 12)
-        , width (px 12)
-        , right (px 12)
-        , top (px 12)
+    , selector "svg"
+      [ fill currentColor
+      , position absolute
+      , height (px 12)
+      , width (px 12)
+      , right (px 12)
+      , top (px 12)
 
-        , selector "&:hover"
-          [ fill theme.colors.focus.color
-          , cursor pointer
-          ]
+      , selector "&:hover"
+        [ fill (varf "ui-input-hover" "colors-focus-background")
+        , cursor pointer
         ]
       ]
     ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-input"
 
 
 {-| Returns a style node for an input element.

@@ -7,7 +7,7 @@ module Ui.Fab exposing (view)
 -}
 import Html exposing (node)
 
-import Ui.Styles.Fab exposing (defaultStyle)
+import Ui.Styles.Fab exposing (style)
 import Ui.Styles
 
 {-| Renders a floating action button.
@@ -18,7 +18,7 @@ view : Html.Html msg -> List (Html.Attribute msg) -> Html.Html msg
 view glyph attributes =
   node
     "ui-fab"
-    ( [ Ui.Styles.apply defaultStyle
+    ( [ Ui.Styles.apply style
       , attributes
       ]
       |> List.concat

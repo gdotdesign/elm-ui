@@ -2,121 +2,109 @@ module Ui.Styles.Header exposing (..)
 
 {-| Styles for a header.
 
-@docs style, defaultStyle
+@docs style
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles.Ripple as Ripple
 import Ui.Styles exposing (Style)
 
-{-| Styles for a header using the default theme.
+{-| Returns the style for a header.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-header" (style Theme.default)
+style : Style
+style =
+  [ background (varf "ui-header-background" "colors-primary-background")
+  , fontFamily (varf "ui-header-font-family" "font-family")
+  , zIndex (var "ui-header-z-index" "50")
+  , padding (zero . (px 20))
+  , position relative
+  , flex_ "0 0 auto"
 
+  , flexDirection row
+  , alignItems center
+  , display flex
 
-{-| Returns the style node for a header using the given theme.
--}
-style theme =
-  mixin
-    [ background
-        ( "linear-gradient(" ++
-          theme.header.colors.backgroundTop  ++
-          ", " ++
-          theme.header.colors.backgroundBottom ++
-          ")"
-        )
-      , zIndex theme.zIndexes.header
-      , fontFamily theme.fontFamily
-      , padding (zero . (px 20))
-      , position relative
-      , flex_ "0 0 auto"
+  , height (px 60)
 
-      , flexDirection row
-      , alignItems center
-      , display flex
+  , boxShadow
+    [ { color = "rgba(0,0,0,0.1)"
+      , blur = (px 3)
+      , inset = False
+      , spread = zero
+      , y = (px 2)
+      , x = zero
+      }
+    , { color = "rgba(0,0,0,0.1)"
+      , blur = (px 10)
+      , inset = False
+      , spread = zero
+      , y = zero
+      , x = zero
+      }
+    ]
 
-      , height (px 60)
+  , selector "ui-header-separator"
+    [ background (var "ui-header-separator" "#137FC2")
+    , margin (zero . (px 8))
+    , height (px 40)
+    , width (px 2)
+    ]
 
-      , boxShadow
-        [ { color = "rgba(0,0,0,0.1)"
-          , blur = (px 3)
-          , inset = False
-          , spread = zero
-          , y = (px 2)
-          , x = zero
-          }
-        , { color = "rgba(0,0,0,0.1)"
-          , blur = (px 10)
-          , inset = False
-          , spread = zero
-          , y = zero
-          , x = zero
-          }
-        ]
+  , selector "ui-header-spacer"
+    [ flex_ "1"
+    ]
 
-    , selector "ui-header-separator"
-      [ background theme.header.colors.border
-      , margin (zero . (px 8))
-      , height (px 40)
-      , width (px 2)
+  , selector "ui-header-title"
+    [ item
+    , fontSize (px 20)
+    ]
+
+  , selector "ui-header-item"
+    [ item
+    ]
+
+  , selector "ui-header-icon-item"
+    [ item
+
+    , selector "svg:not([ripple])"
+      [ fill currentColor
+      , height (px 20)
+      , width (px 20)
       ]
 
-    , selector "ui-header-spacer"
-      [ flex_ "1"
+    , selectors
+      [ "svg + span"
+      , "span + svg"
       ]
-
-    , selector "ui-header-title"
-      [ item theme
-      , fontSize (px 20)
-      ]
-
-    , selector "ui-header-item"
-      [ item theme
-      ]
-
-    , selector "ui-header-icon-item"
-      [ item theme
-
-      , selector "svg:not([ripple])"
-        [ fill currentColor
-        , height (px 20)
-        , width (px 20)
-        ]
-
-      , selectors
-        [ "svg + span"
-        , "span + svg"
-        ]
-        [ marginLeft (px 12)
-        ]
-      ]
-
-    , selector "ui-header-icon"
-      [ item theme
-
-      , selector "svg:not([ripple])"
-        [ fill currentColor
-        , height (px 20)
-        , width (px 20)
-        ]
+      [ marginLeft (px 12)
       ]
     ]
+
+  , selector "ui-header-icon"
+    [ item
+
+    , selector "svg:not([ripple])"
+      [ fill currentColor
+      , height (px 20)
+      , width (px 20)
+      ]
+    ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-header"
 
 
 {-| Returns a style node for an header item.
 -}
-item : Theme -> Node
-item theme =
+item : Node
+item =
   mixin
     [ property "-webkit-filter" "drop-shadow(0px 1px 0px rgba(0,0,0,0.3))"
     , property "filter" "drop-shadow(0px 1px 0px rgba(0,0,0,0.3))"
 
-    , color theme.header.colors.text
+    , color (varf "ui-header-text" "colors-primary-text")
     , margin (zero . (px 2))
     , fontSize (px 18)
     , fontWeight bold

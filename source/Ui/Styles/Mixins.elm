@@ -68,8 +68,8 @@ focused =
       ]
     , boxShadow
       [ { x = "0", y = "0", blur = "0", spread = (px 1), color = "#00C0FF", inset = True }
-      , { x = "0", y = "0", blur = px 4, spread = "0", color = "#62d8ff", inset = False }
-      , { x = "0", y = "0", blur = px 4, spread = "0", color = "#62d8ff", inset = True }
+      , { x = "0", y = "0", blur = px 4, spread = "0", color = "rgba(0,192,255,.5)", inset = False }
+      , { x = "0", y = "0", blur = px 4, spread = "0", color = "rgba(0,192,255,.5)", inset = True }
       ]
     , outline none
     ]

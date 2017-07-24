@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "elm": "^0.18.0",
-    "elm-github-install": "^1.0.0",
+    "elm-github-install": "^1.1.0",
     "elm-spec": "^1.1.1"
   },
   "engines": {

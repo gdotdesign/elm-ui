@@ -217,9 +217,19 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-elm-github-install@^1.0.0, elm-github-install@^1.0.1:
+elm-github-install@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elm-github-install/-/elm-github-install-1.0.1.tgz#8be5847f5d586078c0d3f658f56dc4fad4f988ff"
+  dependencies:
+    adm-zip "^0.4.7"
+    request "2.74.0"
+    shelljs "0.7.5"
+    tar-fs "1.15.0"
+    tmp "^0.0.31"
+
+elm-github-install@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/elm-github-install/-/elm-github-install-1.1.0.tgz#a1b508f43f33f9d46bc164edfe94ec9ee1cb79ab"
   dependencies:
     adm-zip "^0.4.7"
     request "2.74.0"

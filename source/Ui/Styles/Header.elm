@@ -17,6 +17,7 @@ style : Style
 style =
   [ background (varf "ui-header-background" "colors-primary-background")
   , fontFamily (varf "ui-header-font-family" "font-family")
+  , height (var "ui-header-height" (px 60))
   , zIndex (var "ui-header-z-index" "50")
   , padding (zero . (px 20))
   , position relative
@@ -25,8 +26,6 @@ style =
   , flexDirection row
   , alignItems center
   , display flex
-
-  , height (px 60)
 
   , boxShadow
     [ { color = "rgba(0,0,0,0.1)"
@@ -58,7 +57,6 @@ style =
 
   , selector "ui-header-title"
     [ item
-    , fontSize (px 20)
     ]
 
   , selector "ui-header-item"
@@ -105,8 +103,8 @@ item =
     , property "filter" "drop-shadow(0px 1px 0px rgba(0,0,0,0.3))"
 
     , color (varf "ui-header-text" "colors-primary-text")
+    , fontSize (var "ui-header-font-size" (px 18))
     , margin (zero . (px 2))
-    , fontSize (px 18)
     , fontWeight bold
     , height inherit
 

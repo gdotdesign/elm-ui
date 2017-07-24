@@ -24,7 +24,7 @@ import Html.Lazy
 import Ui.Icons
 import Ui
 
-import Ui.Styles.Modal exposing (defaultStyle)
+import Ui.Styles.Modal exposing (style)
 import Ui.Styles
 
 {-| Representation of a modal:
@@ -145,7 +145,7 @@ render viewModel model =
     node
       "ui-modal"
       ( [ Ui.attributeList [ ( "open", model.open ) ]
-        , Ui.Styles.apply defaultStyle
+        , Ui.Styles.apply style
         ]
         |> List.concat
       )

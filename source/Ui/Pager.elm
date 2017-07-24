@@ -21,7 +21,7 @@ import Html.Lazy
 import Json.Decode as Json
 import Json.Encode as JE
 
-import Ui.Styles.Pager exposing (defaultStyle)
+import Ui.Styles.Pager
 import Ui.Styles
 
 {-| Representation of a pager:
@@ -135,7 +135,7 @@ render { address, pages } model =
   in
     node
       "ui-pager"
-      (Ui.Styles.apply defaultStyle)
+      (Ui.Styles.apply Ui.Styles.Pager.style)
       (List.indexedMap renderPage pages)
 
 

@@ -28,7 +28,7 @@ import Ui.Helpers.Drag as Drag
 import Ui.Native.Uid as Uid
 import Ui
 
-import Ui.Styles.Slider exposing (defaultStyle)
+import Ui.Styles.Slider
 import Ui.Styles
 
 {-| Representation of a slider:
@@ -154,7 +154,7 @@ render model =
         [ ( "disabled", model.disabled )
         , ( "readonly", model.readonly )
         ]
-      , Ui.Styles.apply defaultStyle
+      , Ui.Styles.apply Ui.Styles.Slider.style
       , [ id model.uid ]
       , Ui.tabIndex model
       , actions

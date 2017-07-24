@@ -2,48 +2,41 @@ module Ui.Styles.SearchInput exposing (..)
 
 {-| Styles for a search-input.
 
-@docs style, defaultStyle
+@docs style
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
+import Ui.Styles exposing (Style)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles.Input as Input
-import Ui.Styles exposing (Style)
 
-{-| Styles for a search-input using the default theme.
+{-| Returns the style for a search-input.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-search-input" (style Theme.default)
+style : Style
+style =
+  [ Mixins.defaults
 
+  , display inlineBlock
+  , position relative
+  , height (px 36)
 
-{-| Returns the style node for a search-input using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ Mixins.defaults
+  , selector "> svg"
+    [ fill (varf "ui-input-text" "colors-input-text")
+    , position absolute
+    , height (px 14)
+    , width (px 14)
+    , left (px 12)
+    , top (px 11)
+    ]
 
-    , display inlineBlock
-    , position relative
-    , height (px 36)
+  , selector "ui-input"
+    [ width (pct 100)
 
-    , selector "> svg"
-      [ fill theme.colors.input.bw
-      , position absolute
-      , height (px 14)
-      , width (px 14)
-      , left (px 12)
-      , top (px 11)
-      ]
-
-    , selector "ui-input"
-      [ width (pct 100)
-
-      , selector "input"
-        [ paddingLeft (px 34)
-        ]
+    , selector "input"
+      [ paddingLeft (px 34)
       ]
     ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-search-input"

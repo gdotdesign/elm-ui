@@ -7,7 +7,7 @@ module Ui.ScrolledPanel exposing (view)
 -}
 import Html exposing (node)
 
-import Ui.Styles.ScrolledPanel exposing (defaultStyle)
+import Ui.Styles.ScrolledPanel exposing (style)
 import Ui.Styles
 
 {-| Renders a panel that have scrolling content.
@@ -18,7 +18,7 @@ view : List (Html.Attribute msg) ->  List (Html.Html msg) -> Html.Html msg
 view attributes contents =
   node
     "ui-scrolled-panel"
-    ( [ Ui.Styles.apply defaultStyle
+    ( [ Ui.Styles.apply style
       , attributes
       ]
       |> List.concat

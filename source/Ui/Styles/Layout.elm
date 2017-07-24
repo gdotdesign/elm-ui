@@ -7,58 +7,51 @@ module Ui.Styles.Layout exposing (..)
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Styles for layouts using the default theme.
+{-| Returns the style for layouts.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "" (style Theme.default)
-
-
-{-| Returns the style node for layouts using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ selectors
-      [ "ui-layout-website"
-      , "ui-layout-app"
-      , "ui-layout-sidebar"
-      ]
-      [ minHeight (vh 100)
-      , display flex
-      ]
-
-    , selector "ui-layout-app-wrapper"
-      [ flexDirection column
-      , minHeight inherit
-      , display flex
-      , flex_ "1"
-      ]
-
-    , selectors
-      [ "ui-layout-sidebar-content"
-      , "ui-layout-website-content"
-      , "ui-layout-app-content"
-      ]
-      [ display block
-      , flex_ "1"
-      ]
-
-    , selector "&[kind=website]"
-      [ flexDirection column
-      ]
-
-    , selectors
-      [ "ui-layout-sidebar-bar"
-      , "ui-layout-app-sidebar"
-      , "ui-layout-app-toolbar"
-      , "ui-layout-website-header"
-      , "ui-layout-website-footer"
-      ]
-      [ flex_ "0 0 auto"
-      ]
+style : Style
+style =
+  [ selectors
+    [ "ui-layout-website"
+    , "ui-layout-app"
+    , "ui-layout-sidebar"
     ]
+    [ minHeight (vh 100)
+    , display flex
+    ]
+
+  , selector "ui-layout-app-wrapper"
+    [ flexDirection column
+    , minHeight inherit
+    , display flex
+    , flex_ "1"
+    ]
+
+  , selectors
+    [ "ui-layout-sidebar-content"
+    , "ui-layout-website-content"
+    , "ui-layout-app-content"
+    ]
+    [ display block
+    , flex_ "1"
+    ]
+
+  , selector "&[kind=website]"
+    [ flexDirection column
+    ]
+
+  , selectors
+    [ "ui-layout-sidebar-bar"
+    , "ui-layout-app-sidebar"
+    , "ui-layout-app-toolbar"
+    , "ui-layout-website-header"
+    , "ui-layout-website-footer"
+    ]
+    [ flex_ "0 0 auto"
+    ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes ""

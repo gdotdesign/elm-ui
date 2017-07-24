@@ -27,7 +27,7 @@ import Process
 import Vendor
 import Task
 
-import Ui.Styles.NotificationCenter exposing (defaultStyle)
+import Ui.Styles.NotificationCenter
 import Ui.Styles
 
 {-| Representation of a notification center:
@@ -148,7 +148,7 @@ render : (Msg -> a) -> Model a -> Html.Html a
 render address model =
   Html.Keyed.node
     "ui-notification-center"
-    (Ui.Styles.apply defaultStyle)
+    (Ui.Styles.apply Ui.Styles.NotificationCenter.style)
     (List.map (renderNotification address) model.notifications)
 
 

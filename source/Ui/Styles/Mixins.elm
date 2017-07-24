@@ -7,8 +7,6 @@ module Ui.Styles.Mixins exposing (..)
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
-
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Regex
 
 {-| Mixis in the selectors for styling the placeholder.

@@ -1,6 +1,6 @@
 var _gdotdesign$elm_ui$Native_Styles = function() {
   if(typeof document === "undefined") {
-    return {patchStyles: function() {}};
+    return {patchStyles: function() {}, setVariables: function() {}};
   }
 
   var currentStyles = {}
@@ -24,6 +24,13 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
     setupObserver()
   } else {
     document.addEventListener('DOMContentLoaded', setupObserver)
+  }
+
+  function setVariables(data){
+    _elm_lang$core$Native_List.toArray(data).forEach(function(item){
+      document.documentElement.style.setProperty &&
+      document.documentElement.style.setProperty(item._0, item._1)
+    })
   }
 
   function patchStyles(){
@@ -63,6 +70,7 @@ var _gdotdesign$elm_ui$Native_Styles = function() {
 
   /* Interface */
   return {
+    setVariables: setVariables,
     patchStyles: patchStyles
   }
 }()

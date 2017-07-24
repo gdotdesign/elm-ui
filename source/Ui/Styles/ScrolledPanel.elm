@@ -7,62 +7,55 @@ module Ui.Styles.ScrolledPanel exposing (..)
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles exposing (Style)
 
-{-| Styles for a scrolled-panel using the default theme.
+{-| Returns the style for a scrolled-panel.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-scrolled-panel" (style Theme.default)
+style : Style
+style =
+  [ maxHeight inherit
+  , position relative
+  , height inherit
+  , display flex
+  , flex_ "1"
 
-
-{-| Returns the style node for a scrolled-panel using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ maxHeight inherit
-    , position relative
+  , selector "ui-scrolled-panel-wrapper"
+    [ paddingRight (px 5)
+    , maxHeight inherit
+    , overflowY scroll
     , height inherit
-    , display flex
     , flex_ "1"
 
-    , selector "ui-scrolled-panel-wrapper"
-      [ paddingRight (px 5)
-      , maxHeight inherit
-      , overflowY scroll
-      , height inherit
-      , flex_ "1"
+    , selector "&::-webkit-scrollbar"
+      [ height (px 10)
+      , width (px 10)
+      ]
 
-      , selector "&::-webkit-scrollbar"
-        [ height (px 10)
-        , width (px 10)
-        ]
+    , selector "&::-webkit-scrollbar-button"
+      [ height zero
+      , width zero
+      ]
 
-      , selector "&::-webkit-scrollbar-button"
-        [ height zero
-        , width zero
-        ]
+    , selector "&::-webkit-scrollbar-thumb"
+      [ borderRadius (varf "ui-scrolled-panel-border-radius" "border-radius")
+      , background (var "ui-scrolled-panel-thumb" "#D0D0D0")
+      , border zero
+      ]
 
-      , selector "&::-webkit-scrollbar-thumb"
-        [ background theme.scrollbar.thumbColor
-        , borderRadius theme.borderRadius
-        , border zero
-        ]
+    , selector "&::-webkit-scrollbar-thumb:hover"
+      [ background (var "ui-scrolled-panel-thumb-hover" "#B8B8B8")
+      ]
 
-      , selector "&::-webkit-scrollbar-thumb:hover"
-        [ background theme.scrollbar.thumbHoverColor
-        ]
+    , selector "&::-webkit-scrollbar-track"
+      [ borderRadius (varf "ui-scrolled-panel-border-radius" "border-radius")
+      , background (var "ui-scrolled-panel-track" "#E9E9E9")
+      , border zero
+      ]
 
-      , selector "&::-webkit-scrollbar-track"
-        [ background theme.scrollbar.trackColor
-        , borderRadius theme.borderRadius
-        , border zero
-        ]
-
-      , selector "&::-webkit-scrollbar-corner"
-        [ background transparent
-        ]
+    , selector "&::-webkit-scrollbar-corner"
+      [ background transparent
       ]
     ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-scrolled-panel"

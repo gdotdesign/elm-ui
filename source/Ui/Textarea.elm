@@ -36,7 +36,7 @@ import Ui.Helpers.Emitter as Emitter
 import Ui.Native.Uid as Uid
 import Ui
 
-import Ui.Styles.Textarea exposing (defaultStyle)
+import Ui.Styles.Textarea exposing (style)
 import Ui.Styles
 
 import DOM
@@ -169,7 +169,7 @@ render model =
   in
     node
       "ui-textarea"
-      (Ui.Styles.apply defaultStyle)
+      (Ui.Styles.apply style)
       [ textarea attributes []
       , node "ui-textarea-background" [] []
       , node "ui-textarea-mirror" [] (process model.value)
@@ -199,29 +199,13 @@ setValue value model =
       )
 
 
-{-| Regexp for matching emtpy lines.
--}
-spaceRegex : Regex
-spaceRegex =
-  Regex.regex "^\\s*$"
-
-
 {-| Processes the value for the mirror object.
 -}
 process : String -> List (Html.Html Msg)
 process value =
   let
     renderLine data =
-      let
-        isEmpty =
-          Regex.contains spaceRegex data
-
-        attributes =
-          Ui.attributeList
-            [ ("empty", isEmpty )
-            ]
-      in
-        node "span-line" attributes [ text data ]
+      node "span" [] [ text data, text "\\u200B" ]
   in
     String.split "\n" value
       |> List.map renderLine

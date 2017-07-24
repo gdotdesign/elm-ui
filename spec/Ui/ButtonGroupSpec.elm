@@ -35,7 +35,7 @@ specs =
       [ it "has rounded corners on the left side"
         [ assert.containsText
           { selector = "style[id='ui-button-group']"
-          , text = "border-radius: var(--ui-button-group-border-radius, var(--border-radius, )) 0px 0px var(--ui-button-group-border-radius, var(--border-radius, ))"
+          , text = "border-radius: var(--ui-button-group-border-radius, var(--border-radius)) 0px 0px var(--ui-button-group-border-radius, var(--border-radius))"
           }
         ]
       ]
@@ -51,7 +51,7 @@ specs =
       [ it "has rounded corners on the right side"
         [assert.containsText
           { selector = "style[id='ui-button-group']"
-          , text = "border-radius: 0px var(--ui-button-group-border-radius, var(--border-radius, )) var(--ui-button-group-border-radius, var(--border-radius, )) 0px"
+          , text = "border-radius: 0px var(--ui-button-group-border-radius, var(--border-radius)) var(--ui-button-group-border-radius, var(--border-radius)) 0px"
           }
         ]
       ]

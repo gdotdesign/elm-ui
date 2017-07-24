@@ -30,7 +30,7 @@ import Ui.Native.Uid as Uid
 import Ui.Icons
 import Ui
 
-import Ui.Styles.Ratings exposing (defaultStyle)
+import Ui.Styles.Ratings exposing (style)
 import Ui.Styles
 
 {-| Representation of a ratings component:
@@ -165,7 +165,7 @@ render model =
          [ ( "disabled", model.disabled )
          , ( "readonly", model.readonly )
          ]
-       , Ui.Styles.apply defaultStyle
+       , Ui.Styles.apply style
        , Ui.tabIndex model
        , actions
        ]

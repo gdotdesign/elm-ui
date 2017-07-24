@@ -31,7 +31,13 @@ type alias Animation =
 
 var : String -> String -> String
 var name fallback =
-  "var(--" ++ name ++ ", " ++ fallback ++ ")"
+  let
+    head = "var(--" ++ name
+  in
+    if String.isEmpty fallback then
+      head ++ ")"
+    else
+      head ++ ", " ++ fallback ++ ")"
 
 varf : String -> String -> String
 varf name fallback =

@@ -2,52 +2,45 @@ module Ui.Styles.Pager exposing (..)
 
 {-| Styles for a pager.
 
-@docs style, defaultStyle
+@docs style
 -}
 import Ui.Css.Properties exposing (..)
 import Ui.Css exposing (..)
 
-import Ui.Styles.Theme as Theme exposing (Theme)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Styles for a pager using the default theme.
+{-| Returns the style for a pager.
 -}
-defaultStyle : Style
-defaultStyle =
-  Ui.Styles.attributes "ui-pager" (style Theme.default)
+style : Style
+style =
+  [ Mixins.defaults
 
+  , position relative
+  , overflow hidden
+  , display block
 
-{-| Returns the style node for a pager using the given theme.
--}
-style : Theme -> Node
-style theme =
-  mixin
-    [ Mixins.defaults
+  , selector "ui-page"
+    [ transform [ translate3d zero zero zero ]
+    , position absolute
+    , width (pct 100)
+    , display flex
+    , bottom zero
+    , top zero
 
-    , position relative
-    , overflow hidden
-    , display block
+    , selector "> *"
+      [ flex_ "1" ]
 
-    , selector "ui-page"
-      [ transform [ translate3d zero zero zero ]
-      , position absolute
-      , width (pct 100)
-      , display flex
-      , bottom zero
-      , top zero
-
-      , selector "> *"
-        [ flex_ "1" ]
-
-      , selector "&[animating]"
-        [ transition
-          [ { easing = "cubic-bezier(0.77, 0, 0.175, 1)"
-            , duration = (ms 500)
-            , property = "left"
-            , delay = (ms 0)
-            }
-          ]
+    , selector "&[animating]"
+      [ transition
+        [ { easing = "cubic-bezier(0.77, 0, 0.175, 1)"
+          , duration = (ms 500)
+          , property = "left"
+          , delay = (ms 0)
+          }
         ]
       ]
     ]
+  ]
+  |> mixin
+  |> Ui.Styles.attributes "ui-pager"

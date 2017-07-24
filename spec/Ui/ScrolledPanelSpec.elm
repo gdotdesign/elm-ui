@@ -1,17 +1,16 @@
 import Spec exposing (..)
 
 import Html exposing (text)
-import Ui.Icons
-import Ui.Fab
+import Ui.ScrolledPanel
 
 view : String -> Html.Html msg
 view model =
-  Ui.Fab.view (Ui.Icons.plus []) []
+  Ui.ScrolledPanel.view [] [text "Hello There"]
 
 
 specs : Node
 specs =
-  describe "Ui.Fab"
+  describe "Ui.ScrolledPanel"
     []
 
 

@@ -36,7 +36,7 @@ import Ui.Native.Uid as Uid
 import Ui.Icons
 import Ui
 
-import Ui.Styles.NumberPad exposing (defaultStyle)
+import Ui.Styles.NumberPad exposing (style)
 import Ui.Styles
 
 {-| Representation of a number pad:
@@ -228,7 +228,7 @@ render ({ address } as viewModel) model =
   in
     node
       "ui-number-pad"
-      ( [ Ui.Styles.apply defaultStyle
+      ( [ Ui.Styles.apply style
         , Ui.tabIndex model
         , actions
         , Ui.attributeList

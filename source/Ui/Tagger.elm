@@ -35,7 +35,7 @@ import Ui.Icons
 import Ui.Input
 import Ui
 
-import Ui.Styles.Tagger exposing (defaultStyle)
+import Ui.Styles.Tagger exposing (style)
 import Ui.Styles
 
 {-| Represents a tag:
@@ -194,7 +194,7 @@ render tags model =
         [ ( "disabled", model.disabled )
         , ( "readonly", model.readonly )
         ]
-      , Ui.Styles.apply defaultStyle
+      , Ui.Styles.apply style
       , actions
       ]
       |> List.concat

@@ -16,7 +16,7 @@ import Html.Lazy
 
 import List.Extra
 
-import Ui.Styles.Tabs exposing (defaultStyle)
+import Ui.Styles.Tabs exposing (style)
 import Ui.Styles
 import Ui
 
@@ -118,7 +118,7 @@ render { contents, address } model =
           [ ( "disabled", model.disabled )
           , ( "readonly", model.readonly )
           ]
-        , Ui.Styles.apply defaultStyle
+        , Ui.Styles.apply style
         ]
         |> List.concat
       )

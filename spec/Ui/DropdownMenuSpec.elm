@@ -4,10 +4,8 @@ import Html exposing (button, div, text, span)
 
 import Ui.DropdownMenu
 import Ui.Container
-import Ui.Icons
-
-import Ui.Styles.Theme exposing (default)
 import Ui.Styles
+import Ui.Icons
 
 import Steps exposing (..)
 

@@ -8,7 +8,7 @@ module Ui.Layout exposing (sidebar, app, website)
 import Html.Attributes exposing (attribute)
 import Html exposing (node)
 
-import Ui.Styles.Layout exposing (defaultStyle)
+import Ui.Styles.Layout exposing (style)
 import Ui.Styles
 
 {-| Alias for list of Html elements.
@@ -26,7 +26,7 @@ type alias Content msg =
 sidebar : Content msg -> Content msg -> Html.Html msg
 sidebar sidebarContent mainContent =
   node "ui-layout-sidebar"
-    (Ui.Styles.apply defaultStyle)
+    (Ui.Styles.apply style)
     [ node "ui-layout-sidebar-bar"     [] sidebarContent
     , node "ui-layout-sidebar-content" [] mainContent
     ]
@@ -42,7 +42,7 @@ sidebar sidebarContent mainContent =
 app : Content msg -> Content msg -> Content msg -> Html.Html msg
 app sidebarContent toolbarContent mainContent =
   node "ui-layout-app"
-    (Ui.Styles.apply defaultStyle)
+    (Ui.Styles.apply style)
     [ node "ui-layout-app-sidebar" [] sidebarContent
     , node "ui-layout-app-wrapper"
         []
@@ -62,7 +62,7 @@ app sidebarContent toolbarContent mainContent =
 website : Content msg -> Content msg -> Content msg -> Html.Html msg
 website headerContent mainContent footerContent =
   node "ui-layout-website"
-    ( [ Ui.Styles.apply defaultStyle
+    ( [ Ui.Styles.apply style
       , [ attribute "kind" "website" ]
       ]
       |> List.concat

@@ -35,7 +35,7 @@ import Ui.Input
 import Ui.Icons
 import Ui
 
-import Ui.Styles.SearchInput exposing (defaultStyle)
+import Ui.Styles.SearchInput exposing (style)
 import Ui.Styles
 
 {-| Representation of a search input:
@@ -184,7 +184,7 @@ render { input, disabled, readonly } =
   in
     node
       "ui-search-input"
-      (Ui.Styles.apply defaultStyle)
+      (Ui.Styles.apply style)
       [ Html.map Input (Ui.Input.view updatedInput)
       , Ui.Icons.search []
       ]

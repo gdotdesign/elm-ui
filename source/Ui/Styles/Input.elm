@@ -10,7 +10,7 @@ import Ui.Css exposing (..)
 import Ui.Styles.Mixins as Mixins
 import Ui.Styles exposing (Style)
 
-{-| Returns the style node for an input using the given theme.
+{-| Returns the style for an input.
 -}
 style : Style
 style =
@@ -28,7 +28,7 @@ style =
       [ paddingRight (px 30) ]
 
     , selector "svg"
-      [ fill currentColor
+      [ fill (varf "ui-input-text" "colors-input-text")
       , position absolute
       , height (px 12)
       , width (px 12)

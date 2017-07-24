@@ -18,8 +18,8 @@ view model =
 assertPercent value =
   assert.inlineStyleEquals
     { selector = "ui-slider-progress"
-    , style = "width"
     , value = (toString value) ++ "%"
+    , style = "width"
     }
 
 

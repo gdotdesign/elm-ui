@@ -1,8 +1,8 @@
-module Ui.Styles exposing (Style, apply, attributes)
+module Ui.Styles exposing (Style, apply, attributes, setVariables)
 
 {-| This module contains functions to add styles to elements.
 
-@docs Style, apply, attributes
+@docs Style, apply, attributes, setVariables
 -}
 
 import Html.Attributes exposing (attribute)
@@ -21,6 +21,12 @@ type alias Style =
   , id : String
   }
 
+
+{-| Sets CSS variables on.
+-}
+setVariables :List (String, String) -> ()
+setVariables data =
+   Native.Styles.setVariables data
 
 {-| The default variables.
 -}

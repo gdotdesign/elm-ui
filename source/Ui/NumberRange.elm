@@ -1,7 +1,7 @@
 module Ui.NumberRange exposing
   ( Model, Msg, init, onChange, subscriptions, update, view, render, min, max
   , setValue, increment, decrement, affix, keyboardStep, dragStep, round
-  , onDragStart, onDragEnd )
+  , onDragStart, onDragEnd, onEdit )
 
 {-| This is a component allows the user to change a number value by
 dragging or by using the keyboard, also traditional editing is enabled by
@@ -11,7 +11,7 @@ double clicking on the component.
 @docs Model, Msg, init, subscriptions, update
 
 # Events
-@docs onChange, onDragStart, onDragEnd
+@docs onChange, onDragStart, onDragEnd, onEdit
 
 # DSL
 @docs affix, keyboardStep, dragStep, min, max, round
@@ -175,7 +175,7 @@ onChange msg model =
 
 {-| Subscribe to the drag start event of a number range.
 
-    subscriptions = Ui.NumberRange.onDragEnd DragEnded numberRange
+    subscriptions = Ui.NumberRange.onDragEnd DragStarted numberRange
 -}
 onDragStart : msg-> Model -> Sub msg
 onDragStart msg model =
@@ -189,6 +189,15 @@ onDragStart msg model =
 onDragEnd : msg-> Model -> Sub msg
 onDragEnd msg model =
   Emitter.listenNaked (model.uid ++ "-dragend") msg
+
+
+{-| Subscribe to the drag start event of a number range.
+
+    subscriptions = Ui.NumberRange.onEdit Edited numberRange
+-}
+onEdit : msg-> Model -> Sub msg
+onEdit msg model =
+  Emitter.listenNaked (model.uid ++ "-edit") msg
 
 
 {-| Subscriptions for a number range.
@@ -385,6 +394,13 @@ setValue value model =
       , Task.attempt NoOpTask task )
 
 
+{-| Sends the edit event.
+-}
+sendEdit : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+sendEdit ( model, cmd ) =
+  ( model, Cmd.batch [Emitter.sendNaked (model.uid ++ "-edit"), cmd] )
+
+
 {-| Formats the given value.
 -}
 formatValue : Float -> Model -> (Float, String)
@@ -456,3 +472,4 @@ endEdit model =
     { model | editing = False }
       |> setValue value
       |> sendValue
+      |> sendEdit

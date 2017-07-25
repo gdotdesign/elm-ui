@@ -1,6 +1,7 @@
 module Ui.NumberRange exposing
   ( Model, Msg, init, onChange, subscriptions, update, view, render, min, max
-  , setValue, increment, decrement, affix, keyboardStep, dragStep, round )
+  , setValue, increment, decrement, affix, keyboardStep, dragStep, round
+  , onDragStart )
 
 {-| This is a component allows the user to change a number value by
 dragging or by using the keyboard, also traditional editing is enabled by
@@ -10,7 +11,7 @@ double clicking on the component.
 @docs Model, Msg, init, subscriptions, update
 
 # Events
-@docs onChange
+@docs onChange, onDragStart
 
 # DSL
 @docs affix, keyboardStep, dragStep, min, max, round
@@ -172,6 +173,15 @@ onChange msg model =
   Emitter.listenFloat model.uid msg
 
 
+{-| Subscribe to the drag start event of a number range.
+
+    subscriptions = Ui.NumberRange.onDragEnd DragEnded numberRange
+-}
+onDragStart : msg-> Model -> Sub msg
+onDragStart msg model =
+  Emitter.listenNaked (model.uid ++ "-dragstart") msg
+
+
 {-| Subscriptions for a number range.
 
     subscriptions =
@@ -222,7 +232,10 @@ update msg model =
     Lift position ->
       ( { model | startValue = model.value }
           |> Drag.lift position
-      , Task.attempt NoOpTask (DOM.focus (DOM.idSelector model.uid))
+      , Cmd.batch
+        [ Task.attempt NoOpTask (DOM.focus (DOM.idSelector model.uid))
+        , Emitter.sendNaked (model.uid ++ "-dragstart")
+        ]
       )
 
     _ ->

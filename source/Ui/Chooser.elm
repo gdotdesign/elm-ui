@@ -403,10 +403,12 @@ setValue value model =
     newSelected =
       Set.singleton value
   in
-    if (Set.size (Set.diff newSelected model.selected)) == 0 then
-      model
-    else
+    if String.isEmpty value then
+      { model | selected = Set.empty }
+    else if (Set.size (Set.diff newSelected model.selected)) /= 0 then
       { model | selected = newSelected }
+    else
+      model
 
 
 {-| Closes the dropdown of a chooser.

@@ -1,7 +1,7 @@
 module Ui.NumberRange exposing
   ( Model, Msg, init, onChange, subscriptions, update, view, render, min, max
   , setValue, increment, decrement, affix, keyboardStep, dragStep, round
-  , onDragStart )
+  , onDragStart, onDragEnd )
 
 {-| This is a component allows the user to change a number value by
 dragging or by using the keyboard, also traditional editing is enabled by
@@ -11,7 +11,7 @@ double clicking on the component.
 @docs Model, Msg, init, subscriptions, update
 
 # Events
-@docs onChange, onDragStart
+@docs onChange, onDragStart, onDragEnd
 
 # DSL
 @docs affix, keyboardStep, dragStep, min, max, round
@@ -182,6 +182,15 @@ onDragStart msg model =
   Emitter.listenNaked (model.uid ++ "-dragstart") msg
 
 
+{-| Subscribe to the drag start event of a number range.
+
+    subscriptions = Ui.NumberRange.onDragEnd DragEnded numberRange
+-}
+onDragEnd : msg-> Model -> Sub msg
+onDragEnd msg model =
+  Emitter.listenNaked (model.uid ++ "-dragend") msg
+
+
 {-| Subscriptions for a number range.
 
     subscriptions =
@@ -215,7 +224,9 @@ update msg model =
       handleMove position model
 
     End ->
-      ( Drag.end model, Cmd.none )
+      ( Drag.end model
+      , Emitter.sendNaked (model.uid ++ "-dragend")
+      )
 
     Input value ->
       ( { model | inputValue = Just value }, Cmd.none )

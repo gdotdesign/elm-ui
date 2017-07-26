@@ -1,5 +1,5 @@
 module Ui.ColorFields exposing
-  (Model, Msg, init, update, onChange, view, render, setValue)
+  (Model, Msg, init, update, onChange, view, render, setValue, onBlur)
 
 {-| A component for manipulating a color's red, green, blue and alpha values
 along with the ability to set it with a hex (FFFFFF) value.
@@ -8,7 +8,7 @@ along with the ability to set it with a hex (FFFFFF) value.
 @docs Model, Msg, init, update
 
 # Events
-@docs onChange
+@docs onChange, onBlur
 
 # Functions
 @docs setValue
@@ -18,8 +18,8 @@ along with the ability to set it with a hex (FFFFFF) value.
 -}
 
 import Html.Attributes exposing ( type_, defaultValue, id, spellcheck )
-import Html.Events exposing (onBlur, onInput, on, onWithOptions)
 import Html.Events.Options exposing (stopPropagationOptions)
+import Html.Events exposing (onInput, on, onWithOptions)
 import Html exposing (node, input, text)
 import Html.Lazy
 
@@ -81,6 +81,7 @@ type Msg
   | BlurBlue
   | BlurHex
   | BlurRed
+  | Blur
 
 
 {-| Initializes a color fields component.
@@ -114,6 +115,13 @@ onChange msg model =
   Emitter.listen
     model.uid
     (Emitter.decode decodeHsv (Ext.Color.toHsv Color.black) msg)
+
+
+{-| Subscribe to the blur event.
+-}
+onBlur : msg -> Model -> Sub msg
+onBlur msg model =
+  Emitter.listenNaked (model.uid ++ "-blur") msg
 
 
 {-| Updates a color fields component.
@@ -160,6 +168,7 @@ update msg_ ({ inputs } as model) =
       in
         setInputs updatedModel
           |> sendValue
+          |> delayedBlur
 
     BlurRed ->
       let
@@ -213,14 +222,50 @@ update msg_ ({ inputs } as model) =
         setInputs updatedModel
           |> sendValue
 
+    Blur ->
+      ( model, Cmd.none )
+        |> sendOnBlur
+
     _ ->
       ( model, Cmd.none )
+
 
 {-| Sends the value to the cannel.
 -}
 sendValue : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 sendValue (model, cmd) =
-  ( model, Cmd.batch [ Emitter.send model.uid (encodeHsv model.value), cmd ] )
+  ( model
+  , Cmd.batch
+    [ Emitter.send model.uid (encodeHsv model.value)
+    , cmd
+    ]
+  )
+
+
+{-| Sends a blur event on the next animation frame.
+-}
+delayedBlur : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+delayedBlur (model, cmd) =
+  ( model
+  , Cmd.batch
+    [ DOM.nextAnimationFrame ()
+      |> Task.andThen (\_ -> Task.succeed ())
+      |> Task.perform (\_ -> Blur)
+    , cmd
+    ]
+  )
+
+
+{-| Sends the value to the cannel.
+-}
+sendOnBlur : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+sendOnBlur (model, cmd) =
+  ( model
+  , Cmd.batch
+    [ Emitter.sendNaked (model.uid ++ "-blur")
+    , cmd
+    ]
+  )
 
 
 {-| Sets the value of a color fields component.
@@ -310,6 +355,7 @@ renderInput name min max msg blurMsg value model =
         ]
       , [ onWithOptions "mousedown" stopPropagationOptions (Json.succeed DoneSingle)
         , on "change" (Json.succeed blurMsg)
+        , Html.Events.onBlur Blur
         , Html.Attributes.min min
         , Html.Attributes.max max
         , onInput msg
@@ -349,7 +395,7 @@ render ({ inputs } as model) =
         ]
       , [ onWithOptions "mousedown" stopPropagationOptions (Json.succeed DoneSingle)
         , on "change" (Json.succeed BlurHex)
-        , onBlur BlurHex
+        , Html.Events.onBlur BlurHex
         , onInput Hex
         ]
       ]

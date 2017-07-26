@@ -1,5 +1,6 @@
 module Ui.ColorPicker exposing
-  (Model, Msg, init, onChange, subscriptions, update, view, render, setValue)
+  ( Model, Msg, init, onChange, subscriptions, update, view, render, setValue
+  , onDragEnd, onBlur )
 
 {-| An input component that displays a **Ui.ColorPanel** (in a dropdown) when
 focused, allowing the user to manipulate the selected color.
@@ -8,7 +9,7 @@ focused, allowing the user to manipulate the selected color.
 @docs Model, Msg, init, subscriptions, update
 
 # DSL
-@docs onChange
+@docs onChange, onDragEnd, onBlur
 
 # View
 @docs view, render
@@ -79,6 +80,20 @@ init _ =
 onChange : (Hsv -> msg) -> Model -> Sub msg
 onChange msg model =
   Ui.ColorPanel.onChange msg model.colorPanel
+
+
+{-| Subscribe to the drag end event of a color picker.
+-}
+onDragEnd : msg -> Model -> Sub msg
+onDragEnd msg model =
+  Ui.ColorPanel.onDragEnd msg model.colorPanel
+
+
+{-| Subscribe to the blur end event of a color picker.
+-}
+onBlur : msg -> Model -> Sub msg
+onBlur msg model =
+  Ui.ColorPanel.onBlur msg model.colorPanel
 
 
 {-| Subscriptions for a color picker.

@@ -1,5 +1,6 @@
 module Ui.ColorPanel exposing
-  (Model, Msg, init, onChange, subscriptions, update, view, render, setValue)
+  ( Model, Msg, init, onChange, subscriptions, update, view, render, setValue
+  , onDragEnd, onBlur )
 
 {-| A component for manipulating a color's **hue**, **saturation**,
 **value** and **alpha** components with draggable interfaces.
@@ -8,7 +9,7 @@ module Ui.ColorPanel exposing
 @docs Model, Msg, init, update, subscriptions
 
 # Events
-@docs onChange
+@docs onChange, onDragEnd, onBlur
 
 # View
 @docs view, render
@@ -121,6 +122,20 @@ onChange msg model =
     (Emitter.decode decodeHsv (Ext.Color.toHsv Color.black) msg)
 
 
+{-| Subscribe to the drag end event of a color panel.
+-}
+onDragEnd : msg -> Model -> Sub msg
+onDragEnd msg model =
+  Emitter.listenNaked (model.uid ++ "-dragend") msg
+
+
+{-| Subscribe to the blur end event of a color picker.
+-}
+onBlur : msg -> Model -> Sub msg
+onBlur msg model =
+  ColorFields.onBlur msg model.fields
+
+
 {-| Subscriptions for a color panel.
 
     subscriptions =
@@ -168,7 +183,9 @@ update action model =
       handleHue position model
 
     End ->
-      ( handleClick model, Cmd.none )
+      ( handleClick model
+      , Emitter.sendNaked (model.uid ++ "-dragend")
+      )
 
     SetValue color ->
       ({ model | value = color }, Emitter.send model.uid (encodeHsv color))

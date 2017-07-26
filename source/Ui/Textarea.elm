@@ -1,6 +1,6 @@
 module Ui.Textarea exposing
   ( Model, Msg, init, onChange, update, view, render, setValue, placeholder
-  , enterAllowed, defaultValue )
+  , enterAllowed, defaultValue, onBlur )
 
 {-| Textarea which uses a mirror object to render the contents the same way,
 thus creating an automatically growing textarea.
@@ -9,7 +9,7 @@ thus creating an automatically growing textarea.
 @docs Model, Msg, init, update
 
 # Events
-@docs onChange
+@docs onChange, onBlur
 
 # DSL
 @docs placeholder, enterAllowed, defaultValue
@@ -64,6 +64,7 @@ type alias Model =
 type Msg
   = Done (Result DOM.Error ())
   | Input String
+  | Blur
   | NoOp
 
 
@@ -92,6 +93,15 @@ init _ =
 onChange : (String -> a) -> Model -> Sub a
 onChange msg model =
   Emitter.listenString model.uid msg
+
+
+{-| Subscribe to the blur event of a textarea.
+
+    subscriptions = Ui.Textarea.onBlur TextareaChanged textarea
+-}
+onBlur : msg -> Model -> Sub msg
+onBlur msg model =
+  Emitter.listenNaked (model.uid ++ "-blur") msg
 
 
 {-| Sets the placeholder of a textarea.
@@ -125,6 +135,9 @@ update msg model =
     Input value ->
       ( { model | value = value }, Emitter.sendString model.uid value )
 
+    Blur ->
+      ( model, Emitter.sendNaked (model.uid ++ "-blur") )
+
     _ ->
       ( model, Cmd.none )
 
@@ -148,6 +161,7 @@ render model =
     base =
       [ Html.Attributes.placeholder model.placeholder
       , Html.Attributes.defaultValue model.value
+      , Html.Events.onBlur Blur
       , readonly model.readonly
       , disabled model.disabled
       , spellcheck False

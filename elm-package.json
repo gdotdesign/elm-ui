@@ -90,9 +90,9 @@
     "elm-lang/svg": "2.0.0 <= v < 3.0.0"
   },
   "dependency-sources": {
-    "mdgriffith/style-elements": {
-      "url": "https://github.com/j-panasiuk/style-elements.git",
-      "ref": "0c69288f0becdfeaa6230d9aa9a197aee5a7e79f"
+    "gdotdesign/elm-spec": {
+      "url": "git@github.com:gdotdesign/elm-spec.git",
+      "ref": "master"
     }
   },
   "elm-version": "0.18.0 <= v < 0.19.0"

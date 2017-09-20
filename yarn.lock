@@ -217,26 +217,28 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-elm-github-install@1.1.0, elm-github-install@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/elm-github-install/-/elm-github-install-1.1.0.tgz#a1b508f43f33f9d46bc164edfe94ec9ee1cb79ab"
+elm-github-install@1.6.0, elm-github-install@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/elm-github-install/-/elm-github-install-1.6.0.tgz#827d0449014f5fa9c259fafdba74704a86a33ba8"
   dependencies:
     adm-zip "^0.4.7"
+    progress "^2.0.0"
     request "2.74.0"
+    request-progress "^3.0.0"
     shelljs "0.7.5"
     tar-fs "1.15.0"
     tmp "^0.0.31"
 
-elm-spec@1.1.2:
+elm-spec@gdotdesign/elm-spec:
   version "1.1.2"
-  resolved "https://registry.yarnpkg.com/elm-spec/-/elm-spec-1.1.2.tgz#408e8d0eee5e275d1336ff6e3fc6952e9a445cb3"
+  resolved "https://codeload.github.com/gdotdesign/elm-spec/tar.gz/ce6f696dca7ed3308089b8c5f232952bdd429ed9"
   dependencies:
     async "^2.1.4"
     camelcase "^4.0.0"
     colors "^1.1.2"
     cssstyle "^0.2.37"
     elm "^0.18.0"
-    elm-github-install "^1.1.0"
+    elm-github-install "^1.6.0"
     globby "^6.1.0"
     indent-string "^3.0.0"
     jsdom "^9.9.1"
@@ -767,6 +769,10 @@ process-nextick-args@~1.0.6:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-1.0.7.tgz#150e20b756590ad3f91093f25a4f2ad8bff30ba3"
 
+progress@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.0.tgz#8a1be366bf8fc23db2bd23f10c6fe920b4389d1f"
+
 promise@7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/promise/-/promise-7.1.1.tgz#489654c692616b8aa55b0724fa809bb7db49c5bf"
@@ -823,6 +829,12 @@ rechoir@^0.6.2:
 repeating@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/repeating/-/repeating-3.0.0.tgz#f4c376fdd2015761f6f96f4303b1224d581e802f"
+
+request-progress@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/request-progress/-/request-progress-3.0.0.tgz#4ca754081c7fec63f505e4faa825aa06cd669dbe"
+  dependencies:
+    throttleit "^1.0.0"
 
 request@2.74.0, request@^2.55.0:
   version "2.74.0"
@@ -998,6 +1010,10 @@ temp@^0.8.3:
   dependencies:
     os-tmpdir "^1.0.0"
     rimraf "~2.2.6"
+
+throttleit@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/throttleit/-/throttleit-1.0.0.tgz#9e785836daf46743145a5984b6268d828528ac6c"
 
 tmp@^0.0.31:
   version "0.0.31"

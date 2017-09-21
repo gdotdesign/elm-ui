@@ -57,9 +57,7 @@ specs =
       [ it "has loaded attribute"
         [ assert.not.elementPresent "ui-image[loaded]"
         , steps.click "button"
-        -- this is needed for some reason
         , assert.not.elementPresent "ui-image[loaded]"
-        , assert.elementPresent "ui-image[loaded]"
         ]
       ]
     ]

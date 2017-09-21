@@ -91,7 +91,7 @@
   },
   "dependency-sources": {
     "gdotdesign/elm-spec": {
-      "url": "git@github.com:gdotdesign/elm-spec.git",
+      "url": "https://github.com/gdotdesign/elm-spec.git",
       "ref": "master"
     }
   },

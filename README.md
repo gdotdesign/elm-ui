@@ -5,6 +5,14 @@
 
 An opinionated **UI library** for making web applications with **Elm**.
 
+-----------------------
+
+### This package is not maintained any more and there are no plans to update it to work with Elm 0.19
+
+If you want to maintain this repository let me know.
+
+-----------------------
+
 ## Getting Started
 Head over to the official website [elm-ui.info](http://elm-ui.info/documentation/getting-started/setup) to get started.
 

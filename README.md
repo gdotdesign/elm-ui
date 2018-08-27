@@ -7,9 +7,9 @@ An opinionated **UI library** for making web applications with **Elm**.
 
 -----------------------
 
-### This package is not maintained any more and there are no plans to update it to work with Elm 0.19
+<del>### This package is not maintained any more and there are no plans to update it to work with Elm 0.19</del>
 
-If you want to maintain this repository let me know.
+Elm 0.19 made some breaking changes, which result in a lot of rewriting. It's not an easy work, your contributes will help a lot. New feature is on the branch `elm/0.19`.
 
 -----------------------
 

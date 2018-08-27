@@ -23,3 +23,14 @@ Detailed changes for each release are documented in the [release notes](https://
 For those who are interested in contributing to Elm-UI, please refer to our
 [contributing guide](https://github.com/gdotdesign/elm-ui/blob/master/CONTRIBUTING.md)
 to see how to run this project.
+
+### Upgrade to Elm 0.19
+
+Elm 0.19 made some breaking changes, which result in a lot of rewriting. It's not an easy work, your contributes will help a lot.
+
+## Todo
+
+[x] - move from elm-package.json to elm.json
+[ ] - remove useless modules
+[ ] - rewrite helper functions if need
+[ ] - rewrite UI components

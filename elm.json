@@ -1,0 +1,17 @@
+{
+    "type": "package",
+    "name": "gdotdesign/elm-ui",
+    "summary": "An opinionated UI library for making web applications with Elm",
+    "license": "BSD-3-Clause",
+    "version": "2.0.0",
+    "exposed-modules": [],
+    "elm-version": "0.19.0 <= v < 0.20.0",
+    "dependencies": {
+        "elm/core": "1.0.0 <= v < 2.0.0",
+        "elm/html": "1.0.0 <= v < 2.0.0",
+        "elm/json": "1.0.0 <= v < 2.0.0",
+        "elm/regex": "1.0.0 <= v < 2.0.0",
+        "elm/virtual-dom": "1.0.0 <= v < 2.0.0"
+    },
+    "test-dependencies": {}
+}

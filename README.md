@@ -14,7 +14,7 @@ Elm 0.19 made some breaking changes, which result in a lot of rewriting. It's no
 -----------------------
 
 ## Getting Started
-Head over to the official website [elm-ui.info](http://elm-ui.info/documentation/getting-started/setup) to get started.
+Head over to the official website [elm-ui.netlify.com](https://elm-ui.netlify.com/documentation/getting-started/setup) to get started.
 
 ## Changelog
 Detailed changes for each release are documented in the [release notes](https://github.com/gdotdesign/elm-ui/releases).

@@ -1,5 +1,5 @@
 {
-  "version": "1.2.1",
+  "version": "1.2.2",
   "summary": "UI Library in ELM",
   "repository": "https://github.com/gdotdesign/elm-ui.git",
   "license": "BSD-2-Clause",
@@ -78,9 +78,9 @@
     "rluiten/elm-date-extra": "8.5.1 <= v < 9.0.0",
     "elm-lang/virtual-dom": "2.0.4 <= v < 3.0.0",
     "gdotdesign/elm-spec": "1.1.1 <= v <= 2.0.0",
+    "fredcy/elm-parseint": "2.0.0 <= v < 2.0.1",
     "gdotdesign/elm-dom": "1.0.0 <= v < 2.0.0",
     "ggb/numeral-elm": "1.4.0 <= v < 2.0.0",
-    "Skinney/murmur3": "2.0.4 <= v < 3.0.0",
     "elm-lang/window": "1.0.1 <= v < 2.0.0",
     "elm-lang/mouse": "1.0.1 <= v < 2.0.0",
     "elm-lang/lazy": "2.0.0 <= v < 3.0.0",
@@ -92,8 +92,8 @@
   },
   "dependency-sources": {
     "mdgriffith/style-elements": {
-      "url": "https://github.com/j-panasiuk/style-elements.git",
-      "ref": "0c69288f0becdfeaa6230d9aa9a197aee5a7e79f"
+      "url": "https://github.com/gdotdesign/style-elements.git",
+      "ref": "23153a4fecb43fdf8c880bd390b1cdf012b3af14"
     }
   },
   "elm-version": "0.18.0 <= v < 0.19.0"
